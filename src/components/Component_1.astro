@@ -1,0 +1,43 @@
+---
+// src/components/Componente_1.astro
+
+import heroBackground from "../assets/bg_component_1.png";
+import topgolfLogo from "../assets/topgolf_component_1.png";
+---
+
+<section class="relative h-[550px] w-full text-white md:h-[650px]">
+    <img src={heroBackground.src} alt="Gente divirtiéndose en Topgolf" class="absolute inset-0 h-full w-full object-cover"/>
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="relative z-10 flex h-full flex-col items-center justify-center text-center">
+        {/* CAMBIO: Se aumentó el ancho del logo para que sea más grande */}
+        <img src={topgolfLogo.src} alt="Logo de Topgolf" class="w-80 -rotate-6 transform md:w-96" />
+        <h1 class="text-shadow-md -mt-4 text-7xl font-extrabold uppercase tracking-tighter md:text-8xl">
+            Ven a Jugar
+        </h1>
+    </div>
+
+    {/* CAMBIO: Se redujo el padding vertical (py) en las dos franjas para hacerlas más delgadas */}
+    <div class="absolute bottom-0 left-0 right-0 z-20 bg-blue-950 text-white">
+        <div class="container mx-auto flex flex-col items-center justify-between gap-4 px-6 py-2 text-center sm:flex-row sm:text-left">
+            <p class="text-lg font-semibold">Descubre la mejor manera de jugar</p>
+            <a
+                href="#"
+                class="flex-shrink-0 rounded-full bg-white px-5 py-1.5 text-xs font-bold text-blue-900 shadow-lg transition hover:bg-gray-200"
+            >
+                RESERVA AQUÍ TU BAHÍA
+            </a>
+        </div>
+        <div class="bg-blue-700 py-1 text-center text-xs">
+            <p>
+                <span class="font-bold">¿Necesitas ayuda?</span> Consulta nuestras preguntas
+                frecuentes o descubre cómo funciona Topgolf.
+            </p>
+        </div>
+    </div>
+</section>
+
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+</style>
