@@ -1,0 +1,29 @@
+---
+// Recibimos la prop "contenido", que es un campo de Rich Text de Strapi.
+const { contenido } = Astro.props;
+---
+<div class="bloque-de-texto">
+  {contenido && contenido.map(elemento => {
+    // Lógica simple para renderizar párrafos del Rich Text.
+    if (elemento.type === 'paragraph' && elemento.children) {
+      return <p>{elemento.children.map(child => child.text).join('')}</p>;
+    }
+    // Puedes añadir más condiciones para h2, h3, listas, etc.
+    return null;
+  })}
+</div>
+
+<style>
+  .bloque-de-texto {
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-left: 4px solid #007acc;
+  }
+  .bloque-de-texto p {
+    line-height: 1.7;
+    font-size: 1.1rem;
+    color: #333;
+  }
+</style>

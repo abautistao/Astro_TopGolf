@@ -1,8 +1,19 @@
 ---
-// 1. Importa tus componentes
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const response = await fetch("https://cms-topgolf.venturaentertainment.mx/api/setup-site");
+const { data } = await response.json();
+
+const customStyles = `
+    :root {
+        --primary-color: ${data.primary_color};
+        --secondary-color: ${data.secondary_color};
+        --font-family-base: "${data.font_family_base}", sans-serif;
+        --h1-font-size: ${data.h1_font_size}px;
+    }
+`;
 ---
 
 <!doctype html>
@@ -13,6 +24,7 @@ import Footer from '../components/Footer.astro';
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>Astro Basics</title>
+        <style is:global set:html={customStyles} />
     </head>
     <body>
         <Header />
