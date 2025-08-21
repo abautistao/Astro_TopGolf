@@ -3,77 +3,35 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import BloqueDeTexto from '../components/BloqueDeTexto.astro';
+import Layout from '../layouts/Layout.astro'; // Importamos el Layout principal
+import { getAllPages, getPageBySlug } from '../lib/strapi.js';
 
 // ==========================================================================================
 // SECCIÓN 2: MAPA DE COMPONENTES
-// Aquí se asocian los nombres de los componentes de Strapi con los de Astro.
 // ==========================================================================================
 const componentsMap = {
   'secciones.bloque-de-texto': BloqueDeTexto,
-  // Si tuvieras más componentes, los añadirías aquí.
-  // 'secciones.galeria-de-imagenes': GaleriaDeImagenes,
 };
 
 // ==========================================================================================
 // SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
-// Astro usa esta función para saber qué páginas crear durante la compilación.
 // ==========================================================================================
 export async function getStaticPaths() {
-  const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL;
-
-  if (!strapiUrl) {
-    throw new Error("La variable de entorno PUBLIC_STRAPI_URL no está definida.");
+  const pages = await getAllPages();
+  console.log("Datos recibidos para getStaticPaths:", pages);
+  if (!pages) {
+    return [];
   }
-
-  try {
-    const response = await fetch(`${strapiUrl}/api/paginas`);
-    if (!response.ok) {
-      throw new Error(`Error al conectar con Strapi: ${response.statusText}`);
-    }
-
-    const { data } = await response.json();
-
-    if (!Array.isArray(data)) {
-      throw new TypeError("La respuesta de la API de Strapi no contiene un array 'data'.");
-    }
-
-    return data.map((pagina) => {
-      if (!pagina || !pagina.slug) {
-        console.warn("Se encontró una página inválida o sin slug:", pagina);
-        return null;
-      }
-      return {
-        params: { slug: pagina.slug },
-      };
-    }).filter(Boolean);
-
-  } catch (error) {
-    console.error("Error crítico en getStaticPaths:", error);
-    throw error;
-  }
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+  }));
 }
 
 // ==========================================================================================
 // SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
-// Este código se ejecuta para cada página individual que se está generando.
 // ==========================================================================================
 const { slug } = Astro.params;
-const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL;
-let pagina = null;
-
-try {
-  const response = await fetch(`${strapiUrl}/api/paginas?filters[slug][$eq]=${slug}&populate=*`);
-  if (!response.ok) {
-    throw new Error(`Error al obtener los datos de la página: ${response.statusText}`);
-  }
-
-  const { data } = await response.json();
-  if (data && data.length > 0) {
-    pagina = data[0];
-  }
-} catch (error) {
-  console.error(`Error al obtener la página con slug "${slug}":`, error);
-}
+const pagina = await getPageBySlug(slug);
 
 // Si la página no se encuentra, mostramos un error 404.
 if (!pagina) {
@@ -83,24 +41,16 @@ if (!pagina) {
   });
 }
 
-// Extraemos las propiedades de la página para usarlas en el HTML.
 const { titulo, ContenidoPagina } = pagina;
 ---
 
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
-  <link rel="stylesheet" href="/style.css"> <title>{titulo}</title>
-</head>
-<body>
-  <main>
-    <h1>{titulo}</h1>
+<Layout>
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-4">{titulo}</h1>
 
     {ContenidoPagina && ContenidoPagina.map(bloque => {
       const Componente = componentsMap[bloque.__component];
       return Componente ? <Componente {...bloque} /> : <p>Componente no encontrado: {bloque.__component}</p>;
     })}
   </main>
-</body>
-</html>
+</Layout>
