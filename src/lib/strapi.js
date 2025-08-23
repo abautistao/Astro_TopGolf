@@ -32,3 +32,17 @@ export async function getPageBySlug(slug) {
 export async function getAllPages() {
     return await fetchAPI("/paginas");
 }
+
+export const getStrapiUrl = (media) => {
+    // La API de Strapi puede devolver el objeto de medios directamente o dentro de una envoltura 'data'.
+    // Esta función ahora comprueba ambas estructuras para ser más robusta.
+    const url = media?.data?.attributes?.url || media?.url;
+    if (url) {
+      const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+      // Asegurarse de que no haya dobles barras al unir las URLs
+      const cleanStrapiUrl = strapiUrl.endsWith('/') ? strapiUrl.slice(0, -1) : strapiUrl;
+      const cleanMediaUrl = url.startsWith('/') ? url.slice(1) : url;
+      return `${cleanStrapiUrl}/${cleanMediaUrl}`;
+    }
+    return null;
+  }
