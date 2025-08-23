@@ -46,3 +46,21 @@ export const getStrapiUrl = (media) => {
     }
     return null;
   }
+
+export const stringifyRichText = (richText) => {
+  if (!richText) return '';
+  if (typeof richText === 'string') return richText;
+
+  if (Array.isArray(richText)) {
+    return richText.map(block =>
+      block.children.map((child) => {
+        let text = child.text || '';
+        if (child.bold) text = `<strong>${text}</strong>`;
+        if (child.italic) text = `<em>${text}</em>`;
+        if (child.underline) text = `<u>${text}</u>`;
+        return text;
+      }).join('')
+    ).join('<br>');
+  }
+  return '';
+};

@@ -1,16 +1,10 @@
 ---
+import { stringifyRichText } from '../lib/strapi.js';
 // Recibimos la prop "contenido", que es un campo de Rich Text de Strapi.
 const { contenido } = Astro.props;
+const htmlContent = stringifyRichText(contenido);
 ---
-<div class="bloque-de-texto">
-  {contenido && contenido.map(elemento => {
-    // Lógica simple para renderizar párrafos del Rich Text.
-    if (elemento.type === 'paragraph' && elemento.children) {
-      return <p>{elemento.children.map(child => child.text).join('')}</p>;
-    }
-    // Puedes añadir más condiciones para h2, h3, listas, etc.
-    return null;
-  })}
+<div class="bloque-de-texto" set:html={htmlContent}>
 </div>
 
 <style>

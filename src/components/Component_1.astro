@@ -1,7 +1,7 @@
 ---
 // src/components/Component_1.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl } from "../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
 // Definimos la interfaz de las props que el componente recibirá desde Strapi.
 export interface Props {
@@ -34,26 +34,6 @@ const topgolfLogoUrl = getStrapiUrl(logo);
 // URLs de placeholder en caso de que no haya imagen en Strapi
 const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
 const placeholderLogoUrl = `https://placehold.co/300x80/ffffff/2d3748?text=Logo`;
-
-
-// Función para convertir el Rich Text de Strapi (JSON) a un string de HTML.
-const stringifyRichText = (richText: any): string => {
-  if (!richText) return '';
-  if (typeof richText === 'string') return richText;
-
-  if (Array.isArray(richText)) {
-    return richText.map(block =>
-      block.children.map((child: any) => {
-        let text = child.text || '';
-        if (child.bold) text = `<strong>${text}</strong>`;
-        if (child.italic) text = `<em>${text}</em>`;
-        if (child.underline) text = `<u>${text}</u>`;
-        return text;
-      }).join('')
-    ).join('<br>');
-  }
-  return '';
-};
 
 const helpTextHtml = stringifyRichText(texto_ayuda);
 ---
