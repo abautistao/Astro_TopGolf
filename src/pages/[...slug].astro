@@ -3,6 +3,7 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import BloqueDeTexto from '../components/BloqueDeTexto.astro';
+import Component_1 from '../components/Component_1.astro'; // <- 1. IMPORTAMOS EL NUEVO COMPONENTE
 import Layout from '../layouts/Layout.astro'; // Importamos el Layout principal
 import { getAllPages, getPageBySlug } from '../lib/strapi.js';
 
@@ -11,6 +12,7 @@ import { getAllPages, getPageBySlug } from '../lib/strapi.js';
 // ==========================================================================================
 const componentsMap = {
   'secciones.bloque-de-texto': BloqueDeTexto,
+  'secciones.hero-principal': Component_1, // <- 2. AÑADIMOS EL COMPONENTE AL MAPA
 };
 
 // ==========================================================================================
