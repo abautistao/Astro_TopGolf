@@ -47,8 +47,7 @@ const { titulo, ContenidoPagina } = pagina;
 ---
 
 <Layout>
-  <main class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-4">{titulo}</h1>
+  <main class="mx-auto  container-full">
 
     {ContenidoPagina && ContenidoPagina.map(bloque => {
       const Componente = componentsMap[bloque.__component];
