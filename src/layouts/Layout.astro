@@ -8,10 +8,18 @@ const setupData = await getSiteSetup();
 
 const customStyles = setupData ? `
     :root {
-        --primary-color: ${setupData.primary_color};
-        --secondary-color: ${setupData.secondary_color};
-        --font-family-base: "${setupData.font_family_base}", sans-serif;
-        --h1-font-size: ${setupData.h1_font_size}px;
+        --surface-brand-primary: ${setupData.surface_brand_primary};
+        --surface-brand-secondary: ${setupData.surface_brand_secondary};
+        --brand-interactive-base: ${setupData.brand_interactive_base};
+        --neutral-background-subtle: ${setupData.neutral_background_subtle};
+        --neutral-text-inverted: ${setupData.neutral_text_inverted};
+        --accent-feedback-strong: ${setupData.accent_feedback_strong};
+        --accent-highlight-secondary: ${setupData.accent_highlight_secondary};
+        --accent-highlight-primary: ${setupData.accent_highlight_primary};
+        --feedback-positive-dark: ${setupData.feedback_positive_dark};
+        --feedback-positive-base: ${setupData.feedback_positive_base};
+        --feedback-info-background: ${setupData.feedback_info_background};
+        --neutral-background-strong: ${setupData.neutral_background_strong};
     }
 ` : '';
 ---
