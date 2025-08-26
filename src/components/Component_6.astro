@@ -1,18 +1,41 @@
 ---
 // src/components/Component_6.astro
 
-// --- 1. IMPORTACIÓN DE IMÁGENES ---
-// Asegúrate de que las rutas a tus imágenes sean correctas.
-import mainImage from '../assets/top_golf_bg.jpg';
+// 1. IMPORTA LAS UTILIDADES Y ELEMENTOS ESTÁTICOS
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import dotsPattern from '../assets/Artwork.png';
 
-// --- 2. DEFINICIÓN DE PROPS ---
-// Agregamos props para el botón y el texto secundario para mayor flexibilidad.
+// 2. DEFINE LA INTERFAZ DE PROPS DESDE STRAPI
+export interface Props {
+  titulo: string;
+  descripcion: any;
+  texto_ubicacion: string;
+  texto_boton_principal: string;
+  url_boton_principal: string;
+  texto_ayuda: any;
+  imagen_principal: any;
+  alt_imagen_principal: string;
+}
+
+// 3. RECIBE LAS PROPS
 const {
-    title = "PLANEA TU VISITA",
-    location = "TOPGOLF MONTERREY",
-    buttonText = "RESERVA AQUÍ TU BAHÍA"
+  titulo,
+  descripcion,
+  texto_ubicacion,
+  texto_boton_principal,
+  url_boton_principal,
+  texto_ayuda,
+  imagen_principal,
+  alt_imagen_principal
 } = Astro.props;
+
+// 4. PROCESA LOS DATOS DE STRAPI
+const mainImageUrl = getStrapiUrl(imagen_principal);
+const descriptionHtml = stringifyRichText(descripcion);
+const helpTextHtml = stringifyRichText(texto_ayuda);
+
+// Placeholder para la imagen
+const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=Topgolf";
 ---
 
 <section class="relative bg-white font-sans">
@@ -20,35 +43,29 @@ const {
         <div class="relative z-10 flex flex-col justify-center py-12 px-6 sm:px-10 lg:py-24">
 
         <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-800 uppercase tracking-tight mb-4">
-            {title}
+            {titulo || "PLANEA TU VISITA"}
         </h1>
 
-        <p class="text-lg text-slate-600 max-w-2xl mb-8 leading-relaxed">
-            Ya sea para reservar una bahía, una fiesta o simplemente visitarnos,
-            te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas?
-            <a href="#" class="text-cyan-500 font-semibold underline underline-offset-2 decoration-cyan-500/50 hover:text-cyan-600 transition-colors">
-            ¡Contáctanos!
-            </a>
-        </p>
+        <div class="text-lg text-slate-600 max-w-2xl mb-8 leading-relaxed prose prose-a:text-cyan-500 prose-a:font-semibold prose-a:underline prose-a:underline-offset-2 prose-a:decoration-cyan-500/50 hover:prose-a:text-cyan-600 prose-a:transition-colors" 
+             set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
 
         <div class="flex items-center gap-2 mb-8">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-700">
             <path fill-rule="evenodd" d="M12 2.25c-5.185 0-9.375 4.19-9.375 9.375 0 2.33.866 4.49 2.375 6.25a18.736 18.736 0 005.625 4.375c.497.307 1.135.307 1.632 0 2.25-1.383 4.25-3.075 5.625-4.375 1.509-1.76 2.375-3.92 2.375-6.25C21.375 6.44 17.185 2.25 12 2.25zm1.5 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm font-bold text-blue-700 uppercase tracking-wider">
-            {location}
+            {texto_ubicacion || "TOPGOLF MONTERREY"}
             </span>
         </div>
 
         <div class="mt-4">
-            <a href="#" class="inline-block bg-blue-900 text-white uppercase font-bold text-sm tracking-widest px-8 py-3 rounded-full hover:bg-blue-800 transition-colors duration-300">
-            {buttonText}
+            <a href={url_boton_principal || "#"} class="inline-block bg-blue-900 text-white uppercase font-bold text-sm tracking-widest px-8 py-3 rounded-full hover:bg-blue-800 transition-colors duration-300">
+            {texto_boton_principal || "RESERVA AQUÍ TU BAHÍA"}
             </a>
         </div>
-
-        <p class="mt-8 text-sm text-slate-500">
-            ¿Necesitas ayuda? <a href="#" class="text-cyan-500 hover:underline">Consulta nuestras preguntas frecuentes</a>
-        </p>
+        
+        <div class="mt-8 text-sm text-slate-500 prose-sm prose-a:text-cyan-500 hover:prose-a:underline" 
+             set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`} />
 
         <img
             src={dotsPattern.src}
@@ -60,11 +77,17 @@ const {
 
         <div class="hidden lg:block relative">
         <img
-            src={mainImage.src}
-            alt="Jugador de Topgolf en acción"
+            src={mainImageUrl || placeholderImageUrl}
+            alt={alt_imagen_principal || "Jugador de Topgolf en acción"}
             class="absolute inset-0 w-full h-full object-cover"
         />
         </div>
-
     </div>
 </section>
+
+<style is:global>
+    /* Estilos para el contenido renderizado por 'set:html' */
+    .prose p {
+        margin: 0;
+    }
+</style>

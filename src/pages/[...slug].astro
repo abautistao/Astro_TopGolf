@@ -5,6 +5,10 @@
 import BloqueDeTexto from '../components/BloqueDeTexto.astro';
 import Component_1 from '../components/Component_1.astro';
 import Component_2 from '../components/Component_2.astro'; // <- IMPORTAMOS COMPONENTE 2
+import Component_3 from '../components/Component_3.astro';
+import Component_4 from '../components/Component_4.astro';
+import Component_5 from '../components/Component_5.astro';
+import Component_6 from '../components/Component_6.astro';
 import Layout from '../layouts/Layout.astro'; // Importamos el Layout principal
 import { getAllPages, getPageBySlug } from '../lib/strapi.js';
 
@@ -14,7 +18,11 @@ import { getAllPages, getPageBySlug } from '../lib/strapi.js';
 const componentsMap = {
   'secciones.bloque-de-texto': BloqueDeTexto,
   'secciones.hero-principal': Component_1,
-  'secciones.carrusel': Component_2, // <- CORREGIDO para que coincida con Strapi
+  'secciones.carrusel': Component_2, 
+  'secciones.componente-3': Component_3,
+  'secciones.componente-4': Component_4, 
+  'secciones.componente-5': Component_5, 
+  'secciones.componente-6': Component_6, 
 };
 
 // ==========================================================================================

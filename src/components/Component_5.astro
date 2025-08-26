@@ -1,9 +1,39 @@
 ---
 // src/components/Component_5.astro
-// Importa tus imágenes desde la carpeta de assets
-import partyImage from '../assets/2c8481df4c822d9c15e21537c3ededbbc9a6e81f.png';
+
+// 1. Importa utilidades y las imágenes decorativas estáticas
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import dotsPattern from '../assets/Artwork.png';
 import dotsPatternMobile from '../assets/Artwork_1.png';
+
+// 2. Define la interfaz de las props desde Strapi
+export interface Props {
+  imagen_principal: any;
+  alt_imagen_principal: string;
+  titulo_linea_1: string;
+  titulo_linea_2_resaltada: string;
+  descripcion: any; // Rich Text de Strapi
+  texto_boton: string;
+  url_boton: string;
+}
+
+// 3. Recibe las props
+const {
+  imagen_principal,
+  alt_imagen_principal,
+  titulo_linea_1,
+  titulo_linea_2_resaltada,
+  descripcion,
+  texto_boton,
+  url_boton
+} = Astro.props;
+
+// 4. Procesa los datos de Strapi
+const mainImageUrl = getStrapiUrl(imagen_principal);
+const descriptionHtml = stringifyRichText(descripcion);
+
+// Placeholder por si no viene la imagen de Strapi
+const placeholderImageUrl = "https://placehold.co/760x500/4a5568/ffffff?text=Evento+Topgolf";
 ---
 
 <section class="relative overflow-x-hidden py-16 sm:py-24">
@@ -20,8 +50,8 @@ import dotsPatternMobile from '../assets/Artwork_1.png';
         <div class="relative lg:flex lg:items-center lg:justify-end lg:min-h-[500px]">
             <div class="lg:absolute lg:top-0 lg:left-0 lg:w-4/5 lg:h-full">
                 <img
-                src={partyImage.src}
-                alt="Grupo de amigos disfrutando de un evento en Topgolf"
+                src={mainImageUrl || placeholderImageUrl}
+                alt={alt_imagen_principal || "Grupo de amigos disfrutando de un evento"}
                 class="w-full h-full object-cover rounded-lg shadow-xl"
                 loading="lazy"
                 decoding="async"
@@ -32,16 +62,15 @@ import dotsPatternMobile from '../assets/Artwork_1.png';
             <div class="mt-8 lg:mt-0 relative z-10 w-full lg:w-1/2 bg-blue-900 p-8 md:p-12 text-white rounded-lg shadow-2xl">
 
                 <h2 class="text-4xl lg:text-5xl font-bold tracking-tight uppercase">
-                Haz tu evento <span class="block text-cyan-300">Memorable</span>
+                    {titulo_linea_1 || "Haz tu evento"}
+                    <span class="block text-cyan-300">{titulo_linea_2_resaltada || "Memorable"}</span>
                 </h2>
 
-                <p class="mt-6 text-lg text-gray-200">
-                En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf. Somos la fusión perfecta de diversión, comida y servicio perfectos para tu próximo cumpleaños, evento de empresa, recaudación de fondos o reunión social.
-                </p>
+                <div class="mt-6 text-lg text-gray-200" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
 
                 <div class="mt-8">
-                    <a href="#" class="inline-block bg-white text-blue-950 font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
-                        Fiestas y Eventos
+                    <a href={url_boton || "#"} class="inline-block bg-white text-blue-950 font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
+                        {texto_boton || "Fiestas y Eventos"}
                     </a>
                 </div>
 

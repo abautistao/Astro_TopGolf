@@ -1,64 +1,96 @@
 ---
 // src/components/Component_3.astro
 
-// 1. Importa las imágenes desde tu carpeta de assets.
-import image1 from '../assets/19cb7e4a88bc52ddcc5b548bcdd8f0366b2891f8.jpg'; // Imagen superior derecha
-import image2 from '../assets/2c8481df4c822d9c15e21537c3ededbbc9a6e81f.png'; // Imagen inferior izquierda
-import image3 from '../assets/4e6c4175bb7234ee68772cb685a29ad940c6aa5f.png'; // Imagen inferior derecha
+// 1. Importa las utilidades de Strapi
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-const content = {
-  preTitle: "ES GOLF. NO ES GOLF.",
-  title: "ES TOPGOLF",
-  paragraphs: [
-    "Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong>",
-    "Todas nuestras bahías incluyen pelotas ilimitadas y bastones. Si eres zurdo o vienes con niños ¡no importa! Contamos con bastones para todas las edades, perfiles y tamaños.",
-    "También tenemos un montón de cosas que <strong>no son golf</strong>: música, sport bar, comida y bebida.",
-    "Reúne todo esto en un mismo lugar y lo pasarás genial."
-  ],
-  buttonText: "RESERVA AQUÍ TU BAHÍA"
-};
+// 2. Define la interfaz de las props que el componente recibirá desde Strapi
+export interface Props {
+  pre_titulo: string;
+  titulo: string;
+  contenido: any; // El Rich Text de Strapi viene como un objeto/array
+  texto_boton: string;
+  url_boton: string;
+  imagen_superior: any;
+  alt_imagen_superior: string;
+  imagen_inferior_izquierda: any;
+  alt_imagen_inferior_izquierda: string;
+  imagen_inferior_derecha: any;
+  alt_imagen_inferior_derecha: string;
+}
+
+// 3. Recibe las props desde Astro
+const {
+  pre_titulo,
+  titulo,
+  contenido,
+  texto_boton,
+  url_boton,
+  imagen_superior,
+  alt_imagen_superior,
+  imagen_inferior_izquierda,
+  alt_imagen_inferior_izquierda,
+  imagen_inferior_derecha,
+  alt_imagen_inferior_derecha,
+} = Astro.props;
+
+// 4. Procesa las URLs de las imágenes y el texto enriquecido
+const imageUrl1 = getStrapiUrl(imagen_superior);
+const imageUrl2 = getStrapiUrl(imagen_inferior_izquierda);
+const imageUrl3 = getStrapiUrl(imagen_inferior_derecha);
+const contentHtml = stringifyRichText(contenido);
+
+// 5. Define URLs de placeholder por si no hay contenido en Strapi
+const placeholderUrl1 = "https://placehold.co/800x600/a0aec0/ffffff?text=Imagen+1";
+const placeholderUrl2 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+2";
+const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+3";
 ---
 
 <section class="bg-slate-50 py-16 sm:py-24">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-      {/* --- CONTENIDO DE TEXTO --- */}
-      {/* Se añade "order-2" para móvil y "md:order-1" para escritorio */}
+      {/* --- CONTENIDO DE TEXTO (DINÁMICO) --- */}
       <div class="flex flex-col gap-6 order-2 md:order-1">
-        <p class="text-sm font-semibold text-blue-600 tracking-wide">{content.preTitle}</p>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-blue-700">{content.title}</h1>
+        <p class="text-sm font-semibold text-blue-600 tracking-wide">
+          {pre_titulo || "ES GOLF. NO ES GOLF."}
+        </p>
+        <h1 class="text-5xl md:text-6xl font-extrabold text-blue-700">
+          {titulo || "ES TOPGOLF"}
+        </h1>
         <div class="prose prose-lg text-gray-600">
-          {content.paragraphs.map(p => <p set:html={p} />)}
+          <div set:html={contentHtml || "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"} />
         </div>
         <div class="mt-4">
-          <a href="#" class="inline-block bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-center text-sm uppercase tracking-wider hover:bg-blue-800 transition-colors shadow-md">
-            {content.buttonText}
+          <a
+            href={url_boton || "#"}
+            class="inline-block bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-center text-sm uppercase tracking-wider hover:bg-blue-800 transition-colors shadow-md"
+          >
+            {texto_boton || "RESERVA AQUÍ TU BAHÍA"}
           </a>
         </div>
       </div>
 
-      {/* --- CONTENIDO DE IMÁGENES --- */}
-      {/* Se añade "order-1" para móvil y "md:order-2" para escritorio */}
+      {/* --- CONTENIDO DE IMÁGENES (DINÁMICO) --- */}
       <div class="flex flex-col gap-4 order-1 md:order-2">
         <div class="flex justify-end">
           <img
-            src={image1.src}
-            alt="Mujer comiendo una hamburguesa en Topgolf"
+            src={imageUrl1 || placeholderUrl1}
+            alt={alt_imagen_superior || "Imagen de mujer comiendo"}
             class="w-3/4 object-cover rounded-xl shadow-lg"
-          >
+          />
         </div>
         <div class="flex gap-4">
           <img
-            src={image2.src}
-            alt="Personas celebrando en una bahía de Topgolf"
+            src={imageUrl2 || placeholderUrl2}
+            alt={alt_imagen_inferior_izquierda || "Personas celebrando"}
             class="w-1/2 object-cover rounded-xl shadow-lg"
-          >
+          />
           <img
-            src={image3.src}
-            alt="Familia celebrando un cumpleaños en Topgolf"
+            src={imageUrl3 || placeholderUrl3}
+            alt={alt_imagen_inferior_derecha || "Familia en Topgolf"}
             class="w-1/2 object-cover rounded-xl shadow-lg"
-          >
+          />
         </div>
       </div>
 
