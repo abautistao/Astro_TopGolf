@@ -37,40 +37,45 @@ const placeholderLogoUrl = `https://placehold.co/300x80/ffffff/2d3748?text=Logo`
 
 const helpTextHtml = stringifyRichText(texto_ayuda);
 ---
-
-<section class="relative h-[550px] w-full text-white md:h-[650px]">
-    <img 
-        src={heroBackgroundUrl || placeholderBgUrl} 
-        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"} 
+<section class="relative w-full text-white min-h-[550px] md:min-h-[650px]">
+    <img
+        src={heroBackgroundUrl || placeholderBgUrl}
+        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
         class="absolute inset-0 object-cover w-full h-full"
     />
     <div class="absolute inset-0 bg-black/30"></div>
-    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center">
-        <img 
-            src={topgolfLogoUrl || placeholderLogoUrl} 
-            alt={alt_logo || "Logo de placeholder"} 
-            class="transform w-80 -rotate-6 md:w-96" 
+
+    <!-- Contenido central -->
+    <div class="relative z-10 flex flex-col items-center justify-center h-[550px] md:h-[650px] text-center">
+        <img
+        src={topgolfLogoUrl || placeholderLogoUrl}
+        alt={alt_logo || "Logo de placeholder"}
+        class="transform w-80 -rotate-6 md:w-96"
         />
         <h1 class="-mt-4 font-extrabold tracking-tighter uppercase text-shadow-md text-7xl md:text-8xl">
-            {titulo || "Título de Ejemplo"}
+        {titulo || "Título de Ejemplo"}
         </h1>
     </div>
 
-    <div class="absolute bottom-0 left-0 right-0 z-20 bg-[var(--surface-brand-secondary)] text-white">
-        <div class="container flex flex-col items-center justify-between gap-4 px-6 py-2 mx-auto text-center sm:flex-row sm:text-left">
-            <p class="text-lg font-semibold">{texto_banner || "Descubre la mejor manera de jugar"}</p>
-            <a
-                href={url_boton || '#'}
-                class="flex-shrink-0 rounded-full bg-white px-5 py-1.5 text-xs font-bold text-blue-900 shadow-lg transition hover:bg-gray-200"
-            >
-                {texto_boton || "RESERVA AQUÍ"}
-            </a>
-        </div>
-        <div class="bg-[var(--primary-color)] py-1 text-center text-xs">
-            <p set:html={helpTextHtml || "<b>¿Necesitas ayuda?</b> Contacta con nosotros."} />
+    <!-- Franja blanca dentro del section -->
+    <div class="relative bg-white h-40">
+        <div class="absolute -top-20 left-0 right-0 z-20 mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 px-6 py-2 text-center">
+                <p class="text-2xl font-bold text-[var(--neutral-text-inverted)]">{texto_banner || "Descubre la mejor manera de jugar"}</p>
+                <a href={url_boton || '#'} class="flex-shrink-0 rounded-full bg-white px-6 py-2 text-sm font-bold text-[var(--surface-brand-primary)] shadow-lg transition hover:bg-gray-200">
+                    {texto_boton || "RESERVA AQUÍ TU BAHÍA"}
+                </a>
+            </div>
+
+            <div class="py-2 text-center text-sm">
+                <p class="text-[var(--neutral-text-inverted)]">
+                    <span class="text-[var(--accent-highlight-secondary)] font-bold">¿Necesitas ayuda?</span> Consulta nuestras
+                    <a href="#" class="underline  text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">preguntas frecuentes</a> o
+                    <a href="#" class="underline  text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">descubre cómo funciona Topgolf</a>.
+                </p>
+            </div>
         </div>
     </div>
-</section>
 
 <style>
     .text-shadow-md {
