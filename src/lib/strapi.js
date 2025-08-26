@@ -23,9 +23,9 @@ export async function getSiteSetup() {
 }
 
 export async function getPageBySlug(slug) {
-  // Usamos un populate anidado para asegurarnos de que traiga los datos de los componentes dentro de la zona dinámica.
-  // Específicamente, le pedimos que popule todos los campos (*) de los componentes que estén en 'ContenidoPagina'.
-  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&populate[ContenidoPagina][on][secciones.carrusel][populate][tarjetas][populate]=imagen`);
+  // Usamos 'populate=*' para popular automáticamente todos los niveles de componentes y relaciones.
+  // Esto requiere un plugin como '@fourlights/strapi-plugin-deep-populate' en el backend de Strapi.
+  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&populate=*`);
   return pages?.[0]; // Devuelve el primer elemento o undefined
 }
 
