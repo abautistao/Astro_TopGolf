@@ -1,37 +1,73 @@
 ---
-// src/components/Componente_1.astro
+// src/components/Component_1.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-import heroBackground from "../assets/bg_component_1.png";
-import topgolfLogo from "../assets/topgolf_component_1.png";
+// Definimos la interfaz de las props que el componente recibirá desde Strapi.
+export interface Props {
+    imagen_fondo: any;
+    alt_imagen_fondo: string;
+    logo: any;
+    alt_logo: string;
+    titulo: string;
+    texto_banner: string;
+    texto_boton: string;
+    url_boton: string;
+    texto_ayuda: any; // Puede ser un string o un arreglo de Strapi
+}
+
+const {
+    imagen_fondo,
+    alt_imagen_fondo,
+    logo,
+    alt_logo,
+    titulo,
+    texto_banner,
+    texto_boton,
+    url_boton,
+    texto_ayuda,
+} = Astro.props;
+
+const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
+const topgolfLogoUrl = getStrapiUrl(logo);
+
+// URLs de placeholder en caso de que no haya imagen en Strapi
+const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
+const placeholderLogoUrl = `https://placehold.co/300x80/ffffff/2d3748?text=Logo`;
+
+const helpTextHtml = stringifyRichText(texto_ayuda);
 ---
 
 <section class="relative h-[550px] w-full text-white md:h-[650px]">
-    <img src={heroBackground.src} alt="Gente divirtiéndose en Topgolf" class="absolute inset-0 h-full w-full object-cover"/>
+    <img 
+        src={heroBackgroundUrl || placeholderBgUrl} 
+        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"} 
+        class="absolute inset-0 object-cover w-full h-full"
+    />
     <div class="absolute inset-0 bg-black/30"></div>
-    <div class="relative z-10 flex h-full flex-col items-center justify-center text-center">
-        {/* CAMBIO: Se aumentó el ancho del logo para que sea más grande */}
-        <img src={topgolfLogo.src} alt="Logo de Topgolf" class="w-80 -rotate-6 transform md:w-96" />
-        <h1 class="text-shadow-md -mt-4 text-7xl font-extrabold uppercase tracking-tighter md:text-8xl">
-            Ven a Jugar
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center">
+        <img 
+            src={topgolfLogoUrl || placeholderLogoUrl} 
+            alt={alt_logo || "Logo de placeholder"} 
+            class="transform w-80 -rotate-6 md:w-96" 
+        />
+        <h1 class="-mt-4 font-extrabold tracking-tighter uppercase text-shadow-md text-7xl md:text-8xl">
+            {titulo || "Título de Ejemplo"}
         </h1>
     </div>
 
-    {/* CAMBIO: Se redujo el padding vertical (py) en las dos franjas para hacerlas más delgadas */}
-    <div class="absolute bottom-0 left-0 right-0 z-20 bg-blue-950 text-white">
-        <div class="container mx-auto flex flex-col items-center justify-between gap-4 px-6 py-2 text-center sm:flex-row sm:text-left">
-            <p class="text-lg font-semibold">Descubre la mejor manera de jugar</p>
+    <div class="absolute bottom-0 left-0 right-0 z-20 bg-[var(--surface-brand-secondary)] text-white">
+        <div class="container flex flex-col items-center justify-between gap-4 px-6 py-2 mx-auto text-center sm:flex-row sm:text-left">
+            <p class="text-lg font-semibold">{texto_banner || "Descubre la mejor manera de jugar"}</p>
             <a
-                href="#"
+                href={url_boton || '#'}
                 class="flex-shrink-0 rounded-full bg-white px-5 py-1.5 text-xs font-bold text-blue-900 shadow-lg transition hover:bg-gray-200"
             >
-                RESERVA AQUÍ TU BAHÍA
+                {texto_boton || "RESERVA AQUÍ"}
             </a>
         </div>
-        <div class="bg-blue-700 py-1 text-center text-xs">
-            <p>
-                <span class="font-bold">¿Necesitas ayuda?</span> Consulta nuestras preguntas
-                frecuentes o descubre cómo funciona Topgolf.
-            </p>
+        <div class="bg-[var(--primary-color)] py-1 text-center text-xs">
+            <p set:html={helpTextHtml || "<b>¿Necesitas ayuda?</b> Contacta con nosotros."} />
         </div>
     </div>
 </section>

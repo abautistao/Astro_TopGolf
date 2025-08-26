@@ -1,8 +1,27 @@
 ---
-// 1. Importa tus componentes
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getSiteSetup } from '../lib/strapi.js';
+
+const setupData = await getSiteSetup();
+
+const customStyles = setupData ? `
+    :root {
+        --surface-brand-primary: ${setupData.surface_brand_primary};
+        --surface-brand-secondary: ${setupData.surface_brand_secondary};
+        --brand-interactive-base: ${setupData.brand_interactive_base};
+        --neutral-background-subtle: ${setupData.neutral_background_subtle};
+        --neutral-text-inverted: ${setupData.neutral_text_inverted};
+        --accent-feedback-strong: ${setupData.accent_feedback_strong};
+        --accent-highlight-secondary: ${setupData.accent_highlight_secondary};
+        --accent-highlight-primary: ${setupData.accent_highlight_primary};
+        --feedback-positive-dark: ${setupData.feedback_positive_dark};
+        --feedback-positive-base: ${setupData.feedback_positive_base};
+        --feedback-info-background: ${setupData.feedback_info_background};
+        --neutral-background-strong: ${setupData.neutral_background_strong};
+    }
+` : '';
 ---
 
 <!doctype html>
@@ -13,6 +32,7 @@ import Footer from '../components/Footer.astro';
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>Astro Basics</title>
+        <style is:global set:html={customStyles} />
     </head>
     <body>
         <Header />

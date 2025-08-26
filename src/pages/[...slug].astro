@@ -1,93 +1,59 @@
 ---
-// Esta función le dice a Astro qué páginas debe construir
+// ==========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+import BloqueDeTexto from '../components/BloqueDeTexto.astro';
+import Component_1 from '../components/Component_1.astro';
+import Component_2 from '../components/Component_2.astro'; // <- IMPORTAMOS COMPONENTE 2
+import Layout from '../layouts/Layout.astro'; // Importamos el Layout principal
+import { getAllPages, getPageBySlug } from '../lib/strapi.js';
+
+// ==========================================================================================
+// SECCIÓN 2: MAPA DE COMPONENTES
+// ==========================================================================================
+const componentsMap = {
+  'secciones.bloque-de-texto': BloqueDeTexto,
+  'secciones.hero-principal': Component_1,
+  'secciones.carrusel': Component_2, // <- CORREGIDO para que coincida con Strapi
+};
+
+// ==========================================================================================
+// SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
+// ==========================================================================================
 export async function getStaticPaths() {
-  const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL;
-
-  // Verificamos si la variable de entorno está definida.
-  if (!strapiUrl) {
-    throw new Error(
-      "La variable de entorno PUBLIC_STRAPI_URL no está definida. Por favor, revisa tu archivo .env."
-    );
+  const pages = await getAllPages();
+  console.log("Datos recibidos para getStaticPaths:", pages);
+  if (!pages) {
+    return [];
   }
-
-  try {
-    // 1. Pedimos la lista de todas las páginas a Strapi
-    console.log(`Intentando conectar a: ${strapiUrl}/api/paginas`);
-    const response = await fetch(`${strapiUrl}/api/paginas`);
-    
-    // Si la respuesta no es OK (ej. 404 o 500), lanzamos un error.
-    if (!response.ok) {
-      throw new Error(`Respuesta no exitosa de Strapi: ${response.status} ${response.statusText}`);
-    }
-
-    const jsonResponse = await response.json();
-    console.log("Respuesta JSON de Strapi:", JSON.stringify(jsonResponse, null, 2));
-    const { data } = jsonResponse;
-
-    // Verificamos si 'data' es un array antes de mapearlo.
-    if (!Array.isArray(data)) {
-        throw new TypeError("La propiedad 'data' en la respuesta de la API no es un array.");
-    }
-
-    // 2. Creamos una página para cada una, usando su 'slug' como URL
-    return data.map((pagina: any) => {
-        if (!pagina.slug) {
-            console.warn("Se encontró una página sin slug:", pagina);
-        }
-        return {
-            params: { slug: pagina.slug },
-        };
-    });
-
-  } catch (error) {
-    // --- CAMBIO REALIZADO AQUÍ ---
-    // En lugar de lanzar un nuevo error, vamos a registrar y lanzar el error original
-    // para obtener la traza de la pila completa y ver la causa raíz.
-    console.error("Ha ocurrido un error crítico en getStaticPaths. Este es el error original:");
-    throw error;
-  }
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+  }));
 }
 
-// Astro nos da el 'slug' de la página actual que se está viendo
+// ==========================================================================================
+// SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
+// ==========================================================================================
 const { slug } = Astro.params;
-const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL;
-let pagina = null;
+const pagina = await getPageBySlug(slug);
 
-try {
-  // 3. Pedimos a Strapi los datos completos de ESTA página específica
-  const response = await fetch(`${strapiUrl}/api/paginas?filters[slug][$eq]=${slug}&populate=*`);
-  if (!response.ok) {
-    throw new Error(`Error al obtener los datos de la página: ${response.status} ${response.statusText}`);
-  }
-  const { data } = await response.json();
-  // Aquí sí usamos .attributes porque la respuesta para una sola página es diferente.
-  pagina = data[0];
-
-} catch (error) {
-  console.error(`Error al obtener la página con slug "${slug}":`, error);
-  // Aquí podrías redirigir a una página de error o mostrar un mensaje.
-}
-
-// Si la página no se encontró, no podemos renderizar nada.
-if (!pagina || !pagina.attributes) {
+// Si la página no se encuentra, mostramos un error 404.
+if (!pagina) {
   return new Response(null, {
     status: 404,
     statusText: 'No Encontrado'
   });
 }
+
+const { titulo, ContenidoPagina } = pagina;
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{pagina.attributes.titulo}</title>
-  </head>
-  <body>
-    <h1>{pagina.attributes.titulo}</h1>
+<Layout>
+  <main class="mx-auto container-full">
 
-    <pre>
-      {JSON.stringify(pagina.attributes.ContenidoPagina, null, 2)}
-    </pre>
-  </body>
-</html>
+    {ContenidoPagina && ContenidoPagina.map(bloque => {
+      const Componente = componentsMap[bloque.__component];
+      return Componente ? <Componente {...bloque} /> : <p>Componente no encontrado: {bloque.__component}</p>;
+    })}
+  </main>
+</Layout>

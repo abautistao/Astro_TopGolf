@@ -1,78 +1,90 @@
 ---
 // src/components/Component_2.astro
-import promoImage from '../assets/carrusel_1.jpg'; // Imagen para la tarjeta 1
-import comidaImage from '../assets/carrusel_2.jpg';     // Imagen para la tarjeta 2
-import juegosImage from '../assets/carrusel_3.jpg';     // Imagen para la tarjeta 3
-import eventosImage from '../assets/carrusel_1.jpg';  // Imagen para la tarjeta 4
+import { getStrapiUrl } from "../lib/strapi.js";
 
-const cards = [
-  {
-    title: 'Promociones',
-    description: 'Conoce todo lo que sucede en Topgolf: noticias, ofertas y promociones.',
-    buttonText: 'VER MÁS',
-    imageUrl: promoImage.src,
-    badge: 'NUEVO'
-  },
-  {
-    title: 'Comida y bebida',
-    description: 'En Topgolf contamos con una amplia selección de juegos...',
-    buttonText: 'VER MENÚ',
-    imageUrl: comidaImage.src
-  },
-  {
-    title: 'Nuestros juegos',
-    description: 'En Topgolf contamos con una amplia selección de juegos...',
-    buttonText: 'VER JUEGOS',
-    imageUrl: juegosImage.src,
-    hasIcon: true
-  },
-  {
-    title: 'Eventos',
-    description: 'Organiza tu próximo evento con nosotros...',
-    buttonText: 'VER EVENTOS',
-    imageUrl: eventosImage.src
-  }
-];
+// 1. Definimos la interfaz de las props que el componente recibirá desde Strapi.
+export interface Card {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  texto_boton: string;
+  url_boton: string;
+  etiqueta?: string;
+  alt_imagen: string;
+  imagen: any;
+  icono?: any;
+}
+
+export interface Props {
+  identificador: string;
+  tarjetas: Card[];
+}
+
+// 2. Recibimos las props de Strapi
+const { identificador, tarjetas } = Astro.props;
+
+// URL de placeholder en caso de que no haya tarjetas
+const placeholderCard = {
+  id: 0,
+  titulo: "Título de Ejemplo",
+  descripcion: "Esta es una descripción de ejemplo para la tarjeta.",
+  texto_boton: "VER MÁS",
+  url_boton: "#",
+  alt_imagen: "Imagen de placeholder",
+  imagen: { data: null }, // Simula la estructura de Strapi
+};
+
+const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderCard];
 ---
 
 <section class="w-full py-12 font-sans">
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
     <div
-      id="carousel-container"
+      id={identificador || "carousel-container"}
       class="overflow-x-auto scroll-smooth pb-8 -mb-8 scrollbar-hide"
-      data-total-cards={cards.length}
+      data-total-cards={cardsToRender.length}
     >
       <div class="flex gap-6">
-        {cards.map(card => (
-          <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
-            <img src={card.imageUrl} alt={card.title} class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,_rgba(0,0,0,0.9)_0%,_rgba(0,0,0,0.6)_35%,_rgba(0,0,0,0)_70%)]"></div>
-            <div class="relative z-10 flex flex-col justify-end h-full p-6">
-              <h3 class="text-3xl font-bold">{card.title}</h3>
-              <p class="mt-2 text-sm">{card.description}</p>
-              <a href="#" class="mt-4 inline-block bg-white text-gray-900 font-bold py-2 px-5 rounded-md text-center text-sm w-fit hover:bg-gray-200 transition-colors">
-                {card.buttonText}
-              </a>
-            </div>
-            {card.badge && (
-              <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-md z-20">{card.badge}</div>
-            )}
-            {card.hasIcon && (
-              <div class="absolute top-4 right-4 bg-white/80 rounded-full p-1 z-20">
-                <img src="https://i.pravatar.cc/40" alt="User Icon" class="w-8 h-8 rounded-full" />
+        {cardsToRender.map(card => {
+          const imageUrl = getStrapiUrl(card.imagen);
+          const iconUrl = getStrapiUrl(card.icono);
+          const placeholderImageUrl = `https://placehold.co/400x450/2d3748/ffffff?text=${encodeURIComponent(card.titulo)}`;
+
+          return (
+            <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
+              <img 
+                src={imageUrl || placeholderImageUrl} 
+                alt={card.alt_imagen || "Imagen de la tarjeta"} 
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+              />
+              <div class="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,_rgba(0,0,0,0.9)_0%,_rgba(0,0,0,0.6)_35%,_rgba(0,0,0,0)_70%)]"></div>
+              <div class="relative z-10 flex flex-col justify-end h-full p-6">
+                <h3 class="text-3xl font-bold">{card.titulo}</h3>
+                <p class="mt-2 text-sm">{card.descripcion}</p>
+                <a href={card.url_boton || '#'} class="mt-4 inline-block bg-white text-gray-900 font-bold py-2 px-5 rounded-md text-center text-sm w-fit hover:bg-gray-200 transition-colors">
+                  {card.texto_boton}
+                </a>
               </div>
-            )}
-          </div>
-        ))}
+              {card.etiqueta && (
+                <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-md z-20">{card.etiqueta}</div>
+              )}
+              {iconUrl && (
+                <div class="absolute top-4 right-4 bg-white/80 rounded-full p-1 z-20">
+                  <img src={iconUrl} alt="Icono de la tarjeta" class="w-8 h-8 rounded-full" />
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
 
     <div class="mt-8 flex justify-between items-center">
       <div class="flex gap-3">
-        <button id="prev-btn" class="bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center transition-colors disabled:opacity-50" aria-label="Anterior">
+        <button id={`prev-btn-${identificador}`} class="bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center transition-colors disabled:opacity-50" aria-label="Anterior">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
         </button>
-        <button id="next-btn" class="bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center transition-colors" aria-label="Siguiente">
+        <button id={`next-btn-${identificador}`} class="bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center transition-colors" aria-label="Siguiente">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
         </button>
       </div>
@@ -86,66 +98,66 @@ const cards = [
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('carousel-container');
+  // Hacemos el script reutilizable para múltiples carruseles
+  function setupCarousel(containerId) {
+    const container = document.getElementById(containerId);
     if (!container) return;
 
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById(`prev-btn-${containerId}`);
+    const nextBtn = document.getElementById(`next-btn-${containerId}`);
     const cards = container.querySelectorAll('.carousel-card');
     const totalCards = parseInt(container.dataset.totalCards, 10);
 
-    if (cards.length === 0) return;
+    if (cards.length === 0 || !prevBtn || !nextBtn) return;
 
     let currentIndex = 0;
+    
+    const updateScrollDistance = () => {
+      const cardWidth = cards[0].offsetWidth;
+      const cardGap = parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10);
+      return cardWidth + cardGap;
+    }
 
-    // Calcula dinámicamente el ancho de la tarjeta + el gap
-    const cardWidth = cards[0].offsetWidth;
-    const cardGap = parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10);
-    const scrollDistance = cardWidth + cardGap;
+    let scrollDistance = updateScrollDistance();
 
-    // Función para deshabilitar/habilitar botones
     const updateButtons = () => {
-      // Si hay 3 o menos tarjetas, la lógica es de bucle infinito (nunca se deshabilitan)
-      if (totalCards <= 3) {
-        prevBtn.disabled = false;
-        nextBtn.disabled = false;
-        return;
-      }
-
-      // Lógica para más de 3 tarjetas (sin bucle)
       prevBtn.disabled = currentIndex === 0;
       const visibleCards = Math.floor(container.clientWidth / scrollDistance);
       nextBtn.disabled = currentIndex >= totalCards - visibleCards;
     };
 
     nextBtn.addEventListener('click', () => {
-      if (totalCards <= 3) {
-        currentIndex = (currentIndex + 1) % totalCards;
-      } else {
-        const visibleCards = Math.floor(container.clientWidth / scrollDistance);
-        const maxIndex = totalCards - visibleCards;
-        if (currentIndex < maxIndex) {
-          currentIndex++;
-        }
+      const maxIndex = totalCards - Math.floor(container.clientWidth / scrollDistance);
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        container.scrollTo({ left: currentIndex * scrollDistance, behavior: 'smooth' });
       }
-      container.scrollTo({ left: currentIndex * scrollDistance, behavior: 'smooth' });
       updateButtons();
     });
 
     prevBtn.addEventListener('click', () => {
-      if (totalCards <= 3) {
-        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-      } else {
-        if (currentIndex > 0) {
-          currentIndex--;
-        }
+      if (currentIndex > 0) {
+        currentIndex--;
+        container.scrollTo({ left: currentIndex * scrollDistance, behavior: 'smooth' });
       }
-      container.scrollTo({ left: currentIndex * scrollDistance, behavior: 'smooth' });
       updateButtons();
+    });
+    
+    // Re-calcular en resize para responsividad
+    window.addEventListener('resize', () => {
+        scrollDistance = updateScrollDistance();
+        updateButtons();
     });
 
     updateButtons();
+  }
+
+  // Inicializamos el carrusel específico de este componente
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('[id^="carousel-container"]');
+    if(container) {
+        setupCarousel(container.id);
+    }
   });
 </script>
 

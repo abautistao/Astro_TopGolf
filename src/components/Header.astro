@@ -3,32 +3,32 @@
 import logo from '../assets/logo-TopGolf.png';
 ---
 
-<header class="flex font-sans text-white shadow-md h-20">
+<header class="flex h-20 font-sans text-[var(--neutral-text-inverted)] shadow-md">
 
-    <div class="bg-gradient-to-r from-[#000299] to-[#0004FF] flex shrink-0 items-center justify-center px-8">
+    <div class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] flex shrink-0 items-center justify-center px-8">
         <a href="/">
-            <img src={logo.src} alt="Logo de TopGolf Monterrey" class="h-auto w-40" />
+            <img src={logo.src} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
         </a>
     </div>
 
-    <div class="bg-blue-800 flex w-full items-center justify-between px-6">
+    <div class="flex items-center justify-between w-full px-6 bg-[var(--surface-brand-primary)]">
 
         <nav class="hidden lg:flex">
         <ul class="flex items-center space-x-10 text-sm font-bold">
             <li>
-            <a href="#" class="tracking-wide hover:text-gray-300 transition-colors">
+            <a href="#" class="tracking-wide transition-colors hover:text-gray-300">
                 FIESTAS Y EVENTOS
             </a>
             </li>
             <li>
-            <a href="#" class="tracking-wide hover:text-gray-300 transition-colors">
+            <a href="#" class="tracking-wide transition-colors hover:text-gray-300">
                 COMIDA Y BEBIDA
             </a>
             </li>
             <li>
-            <a href="#" class="flex items-center tracking-wide hover:text-gray-300 transition-colors">
+            <a href="#" class="flex items-center tracking-wide transition-colors hover:text-gray-300">
                 JUGAR
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1 text-[var(--accent-feedback-strong]" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
             </a>
@@ -37,25 +37,25 @@ import logo from '../assets/logo-TopGolf.png';
         </nav>
 
         <div class="flex items-center space-x-6">
-            <div class="hidden md:flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+            <div class="items-center hidden space-x-2 md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[var(--accent-highlight-secondary)]" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                 </svg>
                 <div class="text-xs">
-                <p class="font-bold text-sm">MONTERREY</p>
+                <p class="text-sm font-bold">MONTERREY</p>
                 <div class="flex items-center opacity-80">
                     <span class="uppercase">MARS, A 10 A.M.</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                     </svg>
                 </div>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="#" class="bg-white text-blue-700 font-bold text-xs px-4 py-2.5 rounded-md whitespace-nowrap hover:bg-gray-200 transition-colors">
+                <a href="#" class="bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold text-xs px-4 py-2.5 rounded-md whitespace-nowrap hover:bg-gray-200 transition-colors">
                 RESERVA AQUÍ TU BAHÍA
                 </a>
-                <a href="#" class="border-2 border-cyan-400 text-cyan-400 font-bold text-xs px-4 py-2.5 rounded-md whitespace-nowrap hover:bg-cyan-400 hover:text-[#0000FF] transition-colors">
+                <a href="#" class="border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)] font-bold text-xs px-4 py-2.5 rounded-md whitespace-nowrap hover:bg-[var(--accent-highlight-secondary)] hover:text-[var(--surface-brand-secondary)] transition-colors">
                 PLANEA TU EVENTO
                 </a>
             </div>

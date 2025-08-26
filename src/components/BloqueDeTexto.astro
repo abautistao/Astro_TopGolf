@@ -1,0 +1,23 @@
+---
+import { stringifyRichText } from '../lib/strapi.js';
+// Recibimos la prop "contenido", que es un campo de Rich Text de Strapi.
+const { contenido } = Astro.props;
+const htmlContent = stringifyRichText(contenido);
+---
+<div class="bloque-de-texto" set:html={htmlContent}>
+</div>
+
+<style>
+  .bloque-de-texto {
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-left: 4px solid #007acc;
+  }
+  .bloque-de-texto p {
+    line-height: 1.7;
+    font-size: 1.1rem;
+    color: #333;
+  }
+</style>
