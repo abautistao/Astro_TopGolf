@@ -58,21 +58,26 @@ const helpTextHtml = stringifyRichText(texto_ayuda);
     </div>
 
     <!-- Franja blanca dentro del section -->
-    <div class="relative bg-white h-40">
-        <div class="absolute -top-20 left-0 right-0 z-20 mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 px-6 py-2 text-center">
-                <p class="text-2xl font-bold text-[var(--neutral-text-inverted)]">{texto_banner || "Descubre la mejor manera de jugar"}</p>
-                <a href={url_boton || '#'} class="flex-shrink-0 rounded-full bg-[var(--neutral-text-inverted)] px-6 py-2 text-sm font-bold text-[var(--surface-brand-primary)] shadow-lg transition hover:bg-gray-200">
-                    {texto_boton || "RESERVA AQUÍ TU BAHÍA"}
-                </a>
+    <div class="relative bg-[var(--neutral-text-inverted)] h-40">
+        <div class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-2 sm:px-6 py-2 text-center">
+
+            <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]">
+                {texto_banner || "Descubre la mejor manera de jugar"}
+            </p>
+
+            <a href={url_boton || '#'} class="flex-shrink-0 rounded-full bg-[var(--neutral-text-inverted)] px-4 sm:px-6 py-2 text-sm font-bold text-[var(--surface-brand-primary)] shadow-lg transition hover:bg-gray-200 mt-3 sm:mt-0">
+                {texto_boton || "RESERVA AQUÍ TU BAHÍA"}
+            </a>
             </div>
 
             <div class="py-2 text-center text-sm">
-                <p class="text-[var(--neutral-text-inverted)]">
-                    <span class="text-[var(--accent-highlight-secondary)] font-bold">¿Necesitas ayuda?</span> Consulta nuestras
-                    <a href="#" class="underline  text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">preguntas frecuentes</a> o
-                    <a href="#" class="underline  text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">descubre cómo funciona Topgolf</a>.
-                </p>
+            <p class="text-[var(--neutral-text-inverted)]">
+                <span class="text-[var(--accent-highlight-secondary)] font-bold">¿Necesitas ayuda?</span> Consulta nuestras
+                <a href="#" class="underline text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">preguntas frecuentes</a> o
+                <a href="#" class="underline text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">descubre cómo funciona Topgolf</a>.
+            </p>
             </div>
         </div>
     </div>

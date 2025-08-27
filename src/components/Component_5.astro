@@ -8,24 +8,24 @@ import dotsPatternMobile from '../assets/Artwork_1.png';
 
 // 2. Define la interfaz de las props desde Strapi
 export interface Props {
-  imagen_principal: any;
-  alt_imagen_principal: string;
-  titulo_linea_1: string;
-  titulo_linea_2_resaltada: string;
-  descripcion: any; // Rich Text de Strapi
-  texto_boton: string;
-  url_boton: string;
+    imagen_principal: any;
+    alt_imagen_principal: string;
+    titulo_linea_1: string;
+    titulo_linea_2_resaltada: string;
+    descripcion: any; // Rich Text de Strapi
+    texto_boton: string;
+    url_boton: string;
 }
 
 // 3. Recibe las props
 const {
-  imagen_principal,
-  alt_imagen_principal,
-  titulo_linea_1,
-  titulo_linea_2_resaltada,
-  descripcion,
-  texto_boton,
-  url_boton
+    imagen_principal,
+    alt_imagen_principal,
+    titulo_linea_1,
+    titulo_linea_2_resaltada,
+    descripcion,
+    texto_boton,
+    url_boton
 } = Astro.props;
 
 // 4. Procesa los datos de Strapi
@@ -39,47 +39,45 @@ const placeholderImageUrl = "https://placehold.co/760x500/4a5568/ffffff?text=Eve
 <section class="relative overflow-x-hidden py-16 sm:py-24">
     <div class="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <img
-        src={dotsPattern.src}
-        alt="Patrón de puntos decorativo"
-        class="absolute top-0 right-0 transform -translate-y-1/4 translate-x-1/4 z-0 hidden lg:block"
-        aria-hidden="true"
-        loading="lazy"
-        decoding="async"
+            src={dotsPattern.src}
+            alt="Patrón de puntos decorativo"
+            class="absolute top-0 right-0 transform -translate-y-1/4 translate-x-1/4 z-0 hidden lg:block"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
         />
 
         <div class="relative lg:flex lg:items-center lg:justify-end lg:min-h-[500px]">
-            <div class="lg:absolute lg:top-0 lg:left-0 lg:w-4/5 lg:h-full">
-                <img
-                src={mainImageUrl || placeholderImageUrl}
-                alt={alt_imagen_principal || "Grupo de amigos disfrutando de un evento"}
-                class="w-full h-full object-cover rounded-lg shadow-xl"
-                loading="lazy"
-                decoding="async"
-                width="760"
-                height="500"
-                />
+
+        <div class="lg:absolute lg:top-0 lg:left-0 lg:w-4/5 lg:h-full">
+            <img
+            src={mainImageUrl || placeholderImageUrl}
+            alt={alt_imagen_principal || "Grupo de amigos disfrutando de un evento"}
+            class="w-full h-full object-cover rounded-lg shadow-xl"
+            loading="lazy"
+            decoding="async"
+            width="760"
+            height="500"
+            />
+        </div>
+
+        <div class="relative z-10 w-[90%] mx-auto -mt-[49px] text-center bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)]  rounded-lg shadow-2xl lg:w-1/2 lg:mx-0 lg:mt-0 lg:text-left">
+            <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase">
+                {titulo_linea_1 || "Haz tu evento"}
+                <span class="block text-[var(--accent-highlight-secondary)]">{titulo_linea_2_resaltada || "Memorable"}</span>
+            </h2>
+            <div class="text-justify mt-6 text-lg text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
+            <div class="mt-8">
+                <a href={url_boton || "#"} class="inline-block bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
+                    {texto_boton || "Fiestas y Eventos"}
+                </a>
             </div>
-            <div class="mt-8 lg:mt-0 relative z-10 w-full lg:w-1/2 bg-blue-900 p-8 md:p-12 text-white rounded-lg shadow-2xl">
-
-                <h2 class="text-4xl lg:text-5xl font-bold tracking-tight uppercase">
-                    {titulo_linea_1 || "Haz tu evento"}
-                    <span class="block text-cyan-300">{titulo_linea_2_resaltada || "Memorable"}</span>
-                </h2>
-
-                <div class="mt-6 text-lg text-gray-200" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
-
-                <div class="mt-8">
-                    <a href={url_boton || "#"} class="inline-block bg-white text-blue-950 font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
-                        {texto_boton || "Fiestas y Eventos"}
-                    </a>
-                </div>
-
-                <img
+            <img
                 src={dotsPatternMobile.src}
                 alt="Patrón decorativo móvil"
                 class="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 w-24 h-24 lg:hidden"
                 aria-hidden="true"
-                />
+            />
             </div>
         </div>
     </div>

@@ -3,44 +3,47 @@
 
 // 1. Define la interfaz de las props que el componente recibirá desde Strapi
 export interface Props {
-  titulo: string;
-  subtitulo: string;
-  texto_boton: string;
-  url_boton: string;
+    titulo: string;
+    subtitulo: string;
+    texto_boton: string;
+    url_boton: string;
 }
 
 // 2. Recibe las props desde Astro
-const { 
-    titulo, 
-    subtitulo, 
-    texto_boton, 
-    url_boton 
+const {
+    titulo,
+    subtitulo,
+    texto_boton,
+    url_boton
 } = Astro.props;
 ---
 
-<section class="bg-white py-20 sm:py-28">
-    <div class="max-w-6xl mx-auto px-4">
+<section class="bg-[var(--neutral-text-inverted)] py-20 sm:py-28">
+    <div class="max-w-8xl mx-auto px-4">
         <div class="flex flex-col items-center gap-8">
-            <div class="flex flex-col items-center gap-8 lg:flex-row lg:items-center">
-                <div class="inline-block bg-lime-400 transform -rotate-3 shadow-md shrink-0">
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-blue-800 py-3 px-8 uppercase tracking-tighter">
-                        {titulo || "¿Listo para jugar?"}
-                    </h2>
-                </div>
 
-                <p class="text-xl text-center lg:text-left text-gray-700">
-                    {subtitulo || "Arma tu plan y visita Topgolf Monterrey"}
-                </p>
+        <div class="flex flex-col items-center gap-4 md:flex-row md:gap-x-8">
+
+            <div class="inline-block bg-[var(--accent-feedback-strong)] transform -rotate-3 shadow-md shrink-0">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-[var(--surface-brand-primary)] py-3 px-8 uppercase tracking-tighter">
+                {titulo || "¿Listo para jugar?"}
+            </h2>
             </div>
 
-            <div class="shrink-0">
-                <a 
-                    href={url_boton || "#"} 
-                    class="inline-block bg-blue-700 text-white font-bold py-4 px-12 rounded-full text-center text-sm uppercase tracking-wider hover:bg-blue-800 transition-colors shadow-lg"
-                >
-                    {texto_boton || "Planea tu visita"}
-                </a>
-            </div>
+            <p class="text-xl text-center md:text-left text-[var(--neutral-background-strong)]">
+            {subtitulo || "Arma tu plan y visita Topgolf Monterrey"}
+            </p>
+
+        </div>
+        <div class="shrink-0">
+            <a
+            href={url_boton || "#"}
+            class="inline-block bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] font-bold py-4 px-12 rounded-full text-center text-sm uppercase tracking-wider hover:bg-[var(--surface-brand-secondary)]  transition-colors shadow-lg"
+            >
+            {texto_boton || "Planea tu visita"}
+            </a>
+        </div>
+
         </div>
     </div>
 </section>
