@@ -73,11 +73,7 @@ const helpTextHtml = stringifyRichText(texto_ayuda);
             </div>
 
             <div class="py-2 text-center text-sm">
-            <p class="text-[var(--neutral-text-inverted)]">
-                <span class="text-[var(--accent-highlight-secondary)] font-bold">¿Necesitas ayuda?</span> Consulta nuestras
-                <a href="#" class="underline text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">preguntas frecuentes</a> o
-                <a href="#" class="underline text-[var(--neutral-text-inverted)] decoration-[var(--accent-highlight-secondary)] decoration-2">descubre cómo funciona Topgolf</a>.
-            </p>
+                <p class="text-[var(--neutral-text-inverted)] strapi-rich-text" set:html={helpTextHtml}></p>
             </div>
         </div>
     </div>
@@ -85,5 +81,20 @@ const helpTextHtml = stringifyRichText(texto_ayuda);
 <style>
     .text-shadow-md {
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--accent-highlight-secondary);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
     }
 </style>
