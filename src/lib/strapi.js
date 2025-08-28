@@ -51,16 +51,27 @@ export const stringifyRichText = (richText) => {
   if (!richText) return '';
   if (typeof richText === 'string') return richText;
 
+  const processNode = (node) => {
+      let text = node.text || '';
+      if (node.bold) text = `<strong>${text}</strong>`;
+      if (node.italic) text = `<em>${text}</em>`;
+      if (node.underline) text = `<u>${text}</u>`;
+      return text;
+  };
+
+  const processChildren = (children) => {
+    return children.map(child => {
+      if (child.type === 'link') {
+        const linkText = processChildren(child.children);
+        return `<a href="${child.url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+      }
+      return processNode(child);
+    }).join('');
+  };
+
   if (Array.isArray(richText)) {
-    return richText.map(block =>
-      block.children.map((child) => {
-        let text = child.text || '';
-        if (child.bold) text = `<strong>${text}</strong>`;
-        if (child.italic) text = `<em>${text}</em>`;
-        if (child.underline) text = `<u>${text}</u>`;
-        return text;
-      }).join('')
-    ).join('<br>');
+    return richText.map(block => processChildren(block.children)).join('<br>');
   }
+
   return '';
 };
