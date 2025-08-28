@@ -9,6 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@awesome.me/kit-ea4a75e062": "^1.0.4",
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.12.9",
     "tailwindcss": "^4.1.11"

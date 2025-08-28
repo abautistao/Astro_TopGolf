@@ -12,7 +12,6 @@ export interface Card {
   etiqueta?: string;
   alt_imagen: string;
   imagen: any;
-  icono?: any;
 }
 
 export interface Props {
@@ -48,7 +47,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       <div class="flex gap-6">
         {cardsToRender.map(card => {
           const imageUrl = getStrapiUrl(card.imagen);
-          const iconUrl = getStrapiUrl(card.icono);
+         
           const placeholderImageUrl = `https://placehold.co/400x450/2d3748/ffffff?text=${encodeURIComponent(card.titulo)}`;
 
           return (
@@ -69,11 +68,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
               {card.etiqueta && (
                 <div class="absolute top-4 left-4 bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] text-xs font-bold px-3 py-1 rounded-md z-20">{card.etiqueta}</div>
               )}
-              {iconUrl && (
-                <div class="absolute top-4 right-4 bg-white/80 rounded-full p-1 z-20">
-                  <img src={iconUrl} alt="Icono de la tarjeta" class="w-8 h-8 rounded-full" />
-                </div>
-              )}
+            
             </div>
           )
         })}
@@ -104,18 +99,9 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       </div>
 
       <div class="hidden sm:flex items-center gap-2 text-sm">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-[var(--surface-brand-primary)]" fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
+      <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
 
-        <span class="text-[var(--feedback-positive-base)]"> Estás viendo contenido de <strong>Topgolf Monterrey</strong>
+        <span class="text-[var(--neutral-background-strong)]"> Estás viendo contenido de <strong>Topgolf Monterrey</strong>
         </span>
       </div>
     </div>
