@@ -62,7 +62,7 @@ const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=To
                 <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase">
                     {titulo || "PLANEA TU VISITA"}
                 </h2>
-                <div class="text-justify mt-6 text-lg text-[var(--surface-brand-secondary)]" set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
+                <div class="text-justify mt-6 text-lg text-[var(--surface-brand-secondary)]  strapi-rich-text" set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
                 <div class="flex items-center gap-2 mt-8 mb-8">
                     <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
                     <span class="text-sm font-bold text-[var(--brand-interactive-base)] uppercase tracking-wider">
@@ -74,7 +74,7 @@ const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=To
                         {texto_boton_principal || "RESERVA AQUÍ TU BAHÍA"}
                     </a>
                 </div>
-                <div class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-cyan-500 hover:prose-a:underline"
+                <div class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-cyan-500 hover:prose-a:underline strapi-rich-text"
                     set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`} />
             </div>
 
@@ -90,3 +90,24 @@ const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=To
         </div>
     </div>
 </section>
+
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--surface-brand-primary);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

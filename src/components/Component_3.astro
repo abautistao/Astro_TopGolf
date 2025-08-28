@@ -58,7 +58,7 @@ const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+
         <h1 class="uppercase md:text-5xl font-bold text-[var(--brand-interactive-base)]">
           {titulo || "ES TOPGOLF"}
         </h1>
-        <div class="prose prose-lg text-[var(--neutral-background-strong)]">
+        <div class="prose prose-lg text-[var(--neutral-background-strong)] strapi-rich-text">
           <div set:html={contentHtml || "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"} />
         </div>
         <div class="mt-4">
@@ -108,3 +108,24 @@ const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+
     </div>
   </div>
 </section>
+
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--surface-brand-primary);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>
