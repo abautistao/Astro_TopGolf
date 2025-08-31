@@ -1,0 +1,66 @@
+---
+// src/components/Component_7.astro
+import { getStrapiUrl} from "../lib/strapi.js";
+export interface Props {
+    imagen_fondo: any;
+    alt_imagen_fondo: string;
+}
+
+const {
+    imagen_fondo,
+    alt_imagen_fondo
+} = Astro.props;
+
+const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
+
+// URLs de placeholder en caso de que no haya imagen en Strapi
+const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
+---
+{/* CAMBIO: Se añadieron las clases 'flex' y 'items-center' para centrar el contenido verticalmente */}
+<section class="relative flex items-center w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px]">
+    <img
+        src={heroBackgroundUrl || placeholderBgUrl}
+        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
+        class="absolute inset-0 object-cover w-full h-full"
+    />
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="relative w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 items-center gap-y-12 lg:grid-cols-2 lg:gap-x-16">
+
+        <div class="text-center lg:text-left">
+            {/* CAMBIO: Se añadió mt-5 para móvil y lg:mt-0 para resetear en desktop */}
+            <h3 class="mt-5 lg:mt-0 text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)]">
+                MENÚ DE COMIDA Y BEBIDA DE TOPGOLF MONTERREY
+            </h3>
+
+            <h2 class="mt-4 text-4xl font-extrabold text-[var(--neutral-text-inverted)] sm:text-5xl lg:text-6xl">
+                ACOMPAÑA TU JUEGO
+            </h2>
+
+            <p class="mt-6 text-lg text-[var(--neutral-text-inverted)]">
+                Encontrarás un nuevo giro en la comida que más te gusta, especialidades locales y cervezas, además de nuevas creaciones inesperadas. Con porciones para compartir e ingredientes frescos de alta calidad, sabemos que la comida y las bebidas serán la cereza en el pastel de tu experiencia con nosotros.
+            </p>
+        </div>
+
+        <div class="flex justify-center lg:justify-end">
+            <div class="relative w-full max-w-md bg-[var(--surface-brand-primary)] p-8 sm:p-10">
+                <div class="absolute left-0 top-0 h-full w-1.5 bg-[var(--accent-highlight-primary)]"></div>
+                <div class="flex h-full flex-col justify-center">
+                    <h3 class="text-xl font-bold text-[var(--neutral-text-inverted)]">
+                    VE EL MENÚ COMPLETO Y PRECIOS DE TOPGOLF MONTERREY
+                    </h3>
+                    <div class="mt-8">
+                    <a href="#" class="inline-flex items-center justify-center rounded-full bg-[var(--neutral-text-inverted)] px-6 py-3 font-semibold text-[var(--surface-brand-secondary)] shadow-sm transition hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        CONSULTA NUESTRO MENÚ
+                    </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+</section>
