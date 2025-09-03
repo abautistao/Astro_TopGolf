@@ -2,7 +2,6 @@
 // src/components/Component_8.astro
 import { getStrapiUrl } from "../lib/strapi.js"; // Asegúrate que la ruta es correcta
 
-// CAMBIO: Importamos la imagen local de ejemplo
 import exampleImage from "../assets/2c8481df4c822d9c15e21537c3ededbbc9a6e81f.png";
 
 // Definimos la estructura de los datos que el componente espera recibir.
@@ -46,34 +45,32 @@ const placeholderUrl = (text: string) => `https://placehold.co/600x400/2d3748/ff
             </p>
         </div>
         <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
-            {cards.map((card) => {
-                let imageUrl = null;
-                if (card.image) {
-                if (card.image.src) {
-                    imageUrl = card.image.src;
-                } else {
-                    imageUrl = getStrapiUrl(card.image);
-                }
-                }
+        {cards.map((card) => {
+            let imageUrl = null;
+            if (card.image) {
+            if (card.image.src) {
+                imageUrl = card.image.src;
+            } else {
+                imageUrl = getStrapiUrl(card.image);
+            }
+            }
 
-                return (
-                <a href="#" class="relative block overflow-hidden rounded-lg">
-                    <img
-                    src={imageUrl || placeholderUrl(card.label)}
-                    alt={card.alt}
-                    class="h-full w-full object-cover"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-
-                    {/* CAMBIO: Se aplicó el color hexadecimal con transparencia */}
-                    <div class="absolute bottom-0 w-full bg-[#0D111791] p-4">
-                    <h3 class="text-sm font-semibold uppercase text-[var(--neutral-text-inverted)] tracking-wider">
-                        {card.label}
-                    </h3>
-                    </div>
-                </a>
-                )
-            })}
+            return (
+            <a href="#" class="relative block overflow-hidden">
+                <img
+                src={imageUrl || placeholderUrl(card.label)}
+                alt={card.alt}
+                class="h-64 w-full object-cover"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-0 w-full bg-[#0D111791] p-4">
+                <h3 class="text-sm font-semibold uppercase text-[var(--neutral-text-inverted)] tracking-wider">
+                    {card.label}
+                </h3>
+                </div>
+            </a>
+            );
+        })}
         </div>
         <div class="mt-10 flex items-center justify-center gap-4">
             <a href="#" class="inline-flex items-center justify-center rounded-full bg-[var(--brand-interactive-base)] px-8 py-3 font-semibold text-[var(--neutral-text-inverted)] shadow-sm transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2">

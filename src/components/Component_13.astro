@@ -1,0 +1,61 @@
+---
+// src/components/Component_13.astro
+import dotsPatternSquare from '../assets/Artwork_square.png';
+import dotsPatternMobile from '../assets/Artwork_1.png';
+import image from '../assets/4e6c4175bb7234ee68772cb685a29ad940c6aa5f.png';
+---
+<section class="w-full bg-[var(--neutral-text-inverted)] relative">
+    <img
+            src={dotsPatternSquare.src}
+            alt="Patrón de puntos decorativo"
+            class="absolute top-0 right-0 z-0  lg:block hidden"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+        />
+        <img
+            src={dotsPatternMobile.src}
+            alt="Patrón de puntos decorativo"
+            class="absolute top-10 right-0 z-0 lg:hidden"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+        />
+
+    <div class="container mx-auto px-4 py-16 lg:py-10 relative z-10">
+        <div class="flex flex-col lg:flex-row-reverse items-start lg:justify-items-normal overflow-hidden relative">
+            <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
+                <img src={image.src} alt="Group of friends walking towards a concierge desk" class="w-full h-full object-cover rounded-lg">
+                <div style="transform: rotate(-5.0deg);" class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden">
+                    PASO 2
+                </div>
+            </div>
+
+            <div style="transform: rotate(-5.0deg);" class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute lg:top-1/11 lg:right-4/8 lg:z-20 my-4 text-center mx-auto hidden lg:block">
+                PASO 2
+            </div>
+
+            <div class="w-full lg:w-2/3 p-2 lg:p-12 flex flex-col justify-center">
+
+                <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
+                    <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]">
+                        HAZ CHECK IN
+                    </h2>
+                </div>
+
+                <p class="text-[var(--neutral-background-strong)] mb-6 mt-4">
+                    Al llegar, te asignaremos una bahía. La bahía
+                    <span class="font-bold text-[var(--brand-interactive-base)]">es como tu 'mesa'</span>. Es el área en donde podrás jugar el tiempo que tu quieras. Cada bahía puede haber grupos de hasta 6 personas.
+                </p>
+
+                <div class="relative mt-8 hidden md:block">
+                    <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center">
+                        <p class="text-[var(--neutral-background-strong)]">LO QUE DEBES SABER SI LLEGAS SIN RESERVA A TOPGOLF</p>
+                        <a href="#" class="text-[var(--brand-interactive-base)] font-bold">MÁS INFORMACIÓN AQUÍ</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

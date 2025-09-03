@@ -70,11 +70,11 @@ const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=To
                     </span>
                 </div>
                 <div class="mt-4">
-                    <a href={url_boton_principal || "#"} class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] uppercase font-bold text-sm tracking-widest px-8 py-3 rounded-full hover:bg-blue-800 transition-colors duration-300">
+                    <a href={url_boton_principal || "#"} class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] uppercase font-bold text-sm tracking-widest px-8 py-3 rounded-full hover:bg-[var(--surface-brand-primary)] transition-colors duration-300">
                         {texto_boton_principal || "RESERVA AQUÍ TU BAHÍA"}
                     </a>
                 </div>
-                <div class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-cyan-500 hover:prose-a:underline strapi-rich-text"
+                <div class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
                     set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`} />
             </div>
 
