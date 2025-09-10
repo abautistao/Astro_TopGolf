@@ -1,5 +1,52 @@
 ---
 // src/components/Component_9.astro
+import { stringifyRichText } from "../lib/strapi.js";
+
+// NOTA: Este script inicializa Alpine.js. Si ya está inicializado en tu layout principal (ej. Layout.astro), puedes eliminar este bloque.
+// Si no estás seguro, déjalo. No causará problemas.
+
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface FaqItem {
+  id: number;
+  pregunta: string;
+  respuesta: any; // Rich Text
+}
+
+export interface Props {
+  titulo_normal: string;
+  titulo_resaltado: string;
+  preguntas: FaqItem[];
+  nota_aclaratoria: any; // Rich Text
+}
+
+// 2. Recibimos las props y definimos placeholders
+const {
+  titulo_normal,
+  titulo_resaltado,
+  preguntas = [],
+  nota_aclaratoria,
+} = Astro.props;
+
+const placeholderFaqItems: FaqItem[] = [
+  { id: 1, pregunta: "¿Cuál es el horario?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Abrimos de Lunes a Domingo de 10am a 10pm.' }] }] },
+  { id: 2, pregunta: "¿Necesito reservación?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'No es necesaria, pero es altamente recomendada, especialmente los fines de semana.' }] }] },
+  { id: 3, pregunta: "¿Hay opciones de comida?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Sí, contamos con un menú completo con opciones para todos.' }] }] },
+  { id: 4, pregunta: "¿Es apto para niños?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: '¡Claro! Topgolf es una experiencia para toda la familia.' }] }] },
+];
+
+const itemsToRender = preguntas && preguntas.length > 0 ? preguntas : placeholderFaqItems;
+
+// 3. Dividimos las preguntas en dos columnas automáticamente
+const midpoint = Math.ceil(itemsToRender.length / 2);
+const column1Items = itemsToRender.slice(0, midpoint);
+const column2Items = itemsToRender.slice(midpoint);
+
+const disclaimerHtml = stringifyRichText(nota_aclaratoria);
+const placeholderDisclaimerHtml = `<p><strong>NOTA:</strong> En esta cocina se almacenan productos con alérgenos y gluten. Tenga en cuenta que puede haber contacto cruzado. Se recomienda a los comensales que consideren esta información.</p>`;
+
+// Función para procesar la respuesta de cada item del acordeón
+const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
 ---
 <script>
   // This is a minimal script to add Alpine.js to your page.
@@ -8,90 +55,74 @@
     window.Alpine = Alpine;
     Alpine.start();
 </script>
-
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div class="container mx-auto px-4">
-        <h2 class="text-center text-4xl font-bold uppercase mb-10">
-        <div class="inline-block relative">
-            <span class="text-[var(--neutral-background-strong)]">PREGUNTAS</span>
-            <span class="text-[var(--brand-interactive-base)]">FRECUENTES</span>
-            <div class="absolute left-1/2 -translate-x-1/2 bottom-[-8px] h-[3px] w-16 bg-[var(--brand-interactive-base)]"></div>
-        </div>
-        </h2>
+  <div class="container mx-auto px-4">
+    <h2 class="text-center text-4xl font-bold uppercase mb-10">
+      <div class="inline-block relative">
+        <span class="text-[var(--neutral-background-strong)]">{titulo_normal || "PREGUNTAS"}</span>
+        <span class="text-[var(--brand-interactive-base)]">{titulo_resaltado || "FRECUENTES"}</span>
+        <div class="absolute left-1/2 -translate-x-1/2 bottom-[-8px] h-[3px] w-16 bg-[var(--brand-interactive-base)]"></div>
+      </div>
+    </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="space-y-4">
-            <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Columna 1 -->
+      <div class="space-y-4">
+        {column1Items.map((item) => (
+          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-                <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">¿Tienen alguna opción vegetariana?</h3>
-                <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">{item.pregunta}</h3>
+              <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+              </svg>
             </div>
             <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-                <p class="text-[var(--neutral-background-strong)] mb-2">Sí, varios artículos de nuestro menú son vegetarianos o pueden modificarse para que sean vegetarianos:</p>
-                <ul class="list-disc list-inside space-y-1 text-[var(--neutral-background-strong)]">
-                <li>Bocados de macarrones con queso sin salsa</li>
-                <li>Bocados de pretzel calientes</li>
-                <li>Guacamole y papas fritas</li>
-                <li>Nachos promedio Nacho - Frijoles</li>
-                <li>Hummus de cosecha</li>
-                <li>Pan plano con queso</li>
-                <li>Pan plano de granja</li>
-                <li>Papas fritas</li>
-                <li>Tater Tots</li>
-                <li>Hoyos en uno en donut de Topgolf</li>
-                <li>Sartén para galletas Double Trouble</li>
-                <li>Sundae de galleta desmenuzada</li>
-                <li>Sándwich de queso a la parrilla para niños</li>
-                </ul>
-                <p class="font-bold text-[var(--neutral-background-strong)] mt-4">Modificaciones:</p>
-                <p class="text-[var(--neutral-background-strong)]">Sustituya una hamburguesa de frijoles negros en cualquiera de nuestras hamburguesas.</p>
+              <div class="prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>
-            </div>
+          </div>
+        ))}
+      </div>
 
-            <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
+      <!-- Columna 2 -->
+      <div class="space-y-4">
+        {column2Items.map((item) => (
+          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-                <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">¿Tienen alguna opción sin gluten?</h3>
-                <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">{item.pregunta}</h3>
+              <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+              </svg>
             </div>
             <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-                <p class="text-[var(--neutral-background-strong)]">Sí, tenemos varias opciones sin gluten disponibles. Pregunta a nuestro personal para más detalles.</p>
+                <div class="prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
-            <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-                <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">¿Puedo traer mi propia comida?</h3>
-                <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-            </div>
-            <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-                <p class="text-[var(--neutral-background-strong)]">Por lo general, no se permite traer comida de fuera, pero si tienes necesidades dietéticas específicas, por favor contáctanos con antelación.</p>
-            </div>
-            </div>
-
-            <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
-            <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-                <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">¿Hay menú para niños?</h3>
-                <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-            </div>
-            <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-                <p class="text-[var(--neutral-background-strong)]">Sí, contamos con un menú especial para los más pequeños con opciones que les encantarán.</p>
-            </div>
-            </div>
-        </div>
-        </div>
-
-        <div class="mt-8 text-center text-sm text-[var(--neutral-background-strong)] max-w-2xl mx-auto">
-        <p>NOTA: En esta cocina se almacenan productos con alérgenos y gluten. Tenga en cuenta que puede haber contacto cruzado, por lo que no podemos garantizar estos productos a personas con alergias alimentarias o celiaquía. Se recomienda a los comensales que consideren esta información, ya que se relaciona con sus necesidades dietéticas individuales. Antes de realizar su pedido, informe a su camarero o algún miembro de su grupo si tiene alguna alergia alimentaria.</p>
-        </div>
+          </div>
+        ))}
+      </div>
     </div>
+
+    <div class="mt-8 text-center text-sm text-[var(--neutral-background-strong)] max-w-2xl mx-auto prose">
+        <div set:html={disclaimerHtml || placeholderDisclaimerHtml} />
+    </div>
+  </div>
 </section>
+
+<style>
+  /* 
+    Estos estilos fuerzan la aparición de los marcadores de lista (bullets y números) 
+    dentro del contenido renderizado por la clase .prose en este componente.
+  */
+  .prose :global(ul) {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+  .prose :global(ol) {
+    list-style-type: decimal;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+  .prose :global(li) {
+    padding-left: 0.5rem;
+  }
+</style>

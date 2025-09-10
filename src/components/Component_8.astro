@@ -1,92 +1,101 @@
 ---
 // src/components/Component_8.astro
-import { getStrapiUrl } from "../lib/strapi.js"; // Asegúrate que la ruta es correcta
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-import exampleImage from "../assets/2c8481df4c822d9c15e21537c3ededbbc9a6e81f.png";
-
-// Definimos la estructura de los datos que el componente espera recibir.
+// 1. Definimos la interfaz para las tarjetas anidadas
 export interface Card {
-    label: string;
-    image: any; // El tipo de imagen de Strapi o un objeto de imagen de Astro
-    alt: string;
+  id: number;
+  etiqueta: string;
+  imagen: any; // Media de Strapi
+  url_tarjeta: string;
 }
 
+// 2. Definimos la interfaz para las props del componente principal
 export interface Props {
-    title: string;
-    description: string;
-    cards: Card[];
+  titulo: string;
+  descripcion: any; // Rich Text
+  tarjetas: Card[];
+  texto_boton_principal: string;
+  url_boton_principal: string;
+  texto_boton_secundario: string;
+  url_boton_secundario: string;
+  texto_aclaratorio: any; // Rich Text
 }
 
-// Recibimos los props. Si no se pasan, usamos estos datos de ejemplo.
+// 3. Recibimos las props desde Astro
 const {
-    title = "¡HAZ QUE TU JUEGO SEPA MEJOR!",
-    description = "Encontrarás un nuevo giro en la comida que más te gusta, especialidades locales y cervezas, además de nuevas creaciones inesperadas. Con porciones para compartir e ingredientes frescos de alta calidad, sabemos que la comida y las bebidas serán la cereza en el pastel de tu experiencia con nosotros.",
-    cards = [
-        // CAMBIO: Usamos la imagen importada en la primera tarjeta
-        { label: "BONELESS XL PARA COMPARTIR", image: exampleImage, alt: "Boneless en un recipiente con salsas." },
-        { label: "BUENOS DRINKS", image: null, alt: "Bebidas refrescantes y coloridas." },
-        { label: "HAMBURGUESA AHUMADA EN CASA", image: null, alt: "Hamburguesa con tocino y papas." },
-        { label: "FLATBREADS PEPPERONI", image: null, alt: "Pizza de pepperoni en una tabla." },
-    ]
+  titulo,
+  descripcion,
+  tarjetas,
+  texto_boton_principal,
+  url_boton_principal,
+  texto_boton_secundario,
+  url_boton_secundario,
+  texto_aclaratorio,
 } = Astro.props;
 
-// URL base para los placeholders, con un tamaño más adecuado para la cuadrícula
+// 4. Procesamos el contenido dinámico
+const descriptionHtml = stringifyRichText(descripcion);
+const disclaimerHtml = stringifyRichText(texto_aclaratorio);
+
+// 5. Datos de placeholder para renderizar en caso de que no haya contenido de Strapi
+const placeholderCards: Card[] = [
+  { id: 1, etiqueta: "Bebidas", imagen: null, url_tarjeta: "#" },
+  { id: 2, etiqueta: "Comida", imagen: null, url_tarjeta: "#" },
+  { id: 3, etiqueta: "Postres", imagen: null, url_tarjeta: "#" },
+  { id: 4, etiqueta: "Especiales", imagen: null, url_tarjeta: "#" },
+];
+const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCards;
 const placeholderUrl = (text: string) => `https://placehold.co/600x400/2d3748/ffffff?text=${encodeURIComponent(text)}`;
+const placeholderDescriptionHtml = `<p>Encontrarás un nuevo giro en la comida que más te gusta, <strong>especialidades locales</strong> y cervezas, además de nuevas creaciones inesperadas.</p>`;
+const placeholderDisclaimerHtml = `<p>Las selecciones del menú están sujetas a disponibilidad y pueden variar según el lugar.</p>`;
 ---
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h2 class="text-3xl font-extrabold text-[var(--neutral-text-heavy)] sm:text-4xl">
-                {title}
-            </h2>
-            <p class="mt-4 max-w-3xl mx-auto text-lg text-[var(--neutral-text-subtle)]">
-                {description}
-            </p>
-        </div>
-        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
-        {cards.map((card) => {
-            let imageUrl = null;
-            if (card.image) {
-            if (card.image.src) {
-                imageUrl = card.image.src;
-            } else {
-                imageUrl = getStrapiUrl(card.image);
-            }
-            }
-
-            return (
-            <a href="#" class="relative block overflow-hidden">
-                <img
-                src={imageUrl || placeholderUrl(card.label)}
-                alt={card.alt}
-                class="h-64 w-full object-cover"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <div class="absolute bottom-0 w-full bg-[#0D111791] p-4">
-                <h3 class="text-sm font-semibold uppercase text-[var(--neutral-text-inverted)] tracking-wider">
-                    {card.label}
-                </h3>
-                </div>
-            </a>
-            );
-        })}
-        </div>
-        <div class="mt-10 flex items-center justify-center gap-4">
-            <a href="#" class="inline-flex items-center justify-center rounded-full bg-[var(--brand-interactive-base)] px-8 py-3 font-semibold text-[var(--neutral-text-inverted)] shadow-sm transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="mr-2 h-5 w-5">
-                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                </svg>
-                VER MENÚ
-            </a>
-            <a href="#" class="inline-flex items-center justify-center rounded-full border-2 border-[var(--brand-interactive-base)] px-8 py-3 font-semibold text-[var(--brand-interactive-base)] transition hover:bg-[var(--brand-interactive-base)] hover:text-[var(--neutral-text-inverted)] focus:outline-none focus:ring-2 focus:ring-offset-2">
-                BENEFICIOS DE UNA CAVA
-            </a>
-        </div>
-        <div class="mt-6 text-center">
-            <p class="text-xs text-[var(--neutral-text-subtle)]">
-                Las selecciones del menú están sujetas a disponibilidad y pueden variar según el lugar.
-            </p>
-        </div>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-[var(--neutral-text-heavy)] sm:text-4xl">
+        {titulo || "¡HAZ QUE TU JUEGO SEPA MEJOR!"}
+      </h2>
+      <div class="mt-4 max-w-3xl mx-auto text-lg text-[var(--neutral-text-subtle)] prose lg:prose-xl">
+          <div set:html={descriptionHtml || placeholderDescriptionHtml} />
+      </div>
     </div>
+    <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
+      {cardsToRender.map((card) => {
+        const imageUrl = getStrapiUrl(card.imagen);
+        const altText = card.imagen?.data?.attributes?.alternativeText || card.etiqueta;
+
+        return (
+          <a href={card.url_tarjeta || '#'} class="relative block overflow-hidden rounded-lg group">
+            <img
+              src={imageUrl || placeholderUrl(card.etiqueta)}
+              alt={altText}
+              class="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-0 w-full bg-[#0D111791] p-4">
+              <h3 class="text-sm font-semibold uppercase text-[var(--neutral-text-inverted)] tracking-wider">
+                {card.etiqueta}
+              </h3>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+    <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a href={url_boton_principal || '#'} class="inline-flex items-center justify-center rounded-full bg-[var(--brand-interactive-base)] px-8 py-3 font-semibold text-[var(--neutral-text-inverted)] shadow-sm transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 w-full sm:w-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="mr-2 h-5 w-5">
+          <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+        </svg>
+        {texto_boton_principal || 'VER MENÚ'}
+      </a>
+      <a href={url_boton_secundario || '#'} class="inline-flex items-center justify-center rounded-full border-2 border-[var(--brand-interactive-base)] px-8 py-3 font-semibold text-[var(--brand-interactive-base)] transition hover:bg-[var(--brand-interactive-base)] hover:text-[var(--neutral-text-inverted)] focus:outline-none focus:ring-2 focus:ring-offset-2 w-full sm:w-auto">
+        {texto_boton_secundario || 'BENEFICIOS DE UNA CAVA'}
+      </a>
+    </div>
+    <div class="mt-6 text-center text-xs text-[var(--neutral-text-subtle)] prose">
+        <div set:html={disclaimerHtml || placeholderDisclaimerHtml} />
+    </div>
+  </div>
 </section>

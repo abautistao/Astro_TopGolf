@@ -1,23 +1,49 @@
 ---
 // src/components/Component_10.astro
+import { stringifyRichText } from "../lib/strapi.js";
+
+// 1. Definimos la interfaz para las props de Strapi
+export interface Props {
+  titulo_principal: string;
+  subtitulo: string;
+  descripcion: any; // Rich Text
+  texto_final: string;
+}
+
+// 2. Recibimos las props y definimos placeholders
+const {
+  titulo_principal,
+  subtitulo,
+  descripcion,
+  texto_final,
+} = Astro.props;
+
+const descriptionHtml = stringifyRichText(descripcion);
+const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a Topgolf,</strong> tu principal destino de entretenimiento. Y por destino de entretenimiento nos referimos a un lugar donde puedes venir para festejar un cumpleaños, despedidas de soltero o soltera, eventos corporativos, citas nocturnas o simplemente para divertirte con tus amigos y pasarla en grande.</p>`;
 ---
+
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row">
-        <div class="flex flex-col items-center justify-center">
-            <div class="relative flex items-center justify-center">
-                <h2 class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-center text-4xl font-semibold uppercase sm:text-5xl md:text-6xl lg:text-7xl" style="transform: rotate(-1.66deg);">
-                La Experiencia
-                </h2>
-                <h3 class="bg-[var(--surface-brand-primary)] absolute top-[85%] text-center text-xl uppercase text-[var(--neutral-text-inverted)]">
-                de Topgolf
-                </h3>
-            </div>
-            <p class="mt-12 max-w-3xl text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)]">
-                <strong class="font-bold">Bienvenido a Topgolf,</strong> tu principal destino de entretenimiento. Y por destino de entretenimiento nos referimos a un lugar donde puedes venir para festejar un cumpleaños, despedidas de soltero o soltera, eventos corporativos, citas nocturnas o simplemente para divertirte con tus amigos y pasarla en grande
-            </p>
-        </div>
+  <div class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row">
+    <div class="flex flex-col items-center justify-center">
+      <div class="relative flex items-center justify-center mb-8">
+        <h2
+          class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-center text-4xl font-semibold uppercase sm:text-5xl md:text-6xl lg:text-7xl px-4 py-2"
+          style="transform: rotate(-1.66deg);"
+        >
+          {titulo_principal || "La Experiencia"}
+        </h2>
+        <h3
+          class="bg-[var(--surface-brand-primary)] absolute top-[85%] text-center text-xl uppercase text-[var(--neutral-text-inverted)] px-4 py-1"
+        >
+          {subtitulo || "de Topgolf"}
+        </h3>
+      </div>
+      <div class="mt-12 max-w-3xl text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg">
+          <div set:html={descriptionHtml || placeholderDescriptionHtml} />
+      </div>
     </div>
-    <p class="mt-8 text-center text-lg font-bold">
-        Así es como funciona Topgolf:
-    </p>
+  </div>
+  <p class="mt-8 text-center text-lg font-bold text-[var(--neutral-text-heavy)]">
+    {texto_final || "Así es como funciona Topgolf:"}
+  </p>
 </section>

@@ -1,60 +1,111 @@
 ---
 // src/components/Component_11.astro
-import dotsPattern from '../assets/Artwork.png';
-import dotsPatternMobile from '../assets/Artwork_1.png';
-import image from '../assets/4e6c4175bb7234ee68772cb685a29ad940c6aa5f.png';
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+
+// 1. Definimos la interfaz para las props de Strapi
+export interface Props {
+  etiqueta_paso: string;
+  titulo: string;
+  descripcion: any; // Rich Text
+  imagen_principal: any; // Media
+  texto_boton: string;
+  url_boton: string;
+  patron_fondo_escritorio: any; // Media
+  patron_fondo_movil: any; // Media
+}
+
+// 2. Recibimos las props y definimos placeholders
+const {
+  etiqueta_paso,
+  titulo,
+  descripcion,
+  imagen_principal,
+  texto_boton,
+  url_boton,
+  patron_fondo_escritorio,
+  patron_fondo_movil,
+} = Astro.props;
+
+// 3. Procesamos el contenido dinámico
+const descriptionHtml = stringifyRichText(descripcion);
+const mainImageUrl = getStrapiUrl(imagen_principal);
+const desktopPatternUrl = getStrapiUrl(patron_fondo_escritorio);
+const mobilePatternUrl = getStrapiUrl(patron_fondo_movil);
+
+// 4. Contenido de placeholder
+const placeholderImage = "https://placehold.co/800x600/2d3748/ffffff?text=Imagen+Paso";
+const placeholderPattern = "https://placehold.co/400x400/a0aec0/ffffff?text=Patron";
+const placeholderDescriptionHtml = `
+  <p>Para venir a Topgolf puedes hacerlo de 2 maneras: reservando en línea o llegando directamente al lugar. Nuestros precios son por hora y varían dependiendo el día y la hora en la que desees venir.</p>
+  <p>Una vez que decidas cuándo y a qué horas quieres visitarnos, es cuando la diversión comienza.</p>
+`;
 ---
-<section class="w-full bg-[var(--neutral-text-inverted)] relative">
-    <img
-        src={dotsPattern.src}
-        alt="Patrón de puntos decorativo"
-        class="absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/15 w-1/2 z-0 hidden lg:block"
-        aria-hidden="true"
-        loading="lazy"
-        decoding="async"
-    />
-    <img
-        src={dotsPatternMobile.src}
-        alt="Patrón de puntos decorativo"
-        class="absolute top-10 left-0  z-0 lg:hidden"
-        aria-hidden="true"
-        loading="lazy"
-        decoding="async"
-    />
 
-    <div class="container mx-auto px-5 py-16 lg:py-10 relative z-10">
-        <div class="flex flex-col lg:flex-row items-start lg:justify-items-normal overflow-hidden relative">
-            <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
-                <img src={image.src} alt="Group of friends walking towards a concierge desk" class="w-full h-full object-cover rounded-lg">
-                <div style="transform: rotate(-5.0deg);" class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden">
-                    PASO 1
-                </div>
-            </div>
+<section class="w-full bg-[var(--neutral-text-inverted)] relative overflow-hidden">
+  {/* --- Patrones Decorativos --- */}
+  {desktopPatternUrl && (
+    <img
+      src={desktopPatternUrl}
+      alt="Patrón de puntos decorativo"
+      class="absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/15 w-1/2 z-0 hidden lg:block"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  )}
+  {mobilePatternUrl && (
+    <img
+      src={mobilePatternUrl}
+      alt="Patrón de puntos decorativo"
+      class="absolute top-10 left-0 z-0 lg:hidden"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  )}
 
-            <div  style="transform: rotate(-5.0deg);"class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute lg:top-1/11 lg:left-7/13 lg:z-20 my-4 text-center mx-auto hidden lg:block">
-                PASO 1
-            </div>
+  <div class="container mx-auto px-5 py-16 lg:py-10 relative z-10">
+    <div class="flex flex-col lg:flex-row items-start lg:justify-items-normal overflow-hidden relative">
+      
+      {/* --- Imagen Principal --- */}
+      <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
+        <img
+          src={mainImageUrl || placeholderImage}
+          alt={imagen_principal?.data?.attributes?.alternativeText || titulo}
+          class="w-full h-full object-cover rounded-lg shadow-lg"
+        />
+        <div
+          style="transform: rotate(-5.0deg);"
+          class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden"
+        >
+          {etiqueta_paso || "PASO X"}
+        </div>
+      </div>
 
-            <div class="w-full lg:w-2/3 p-2 lg:p-12 flex flex-col justify-center">
+      {/* --- Etiqueta de Paso (Desktop) --- */}
+      <div
+        style="transform: rotate(-5.0deg);"
+        class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute lg:top-1/11 lg:left-7/13 lg:z-20 my-4 text-center mx-auto hidden lg:block"
+      >
+        {etiqueta_paso || "PASO X"}
+      </div>
 
-                <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
-                    <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]">
-                        PLANEA TU VISITA
-                    </h2>
-                </div>
+      {/* --- Contenido de Texto --- */}
+      <div class="w-full lg:w-2/3 p-2 lg:p-12 flex flex-col justify-center">
+        <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
+          <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]">
+            {titulo || "Título del Paso"}
+          </h2>
+        </div>
 
-                <p class="text-[var(--neutral-background-strong)] mb-6 mt-4">
-                Para venir a Topgolf puedes hacerlo de 2 maneras: reservando en línea o llegando directamente al lugar. Nuestros precios son por hora y varían dependiendo el día y la hora en la que desees venir.
-                </p>
+        <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 prose lg:prose-lg max-w-none">
+            <div set:html={descriptionHtml || placeholderDescriptionHtml} />
+        </div>
 
-                <p class="text-[var(--neutral-background-strong)] mb-8">
-                Una vez que decidas cuándo y a qué horas quieres visitarnos, es cuando la diversión comienza.
-                </p>
-
-                <a href="#" class="bg-[var(--brand-interactive-base)] hover:bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] font-bold py-3 px-8 rounded-full text-center transition-colors duration-300 w-fit">
-                RESERVA TU BAHÍA
-                  </a>
-            </div>
-        </div>
-    </div>
+        <a href={url_boton || "#"} class="bg-[var(--brand-interactive-base)] hover:bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] font-bold py-3 px-8 rounded-full text-center transition-colors duration-300 w-fit">
+          {texto_boton || "ACCIÓN"}
+        </a>
+      </div>
+    </div>
+  </div>
 </section>

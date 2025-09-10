@@ -1,82 +1,87 @@
 ---
 // src/components/Component_14.astro
-import image from '../assets/4e6c4175bb7234ee68772cb685a29ad940c6aa5f.png';
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-const foodAndDrink = {
-    title: 'COMIDA Y BEBIDA',
-    description: 'Amamos la diversión, pero también sabemos cómo lucirnos en la cocina.',
-    linkText: 'Ver el menú de Topgolf',
-    imageUrl: image,
-};
+// 1. Definimos la interfaz para las props con la estructura aplanada
+export interface Props {
+  titulo_izquierda?: string;
+  descripcion_izquierda?: string;
+  texto_link_izquierda?: string;
+  url_link_izquierda?: string;
+  imagen_izquierda?: any;
+  titulo_derecha?: string;
+  descripcion_derecha?: any; // Rich Text
+  icono_derecha?: string; // Font Awesome icon classes
+}
 
-const codeOfConduct = {
-    title: 'CÓDIGO DE CONDUCTA',
-    description: 'Nos comprometemos a brindar una experiencia excelente en un ambiente acogedor e inclusivo para que podamos divertirnos juntos. Por lo tanto, para todas las partes involucradas (y nos referimos a las partes), les rogamos que sigan nuestro ',
-    linkText: 'código de conducta',
-};
+// 2. Recibimos las props de Strapi, con valores por defecto
+const { 
+    titulo_izquierda = 'COMIDA Y BEBIDA',
+    descripcion_izquierda = 'Amamos la diversión, pero también sabemos cómo lucirnos en la cocina.',
+    texto_link_izquierda = 'Ver el menú de Topgolf',
+    url_link_izquierda = '#',
+    imagen_izquierda = null,
+    titulo_derecha = 'CÓDIGO DE CONDUCTA',
+    descripcion_derecha = 'Nos comprometemos a brindar una experiencia excelente en un ambiente acogedor e inclusivo para que podamos divertirnos juntos. Por lo tanto, para todas las partes involucradas (y nos referimos a las partes), les rogamos que sigan nuestro [código de conducta](#).',
+    icono_derecha = 'fa-solid fa-shield-halved' // Default icon
+} = Astro.props;
+
+// 3. Procesamos los datos para el renderizado
+const leftCardImageUrl = getStrapiUrl(imagen_izquierda);
+const placeholderImageUrl = `https://placehold.co/150x150/e0e0e0/333?text=Imagen`;
+
+const rightCardDescriptionHtml = stringifyRichText(descripcion_derecha);
+
 ---
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div class="container mx-auto flex flex-col justify-center gap-6 px-5 md:flex-row md:items-stretch md:max-w-4xl">
-        <div class="flex-1 rounded-xl bg-[var(--neutral-background-subtle)] p-6 shadow-sm md:w-[48%]">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center md:items-start lg:items-center">
-            <div class="min-w-[150px] overflow-hidden rounded-lg sm:h-[150px] sm:w-[150px]">
-            <img
-                src={foodAndDrink.imageUrl.src}
-                alt="Personas brindando sobre una mesa llena de comida"
-                class="h-full w-full object-cover"
-                width={foodAndDrink.imageUrl.width}
-                height={foodAndDrink.imageUrl.height}
-                loading="lazy"
-                decoding="async"
-            />
-            </div>
-            <div class="flex flex-col">
-            <h2 class="text-xl font-bold text-[var(--neutral-background-strong)]">{foodAndDrink.title}</h2>
-            <p class="mt-2 text-[var(--neutral-background-strong)]">{foodAndDrink.description}</p>
-            <a
-                href="#"
-                class="mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] transition-colors duration-200 hover:text-[var(--brand-interactive-base)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] focus:ring-offset-2"
-            >
-                {foodAndDrink.linkText}
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="2.5"
-                stroke="currentColor"
-                class="h-6 w-6"
-                >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </a>
-            </div>
-        </div>
-        </div>
-        <div class="flex-1 rounded-xl bg-[var(--surface-brand-primary)] p-6 shadow-sm md:w-[48%] flex flex-col items-center">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-solid border-[var(--surface-brand-primary)] bg-[var(--surface-brand-primary)]">
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="h-6 w-6 text-[var(--neutral-text-inverted)]"
-                >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.75 3.75 0 0 1-1.043 3.296 3.75 3.75 0 0 1-3.296 1.043A3.75 3.75 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.75 3.75 0 0 1-3.296-1.043A3.75 3.75 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.75 3.75 0 0 1 1.043-3.296 3.75 3.75 0 0 1 3.296-1.043A3.75 3.75 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.75 3.75 0 0 1 3.296 1.043A3.75 3.75 0 0 1 21 12Z"
-                />
-                </svg>
-            </div>
-            <div class="mt-4 flex h-full flex-col items-center justify-center text-center">
-                <h2 class="text-xl font-bold text-[var(--neutral-text-inverted)]">{codeOfConduct.title}</h2>
-                <p class="mt-4 text-[var(--neutral-text-inverted)]">
-                {codeOfConduct.description}
-                <a href="#" class="font-bold underline decoration-[var(--accent-highlight-secondary)]">{codeOfConduct.linkText}</a>
-                .
-                </p>
-            </div>
-        </div>
-    </div>
+    <div class="container mx-auto flex flex-col justify-center gap-6 px-5 md:flex-row md:items-stretch md:max-w-4xl">
+        
+        {/* Tarjeta Izquierda */}
+        <div class="flex-1 rounded-xl bg-[var(--neutral-background-subtle)] p-6 shadow-sm md:w-[48%]">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center md:items-start lg:items-center">
+                <div class="min-w-[150px] overflow-hidden rounded-lg sm:h-[150px] sm:w-[150px]">
+                    <img
+                        src={leftCardImageUrl || placeholderImageUrl}
+                        alt={imagen_izquierda?.data?.attributes?.alternativeText || 'Imagen para ' + titulo_izquierda}
+                        class="h-full w-full object-cover"
+                        width="150"
+                        height="150"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-bold text-[var(--neutral-background-strong)]">{titulo_izquierda}</h2>
+                    <p class="mt-2 text-[var(--neutral-background-strong)]">{descripcion_izquierda}</p>
+                    <a
+                        href={url_link_izquierda}
+                        class="mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] transition-colors duration-200 hover:text-[var(--brand-interactive-base)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] focus:ring-offset-2"
+                    >
+                        {texto_link_izquierda}
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2.5"
+                            stroke="currentColor"
+                            class="h-6 w-6"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {/* Tarjeta Derecha */}
+        <div class="flex-1 rounded-xl bg-[var(--surface-brand-primary)] p-6 shadow-sm md:w-[48%] flex flex-col items-center">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-solid border-[var(--surface-brand-primary)] bg-[var(--surface-brand-primary)]">
+                <i class:list={[icono_derecha, "text-2xl text-[var(--neutral-text-inverted)]"]}></i>
+            </div>
+            <div class="mt-4 flex h-full flex-col items-center justify-center text-center">
+                <h2 class="text-xl font-bold text-[var(--neutral-text-inverted)]">{titulo_derecha}</h2>
+                <div class="mt-4 text-[var(--neutral-text-inverted)]" set:html={rightCardDescriptionHtml} />
+            </div>
+        </div>
+    </div>
 </section>
