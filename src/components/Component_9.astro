@@ -2,6 +2,8 @@
 // src/components/Component_9.astro
 import { stringifyRichText } from "../lib/strapi.js";
 
+// NOTA: Este script inicializa Alpine.js. Si ya está inicializado en tu layout principal (ej. Layout.astro), puedes eliminar este bloque.
+// Si no estás seguro, déjalo. No causará problemas.
 
 
 // 1. Definimos las interfaces para las props de Strapi
@@ -104,3 +106,23 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
     </div>
   </div>
 </section>
+
+<style>
+  /* 
+    Estos estilos fuerzan la aparición de los marcadores de lista (bullets y números) 
+    dentro del contenido renderizado por la clase .prose en este componente.
+  */
+  .prose :global(ul) {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+  .prose :global(ol) {
+    list-style-type: decimal;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+  .prose :global(li) {
+    padding-left: 0.5rem;
+  }
+</style>

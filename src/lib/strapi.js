@@ -51,26 +51,57 @@ export const stringifyRichText = (richText) => {
   if (!richText) return '';
   if (typeof richText === 'string') return richText;
 
-  const processNode = (node) => {
-      let text = node.text || '';
-      if (node.bold) text = `<strong>${text}</strong>`;
-      if (node.italic) text = `<em>${text}</em>`;
-      if (node.underline) text = `<u>${text}</u>`;
-      return text;
+  // Helper to process individual text nodes (bold, italic, etc.)
+  const processTextNode = (node) => {
+    let text = node.text || '';
+    // Basic HTML escaping for security
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (node.bold) text = `<strong>${text}</strong>`;
+    if (node.italic) text = `<em>${text}</em>`;
+    if (node.underline) text = `<u>${text}</u>`;
+    if (node.strikethrough) text = `<s>${text}</s>`;
+    return text;
   };
 
+  // Helper to process a block's children (a mix of text nodes and links)
   const processChildren = (children) => {
     return children.map(child => {
       if (child.type === 'link') {
         const linkText = processChildren(child.children);
-        return `<a href="${child.url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+        // Handle both internal and external links
+        const isExternal = child.url.startsWith('http');
+        const target = isExternal ? '_blank' : '_self';
+        const rel = isExternal ? 'noopener noreferrer' : '';
+        return `<a href="${child.url}" target="${target}" rel="${rel}">${linkText}</a>`;
       }
-      return processNode(child);
+      return processTextNode(child);
     }).join('');
   };
 
+  // Main function to process each block in the Rich Text array
+  const processBlock = (block) => {
+    switch (block.type) {
+      case 'paragraph':
+        return `<p>${processChildren(block.children)}</p>`;
+      case 'heading':
+        return `<h${block.level}>${processChildren(block.children)}</h${block.level}>`;
+      case 'list':
+        const tag = block.format === 'ordered' ? 'ol' : 'ul';
+        const items = block.children.map(item => `<li>${processChildren(item.children)}</li>`).join('');
+        return `<${tag}>${items}</${tag}>`;
+      case 'quote':
+        return `<blockquote>${processChildren(block.children)}</blockquote>`;
+      case 'image':
+        const imageUrl = getStrapiUrl({ data: { attributes: block.image } });
+        return `<img src="${imageUrl}" alt="${block.image.alternativeText || ''}" />`;
+      default:
+        // Fallback for unknown block types
+        return `<p>${processChildren(block.children)}</p>`;
+    }
+  };
+
   if (Array.isArray(richText)) {
-    return richText.map(block => processChildren(block.children)).join('<br>');
+    return richText.map(processBlock).join('');
   }
 
   return '';
