@@ -1,0 +1,113 @@
+---
+// src/components/Component_15.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+import dotsPattern from '../assets/Artwork_bg.png';
+import dotsPatternMobile from '../assets/Artwork_1.png';
+// Definimos la interfaz de las props que el componente recibirá desde Strapi.
+export interface Props {
+    imagen_fondo: any;
+    alt_imagen_fondo: string;
+    logo: any;
+    alt_logo: string;
+    titulo: string;
+    texto_banner: string;
+    texto_boton: string;
+    url_boton: string;
+    texto_ayuda: any; // Puede ser un string o un arreglo de Strapi
+}
+
+const {
+    imagen_fondo,
+    alt_imagen_fondo,
+    logo,
+    alt_logo,
+    titulo,
+    texto_banner,
+    texto_boton,
+    url_boton,
+    texto_ayuda,
+} = Astro.props;
+
+const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
+
+// URLs de placeholder en caso de que no haya imagen en Strapi
+const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
+
+---
+<section class="relative w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px] bg-[var(--neutral-text-inverted)] ">
+    <img
+        src={heroBackgroundUrl || placeholderBgUrl}
+        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
+        class="absolute inset-0 object-cover w-full h-full"
+    />
+    <div class="absolute inset-0 bg-black/30"></div>
+
+    <div class="relative z-10 flex flex-col items-center justify-center h-[550px] md:h-[650px] text-center">
+    </div>
+
+    <div class="relative bg-[var(--neutral-text-inverted)] pb-10">
+        <div class="relative -top-28 sm:-top-20 -mt-28 sm:-mt-20 z-20 mx-4 md:mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] px-6 py-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white">
+            <div class="w-full md:w-5/12 flex-shrink-0">
+                <span class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs px-3 py-1 mb-4 inline-block">
+                    TOPGOLF MONTERREY
+                </span>
+                <h1 class="text-4xl lg:text-5xl font-semibold uppercase leading-none">
+                    Fiestas y <br class="hidden md:block">Eventos
+                </h1>
+                <p class="text-base font-semibold uppercase tracking-wider mt-2">
+                    Más divertido en Topgolf
+                </p>
+            </div>
+
+            <div class="w-full md:w-7/12">
+                <p class="mb-6 text-md leading-relaxed">
+                    Hemos realizado más de mil eventos en nuestros espacios, desde cumpleaños, baby shower, gender reveal, pedidas, graduaciones o eventos empresariales como sesiones de trabajo, conferencias, Kick Offs, entre otros. <strong>¡Todos los días nos acompaña alguien celebrando algo!</strong>
+                </p>
+                <a href="#" class="bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold py-3 px-8 rounded-full transition-transform hover:scale-105 inline-block text-center text-sm">
+                    SOLICITAR INFORMACIÓN
+                </a>
+            </div>
+        </div>
+        <img
+            src={dotsPattern.src}
+            width={dotsPattern.width}
+            height={dotsPattern.height}
+            alt="Patrón de puntos decorativo"
+            class="absolute bottom-8 right-4 z-10 hidden lg:block"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+        />
+        <img
+            src={dotsPatternMobile.src}
+            width={dotsPatternMobile.width}
+            height={dotsPatternMobile.height}
+            alt="Patrón de puntos decorativo"
+            class="absolute bottom-0 right-0 -translate-y-2/3 z-10 block lg:hidden"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+        />
+    </div>
+</section>
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--accent-highlight-secondary);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

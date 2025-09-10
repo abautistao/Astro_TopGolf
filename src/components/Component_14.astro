@@ -4,18 +4,18 @@ import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
 // 1. Definimos la interfaz para las props con la estructura aplanada
 export interface Props {
-  titulo_izquierda?: string;
-  descripcion_izquierda?: string;
-  texto_link_izquierda?: string;
-  url_link_izquierda?: string;
-  imagen_izquierda?: any;
-  titulo_derecha?: string;
-  descripcion_derecha?: any; // Rich Text
-  icono_derecha?: string; // Font Awesome icon classes
+    titulo_izquierda?: string;
+    descripcion_izquierda?: string;
+    texto_link_izquierda?: string;
+    url_link_izquierda?: string;
+    imagen_izquierda?: any;
+    titulo_derecha?: string;
+    descripcion_derecha?: any; // Rich Text
+    icono_derecha?: string; // Font Awesome icon classes
 }
 
 // 2. Recibimos las props de Strapi, con valores por defecto
-const { 
+const {
     titulo_izquierda = 'COMIDA Y BEBIDA',
     descripcion_izquierda = 'Amamos la diversión, pero también sabemos cómo lucirnos en la cocina.',
     texto_link_izquierda = 'Ver el menú de Topgolf',
@@ -34,11 +34,10 @@ const rightCardDescriptionHtml = stringifyRichText(descripcion_derecha);
 
 ---
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div class="container mx-auto flex flex-col justify-center gap-6 px-5 md:flex-row md:items-stretch md:max-w-4xl">
-        
+    <div class="container mx-auto flex flex-col justify-center gap-20 px-5 md:flex-row md:items-stretch md:max-w-7xl">
         {/* Tarjeta Izquierda */}
-        <div class="flex-1 rounded-xl bg-[var(--neutral-background-subtle)] p-6 shadow-sm md:w-[48%]">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center md:items-start lg:items-center">
+        <div class="flex-1 rounded-xl bg-[var(--neutral-background-subtle)] p-6 shadow-sm md:w-[48%] content-center">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div class="min-w-[150px] overflow-hidden rounded-lg sm:h-[150px] sm:w-[150px]">
                     <img
                         src={leftCardImageUrl || placeholderImageUrl}

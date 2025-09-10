@@ -1,0 +1,82 @@
+---
+// src/components/Component_16.astro
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+
+const packages = [
+    {
+        tag: "REUNIÓN DE AMIGOS",
+        title: "GAME & CREDIT",
+        subtitle: "7 A 12 PERSONAS",
+        description: [
+        "Con solo unos clicks podrás organizar un evento muy divertido ¡Es muy sencillo con nuestro paquete Game & Credit!",
+        "- Selecciona 2 horas de juego en bahías continuas.",
+        "- Agrega un crédito para alimentos y bebidas con un valor de $3,800 y recibe $4,200 exclusivamente por reservar en línea.",
+        "- Además para todos tus invitados, incluimos sus membresías lifetime con valor $80 c/u.",
+        "Haz cuentas y gana con Game & Credit. <a href='#' class='text-teal-500 font-semibold hover:underline'>Ver más.</a>"
+        ],
+        imageUrl: "",
+        altText: "Amigos divirtiéndose en un restaurante o bar de juegos."
+    },
+    {
+        tag: "FESTEJA EN GRANDE",
+        title: "FIESTAS KIDS & TEENS",
+        subtitle: "7 A 24 PERSONAS",
+        description: [
+        "¡Haz tu cumpleaños épico! Tenemos el mejor paquete de fiestas que puede ofrecer Monterrey. Y mejor aún, ¡comprando en línea tienes acceso a un precio especial desde $988 x persona!",
+        "Incluye: 2 horas de juego, alimentos, bebidas, decoración, pastel y de regalo te damos las membresías lifetime para todos tus invitados con valor de $80 c/u.",
+        "No busques más, haz tu cumpleaños épico en Topgolf. <a href='#' class='text-teal-500 font-semibold hover:underline'>Ver más.</a>"
+        ],
+        imageUrl: "",
+        altText: "Grupo de adolescentes celebrando una fiesta de cumpleaños."
+    },
+    {
+        tag: "TIEMPO EN EQUIPO",
+        title: "GRUPOS",
+        subtitle: "13 + JUGADORES",
+        description: [
+        "Somos uno de los mejores lugares de la ciudad para celebrar eventos grandes o masivos. Desde 12 hasta 900 invitados, contamos con todas las amenidades necesarias, salones privados completamente equipados, comida preparada por chefs de primer nivel y 3 bares “full-service”.",
+        "¡Te ayudamos a planear tu evento! Nuestros ejecutivos y staff se dedicarán a hacer realidad tu evento mientras tu te enfocas en pasar un buen rato. <a href='#' class='text-teal-500 font-semibold hover:underline'>Ver más.</a>"
+        ],
+        imageUrl: "",
+        altText: "Adultos socializando en un evento corporativo o de grupo."
+    }
+];
+const placeholderImageUrl = "https://placehold.co/600x400/2d3748/ffffff?text=Imagen+Principal";
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] py-16 sm:py-24">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {packages.map((pkg) => (
+                <div class="bg-[var(--neutral-text-inverted)] shadow-sm overflow-hidden flex flex-col text-center border border-[var(--neutral-text-inverted)]">
+
+                <div class="relative">
+                    <img src={pkg.imageUrl || placeholderImageUrl}  alt={pkg.altText} class="w-full h-60 object-cover" />
+                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+                    <span class="bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] text-xs font-bold tracking-wider px-4 py-2 rounded-sm uppercase">
+                        {pkg.tag}
+                    </span>
+                    </div>
+                </div>
+
+                <div class="p-8 flex flex-col flex-grow">
+                    <h2 class="text-3xl font-semibold text-[var(--surface-brand-primary)] uppercase">{pkg.title}</h2>
+                    <p class="text-sm font-semibold text-[var(--surface-brand-primary)] mt-1 uppercase tracking-wider">{pkg.subtitle}</p>
+
+                    <div class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow">
+                    {pkg.description.map((paragraph) => (
+                        <p set:html={paragraph} />
+                    ))}
+                    </div>
+
+                    <div class="mt-8">
+                        <a href="#" class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-bold py-3 px-10 rounded-[25px] hover:bg-[var(--brand-interactive-base)] transition-colors duration-300">
+                            ¡RESERVA EN LÍNEA!
+                        </a>
+                    </div>
+                </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
