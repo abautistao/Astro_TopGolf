@@ -1,0 +1,187 @@
+---
+// src/components/Component_23.astro
+
+import topgolfIcon from '../assets/image_4.png';
+import scrambleIcon from '../assets/image_4.png';
+import chipIcon from '../assets/image_4.png';
+import pressureIcon from '../assets/image_4.png';
+import shotIcon from '../assets/image_4.png';
+import scoreIcon from '../assets/image_4.png';
+import quick9Icon from '../assets/image_4.png';
+import shotAdvancedIcon from '../assets/image_4.png';
+
+// He duplicado los juegos para tener más de 8 y demostrar la funcionalidad.
+const gamesData = [
+    {
+        iconUrl: topgolfIcon,
+        iconBgColor: '#0053A0',
+        title: 'TOPGOLF®',
+        tags: [
+            { text: 'PRINCIPIANTE', bgColor: 'var(--feedback-positive-dark)', textColor: 'var(--neutral-text-inverted)' },
+            { text: 'RECOMENDADO PARA 1-6 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)' },
+        ],
+        description: 'En nuestro juego característico, los jugadores obtienen puntos golpeando bolas en cualquier objetivo. Cuanto más preciso sea tu tiro, más puntos ganarás.',
+    },
+    {
+        iconUrl: scrambleIcon,
+        iconBgColor: '#4A265F',
+        title: 'TOP SCRAMBLE',
+        tags: [
+            { text: 'INTERMEDIO', bgColor: 'var(--accent-highlight-primary)', textColor: 'var(--success-text-default)'  },
+            { text: 'RECOMENDADO PARA 2-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)'  },
+        ],
+        description: '¡Un giro de Topgolf en el clásico juego de golf! Los jugadores se dividen en equipos, y el mejor golpe de cada equipo cuenta en el marcador.',
+    },
+    {
+        iconUrl: chipIcon,
+        iconBgColor: '#E4202B',
+        title: 'TOP CHIP',
+        tags: [
+            { text: 'PRINCIPIANTE', bgColor: 'var(--accent-highlight-primary)', textColor: 'var(--success-text-default)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)'  },
+        ],
+        description: 'Para los expertos del juego corto. Deberás acertar en los objetivos rojo (5 tiros), amarillo (5 tiros) y verde (10 tiros).',
+    },
+    {
+        iconUrl: pressureIcon,
+        iconBgColor: '#008348',
+        title: 'TOP PRESSURE',
+        tags: [
+            { text: 'AVANZADO', bgColor: 'var(--accent-highlight-primary)', textColor: 'var(--success-text-default)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)' },
+        ],
+        description: '¡Pon a prueba tu precisión! El reto es golpear las 9 secciones del objetivo amarillo. Cierra un nivel al golpear las 3 luces.',
+    },
+    {
+        iconUrl: shotIcon,
+        iconBgColor: '#E4202B',
+        title: 'TOP SHOT',
+        tags: [
+            { text: 'PRINCIPIANTE', bgColor: 'var(--feedback-positive-dark)', textColor: 'var(--neutral-text-inverted)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)'  },
+        ],
+        description: 'Similar a TopChip. En este juego de precisión, deberás golpear los objetivos a cuatro distancias (5 tiros por distancia).',
+    },
+    {
+        iconUrl: scoreIcon,
+        iconBgColor: '#39434E',
+        title: 'TOP SCORE',
+        tags: [
+            { text: 'PRINCIPIANTE', bgColor: 'var(--feedback-positive-dark)', textColor: 'var(--neutral-text-inverted)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)' },
+        ],
+        description: 'El que más puntos tenga, gana. Simple. Obtén puntos al golpear cualquier objetivo. Cuanto más lejos, mayor será tu puntuación.',
+    },
+    {
+        iconUrl: quick9Icon,
+        iconBgColor: '#008348',
+        title: 'QUICK 9',
+        tags: [
+            { text: 'PRINCIPIANTE', bgColor: 'var(--feedback-positive-dark)', textColor: 'var(--neutral-text-inverted)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)'  },
+        ],
+        description: 'En este modo rápido, los últimos tres tiros en los objetivos rojo, amarillo y verde son puntuados. La precisión es clave.',
+    },
+    {
+        iconUrl: shotAdvancedIcon,
+        iconBgColor: '#F5A623',
+        title: 'TOP SHOT AVANZADO',
+        tags: [
+            { text: 'AVANZADO', bgColor: 'var(--accent-highlight-primary)', textColor: 'var(--success-text-default)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)' },
+        ],
+        description: 'Este juego te reta a golpear los objetivos a cuatro distancias consecutivas (rojo, amarillo, verde, marrón).',
+    },
+    {
+        iconUrl: topgolfIcon,
+        iconBgColor: '#0053A0',
+        title: 'JUEGO EXTRA 1',
+        tags: [
+            { text: 'AVANZADO', bgColor: 'var(--accent-highlight-primary)', textColor: 'var(--success-text-default)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)' },
+        ],
+        description: 'Descripción del juego extra número uno.',
+    },
+    {
+        iconUrl: scrambleIcon,
+        iconBgColor: '#4A265F',
+        title: 'JUEGO EXTRA 2',
+        tags: [
+            { text: 'AVANZADO', bgColor: 'var(--accent-highlight-primary)', textColor: 'var(--success-text-default)'},
+            { text: 'RECOMENDADO PARA 1-4 JUGADORES', bgColor: 'var(--neutral-background-subtle)', textColor: 'var(--neutral-background-strong)' },
+        ],
+        description: 'Descripción del juego extra número dos.',
+    },
+];
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h2 class="text-3xl sm:text-4xl font-semibold text-[var(--neutral-background-strong)] tracking-tight">
+                JUEGOS DISPONIBLES
+            </h2>
+            <p class="mt-4 max-w-3xl mx-auto text-base text-[var(--neutral-background-strong)]">
+                En Topgolf contamos con una amplia selección de juegos para elegir, desde los que ponen a prueba tu puntería y tu swing, hasta los que te harán reír a carcajadas. Lo mejor de todo es que puedes pasar de un juego a otro cuando quieras, ¡así que anímate a probarlos todos y encuentra el que más se acomode a tus gustos!
+            </p>
+        </div>
+
+        <div id="games-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-2">
+            {gamesData.map((game, index) => (
+                <div class={`bg-[var(--neutral-text-inverted)] rounded-lg border border-[var(--neutral-text-inverted)] p-8 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow duration-300 ${index >= 8 ? 'hidden extra-game-card' : ''}`}>
+                    <div class="w-20 h-20 rounded-full flex items-center justify-center" style={`background-color: ${game.iconBgColor};`}>
+                        <img src={game.iconUrl.src} alt={`Ícono de ${game.title}`} class="h-10 w-10" width={game.iconUrl.width} height={game.iconUrl.height} />
+                    </div>
+                    <h3 class="font-bold text-xl mt-6 text-[var(--neutral-background-strong)]" set:html={game.title.replace('®', '<sup class="text-xs">®</sup>')}></h3>
+                    <div class="flex flex-wrap justify-center gap-2 mt-4">
+                        {game.tags.map(tag => (
+                            <span class={`text-xs font-semibold px-3 py-1 rounded-full bg-[${tag.bgColor}] text-[${tag.textColor}]`}>
+                                {tag.text}
+                            </span>
+                        ))}
+                    </div>
+                    <p class="mt-6 text-sm text-[var(--neutral-background-strong)] flex-grow">
+                        {game.description}
+                    </p>
+                </div>
+            ))}
+        </div>
+
+        {gamesData.length > 8 && (
+            <div class="mt-16 text-center">
+                <button id="load-more-button" class="border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] font-bold py-3 px-10 rounded-full hover:bg-[var(--brand-interactive-base)] hover:text-[var(--neutral-text-inverted)] transition-colors duration-300">
+                    CARGAR MÁS JUEGOS
+                </button>
+            </div>
+        )}
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadMoreButton = document.getElementById('load-more-button');
+        // El botón no existirá si hay 8 o menos juegos, por lo que verificamos si existe.
+        if (loadMoreButton) {
+            const extraCards = document.querySelectorAll('.extra-game-card');
+            const gamesGrid = document.getElementById('games-grid');
+            let isShowingAll = false;
+
+            loadMoreButton.addEventListener('click', () => {
+                isShowingAll = !isShowingAll;
+
+                // Alterna la clase 'hidden' en las tarjetas extra
+                extraCards.forEach(card => {
+                    card.classList.toggle('hidden');
+                });
+
+                // Actualiza el texto del botón
+                loadMoreButton.textContent = isShowingAll ? 'REGRESAR' : 'CARGAR MÁS JUEGOS';
+
+                // Si estamos volviendo a la vista inicial, hace scroll hacia el inicio del grid
+                if (!isShowingAll) {
+                    gamesGrid.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    });
+</script>
