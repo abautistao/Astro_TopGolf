@@ -1,0 +1,64 @@
+---
+// src/components/Component_27.astro
+
+const bonusData = [
+    {
+        purchaseAmount: 500,
+        bonusAmount: 50,
+        bgColor: 'var(--accent-highlight-secondary)',
+        textColor: 'var(--surface-brand-primary)',
+    },
+    {
+        purchaseAmount: 1000,
+        bonusAmount: 100,
+        bgColor: '#FF7900',
+        textColor: 'var(--neutral-text-inverted)',
+    },
+    {
+        purchaseAmount: 1500,
+        bonusAmount: 150,
+        bgColor: 'var(--neutral-text-inverted)',
+        textColor: 'var(--surface-brand-primary)',
+    },
+    {
+        purchaseAmount: 2000,
+        bonusAmount: 200,
+        bgColor: 'var(--brand-interactive-base)',
+        textColor: 'var(--neutral-text-inverted)',
+    },
+];
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center">
+            <h2 class="text-2xl font-bold uppercase tracking-wide text-[var(--neutral-background-strong)]">
+                Te regalamos en horas de juego
+            </h2>
+            <p class="mt-2 text-lg uppercase text-[var(--neutral-background-strong)]">
+                El 10% del valor de tu gift card
+            </p>
+        </div>
+
+        <div class="mt-12 bg-[var(--surface-brand-primary)] rounded-xl p-8 md:p-12">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {bonusData.map(bonus => (
+                    <div class={`rounded-lg text-center p-6 bg-[${bonus.bgColor}] text-[${bonus.textColor}]`}>
+                        <p class="font-bold text-lg">
+                            POR ${bonus.purchaseAmount}
+                        </p>
+                        <p class="font-semibold text-lg">
+                            TE REGALAMOS
+                        </p>
+                        <p class="text-7xl font-bold mt-1">
+                            ${bonus.bonusAmount}
+                        </p>
+                    </div>
+                ))}
+
+            </div>
+        </div>
+    </div>
+</section>

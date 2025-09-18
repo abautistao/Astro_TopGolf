@@ -1,0 +1,38 @@
+---
+// src/components/Component_28.astro
+
+// 1. Define el contenido de la lista en un arreglo de objetos.
+// Esto permite aplicar estilos especiales, como hacer un texto en negrita.
+const termsData = [
+    { text: 'Venta exclusiva en línea.', isBold: false },
+    { text: 'El saldo de la tarjeta de regalo no es reembolsable por dinero en efectivo.', isBold: false },
+    { text: 'El saldo de la tarjeta de regalo no puede transferirse a otra tarjeta.', isBold: false },
+    { text: 'El monto en dinero cargado en la tarjeta de regalo se encuentra en moneda nacional (MXN).', isBold: false },
+    { text: 'Cualquier saldo cargado por el usuario podrá ser utilizado como método de pago para adquirir cualquier producto o servicio dentro de Topgolf Monterrey.', isBold: false },
+    { text: 'Cualquier saldo regalado como promoción por Topgolf (en este caso las cargas de saldo, otorgarán puntos promocionales equivalentes al 10% de lo abonado) sólo podrá ser utilizado para tiempo de juego con una vigencia de 6 meses a partir de la fecha de la carga.', isBold: false },
+    { text: 'El saldo en la tarjeta de regalo abonado no expira, solo el saldo promocional.', isBold: false },
+    { text: 'Los puntos regalados no pueden ser utilizados el mismo día de la compra, estos serán válidos 24hrs después de la compra.', isBold: false },
+    { text: 'En caso de robo o extravío de la tarjeta de regalo, el propietario y/o titular de la misma, deberá reportarlo de inmediato a Topgolf Monterrey para llevar a cabo la cancelación del plástico y transferencia de saldo, el cual estará condicionado sin excepción a la presentación del ticket de compra original o digital, la falta de ticket deslinda a Topgolf Monterrey de llevar a cabo cualquier transferencia de saldo sin responsabilidad alguna.', isBold: false },
+    { text: 'Vigencia a diciembre de 2025.', isBold: true },
+];
+---
+
+<section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <h2 class="text-center text-4xl font-bold text-[var(--neutral-background-strong)] ">
+            Términos y condiciones
+        </h2>
+
+        <ul class="mt-8 text-[var(--neutral-background-strong)]  list-disc pl-5">
+            {termsData.map(term => (
+                <li class:list={[
+                    term.isBold ? 'font-semibold' : ''
+                ]}>
+                    {term.text}
+                </li>
+            ))}
+        </ul>
+
+    </div>
+</section>
