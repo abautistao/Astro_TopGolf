@@ -1,0 +1,26 @@
+---
+// src/components/Component_29.astro
+
+import backgroundImage from '../assets/topgolf.png';
+import overlayImage from '../assets/topgolf_opacity.png';
+
+const pageContent = {
+    headline: "MEMBRESÍAS",
+    paragraph: "En Topgolf, todos los jugadores necesitan una tarjeta de membresía para competir. Nuestras membresías empiezan desde $5 y te dan acceso a todos nuestros juegos, registra tus puntuaciones y recibe ofertas exclusivas durante todo el año.",
+};
+---
+
+<section class="relative w-full text-[var(--neutral-text-inverted)] bg-cover bg-center bg-no-repeat" style={`background-image: url(${backgroundImage.src})`}>
+    <div class="absolute inset-0 bg-cover bg-center opacity-60" style={`background-image: url(${overlayImage.src})`}></div>
+    <div class="relative max-w-7xl mx-auto flex items-center min-h-[500px]">
+        <div class="text-left max-w-3xl lg:mr-auto">
+            <h1 class="text-4xl md:text-6xl font-bold uppercase leading-tight break-words">
+                {pageContent.headline}
+            </h1>
+
+            <p class="mt-6 text-base lg:text-lg break-words">
+                {pageContent.paragraph}
+            </p>
+        </div>
+    </div>
+</section>
