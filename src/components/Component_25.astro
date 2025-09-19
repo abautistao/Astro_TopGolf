@@ -1,52 +1,90 @@
 ---
 // src/components/Component_25.astro
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-import giftCardImage from '../assets/giftcards.png';
+const FALLBACK_IMAGE_URL = "https://placehold.co/600x400/4a5568/ffffff?text=Imagen+no+disponible";
 
-// Objeto con el contenido para facilitar la edición
-const pageContent = {
-    tag: "JUEGOS DE TOPGOLF MONTERREY",
-    headlinePart1: "¡REGALA",
-    headlinePart2: "DIVERSIÓN!",
-    paragraph: "Tanto si eres un aspirante a profesional del golf como si estás recogiendo un palo por primera vez, Topgolf es el juego de todos. Nuestros objetivos gigantes facilitan la puntuación sin importar tu swing.",
-    linkText: "¡Ven a jugar!",
-    buttonText: "COMPRA TU TARJETA DE REGALO",
-    buttonLink: "#"
+// 1. Definimos las interfaces para las props de Strapi
+export interface StrapiMedia {
+  id: number;
+  url: string;
+  alternativeText: string | null;
+}
+
+export interface Props {
+  tag: string;
+  titulo_linea_1: string;
+  titulo_linea_2: string;
+  contenido: any; // Rich Text
+  texto_boton: string;
+  url_boton: string;
+  imagen: StrapiMedia | null;
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { tag, titulo_linea_1, titulo_linea_2, contenido, texto_boton, url_boton, imagen } = Astro.props;
+
+const placeholderData: Props = {
+  tag: "JUEGOS DE TOPGOLF MONTERREY",
+  titulo_linea_1: "¡REGALA",
+  titulo_linea_2: "DIVERSIÓN!",
+  contenido: [
+    { type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo para la descripción." }] }
+  ],
+  texto_boton: "COMPRA TU TARJETA DE REGALO",
+  url_boton: "#",
+  imagen: null,
 };
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+  tag: tag || placeholderData.tag,
+  titulo_linea_1: titulo_linea_1 || placeholderData.titulo_linea_1,
+  titulo_linea_2: titulo_linea_2 || placeholderData.titulo_linea_2,
+  contenido: stringifyRichText(contenido || placeholderData.contenido),
+  texto_boton: texto_boton || placeholderData.texto_boton,
+  url_boton: url_boton || placeholderData.url_boton,
+};
+
+const imageUrl = imagen
+    ? getStrapiUrl(imagen)
+    : FALLBACK_IMAGE_URL;
+const imageAlt = imagen?.alternativeText || "Imagen descriptiva";
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 items-center">
-
             <div class="bg-[var(--neutral-text-inverted)] p-4 md:p-12 text-left z-10 order-last lg:order-first">
                 <span class="inline-block bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] text-xs font-bold tracking-wider uppercase px-3 py-1 rounded">
-                    {pageContent.tag}
+                    {dataToRender.tag}
                 </span>
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold uppercase mt-4 leading-none text-[var(--neutral-background-strong)] break-words">
-                    {pageContent.headlinePart1} <br class="hidden lg:block"/>
-                    <span class="text-[var(--neutral-background-strong)]">{pageContent.headlinePart2}</span>
+                    {dataToRender.titulo_linea_1} <br class="hidden lg:block"/>
+                    <span class="text-[var(--neutral-background-strong)]">{dataToRender.titulo_linea_2}</span>
                 </h1>
-                <p class="mt-6 text-base lg:text-lg text-[var(--neutral-background-strong)] max-w-lg">
-                    {pageContent.paragraph}
-                    <a href="#" class="font-bold hover:underline text-[var(--neutral-background-strong)]">{pageContent.linkText}</a>
-                </p>
-
-              <a href={pageContent.buttonLink} class="inline-block mt-8 bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] rounded-full uppercase transition-opacity duration-300 hover:opacity-90 text-sm py-2 px-5 sm:text-base sm:py-3 sm:px-8 tracking-normal sm:tracking-wider">
-                    {pageContent.buttonText}
+                <div class="mt-6 text-base lg:text-lg text-[var(--neutral-background-strong)] max-w-lg prose" set:html={dataToRender.contenido}></div>
+                <a href={dataToRender.url_boton} class="inline-block mt-8 bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] rounded-full uppercase transition-opacity duration-300 hover:opacity-90 text-sm py-2 px-5 sm:text-base sm:py-3 sm:px-8 tracking-normal sm:tracking-wider">
+                    {dataToRender.texto_boton}
                 </a>
             </div>
-
             <div class="flex justify-center items-center h-full order-first lg:order-last">
-                <img
-                    src={giftCardImage.src}
-                    alt="Tarjetas de regalo de Topgolf"
-                    class="w-full h-auto max-w-xl"
-                    loading="lazy"
-                    decoding="async"
-                />
+                <img src={imageUrl} alt={imageAlt} class="w-full h-auto max-w-xl" loading="lazy" decoding="async" />
             </div>
-
         </div>
     </div>
 </section>
+
+<style>
+    .prose :global(p) {
+        color: var(--neutral-background-strong);
+        margin: 0;
+    }
+    .prose :global(a) {
+        color: var(--neutral-background-strong);
+        font-weight: 700;
+    }
+    .prose :global(a:hover) {
+        text-decoration: underline;
+    }
+</style>

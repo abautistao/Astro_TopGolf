@@ -1,54 +1,83 @@
 ---
 // src/components/Component_26.astro
+import { getStrapiUrl } from "../lib/strapi.js";
 
-// 2. Define la URL de la imagen de respaldo
-const placeholderImageUrl = "https://placehold.co/370x205/4a5568/ffffff?text=cards";
+const FALLBACK_IMAGE_URL = "https://placehold.co/370x205/4a5568/ffffff?text=Imagen+no+disponible";
 
-// 3. Define el contenido de cada tarjeta en un arreglo
-const cardsData = [
-    {
-        imageUrl: "",
-        title: 'Es golf no es golf es topgolf',
-        description: 'Nuestras tarjetas de regalo son válidas para cualquier cosa en el lugar: equipo, juegos, comida e incluso lecciones.',
-    },
-    {
-        imageUrl: "", // <-- IMAGEN QUITADA PARA MOSTRAR EL PLACEHOLDER
-        title: 'Es golf no es golf es topgolf',
-        description: 'Nuestras tarjetas de regalo son válidas para cualquier cosa en el lugar: equipo, juegos, comida e incluso lecciones.',
-    },
-    {
-        imageUrl: "",
-        title: 'Ven y disfruta con amigos o con familia, tú eliges.',
-        description: 'Nuestras tarjetas de regalo son válidas para cualquier cosa en el lugar: equipo, juegos, comida e incluso lecciones.',
-    },
+// 1. Definimos las interfaces para las props de Strapi
+export interface StrapiMedia {
+  id: number;
+  url: string;
+  alternativeText: string | null;
+}
+
+export interface Card {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  imagen: StrapiMedia | null;
+}
+
+export interface Props {
+  tarjetas: Card[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { tarjetas } = Astro.props;
+
+const placeholderCards: Card[] = [
+  {
+    id: 1,
+    titulo: 'Es golf, no es golf, es Topgolf',
+    descripcion: 'Contenido de ejemplo para la tarjeta.',
+    imagen: null
+  },
+  {
+    id: 2,
+    titulo: 'Diversión para todos los niveles',
+    descripcion: 'Contenido de ejemplo para la tarjeta.',
+    imagen: null
+  },
+  {
+    id: 3,
+    titulo: 'Ven y disfruta con amigos o con familia, tú eliges.',
+    descripcion: 'Contenido de ejemplo para la tarjeta.',
+    imagen: null
+  },
 ];
+
+const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCards;
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {cardsToRender.map(card => {
+                const imageUrl = card.imagen
+                    ? getStrapiUrl(card.imagen)
+                    : FALLBACK_IMAGE_URL;
+                const imageAlt = card.imagen?.alternativeText || card.titulo;
 
-            {cardsData.map(card => (
-                <div class="bg-[var(--neutral-background-subtle)] p-6 flex flex-col text-left">
-                    <img
-                        src={card.imageUrl?.src || placeholderImageUrl}
-                        alt={card.title}
-                        class="w-full h-48 object-cover rounded-t-lg shadow-md"
-                        loading="lazy"
-                        decoding="async"
-                        width="370"
-                        height="205"
-                    />
-                    <h3 class="text-xl font-bold text-[var(--neutral-background-strong)] mt-6">
-                        {card.title}
-                    </h3>
-                    <p class="text-[var(--neutral-background-strong)] mt-2 flex-grow">
-                        {card.description}
-                    </p>
-                </div>
-            ))}
-
+                return (
+                    <div class="bg-[var(--neutral-background-subtle)] p-6 flex flex-col text-left">
+                        <img
+                            src={imageUrl}
+                            alt={imageAlt}
+                            class="w-full h-48 object-cover rounded-t-lg shadow-md"
+                            loading="lazy"
+                            decoding="async"
+                            width="370"
+                            height="205"
+                        />
+                        <h3 class="text-xl font-bold text-[var(--neutral-background-strong)] mt-6">
+                            {card.titulo}
+                        </h3>
+                        <p class="text-[var(--neutral-background-strong)] mt-2 flex-grow">
+                            {card.descripcion}
+                        </p>
+                    </div>
+                );
+            })}
         </div>
     </div>
 </section>

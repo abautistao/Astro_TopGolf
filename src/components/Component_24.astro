@@ -1,96 +1,80 @@
 ---
 // src/components/Component_24.astro
-
-// 1. Importa utilidades y las imágenes decorativas estáticas
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import dotsPatternMobile from '../assets/Artwork_1.png';
 import ArtworkSquare12 from '../assets/Artwork_square_12_dot.png';
 
-// 2. Define la interfaz de las props desde Strapi
-export interface Props {
-    imagen_principal: any;
-    alt_imagen_principal: string;
-    titulo_linea_1: string;
-    descripcion: any; // Rich Text de Strapi
-    texto_boton: string;
-    url_boton: string;
+const FALLBACK_IMAGE_URL = "https://placehold.co/760x500/4a5568/ffffff?text=Imagen+no+disponible";
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface StrapiMedia {
+  id: number;
+  url: string;
+  alternativeText: string | null;
 }
 
-// 3. Recibe las props
-const {
-    imagen_principal,
-    alt_imagen_principal,
-    titulo_linea_1,
-    descripcion,
-    texto_boton,
-    url_boton
-} = Astro.props;
+export interface Props {
+  imagen_principal: StrapiMedia | null;
+  titulo: string;
+  descripcion: any; // Rich Text
+  texto_boton: string;
+  url_boton: string;
+}
 
-// 4. Procesa los datos de Strapi
-const mainImageUrl = getStrapiUrl(imagen_principal);
-const descriptionHtml = stringifyRichText(descripcion);
+// 2. Recibimos las props y definimos placeholders
+const { imagen_principal, titulo, descripcion, texto_boton, url_boton } = Astro.props;
 
-// Placeholder por si no viene la imagen de Strapi
-const placeholderImageUrl = "https://placehold.co/760x500/4a5568/ffffff?text=Evento+Topgolf";
+const placeholderData: Props = {
+  titulo: "¡JUGAR GOLF NUNCA SERÁ IGUAL!",
+  descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo para la descripción." }] }],
+  texto_boton: "MÁS INFORMACIÓN",
+  url_boton: "#",
+  imagen_principal: null,
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+  titulo: titulo || placeholderData.titulo,
+  descripcion: stringifyRichText(descripcion || placeholderData.descripcion),
+  texto_boton: texto_boton || placeholderData.texto_boton,
+  url_boton: url_boton || placeholderData.url_boton,
+};
+
+const mainImageUrl = imagen_principal
+    ? getStrapiUrl(imagen_principal)
+    : FALLBACK_IMAGE_URL;
+const mainImageAlt = imagen_principal?.alternativeText || "Imagen principal";
 ---
 
 <section class="relative overflow-hidden py-12 sm:py-16">
     <div class="relative mx-0 px-0 lg:pl-15">
-
-        <img
-            src={ArtworkSquare12.src}
-            alt="Patrón de puntos decorativo"
-            class="absolute top-0 left-0 transform -translate-y-1/2 w-100 translate-x-52 z-0 hidden lg:block"
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-        />
-
-        <img
-            src={ArtworkSquare12.src}
-            alt="Patrón de puntos decorativo"
-            class="absolute top-0 left-0 transform -translate-y-1/2 w-100 -translate-x-55 z-0 hidden lg:block"
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-        />
-
-        <img
-            src={dotsPatternMobile.src}
-            alt="Patrón de puntos decorativo"
-            class="absolute bottom-0 -left-2 transform w-3/8 translate-y-1/12  z-0 lg:hidden"
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-        />
+        <img src={ArtworkSquare12.src} alt="Patrón de puntos decorativo" class="absolute top-0 left-0 transform -translate-y-1/2 w-100 translate-x-52 z-0 hidden lg:block" aria-hidden="true" loading="lazy" decoding="async" />
+        <img src={ArtworkSquare12.src} alt="Patrón de puntos decorativo" class="absolute top-0 left-0 transform -translate-y-1/2 w-100 -translate-x-55 z-0 hidden lg:block" aria-hidden="true" loading="lazy" decoding="async" />
+        <img src={dotsPatternMobile.src} alt="Patrón de puntos decorativo" class="absolute bottom-0 -left-2 transform w-3/8 translate-y-1/12 z-0 lg:hidden" aria-hidden="true" loading="lazy" decoding="async" />
 
         <div class="relative lg:flex lg:items-center lg:justify-start lg:min-h-[500px] xl:min-h-[600px]">
-
             <div class="lg:absolute lg:-top-10 lg:right-0 lg:w-4/5 lg:h-full">
-                <img
-                    src={mainImageUrl || placeholderImageUrl}
-                    alt={alt_imagen_principal || "Grupo de amigos disfrutando de un evento"}
-                    class="w-full object-cover shadow-xl"
-                    loading="lazy"
-                    decoding="async"
-                />
+                <img src={mainImageUrl} alt={mainImageAlt} class="w-full object-cover shadow-xl" loading="lazy" decoding="async" />
             </div>
-
             <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-1/2 lg:mx-0 lg:mt-0 z-10">
                 <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)] rounded-lg shadow-2xl lg:text-left">
                     <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase">
-                        {titulo_linea_1 || "¡JUGAR GOLF NUNCA SERÁ IGUAL!"}
+                        {dataToRender.titulo}
                     </h2>
-                    <div class="mt-6 text-lg text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>Más fácil de golpear la bola, mayor control y más loft. ¡De las personas que revolucionaron la forma en que juegas al golf, llega una revolución más! Sabemos que jugar golf es un poco difícil, por eso, hicimos nuestro propio palo de golf que lo hace más sencillo que nunca. .</p>"} />
+                    <div class="mt-6 text-lg text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
                     <div class="mt-8">
-                        <a href={url_boton || "#"} class="inline-block bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
-                            {texto_boton || "MÁS INFORMACIÓN"}
+                        <a href={dataToRender.url_boton} class="inline-block bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
+                            {dataToRender.texto_boton}
                         </a>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 </section>
+
+<style>
+    .prose :global(p) {
+        color: var(--neutral-text-inverted);
+    }
+</style>

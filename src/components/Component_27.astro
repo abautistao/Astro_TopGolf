@@ -1,63 +1,69 @@
 ---
 // src/components/Component_27.astro
 
-const bonusData = [
-    {
-        purchaseAmount: 500,
-        bonusAmount: 50,
-        bgColor: 'var(--accent-highlight-secondary)',
-        textColor: 'var(--surface-brand-primary)',
-    },
-    {
-        purchaseAmount: 1000,
-        bonusAmount: 100,
-        bgColor: '#FF7900',
-        textColor: 'var(--neutral-text-inverted)',
-    },
-    {
-        purchaseAmount: 1500,
-        bonusAmount: 150,
-        bgColor: 'var(--neutral-text-inverted)',
-        textColor: 'var(--surface-brand-primary)',
-    },
-    {
-        purchaseAmount: 2000,
-        bonusAmount: 200,
-        bgColor: 'var(--brand-interactive-base)',
-        textColor: 'var(--neutral-text-inverted)',
-    },
-];
+// 1. Definimos las interfaces para las props de Strapi
+export interface Bono {
+  id: number;
+  monto_compra: number;
+  monto_bono: number;
+  color_fondo: string;
+  color_texto: string;
+}
+
+export interface Props {
+  titulo: string;
+  subtitulo: string;
+  bonos: Bono[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo, subtitulo, bonos } = Astro.props;
+
+const placeholderData: Props = {
+  titulo: "Te regalamos en horas de juego",
+  subtitulo: "El 10% del valor de tu gift card",
+  bonos: [
+    { id: 1, monto_compra: 500, monto_bono: 50, color_fondo: 'var(--accent-highlight-secondary)', color_texto: 'var(--surface-brand-primary)' },
+    { id: 2, monto_compra: 1000, monto_bono: 100, color_fondo: '#FF7900', color_texto: 'var(--neutral-text-inverted)' },
+    { id: 3, monto_compra: 1500, monto_bono: 150, color_fondo: 'var(--neutral-text-inverted)', color_texto: 'var(--surface-brand-primary)' },
+    { id: 4, monto_compra: 2000, monto_bono: 200, color_fondo: 'var(--brand-interactive-base)', color_texto: 'var(--neutral-text-inverted)' },
+  ]
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+  titulo: titulo || placeholderData.titulo,
+  subtitulo: subtitulo || placeholderData.subtitulo,
+  bonos: bonos && bonos.length > 0 ? bonos : placeholderData.bonos,
+};
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div class="text-center">
             <h2 class="text-2xl font-bold uppercase tracking-wide text-[var(--neutral-background-strong)]">
-                Te regalamos en horas de juego
+                {dataToRender.titulo}
             </h2>
             <p class="mt-2 text-lg uppercase text-[var(--neutral-background-strong)]">
-                El 10% del valor de tu gift card
+                {dataToRender.subtitulo}
             </p>
         </div>
 
         <div class="mt-12 bg-[var(--surface-brand-primary)] rounded-xl p-8 md:p-12">
-
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {bonusData.map(bonus => (
-                    <div class={`rounded-lg text-center p-6 bg-[${bonus.bgColor}] text-[${bonus.textColor}]`}>
+                {dataToRender.bonos.map(bonus => (
+                    <div class="rounded-lg text-center p-6" style={`background-color: ${bonus.color_fondo}; color: ${bonus.color_texto};`}>
                         <p class="font-bold text-lg">
-                            POR ${bonus.purchaseAmount}
+                            POR ${bonus.monto_compra}
                         </p>
                         <p class="font-semibold text-lg">
                             TE REGALAMOS
                         </p>
                         <p class="text-7xl font-bold mt-1">
-                            ${bonus.bonusAmount}
+                            ${bonus.monto_bono}
                         </p>
                     </div>
                 ))}
-
             </div>
         </div>
     </div>

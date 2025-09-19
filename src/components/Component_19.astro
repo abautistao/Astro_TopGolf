@@ -1,78 +1,74 @@
 ---
 // src/components/Component_19.astro
-
-// 1. Importa las utilidades de Strapi
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-// 2. Define la interfaz de las props que el componente recibirá desde Strapi
-export interface Props {
-    pre_titulo: string;
-    titulo: string;
-    contenido: any; // El Rich Text de Strapi viene como un objeto/array
-    texto_boton: string;
-    url_boton: string;
-    imagen_superior: any;
-    alt_imagen_superior: string;
-    imagen_inferior_izquierda: any;
-    alt_imagen_inferior_izquierda: string;
-    imagen_inferior_derecha: any;
-    alt_imagen_inferior_derecha: string;
+const FALLBACK_IMAGE_URL = "https://placehold.co/800x600/4a5568/ffffff?text=Imagen+no+disponible";
+
+// 1. Interfaz para el objeto de imagen de Strapi
+export interface StrapiMedia {
+  id: number;
+  url: string;
+  alternativeText: string | null;
 }
 
-// 3. Recibe las props desde Astro
-const {
-    pre_titulo,
-    titulo,
-    contenido,
-    texto_boton,
-    url_boton,
-    imagen_superior,
-    alt_imagen_superior,
-    imagen_inferior_izquierda,
-    alt_imagen_inferior_izquierda,
-    imagen_inferior_derecha,
-    alt_imagen_inferior_derecha,
-} = Astro.props;
+export interface Props {
+  pre_titulo: string;
+  contenido: any; // Rich Text
+  imagen_superior: StrapiMedia | null;
+  imagen_inferior_izquierda: StrapiMedia | null;
+  imagen_inferior_derecha: StrapiMedia | null;
+}
 
-// 4. Procesa las URLs de las imágenes y el texto enriquecido
-const imageUrl1 = getStrapiUrl(imagen_superior);
-const imageUrl2 = getStrapiUrl(imagen_inferior_izquierda);
-const imageUrl3 = getStrapiUrl(imagen_inferior_derecha);
-const contentHtml = stringifyRichText(contenido);
+// 2. Recibimos las props y definimos placeholders
+const { pre_titulo, contenido, imagen_superior, imagen_inferior_izquierda, imagen_inferior_derecha } = Astro.props;
 
-// 5. Define URLs de placeholder por si no hay contenido en Strapi
-const placeholderUrl1 = "https://placehold.co/800x600/a0aec0/ffffff?text=Imagen+1";
-const placeholderUrl2 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+2";
-const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+3";
+const placeholderData: Props = {
+  pre_titulo: "NO HAY NADA COMO TOPGOLF",
+  contenido: [
+    { type: 'paragraph', children: [{ type: 'text', text: "Este es un texto de ejemplo. El contenido real vendrá de Strapi." }] }
+  ],
+  imagen_superior: null,
+  imagen_inferior_izquierda: null,
+  imagen_inferior_derecha: null,
+};
+
+// 3. Preparamos los datos para renderizar
+const preTituloToRender = pre_titulo || placeholderData.pre_titulo;
+const contentHtml = stringifyRichText(contenido || placeholderData.contenido);
+
+// Lógica de fallback para cada imagen (corregida)
+const imgSupUrl = imagen_superior ? getStrapiUrl(imagen_superior) : FALLBACK_IMAGE_URL;
+const imgSupAlt = imagen_superior?.alternativeText || "Imagen superior";
+
+const imgInfIzqUrl = imagen_inferior_izquierda ? getStrapiUrl(imagen_inferior_izquierda) : FALLBACK_IMAGE_URL;
+const imgInfIzqAlt = imagen_inferior_izquierda?.alternativeText || "Imagen inferior izquierda";
+
+const imgInfDerUrl = imagen_inferior_derecha ? getStrapiUrl(imagen_inferior_derecha) : FALLBACK_IMAGE_URL;
+const imgInfDerAlt = imagen_inferior_derecha?.alternativeText || "Imagen inferior derecha";
 ---
 
 <section class="bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-15">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* --- CONTENIDO DE TEXTO (DINÁMICO) --- */}
-            <div class="flex flex-col gap-6 order-2 md:order-2">
+            <div class="flex flex-col gap-6 order-2 md:order-1">
                 <p class="uppercase text-2xl md:text-4xl font-bold text-[var(--surface-brand-primary)] tracking-wide">
-                {pre_titulo || "NO HAY NADA COMO TOPGOLF"}
+                    {preTituloToRender}
                 </p>
-                <div class="prose prose-lg text-[var(--neutral-background-strong)] strapi-rich-text">
-                    <div set:html={contentHtml ||
-                    "<p>Todo comienza con nuestro Equipo de Eventos, dispuesto a trabajar en cada detalle para que su evento sea inolvidable. <strong>Organizamos miles de fiestas y eventos, grandes y pequeños, cada año, </strong> así que lo hemos visto todo. Podemos ayudarle a encontrar el camino correcto, elegir menús de comida y bebida que le encantarán y asegurarnos de que todo salga a la perfección.</p><br><p>En Topgolf, también disfruta de la diversión al aire libre, sin preocuparte de que el clima arruine tus planes. Desde pleno verano hasta pleno invierno, nuestros ventiladores, calentadores y zonas cubiertas mantendrán a todos cómodos mientras disfrutan de nuestros divertidos juegos.</p>"} />
-                </div>
+                <div class="prose prose-lg text-[var(--neutral-background-strong)] strapi-rich-text" set:html={contentHtml} />
             </div>
 
-            <div class="order-1 md:order-1">
-                {/* --- VERSIÓN MÓVIL: CARRUSEL (Visible solo en pantallas pequeñas) --- */}
+            <div class="order-1 md:order-2">
                 <div class="md:hidden">
                     <div class="swiper shadow-lg">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
-                                <img src={imageUrl1 || placeholderUrl1} alt={alt_imagen_superior} class="w-full h-80 object-cover" />
+                                <img src={imgSupUrl} alt={imgSupAlt} class="w-full h-80 object-cover" />
                             </div>
                             <div class="swiper-slide">
-                                <img src={imageUrl2 || placeholderUrl2} alt={alt_imagen_inferior_izquierda} class="w-full h-80 object-cover" />
+                                <img src={imgInfIzqUrl} alt={imgInfIzqAlt} class="w-full h-80 object-cover" />
                             </div>
                             <div class="swiper-slide">
-                                <img src={imageUrl3 || placeholderUrl3} alt={alt_imagen_inferior_derecha} class="w-full h-80 object-cover" />
+                                <img src={imgInfDerUrl} alt={imgInfDerAlt} class="w-full h-80 object-cover" />
                             </div>
                         </div>
                         <div class="swiper-pagination"></div>
@@ -81,67 +77,40 @@ const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+
                     </div>
                 </div>
 
-                {/* --- VERSIÓN ESCRITORIO: LAYOUT ORIGINAL (Oculto en pantallas pequeñas) --- */}
                 <div class="hidden md:flex flex-col gap-4">
-                    {/* --- IMAGEN SUPERIOR ALINEADA A LA DERECHA DE SU ESPACIO --- */}
                     <div class="flex">
                         <div class="w-2/3">
                             <div class="flex justify-end">
-                                <img
-                                    src={imageUrl1 || placeholderUrl1}
-                                    alt={alt_imagen_superior || "Imagen de mujer comiendo"}
-                                    class="w-2/4 object-cover shadow-lg h-[200px]"
-                                />
+                                <img src={imgSupUrl} alt={imgSupAlt} class="w-2/4 object-cover shadow-lg h-[200px]" />
                             </div>
                         </div>
                     </div>
-                    {/* --- IMÁGENES INFERIORES --- */}
                     <div class="flex gap-4">
-                        <img
-                            src={imageUrl2 || placeholderUrl2}
-                            alt={alt_imagen_inferior_izquierda || "Personas celebrando"}
-                            class="w-2/3 object-cover shadow-lg h-[300px]"
-                        />
-                        <img
-                            src={imageUrl3 || placeholderUrl3}
-                            alt={alt_imagen_inferior_derecha || "Familia en Topgolf"}
-                            class="w-1/3 object-cover shadow-lg h-[300px]"
-                        />
+                        <img src={imgInfIzqUrl} alt={imgInfIzqAlt} class="w-2/3 object-cover shadow-lg h-[300px]" />
+                        <img src={imgInfDerUrl} alt={imgInfDerAlt} class="w-1/3 object-cover shadow-lg h-[300px]" />
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
 <script>
-    // 1. Importa Swiper y los módulos que usarás (Navegación, Paginación)
     import Swiper from 'swiper';
     import { Navigation, Pagination } from 'swiper/modules';
-
-    // 2. Importa los estilos de Swiper
     import 'swiper/css';
     import 'swiper/css/navigation';
     import 'swiper/css/pagination';
 
-    // 3. Inicializa Swiper
     const swiper = new Swiper('.swiper', {
-        // Usa los módulos importados
         modules: [Navigation, Pagination],
-
-        // Configuración del carrusel
-        loop: true, // Para que el carrusel sea infinito
-        slidesPerView: 1, // Muestra una imagen a la vez
-        spaceBetween: 20, // Espacio entre imágenes (si decides mostrar más de 1)
-
-        // Configuración de la paginación (los puntos)
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 20,
         pagination: {
             el: '.swiper-pagination',
             clickable: true,
         },
-
-        // Configuración de la navegación (las flechas)
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
@@ -150,15 +119,9 @@ const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+
 </script>
 
 <style is:global>
-    /* Opcional: Personaliza los colores de los controles de Swiper */
     .swiper {
-        --swiper-theme-color: #007aff; /* Color de las flechas y puntos */
-        --swiper-navigation-size: 30px; /* Tamaño de las flechas */
-    }
-</style>
-<style>
-    .text-shadow-md {
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        --swiper-theme-color: var(--brand-interactive-base);
+        --swiper-navigation-size: 30px;
     }
     .strapi-rich-text :global(strong) {
         color: var(--surface-brand-primary);

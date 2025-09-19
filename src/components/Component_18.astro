@@ -1,35 +1,82 @@
 ---
 // src/components/Component_18.astro
+import { stringifyRichText } from "../lib/strapi.js";
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface Boton {
+  id: number;
+  texto: string;
+  url: string;
+  tipo: 'primario' | 'secundario';
+}
+
+export interface Props {
+  tag: string;
+  titulo: string;
+  contenido: any; // Rich Text
+  botones: Boton[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { tag, titulo, contenido, botones } = Astro.props;
+
+const placeholderData: Props = {
+  tag: "TOPGOLF MONTERREY",
+  titulo: "Espacios que se adaptan a tu evento",
+  contenido: [
+    { type: 'paragraph', children: [{ type: 'text', text: "Somos un gran recinto con una amplia opción de espacios que se adaptan a prácticamente cualquier tipo de evento, por ejemplo, para algo social puedes reservar nuestro Sky Bar en la terraza, o bien para una reunión privada tenemos nuestros salones de conferencia, o si lo que ocupas es algo más grande ¿por qué no pensar en todo un piso?" }] },
+    { type: 'paragraph', children: [{ type: 'text', text: "Los espacios para eventos, así como su configuración, mobiliario, decoración y amenidades, pueden variar. Las capacidades de cada espacio para eventos variarán según la configuración de la sala. Pueden aplicarse restricciones.", "small": true }] }
+  ],
+  botones: [
+    { id: 1, texto: "Guía de espacios para eventos", url: "#", tipo: 'primario' },
+    { id: 2, texto: "Solicitar Información", url: "#", tipo: 'secundario' },
+  ]
+};
+
+const tagToRender = tag || placeholderData.tag;
+const tituloToRender = titulo || placeholderData.titulo;
+const contentHtml = stringifyRichText(contenido || placeholderData.contenido);
+const botonesToRender = botones && botones.length > 0 ? botones : placeholderData.botones;
 ---
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
     <div class="container mx-auto flex flex-col items-center gap-6 px-4 text-center">
         <p class="text-md font-bold uppercase text-[var(--brand-interactive-base)]">
-            TOPGOLF MONTERREY
+            {tagToRender}
         </p>
 
-        <h2 class="text-3xl font-semibold uppercase  text-[var(--neutral-background-strong)] sm:text-5xl md:text-5xl">
-            Espacios que se adaptan a tu evento
+        <h2 class="text-3xl font-semibold uppercase text-[var(--neutral-background-strong)] sm:text-5xl md:text-5xl">
+            {tituloToRender}
         </h2>
 
-        <p class="max-w-4xl text-base text-[var(--neutral-background-strong)] sm:text-lg">
-            Somos un gran recinto con una amplia opción de espacios que se adaptan a prácticamente cualquier tipo de evento, por ejemplo, para algo social puedes reservar nuestro Sky Bar en la terraza, o bien para una reunión privada tenemos nuestros salones de conferencia, o si lo que ocupas es algo más grande ¿por qué no pensar en todo un piso?
-        </p>
-
-        <p class="mt-2 max-w-4xl text-sm text-[var(--neutral-background-strong)]">
-            Los espacios para eventos, así como su configuración, mobiliario, decoración y amenidades, pueden variar. Las capacidades de cada espacio para eventos variarán según la configuración de la sala. Pueden aplicarse restricciones.
-        </p>
+        <div class="max-w-4xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose max-w-none" set:html={contentHtml}></div>
 
         <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-            <a href="#"
-                class="transform rounded-full bg-[var(--brand-interactive-base)] px-8 py-3 font-bold uppercase text-white shadow-lg transition-transform hover:scale-105">
-                Guía de espacios para eventos
-            </a>
-            <a href="#"
-                class="transform rounded-full border-2 border-[var(--brand-interactive-base)] px-8 py-3 font-bold uppercase text-[var(--brand-interactive-base)] transition-all hover:scale-105">
-                Solicitar Información
-            </a>
+            {botonesToRender.map(boton => (
+                 <a href={boton.url}
+                    class:list={[
+                        'transform rounded-full px-8 py-3 font-bold uppercase transition-all hover:scale-105',
+                        {
+                            'bg-[var(--brand-interactive-base)] text-white shadow-lg': boton.tipo === 'primario',
+                            'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'secundario'
+                        }
+                    ]}
+                >
+                    {boton.texto}
+                </a>
+            ))}
         </div>
-
     </div>
 </section>
+
+<style>
+    .prose :global(p) {
+        margin: 0;
+    }
+    .prose :global(p + p) {
+        margin-top: 0.5rem;
+    }
+    .prose :global(small) {
+        font-size: 0.875em;
+    }
+</style>

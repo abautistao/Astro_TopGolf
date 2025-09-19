@@ -1,21 +1,51 @@
 ---
 // src/components/Component_32.astro
+import { stringifyRichText } from "../lib/strapi.js";
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface Props {
+  titulo: string;
+  contenido: any; // Rich Text
+  texto_boton: string;
+  url_boton: string;
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo, contenido, texto_boton, url_boton } = Astro.props;
+
+const placeholderData: Props = {
+  titulo: "MEMBRESÍA CORPORATIVA",
+  contenido: [{ type: 'paragraph', children: [{ type: 'text', text: "Somos el lugar perfecto para cerrar ventas, o celebrar eventos especiales con tus colegas de la oficina. Las membresías corporativas están diseñadas para que varios colaboradores puedan disfrutar de los beneficios VIP que tenemos disponibles, desde juego gratis hasta acceso prioritario, con una o más tarjetas." }] }],
+  texto_boton: "CONOCE MÁS",
+  url_boton: "#",
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+  titulo: titulo || placeholderData.titulo,
+  contenido: stringifyRichText(contenido || placeholderData.contenido),
+  texto_boton: texto_boton || placeholderData.texto_boton,
+  url_boton: url_boton || placeholderData.url_boton,
+};
 ---
+
 <section class="bg-[var(--neutral-text-inverted)] py-16 sm:py-24">
     <div class="mx-auto max-w-5xl px-6 text-center lg:px-8">
-
         <h2 class="text-2xl font-bold text-[var(--surface-brand-primary)] sm:text-3xl">
-            MEMBRESÍA CORPORATIVA
+            {dataToRender.titulo}
         </h2>
-
-        <p class="mt-6 text-lg text-[var(--neutral-background-strong)]">
-            Somos el lugar perfecto para cerrar ventas, o celebrar eventos especiales con tus colegas de la oficina. Las membresíaS corporativas están diseñadas para que varios colaboradores puedan disfrutar de los beneficios VIP que tenemos disponibles, desde juego gratis hasta acceso prioritario, con una o más tarjetas.
-        </p>
-
+        <div class="mt-6 text-lg text-[var(--neutral-background-strong)] prose max-w-none" set:html={dataToRender.contenido}>
+        </div>
         <div class="mt-10">
-            <a href="#" class="rounded-full bg-[var(--brand-interactive-base)] px-8 py-3.5 text-sm font-semibold text-[var(--neutral-text-inverted)]">
-                CONOCE MÁS
+            <a href={dataToRender.url_boton} class="rounded-full bg-[var(--brand-interactive-base)] px-8 py-3.5 text-sm font-semibold text-[var(--neutral-text-inverted)]">
+                {dataToRender.texto_boton}
             </a>
         </div>
     </div>
 </section>
+
+<style>
+    .prose :global(p) {
+        margin: 0;
+    }
+</style>
