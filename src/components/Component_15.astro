@@ -1,45 +1,69 @@
 ---
 // src/components/Component_15.astro
-import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
-import dotsPattern from '../assets/Artwork_bg.png';
-import dotsPatternMobile from '../assets/Artwork_1.png';
-// Definimos la interfaz de las props que el componente recibirá desde Strapi.
+import defaultDotsPattern from '../assets/Artwork_bg.png';
+import defaultDotsPatternMobile from '../assets/Artwork_1.png';
+
+// 1. Definimos la interfaz para las props de Strapi
 export interface Props {
-    imagen_fondo: any;
-    alt_imagen_fondo: string;
-    logo: any;
-    alt_logo: string;
-    titulo: string;
-    texto_banner: string;
-    texto_boton: string;
-    url_boton: string;
-    texto_ayuda: any; // Puede ser un string o un arreglo de Strapi
+  imagen_fondo?: any;
+  alt_imagen_fondo?: string;
+  etiqueta?: string;
+  titulo?: string;
+  subtitulo?: string;
+  descripcion?: any; // Rich Text
+  texto_boton?: string;
+  url_boton?: string;
+  imagen_decorativa_desktop?: any;
+  alt_imagen_decorativa_desktop?: string;
+  imagen_decorativa_mobile?: any;
+  alt_imagen_decorativa_mobile?: string;
 }
 
-const {
-    imagen_fondo,
-    alt_imagen_fondo,
-    logo,
-    alt_logo,
-    titulo,
-    texto_banner,
-    texto_boton,
-    url_boton,
-    texto_ayuda,
+// 2. Recibimos las props y definimos placeholders
+const { 
+  imagen_fondo, 
+  alt_imagen_fondo,
+  etiqueta,
+  titulo,
+  subtitulo,
+  descripcion,
+  texto_boton,
+  url_boton,
+  imagen_decorativa_desktop,
+  alt_imagen_decorativa_desktop,
+  imagen_decorativa_mobile,
+  alt_imagen_decorativa_mobile
 } = Astro.props;
 
-const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
+const placeholder = {
+  imagen_fondo_url: "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo",
+  alt_imagen_fondo: "Imagen de fondo de Platzhalter",
+  etiqueta: "TOPGOLF MONTERREY",
+  titulo: "Fiestas y <br class='hidden md:block'>Eventos",
+  subtitulo: "Más divertido en Topgolf",
+  descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: 'Hemos realizado más de mil eventos en nuestros espacios, desde cumpleaños, baby shower, gender reveal, pedidas, graduaciones o eventos empresariales. ' }, { type: 'text', text: '¡Todos los días nos acompaña alguien celebrando algo!', bold: true }] }],
+  texto_boton: "SOLICITAR INFORMACIÓN",
+  url_boton: "#",
+  imagen_decorativa_desktop_url: defaultDotsPattern.src,
+  alt_imagen_decorativa_desktop: "Patrón de puntos decorativo para escritorio",
+  imagen_decorativa_mobile_url: defaultDotsPatternMobile.src,
+  alt_imagen_decorativa_mobile: "Patrón de puntos decorativo para móvil"
+};
 
-// URLs de placeholder en caso de que no haya imagen en Strapi
-const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
-
+const heroBackgroundUrl = getStrapiUrl(imagen_fondo) || placeholder.imagen_fondo_url;
+const decorativeDesktopUrl = getStrapiUrl(imagen_decorativa_desktop) || placeholder.imagen_decorativa_desktop_url;
+const decorativeMobileUrl = getStrapiUrl(imagen_decorativa_mobile) || placeholder.imagen_decorativa_mobile_url;
+const descriptionHtml = stringifyRichText(descripcion || placeholder.descripcion);
 ---
-<section class="relative w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px] bg-[var(--neutral-text-inverted)] ">
+
+<section class="relative w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px] bg-[var(--neutral-text-inverted)]">
     <img
-        src={heroBackgroundUrl || placeholderBgUrl}
-        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
+        src={heroBackgroundUrl}
+        alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
         class="absolute inset-0 object-cover w-full h-full"
+        loading="lazy"
+        decoding="async"
     />
     <div class="absolute inset-0 bg-black/30"></div>
 
@@ -50,40 +74,32 @@ const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Image
         <div class="relative -top-28 sm:-top-20 -mt-28 sm:-mt-20 z-20 mx-4 md:mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] px-6 py-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white">
             <div class="w-full md:w-5/12 flex-shrink-0">
                 <span class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs px-3 py-1 mb-4 inline-block">
-                    TOPGOLF MONTERREY
+                    {etiqueta || placeholder.etiqueta}
                 </span>
-                <h1 class="text-4xl lg:text-5xl font-semibold uppercase leading-none">
-                    Fiestas y <br class="hidden md:block">Eventos
-                </h1>
+                <h1 class="text-4xl lg:text-5xl font-semibold uppercase leading-none" set:html={titulo || placeholder.titulo} />
                 <p class="text-base font-semibold uppercase tracking-wider mt-2">
-                    Más divertido en Topgolf
+                    {subtitulo || placeholder.subtitulo}
                 </p>
             </div>
 
             <div class="w-full md:w-7/12">
-                <p class="mb-6 text-md leading-relaxed">
-                    Hemos realizado más de mil eventos en nuestros espacios, desde cumpleaños, baby shower, gender reveal, pedidas, graduaciones o eventos empresariales como sesiones de trabajo, conferencias, Kick Offs, entre otros. <strong>¡Todos los días nos acompaña alguien celebrando algo!</strong>
-                </p>
-                <a href="#" class="bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold py-3 px-8 rounded-full transition-transform hover:scale-105 inline-block text-center text-sm">
-                    SOLICITAR INFORMACIÓN
+                <div class="mb-6 text-md leading-relaxed strapi-rich-text" set:html={descriptionHtml} />
+                <a href={url_boton || placeholder.url_boton} class="bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold py-3 px-8 rounded-full transition-transform hover:scale-105 inline-block text-center text-sm">
+                    {texto_boton || placeholder.texto_boton}
                 </a>
             </div>
         </div>
         <img
-            src={dotsPattern.src}
-            width={dotsPattern.width}
-            height={dotsPattern.height}
-            alt="Patrón de puntos decorativo"
+            src={decorativeDesktopUrl}
+            alt={alt_imagen_decorativa_desktop || placeholder.alt_imagen_decorativa_desktop}
             class="absolute bottom-8 right-4 z-10 hidden lg:block"
             aria-hidden="true"
             loading="lazy"
             decoding="async"
         />
         <img
-            src={dotsPatternMobile.src}
-            width={dotsPatternMobile.width}
-            height={dotsPatternMobile.height}
-            alt="Patrón de puntos decorativo"
+            src={decorativeMobileUrl}
+            alt={alt_imagen_decorativa_mobile || placeholder.alt_imagen_decorativa_mobile}
             class="absolute bottom-0 right-0 -translate-y-2/3 z-10 block lg:hidden"
             aria-hidden="true"
             loading="lazy"
@@ -91,6 +107,7 @@ const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Image
         />
     </div>
 </section>
+
 <style>
     .text-shadow-md {
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
