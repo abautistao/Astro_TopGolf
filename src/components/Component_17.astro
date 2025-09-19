@@ -1,30 +1,88 @@
 ---
 // src/components/Component_17.astro
+import { stringifyRichText } from "../lib/strapi.js";
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface Boton {
+  id: number;
+  texto: string;
+  url: string;
+  tipo: 'primario' | 'secundario';
+}
+
+export interface Props {
+  texto_banner: any; // Rich Text
+  titulo: any; // Rich Text
+  botones: Boton[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { texto_banner, titulo, botones } = Astro.props;
+
+const placeholderData: Props = {
+  texto_banner: [
+    { type: 'paragraph', children: [
+      { type: 'text', text: '¡Un torneo de golf diferente!', bold: true },
+      { type: 'text', text: ' Sin suspensiones por lluvia, más social y fácil de planificar. ' },
+      { type: 'link', url: '#', children: [{ type: 'text', text: 'Más información', bold: true }] }
+    ]}
+  ],
+  titulo: [
+    { type: 'paragraph', children: [
+      { type: 'text', text: '¿Tienes dudas? ' },
+      { type: 'text', text: 'o algo más en mente', italic: true }
+    ]}
+  ],
+  botones: [
+    { id: 1, texto: 'Solicitar Información', url: '#', tipo: 'primario' },
+    { id: 2, texto: 'Platica con un ejecutivo', url: '#', tipo: 'secundario' },
+  ]
+};
+
+const bannerHtml = stringifyRichText(texto_banner || placeholderData.texto_banner);
+const tituloHtml = stringifyRichText(titulo || placeholderData.titulo);
+const botonesToRender = botones && botones.length > 0 ? botones : placeholderData.botones;
 ---
+
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="container mx-auto px-4 flex flex-col items-center text-center gap-10">
         <div class="border-[3px] border-[#9981DC] rounded-lg p-4 max-w-3xl text-center">
-            <p class="text-[var(--neutral-background-strong)] text-base">
-                <strong>¡Un torneo de golf diferente!</strong>
-                <span class="hidden sm:inline"> Sin suspensiones por lluvia, más social y fácil de planificar.</span>
-                <a href="#" class="font-semibold text-[var(--brand-interactive-base)] hover:underline ml-1">Más información</a>
-            </p>
+            <div class="text-[var(--neutral-background-strong)] text-base prose max-w-none" set:html={bannerHtml} />
         </div>
 
-        <h2 class="text-4xl sm:text-3xl md:text-4xl font-bold text-[var(--neutral-background-strong)] max-w-4xl">
-            ¿Tienes dudas? <span class="font-serif italic">o algo más en mente</span>
-        </h2>
+        <div class="text-4xl sm:text-3xl md:text-4xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose max-w-none" set:html={tituloHtml}></div>
 
         <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
-            <a href="#"
-                class="bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-bold uppercase tracking-wider py-3 px-8 rounded-full shadow-lg transition-colors duration-300 ease-in-out">
-                Solicitar Información
-            </a>
-            <a href="#"
-                class="border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-colors duration-300 ease-in-out">
-                Platica con un ejecutivo
-            </a>
+            {botonesToRender.map(boton => (
+                <a href={boton.url}
+                    class:list={[
+                        'font-bold uppercase tracking-wider py-3 px-8 rounded-full shadow-lg transition-colors duration-300 ease-in-out',
+                        {
+                            'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'primario',
+                            'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'secundario'
+                        }
+                    ]}
+                >
+                    {boton.texto}
+                </a>
+            ))}
         </div>
-
     </div>
 </section>
+
+<style>
+  .prose :global(p) {
+    margin: 0;
+  }
+  .prose :global(strong) {
+    color: var(--neutral-background-strong);
+  }
+  .prose :global(a) {
+    color: var(--brand-interactive-base);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .prose :global(a:hover) {
+    text-decoration: underline;
+  }
+</style>
