@@ -1,0 +1,73 @@
+---
+// src/components/FormularioNoticias.astro
+import bgImage from '../assets/bg-form.png';
+---
+
+<section class="bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+    <div class="mx-auto px-10">
+        <div class="relative isolate overflow-hidden rounded-2xl bg-center px-6 py-16 shadow-2xl sm:px-16" style={`background-image: url(${bgImage.src})`}>
+            <div class="absolute inset-0 bg-blue-900/80 -z-10"></div>
+
+        <div class="mx-auto max-w-[90rem]">
+            <h2 class="text-center lg:text-left text-xl font-bold uppercase text-[var(--neutral-text-inverted)] lg:text-2xl">
+                Regístrate para recibir más noticias
+            </h2>
+
+            <form action="#" method="POST" class="mt-4 lg:mt-0 px-0 lg:px-8 ">
+                <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+                    <div>
+                    <label for="nombre" class="block text-sm font-semibold leading-6 text-[var(--neutral-text-inverted)] text-left">Nombre*</label>
+                    <div class="mt-2.5">
+                        <input type="text" name="nombre" id="nombre" autocomplete="given-name" class="block w-full rounded-md border-0 bg-[var(--neutral-text-inverted)] px-3.5 py-2 text-[var(--neutral-background-strong)]">
+                    </div>
+                    </div>
+
+                    <div>
+                    <label for="apellido" class="block text-sm font-semibold leading-6 text-[var(--neutral-text-inverted)] text-left">Apellido*</label>
+                    <div class="mt-2.5">
+                        <input type="text" name="apellido" id="apellido" autocomplete="family-name" class="block w-full rounded-md border-0 bg-[var(--neutral-text-inverted)] px-3.5 py-2 text-[var(--neutral-background-strong)]">
+                    </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                    <label for="correo" class="block text-sm font-semibold leading-6 text-[var(--neutral-text-inverted)] text-left">Correo electrónico*</label>
+                    <div class="mt-2.5">
+                        <input type="email" name="correo" id="correo" autocomplete="email" class="block w-full rounded-md border-0 bg-[var(--neutral-text-inverted)] px-3.5 py-2 text-[var(--neutral-background-strong)]">
+                    </div>
+                    </div>
+
+                    <div>
+                    <label for="telefono" class="block text-sm font-semibold leading-6 text-[var(--neutral-text-inverted)] text-left">Teléfono*</label>
+                    <div class="mt-2.5">
+                        <input type="tel" name="telefono" id="telefono" autocomplete="tel" class="block w-full rounded-md border-0 bg-[var(--neutral-text-inverted)] px-3.5 py-2 text-[var(--neutral-background-strong)]">
+                    </div>
+                    </div>
+
+                    <div>
+                    <label for="estado" class="block text-sm font-semibold leading-6 text-[var(--neutral-text-inverted)] text-left">Estado*</label>
+                    <div class="mt-2.5">
+                        <input type="text" name="estado" id="estado" autocomplete="address-level1" class="block w-full rounded-md border-0 bg-[var(--neutral-text-inverted)] px-3.5 py-2 text-[var(--neutral-background-strong)]">
+                    </div>
+                    </div>
+
+                    <div class="sm:col-span-2 flex items-start gap-x-3">
+                    <div class="flex h-6 items-center">
+                        <input id="aceptacion" name="aceptacion" type="checkbox" class="h-4 w-4 rounded border-[var(--neutral-background-strong)] text-[var(--surface-brand-primary)] ">
+                    </div>
+                    <div class="text-sm ">
+                        <label for="aceptacion" class=" text-[var(--neutral-text-inverted)]">Acepto recibir información de su newsletter y comunicación de promociones</label>
+                    </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-10 flex justify-center">
+                    <button type="submit" class="rounded-full border border-[var(--neutral-text-inverted)] px-15 py-3 text-center text-sm font-semibold text-[var(--neutral-text-inverted)] shadow-sm hover:bg-[var(--neutral-text-inverted)]/10">
+                        SUSCRÍBETE
+                    </button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</section>
