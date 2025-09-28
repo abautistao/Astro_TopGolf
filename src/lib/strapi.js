@@ -33,6 +33,24 @@ export async function getAllPages() {
     return await fetchAPI("/paginas");
 }
 
+export async function getBlogBySlug(slug) {
+  const pages = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&populate=*`);
+  return pages?.[0];
+}
+
+export async function getAllBlogs() {
+    return await fetchAPI("/blogs");
+}
+
+export async function getPromocionBySlug(slug) {
+  const pages = await fetchAPI(`/promociones?filters[slug][$eq]=${slug}&populate=*`);
+  return pages?.[0];
+}
+
+export async function getAllPromociones() {
+    return await fetchAPI("/promociones");
+}
+
 export const getStrapiUrl = (media) => {
     // La API de Strapi puede devolver el objeto de medios directamente o dentro de una envoltura 'data'.
     // Esta función ahora comprueba ambas estructuras para ser más robusta.
