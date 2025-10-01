@@ -1,0 +1,38 @@
+---
+// src/components/elements/Button.astro
+// 1. Definimos la interfaz para un único botón, que será usada por el array de botones.
+export interface Boton {
+    id: number;
+    texto: string;
+    url: string;
+    tipo: 'primario' | 'secundario';
+}
+
+// 2. Definimos la interfaz para las props del componente, que espera un array de botones.
+export interface Props {
+    botones: Boton[];
+}
+
+// 3. Recibimos el array de botones de las props.
+const { botones } = Astro.props;
+---
+
+<div class="mt-8 flex flex-col gap-4 sm:flex-row">
+    {botones.map(boton => (
+        <a
+            href={boton.url}
+            class:list={[
+                // Clases de estilo base para todos los botones.
+                'transform rounded-full px-8 py-3 font-bold uppercase transition-all hover:scale-105',
+                {
+                    // Clases condicionales para el botón primario.
+                    'bg-[var(--brand-interactive-base)] text-white shadow-lg': boton.tipo === 'primario',
+                    // Clases condicionales para el botón secundario.
+                    'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'secundario'
+                }
+            ]}
+        >
+            {boton.texto}
+        </a>
+    ))}
+</div>
