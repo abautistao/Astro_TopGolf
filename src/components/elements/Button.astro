@@ -32,8 +32,8 @@ const { botones } = Astro.props;
                     'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base]':  boton.tipo === 'version_5',
                 }
             ]}
+            set:html={boton.texto}
         >
-            {boton.texto}
         </a>
     ))}
 </div>
