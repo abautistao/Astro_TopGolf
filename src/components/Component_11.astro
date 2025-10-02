@@ -1,7 +1,8 @@
 ---
 // src/components/Component_11.astro
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 // 1. Definimos la interfaz para las props de Strapi
 export interface Props {
   etiqueta_paso: string;
@@ -12,6 +13,7 @@ export interface Props {
   url_boton: string;
   patron_fondo_escritorio: any; // Media
   patron_fondo_movil: any; // Media
+  Boton: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -24,6 +26,7 @@ const {
   url_boton,
   patron_fondo_escritorio,
   patron_fondo_movil,
+  Boton,
 } = Astro.props;
 
 // 3. Procesamos el contenido dinámico
@@ -39,6 +42,14 @@ const placeholderDescriptionHtml = `
   <p>Para venir a Topgolf puedes hacerlo de 2 maneras: reservando en línea o llegando directamente al lugar. Nuestros precios son por hora y varían dependiendo el día y la hora en la que desees venir.</p>
   <p>Una vez que decidas cuándo y a qué horas quieres visitarnos, es cuando la diversión comienza.</p>
 `;
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: texto_boton || "ACCIÓN",
+        url: url_boton || "#",
+        tipo: "version_3" // Usamos version_1 como el estilo de botón principal
+    }
+];
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] relative overflow-hidden">
@@ -66,7 +77,7 @@ const placeholderDescriptionHtml = `
 
   <div class="container mx-auto px-5 py-16 lg:py-10 relative z-10">
     <div class="flex flex-col lg:flex-row items-start lg:justify-items-normal overflow-hidden relative">
-      
+
       {/* --- Imagen Principal --- */}
       <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
         <img
@@ -102,9 +113,7 @@ const placeholderDescriptionHtml = `
             <div set:html={descriptionHtml || placeholderDescriptionHtml} />
         </div>
 
-        <a href={url_boton || "#"} class="bg-[var(--brand-interactive-base)] hover:bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] font-bold py-3 px-8 rounded-full text-center transition-colors duration-300 w-fit">
-          {texto_boton || "ACCIÓN"}
-        </a>
+        <ButtonGroup botones={componentButtons} />
       </div>
     </div>
   </div>

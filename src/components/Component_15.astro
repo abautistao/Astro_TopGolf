@@ -3,7 +3,8 @@
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import defaultDotsPattern from '../assets/Artwork_bg.png';
 import defaultDotsPatternMobile from '../assets/Artwork_1.png';
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 // 1. Definimos la interfaz para las props de Strapi
 export interface Props {
   imagen_fondo?: any;
@@ -18,11 +19,12 @@ export interface Props {
   alt_imagen_decorativa_desktop?: string;
   imagen_decorativa_mobile?: any;
   alt_imagen_decorativa_mobile?: string;
+  Boton: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { 
-  imagen_fondo, 
+const {
+  imagen_fondo,
   alt_imagen_fondo,
   etiqueta,
   titulo,
@@ -33,7 +35,8 @@ const {
   imagen_decorativa_desktop,
   alt_imagen_decorativa_desktop,
   imagen_decorativa_mobile,
-  alt_imagen_decorativa_mobile
+  alt_imagen_decorativa_mobile,
+  Boton
 } = Astro.props;
 
 const placeholder = {
@@ -55,6 +58,15 @@ const heroBackgroundUrl = getStrapiUrl(imagen_fondo) || placeholder.imagen_fondo
 const decorativeDesktopUrl = getStrapiUrl(imagen_decorativa_desktop) || placeholder.imagen_decorativa_desktop_url;
 const decorativeMobileUrl = getStrapiUrl(imagen_decorativa_mobile) || placeholder.imagen_decorativa_mobile_url;
 const descriptionHtml = stringifyRichText(descripcion || placeholder.descripcion);
+
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: texto_boton || placeholder.texto_boton,
+        url: url_boton || placeholder.url_boton,
+        tipo: "version_1" // Usamos version_1 como el estilo de botón principal
+    }
+];
 ---
 
 <section class="relative w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px] bg-[var(--neutral-text-inverted)]">
@@ -84,9 +96,7 @@ const descriptionHtml = stringifyRichText(descripcion || placeholder.descripcion
 
             <div class="w-full md:w-7/12">
                 <div class="mb-6 text-md leading-relaxed strapi-rich-text" set:html={descriptionHtml} />
-                <a href={url_boton || placeholder.url_boton} class="bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold py-3 px-8 rounded-full transition-transform hover:scale-105 inline-block text-center text-sm">
-                    {texto_boton || placeholder.texto_boton}
-                </a>
+                <ButtonGroup botones={componentButtons} />
             </div>
         </div>
         <img

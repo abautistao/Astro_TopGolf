@@ -1,13 +1,13 @@
 ---
 // src/components/Component_17.astro
 import { stringifyRichText } from "../lib/strapi.js";
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 // 1. Definimos las interfaces para las props de Strapi
-export interface Boton {
-  id: number;
-  texto: string;
-  url: string;
-  tipo: 'primario' | 'secundario';
+export interface Props {
+  texto_banner: any; // Rich Text
+  titulo: any; // Rich Text
+  botones: Boton[]; // Ahora usa el Boton importado de elements/Button.astro
 }
 
 export interface Props {
@@ -34,9 +34,10 @@ const placeholderData: Props = {
     ]}
   ],
   botones: [
-    { id: 1, texto: 'Solicitar Información', url: '#', tipo: 'primario' },
-    { id: 2, texto: 'Platica con un ejecutivo', url: '#', tipo: 'secundario' },
-  ]
+    // Aseguramos que el texto y la URL son dinámicos según el esquema de Strapi
+    { id: 1, texto: 'Solicitar Información', url: '#', tipo: 'version_3' },
+    { id: 2, texto: 'Platica con un ejecutivo', url: '#', tipo: 'version_5' },
+  ] as Boton[]
 };
 
 const bannerHtml = stringifyRichText(texto_banner || placeholderData.texto_banner);
@@ -53,19 +54,7 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
         <div class="text-4xl sm:text-3xl md:text-4xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose max-w-none" set:html={tituloHtml}></div>
 
         <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
-            {botonesToRender.map(boton => (
-                <a href={boton.url}
-                    class:list={[
-                        'font-bold uppercase tracking-wider py-3 px-8 rounded-full shadow-lg transition-colors duration-300 ease-in-out',
-                        {
-                            'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'primario',
-                            'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'secundario'
-                        }
-                    ]}
-                >
-                    {boton.texto}
-                </a>
-            ))}
+            <ButtonGroup botones={botonesToRender} />
         </div>
     </div>
 </section>

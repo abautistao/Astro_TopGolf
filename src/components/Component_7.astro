@@ -1,15 +1,15 @@
 ---
 // src/components/Component_7.astro
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 // 1. Definimos la interfaz de las props que el componente recibirá desde Strapi.
 export interface Props {
   titulo_pequeno: string;
   titulo_principal: string;
   descripcion: any; // Rich Text de Strapi
   cta_titulo: string;
-  cta_boton_texto: string;
-  cta_boton_url: string;
+  Boton: Boton[];
   imagen_fondo: any; // Media de Strapi
 }
 
@@ -19,8 +19,7 @@ const {
   titulo_principal,
   descripcion,
   cta_titulo,
-  cta_boton_texto,
-  cta_boton_url,
+  Boton,
   imagen_fondo,
 } = Astro.props;
 
@@ -32,6 +31,14 @@ const descriptionHtml = stringifyRichText(descripcion);
 // 4. URLs y contenido de placeholder en caso de que no haya datos en Strapi
 const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
 const placeholderDescriptionHtml = `<p>Esta es una descripción de ejemplo. <strong>Reemplázala</strong> con tu contenido desde Strapi.</p>`;
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "Botón CTA",
+        url: "#",
+        tipo: "version_1"
+    }
+];
 ---
 
 <section
@@ -76,14 +83,7 @@ const placeholderDescriptionHtml = `<p>Esta es una descripción de ejemplo. <str
             <h3 class="text-xl font-bold text-[var(--neutral-text-inverted)]">
               {cta_titulo || "Título del Llamado a la Acción"}
             </h3>
-            <div class="mt-8">
-              <a
-                href={cta_boton_url || "#"}
-                class="inline-flex items-center justify-center rounded-full bg-[var(--neutral-text-inverted)] px-6 py-3 font-semibold text-[var(--surface-brand-secondary)] shadow-sm transition hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
-                <i class="fa-solid fa-arrow-right mx-2"></i>
-                {cta_boton_texto || "Botón CTA"}
-              </a>
+            <ButtonGroup botones={componentButtons} />
             </div>
           </div>
         </div>

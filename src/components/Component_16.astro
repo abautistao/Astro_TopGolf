@@ -1,36 +1,55 @@
 ---
 // src/components/Component_16.astro
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 const FALLBACK_IMAGE_URL = "https://placehold.co/600x400/4a5568/ffffff?text=Imagen+no+disponible";
 
 // 1. Interfaz para el objeto de imagen de Strapi
 export interface StrapiMedia {
-  id: number;
-  url: string;
-  alternativeText: string | null;
+    id: number;
+    url: string;
+    alternativeText: string | null;
 }
 
 // 2. Interfaz para cada paquete
 export interface Package {
-  id: number;
-  tag: string;
-  titulo: string;
-  subtitulo: string;
-  descripcion: any;
-  imagen: StrapiMedia | null;
-  texto_boton: string;
-  url_boton: string;
+    id: number;
+    tag: string;
+    titulo: string;
+    subtitulo: string;
+    descripcion: any;
+    imagen: StrapiMedia | null;
+    texto_boton: string;
+    url_boton: string;
+    Boton: Boton[];
 }
 
 export interface Props {
-  paquetes: Package[];
+    paquetes: Package[];
 }
 
 const { paquetes } = Astro.props;
 
+
+const placeholderButton: Boton[] = [{
+    id: 1,
+    texto: "¡RESERVA EN LÍNEA!",
+    url: "#",
+    tipo: "version_3" // Usamos version_1 para el estilo principal
+}];
 const placeholderPackages: Package[] = [
-  { id: 1, tag: "REUNIÓN DE AMIGOS", titulo: "GAME & CREDIT", subtitulo: "7 A 12 PERSONAS", descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo." }] }], imagen: null, texto_boton: "¡RESERVA EN LÍNEA!", url_boton: "#" },
+    {
+        id: 1,
+        tag: "REUNIÓN DE AMIGOS",
+        titulo: "GAME & CREDIT",
+        subtitulo: "7 A 12 PERSONAS",
+        descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo." }] }],
+        imagen: null,
+        texto_boton: "¡RESERVA EN LÍNEA!",
+        url_boton: "#",
+        Boton: placeholderButton
+    },
 ];
 
 const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholderPackages;
@@ -41,14 +60,20 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packagesToRender.map((pkg) => {
                 const contentHtml = stringifyRichText(pkg.descripcion);
-                
+
                 // --- LÓGICA CORREGIDA ---
                 // Ahora pasamos el objeto de imagen COMPLETO a getStrapiUrl
-                const imageUrl = pkg.imagen 
+                const imageUrl = pkg.imagen
                     ? getStrapiUrl(pkg.imagen)
                     : FALLBACK_IMAGE_URL;
                 const imageAlt = pkg.imagen?.alternativeText || pkg.titulo;
 
+                const componentButtons: Boton[] = (pkg.Boton && pkg.Boton.length > 0) ? pkg.Boton : [{
+                    id: 1,
+                    texto: pkg.texto_boton || "ACCIÓN",
+                    url: pkg.url_boton || "#",
+                    tipo: "version_3"
+                }];
                 return (
                     <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                         <div class="relative">
@@ -63,11 +88,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                             <h2 class="text-3xl font-semibold text-[var(--surface-brand-primary)] uppercase">{pkg.titulo}</h2>
                             <p class="text-sm font-semibold text-[var(--surface-brand-primary)] mt-1 uppercase tracking-wider">{pkg.subtitulo}</p>
                             <div class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow prose max-w-none" set:html={contentHtml} />
-                            <div class="mt-8">
-                                <a href={pkg.url_boton} class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-bold py-3 px-10 rounded-[25px] hover:bg-[var(--brand-interactive-base)] transition-colors duration-300">
-                                    {pkg.texto_boton}
-                                </a>
-                            </div>
+                            <ButtonGroup botones={componentButtons} />
                         </div>
                     </div>
                 );
