@@ -14,7 +14,8 @@ export interface Props {
     texto_banner: string;
     texto_boton: string;
     url_boton: string;
-    texto_ayuda: any; // Puede ser un string o un arreglo de Strapi
+    texto_ayuda: any;
+    Boton: Boton[];// Puede ser un string o un arreglo de Strapi
 }
 
 const {
@@ -24,10 +25,11 @@ const {
     alt_logo,
     titulo,
     texto_banner,
-    texto_boton,
-    url_boton,
+    Boton,
     texto_ayuda,
 } = Astro.props;
+
+console.log("Props recibidas en Component_1:",Boton);
 
 const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
 const topgolfLogoUrl = getStrapiUrl(logo);
@@ -37,12 +39,12 @@ const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Image
 const placeholderLogoUrl = `https://placehold.co/300x80/ffffff/2d3748?text=Logo`;
 
 const helpTextHtml = stringifyRichText(texto_ayuda);
-const buttonBanner: Boton[] = [
+const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
     {
         id: 1,
-        texto: texto_boton || "RESERVA AQUÍ TU BAHÍA",
-        url: url_boton || '#',
-        tipo: 'primario'
+        texto: "Reserva Ahora",
+        url: "#",
+        tipo: "primario"
     }
 ];
 ---
@@ -70,7 +72,7 @@ const buttonBanner: Boton[] = [
     <div class="relative bg-[var(--neutral-text-inverted)] h-40">
         <div class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
 
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-2 sm:px-6 py-2 text-center">
+            <div class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6">
 
             <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]">
                 {texto_banner || "Descubre la mejor manera de jugar"}
@@ -81,7 +83,7 @@ const buttonBanner: Boton[] = [
                 </div>
             </div>
 
-            <div class="py-2 text-center text-sm">
+            <div class="py-2 text-sm text-center">
                 <p class="text-[var(--neutral-text-inverted)] strapi-rich-text" set:html={helpTextHtml}></p>
             </div>
         </div>
