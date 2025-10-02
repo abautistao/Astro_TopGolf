@@ -4,14 +4,15 @@
 // 1. Importa utilidades y las imágenes decorativas estáticas
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import dotsPattern from '../assets/Artwork.png';
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 
 // 2. Define la interfaz de las props desde Strapi
 export interface Props {
     titulo: string;
     descripcion: any;
     texto_ubicacion: string;
-    texto_boton_principal: string;
-    url_boton_principal: string;
+    Boton: Boton[];
     texto_ayuda: any;
     imagen_principal: any;
     alt_imagen_principal: string;
@@ -22,8 +23,7 @@ const {
     titulo,
     descripcion,
     texto_ubicacion,
-    texto_boton_principal,
-    url_boton_principal,
+    Boton,
     texto_ayuda,
     imagen_principal,
     alt_imagen_principal
@@ -36,6 +36,16 @@ const helpTextHtml = stringifyRichText(texto_ayuda);
 
 // Placeholder por si no viene la imagen de Strapi
 const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=Topgolf";
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "RESERVA AQUÍ TU BAHÍA",
+        url: "#",
+        // El estilo del botón original (fondo azul, texto blanco)
+        // corresponde a 'version_3' en tu componente.
+        tipo: "version_3"
+    }
+];
 ---
 
 <section class="relative overflow-hidden">
@@ -69,11 +79,7 @@ const placeholderImageUrl = "https://placehold.co/800x1000/4a5568/ffffff?text=To
                     {texto_ubicacion || "TOPGOLF PLAYA DEL CARMEN"}
                     </span>
                 </div>
-                <div class="mt-4">
-                    <a href={url_boton_principal || "#"} class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] uppercase font-bold text-sm tracking-widest px-8 py-3 rounded-full hover:bg-[var(--surface-brand-primary)] transition-colors duration-300">
-                        {texto_boton_principal || "RESERVA AQUÍ TU BAHÍA"}
-                    </a>
-                </div>
+                <ButtonGroup botones={componentButtons} />
                 <div class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
                     set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`} />
             </div>

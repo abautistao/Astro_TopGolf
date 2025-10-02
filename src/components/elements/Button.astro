@@ -5,7 +5,7 @@ export interface Boton {
     id: number;
     texto: string;
     url: string;
-    tipo: 'primario' | 'secundario';
+    tipo: 'version_1' | 'version_2'| 'version_3'| 'version_4'| 'version_5';
 }
 
 // 2. Definimos la interfaz para las props del componente, que espera un array de botones.
@@ -25,10 +25,11 @@ const { botones } = Astro.props;
                 // Clases de estilo base para todos los botones.
                 'transform rounded-full px-8 py-3 font-bold uppercase transition-all hover:scale-105',
                 {
-                    // Clases condicionales para el botón primario.
-                    'bg-[var(--brand-interactive-base)] text-white shadow-lg': boton.tipo === 'primario',
-                    // Clases condicionales para el botón secundario.
-                    'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'secundario'
+                    'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
+                    'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
+                    'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
+                    'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
+                    'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base]':  boton.tipo === 'version_5',
                 }
             ]}
         >

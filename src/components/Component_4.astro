@@ -1,21 +1,30 @@
 ---
 // src/components/Component_4.astro
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 
 // 1. Define la interfaz de las props que el componente recibirá desde Strapi
 export interface Props {
     titulo: string;
     subtitulo: string;
-    texto_boton: string;
-    url_boton: string;
+    Boton: Boton[];
 }
 
 // 2. Recibe las props desde Astro
 const {
     titulo,
     subtitulo,
-    texto_boton,
-    url_boton
+    Boton
 } = Astro.props;
+
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "Planea tu visita",
+        url: "#",
+        tipo: "version_3"
+    }
+];
 ---
 
 <section class="bg-[var(--neutral-text-inverted)] py-20 sm:py-28">
@@ -36,12 +45,7 @@ const {
 
         </div>
         <div class="shrink-0">
-            <a
-            href={url_boton || "#"}
-            class="inline-block bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] font-bold py-4 px-12 rounded-full text-center text-sm uppercase tracking-wider hover:bg-[var(--surface-brand-secondary)]  transition-colors shadow-lg"
-            >
-            {texto_boton || "Planea tu visita"}
-            </a>
+            <ButtonGroup botones={componentButtons} />
         </div>
 
         </div>

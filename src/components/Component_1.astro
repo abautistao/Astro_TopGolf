@@ -44,11 +44,11 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         id: 1,
         texto: "Reserva Ahora",
         url: "#",
-        tipo: "primario"
+        tipo: "version_1"
     }
 ];
 ---
-<section class="relative w-full text-[--neutral-text-inverted)] min-h-[550px] md:min-h-[650px]">
+<section class="relative w-full min-h-[550px] md:min-h-[650px]">
     <img
         src={heroBackgroundUrl || placeholderBgUrl}
         alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
@@ -63,7 +63,7 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         alt={alt_logo || "Logo de placeholder"}
         class="transform w-80 -rotate-6 md:w-96"
         />
-        <h1 class="-mt-4 font-extrabold tracking-tighter uppercase text-shadow-md text-7xl md:text-8xl">
+        <h1 class="-mt-4 font-extrabold tracking-tighter uppercase text-shadow-md text-7xl md:text-8xl text-[var(--neutral-text-inverted)]">
         {titulo || "Título de Ejemplo"}
         </h1>
     </div>

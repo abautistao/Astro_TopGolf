@@ -1,22 +1,22 @@
 ---
 // src/components/Component_3.astro
 
-// 1. Importa las utilidades de Strapi
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 
 // 2. Define la interfaz de las props que el componente recibirá desde Strapi
 export interface Props {
   pre_titulo: string;
   titulo: string;
-  contenido: any; // El Rich Text de Strapi viene como un objeto/array
-  texto_boton: string;
-  url_boton: string;
+  contenido: any;
   imagen_superior: any;
   alt_imagen_superior: string;
   imagen_inferior_izquierda: any;
   alt_imagen_inferior_izquierda: string;
   imagen_inferior_derecha: any;
   alt_imagen_inferior_derecha: string;
+  Boton: Boton[];
 }
 
 // 3. Recibe las props desde Astro
@@ -24,14 +24,13 @@ const {
   pre_titulo,
   titulo,
   contenido,
-  texto_boton,
-  url_boton,
   imagen_superior,
   alt_imagen_superior,
   imagen_inferior_izquierda,
   alt_imagen_inferior_izquierda,
   imagen_inferior_derecha,
   alt_imagen_inferior_derecha,
+  Boton,
 } = Astro.props;
 
 // 4. Procesa las URLs de las imágenes y el texto enriquecido
@@ -44,6 +43,14 @@ const contentHtml = stringifyRichText(contenido);
 const placeholderUrl1 = "https://placehold.co/800x600/a0aec0/ffffff?text=Imagen+1";
 const placeholderUrl2 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+2";
 const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+3";
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "RESERVA AQUÍ TU BAHÍA",
+        url: "#",
+        tipo: "version_3"
+    }
+];
 ---
 
 <section class="bg-[var(--neutral-background-subtle)] py-16 sm:py-24">
@@ -61,14 +68,7 @@ const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+
         <div class="prose prose-lg text-[var(--neutral-background-strong)] strapi-rich-text">
           <div set:html={contentHtml || "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"} />
         </div>
-        <div class="mt-4">
-          <a
-            href={url_boton || "#"}
-            class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-bold py-3 px-8 rounded-full text-center text-sm uppercase tracking-wider hover:bg-blue-800 transition-colors shadow-md"
-          >
-            {texto_boton || "RESERVA AQUÍ TU BAHÍA"}
-          </a>
-        </div>
+        <ButtonGroup botones={componentButtons} />
       </div>
 
       {/* --- CONTENIDO DE IMÁGENES (DINÁMICO) --- */}
