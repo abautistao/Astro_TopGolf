@@ -19,7 +19,7 @@ async function fetchAPI(endpoint) {
 }
 
 export async function getSiteSetup() {
-  return await fetchAPI("/setup-site");
+  return await fetchAPI("/setup-site?populate[tipografias][populate]=archivo_fuente");
 }
 
 export async function getPageBySlug(slug) {
@@ -64,6 +64,45 @@ export const getStrapiUrl = (media) => {
     }
     return null;
   }
+
+export const generateFontFaces = (tipografias) => {
+  if (!tipografias || tipografias.length === 0) {
+    return "";
+  }
+
+  const fontFaces = tipografias.map(font => {
+    const { familia, peso, estilo, archivo_fuente } = font;
+    const url = getStrapiUrl(archivo_fuente.data.attributes);
+    const format = url.split('.').pop();
+
+    return `
+      @font-face {
+        font-family: '${familia}';
+        src: url('${url}') format('${format}');
+        font-weight: ${peso || 'normal'};
+        font-style: ${estilo || 'normal'};
+        font-display: swap;
+      }
+    `;
+  }).join('');
+
+  const fontFamilies = tipografias.reduce((acc, font) => {
+    const { familia } = font;
+    if (familia && !acc.includes(familia)) {
+      acc.push(familia);
+    }
+    return acc;
+  }, []);
+
+  const rootStyles = `
+    :root {
+      ${fontFamilies.map(familia => `--font-${familia.toLowerCase()}: '${familia}', sans-serif;`).join('\n      ')}
+    }
+  `;
+
+  return fontFaces + rootStyles;
+};
+
 
 export const stringifyRichText = (richText) => {
   if (!richText) return '';
