@@ -1,7 +1,8 @@
 ---
 // src/components/Component_2.astro
 import { getStrapiUrl } from "../lib/strapi.js";
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 // 1. Definimos la interfaz de las props que el componente recibirá desde Strapi.
 export interface Card {
   id: number;
@@ -47,7 +48,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       <div class="flex gap-6">
         {cardsToRender.map(card => {
           const imageUrl = getStrapiUrl(card.imagen);
-         
+
           const placeholderImageUrl = `https://placehold.co/400x450/2d3748/ffffff?text=${encodeURIComponent(card.titulo)}`;
 
           return (
@@ -68,7 +69,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
               {card.etiqueta && (
                 <div class="absolute top-4 left-4 bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] text-xs font-bold px-3 py-1 rounded-md z-20">{card.etiqueta}</div>
               )}
-            
+
             </div>
           )
         })}
