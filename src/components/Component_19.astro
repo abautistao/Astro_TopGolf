@@ -6,30 +6,30 @@ const FALLBACK_IMAGE_URL = "https://placehold.co/800x600/4a5568/ffffff?text=Imag
 
 // 1. Interfaz para el objeto de imagen de Strapi
 export interface StrapiMedia {
-  id: number;
-  url: string;
-  alternativeText: string | null;
+    id: number;
+    url: string;
+    alternativeText: string | null;
 }
 
 export interface Props {
-  pre_titulo: string;
-  contenido: any; // Rich Text
-  imagen_superior: StrapiMedia | null;
-  imagen_inferior_izquierda: StrapiMedia | null;
-  imagen_inferior_derecha: StrapiMedia | null;
+    pre_titulo: string;
+    contenido: any; // Rich Text
+    imagen_superior: StrapiMedia | null;
+    imagen_inferior_izquierda: StrapiMedia | null;
+    imagen_inferior_derecha: StrapiMedia | null;
 }
 
 // 2. Recibimos las props y definimos placeholders
 const { pre_titulo, contenido, imagen_superior, imagen_inferior_izquierda, imagen_inferior_derecha } = Astro.props;
 
 const placeholderData: Props = {
-  pre_titulo: "NO HAY NADA COMO TOPGOLF",
-  contenido: [
-    { type: 'paragraph', children: [{ type: 'text', text: "Este es un texto de ejemplo. El contenido real vendrá de Strapi." }] }
-  ],
-  imagen_superior: null,
-  imagen_inferior_izquierda: null,
-  imagen_inferior_derecha: null,
+    pre_titulo: "NO HAY NADA COMO TOPGOLF",
+    contenido: [
+        { type: 'paragraph', children: [{ type: 'text', text: "Este es un texto de ejemplo. El contenido real vendrá de Strapi." }] }
+    ],
+    imagen_superior: null,
+    imagen_inferior_izquierda: null,
+    imagen_inferior_derecha: null,
 };
 
 // 3. Preparamos los datos para renderizar

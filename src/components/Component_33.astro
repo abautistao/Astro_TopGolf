@@ -1,40 +1,48 @@
 ---
 // src/components/Component_33.astro
 import { getStrapiUrl } from "../lib/strapi.js";
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 
 const FALLBACK_IMAGE_URL = "https://placehold.co/1920x600/4a5568/ffffff?text=Imagen+no+disponible";
 
 // 1. Definimos las interfaces para las props de Strapi
 export interface StrapiMedia {
-  id: number;
-  url: string;
-  alternativeText: string | null;
+    id: number;
+    url: string;
+    alternativeText: string | null;
 }
 
 export interface Props {
-  titulo: string;
-  imagen_fondo: StrapiMedia | null;
-  texto_aceptacion: string;
-  texto_boton: string;
+    titulo: string;
+    imagen_fondo: StrapiMedia | null;
+    texto_aceptacion: string;
+    texto_boton: string;
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo, imagen_fondo, texto_aceptacion, texto_boton } = Astro.props;
+const { titulo, imagen_fondo, texto_aceptacion, texto_boton, Boton } = Astro.props;
 
 const placeholderData: Props = {
-  titulo: "Regístrate para recibir más noticias",
-  texto_aceptacion: "Acepto recibir información de su newsletter y comunicación de promociones",
-  texto_boton: "SUSCRÍBETE",
-  imagen_fondo: null,
+    titulo: "Regístrate para recibir más noticias",
+    texto_aceptacion: "Acepto recibir información de su newsletter y comunicación de promociones",
+    texto_boton: "SUSCRÍBETE",
+    imagen_fondo: null,
 };
 
 // 3. Preparamos los datos para renderizar
 const dataToRender = {
-  titulo: titulo || placeholderData.titulo,
-  texto_aceptacion: texto_aceptacion || placeholderData.texto_aceptacion,
-  texto_boton: texto_boton || placeholderData.texto_boton,
+    titulo: titulo || placeholderData.titulo,
+    texto_aceptacion: texto_aceptacion || placeholderData.texto_aceptacion,
+    texto_boton: texto_boton || placeholderData.texto_boton,
 };
-
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: texto_boton || dataToRender.texto_boton,
+        tipo: "version_6"
+    }
+];
 const backgroundImageUrl = imagen_fondo
     ? getStrapiUrl(imagen_fondo)
     : FALLBACK_IMAGE_URL;
@@ -90,9 +98,7 @@ const backgroundImageUrl = imagen_fondo
                         </div>
                     </div>
                     <div class="mt-10 flex justify-center">
-                        <button type="submit" class="rounded-full border border-[var(--neutral-text-inverted)] px-15 py-3 text-center text-sm font-semibold text-[var(--neutral-text-inverted)] shadow-sm hover:bg-[var(--neutral-text-inverted)]/10">
-                            {dataToRender.texto_boton}
-                        </button>
+                        <ButtonGroup botones={componentButtons} />
                     </div>
                 </form>
             </div>

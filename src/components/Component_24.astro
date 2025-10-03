@@ -3,47 +3,57 @@
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import dotsPatternMobile from '../assets/Artwork_1.png';
 import ArtworkSquare12 from '../assets/Artwork_square_12_dot.png';
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 const FALLBACK_IMAGE_URL = "https://placehold.co/760x500/4a5568/ffffff?text=Imagen+no+disponible";
 
 // 1. Definimos las interfaces para las props de Strapi
 export interface StrapiMedia {
-  id: number;
-  url: string;
-  alternativeText: string | null;
+    id: number;
+    url: string;
+    alternativeText: string | null;
 }
 
 export interface Props {
-  imagen_principal: StrapiMedia | null;
-  titulo: string;
-  descripcion: any; // Rich Text
-  texto_boton: string;
-  url_boton: string;
+    imagen_principal: StrapiMedia | null;
+    titulo: string;
+    descripcion: any; // Rich Text
+    texto_boton: string;
+    url_boton: string;
+    Boton: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { imagen_principal, titulo, descripcion, texto_boton, url_boton } = Astro.props;
+const { imagen_principal, titulo, descripcion, texto_boton, url_boton, Boton } = Astro.props;
 
 const placeholderData: Props = {
-  titulo: "¡JUGAR GOLF NUNCA SERÁ IGUAL!",
-  descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo para la descripción." }] }],
-  texto_boton: "MÁS INFORMACIÓN",
-  url_boton: "#",
-  imagen_principal: null,
+    titulo: "¡JUGAR GOLF NUNCA SERÁ IGUAL!",
+    descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo para la descripción." }] }],
+    texto_boton: "MÁS INFORMACIÓN",
+    url_boton: "#",
+    imagen_principal: null,
 };
 
 // 3. Preparamos los datos para renderizar
 const dataToRender = {
-  titulo: titulo || placeholderData.titulo,
-  descripcion: stringifyRichText(descripcion || placeholderData.descripcion),
-  texto_boton: texto_boton || placeholderData.texto_boton,
-  url_boton: url_boton || placeholderData.url_boton,
+    titulo: titulo || placeholderData.titulo,
+    descripcion: stringifyRichText(descripcion || placeholderData.descripcion),
+    texto_boton: texto_boton || placeholderData.texto_boton,
+    url_boton: url_boton || placeholderData.url_boton,
 };
 
 const mainImageUrl = imagen_principal
     ? getStrapiUrl(imagen_principal)
     : FALLBACK_IMAGE_URL;
 const mainImageAlt = imagen_principal?.alternativeText || "Imagen principal";
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: texto_boton || dataToRender.texto_boton,
+        url: url_boton || dataToRender.url_boton,
+        tipo: "version_1" // Usamos version_1 como el estilo de botón principal
+    }
+];
 ---
 
 <section class="relative overflow-hidden py-12 sm:py-16">
@@ -62,11 +72,7 @@ const mainImageAlt = imagen_principal?.alternativeText || "Imagen principal";
                         {dataToRender.titulo}
                     </h2>
                     <div class="mt-6 text-lg text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
-                    <div class="mt-8">
-                        <a href={dataToRender.url_boton} class="inline-block bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold uppercase tracking-wider py-3 px-8 rounded-full transition-transform duration-300 hover:scale-105">
-                            {dataToRender.texto_boton}
-                        </a>
-                    </div>
+                    <ButtonGroup botones={componentButtons} />
                 </div>
             </div>
         </div>

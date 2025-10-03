@@ -1,36 +1,38 @@
 ---
 // src/components/Component_18.astro
 import { stringifyRichText } from "../lib/strapi.js";
-
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 // 1. Definimos las interfaces para las props de Strapi
 export interface Boton {
-  id: number;
-  texto: string;
-  url: string;
-  tipo: 'primario' | 'secundario';
+    id: number;
+    texto: string;
+    url: string;
+    tipo: 'primario' | 'secundario';
+    botones: Boton[];
 }
 
 export interface Props {
-  tag: string;
-  titulo: string;
-  contenido: any; // Rich Text
-  botones: Boton[];
+    tag: string;
+    titulo: string;
+    contenido: any; // Rich Text
+    botones: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
 const { tag, titulo, contenido, botones } = Astro.props;
 
 const placeholderData: Props = {
-  tag: "TOPGOLF MONTERREY",
-  titulo: "Espacios que se adaptan a tu evento",
-  contenido: [
-    { type: 'paragraph', children: [{ type: 'text', text: "Somos un gran recinto con una amplia opción de espacios que se adaptan a prácticamente cualquier tipo de evento, por ejemplo, para algo social puedes reservar nuestro Sky Bar en la terraza, o bien para una reunión privada tenemos nuestros salones de conferencia, o si lo que ocupas es algo más grande ¿por qué no pensar en todo un piso?" }] },
-    { type: 'paragraph', children: [{ type: 'text', text: "Los espacios para eventos, así como su configuración, mobiliario, decoración y amenidades, pueden variar. Las capacidades de cada espacio para eventos variarán según la configuración de la sala. Pueden aplicarse restricciones.", "small": true }] }
-  ],
-  botones: [
-    { id: 1, texto: "Guía de espacios para eventos", url: "#", tipo: 'primario' },
-    { id: 2, texto: "Solicitar Información", url: "#", tipo: 'secundario' },
-  ]
+    tag: "TOPGOLF MONTERREY",
+    titulo: "Espacios que se adaptan a tu evento",
+    contenido: [
+        { type: 'paragraph', children: [{ type: 'text', text: "Somos un gran recinto con una amplia opción de espacios que se adaptan a prácticamente cualquier tipo de evento, por ejemplo, para algo social puedes reservar nuestro Sky Bar en la terraza, o bien para una reunión privada tenemos nuestros salones de conferencia, o si lo que ocupas es algo más grande ¿por qué no pensar en todo un piso?" }] },
+        { type: 'paragraph', children: [{ type: 'text', text: "Los espacios para eventos, así como su configuración, mobiliario, decoración y amenidades, pueden variar. Las capacidades de cada espacio para eventos variarán según la configuración de la sala. Pueden aplicarse restricciones.", "small": true }] }
+    ],
+    botones: [
+        { id: 1, texto: "Guía de espacios para eventos", url: "#", tipo: 'version_3' },
+        { id: 2, texto: "Solicitar Información", url: "#", tipo: 'version_5' },
+    ] as Boton[]
 };
 
 const tagToRender = tag || placeholderData.tag;
@@ -52,19 +54,7 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
         <div class="max-w-4xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose max-w-none" set:html={contentHtml}></div>
 
         <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-            {botonesToRender.map(boton => (
-                 <a href={boton.url}
-                    class:list={[
-                        'transform rounded-full px-8 py-3 font-bold uppercase transition-all hover:scale-105',
-                        {
-                            'bg-[var(--brand-interactive-base)] text-white shadow-lg': boton.tipo === 'primario',
-                            'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'secundario'
-                        }
-                    ]}
-                >
-                    {boton.texto}
-                </a>
-            ))}
+            <ButtonGroup botones={botonesToRender} />
         </div>
     </div>
 </section>
