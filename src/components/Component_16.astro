@@ -34,7 +34,7 @@ const { paquetes } = Astro.props;
 
 const placeholderButton: Boton[] = [{
     id: 1,
-    texto: "¡RESERVA EN LÍNEA!",
+    texto: "Lorem Ipsum",
     url: "#",
     tipo: "version_3" // Usamos version_1 para el estilo principal
 }];
@@ -60,6 +60,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packagesToRender.map((pkg) => {
                 const contentHtml = stringifyRichText(pkg.descripcion);
+                console.log(pkg.Boton)
 
                 // --- LÓGICA CORREGIDA ---
                 // Ahora pasamos el objeto de imagen COMPLETO a getStrapiUrl
@@ -68,12 +69,14 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                     : FALLBACK_IMAGE_URL;
                 const imageAlt = pkg.imagen?.alternativeText || pkg.titulo;
 
-                const componentButtons: Boton[] = (pkg.Boton && pkg.Boton.length > 0) ? pkg.Boton : [{
-                    id: 1,
-                    texto: pkg.texto_boton || "ACCIÓN",
+                const componentButtons: Boton[] = (pkg.Boton && !Array.isArray(pkg.Boton) ? [pkg.Boton] : pkg.Boton) || [
+                  {   id: 1,
+                    texto: pkg.texto_boton || "Lorem Ipsum",
                     url: pkg.url_boton || "#",
                     tipo: "version_3"
                 }];
+
+                console.log(componentButtons);
                 return (
                     <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                         <div class="relative">
