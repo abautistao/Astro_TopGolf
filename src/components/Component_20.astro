@@ -3,6 +3,8 @@
 import { getStrapiUrl } from "../lib/strapi.js";
 import dotsPattern from "../assets/Artwork.png";
 import dotsPatternSquare from "../assets/Artwork_square.png";
+import { stringifyRichText } from "../lib/strapi.js";
+
 
 const FALLBACK_IMAGE_URL = "https://placehold.co/1024x1280/4a5568/ffffff?text=Imagen+no+disponible";
 
@@ -10,7 +12,7 @@ const FALLBACK_IMAGE_URL = "https://placehold.co/1024x1280/4a5568/ffffff?text=Im
 export interface Feature {
   id: number;
   titulo: string;
-  descripcion: string;
+  descripcion: any;
 }
 
 export interface StrapiMedia {
@@ -23,7 +25,7 @@ export interface Props {
   imagen_principal: StrapiMedia | null;
   titulo_seccion: string;
   titulo_principal: string;
-  texto_introduccion: string;
+  texto_introduccion: any;
   caracteristicas: Feature[];
 }
 
@@ -45,7 +47,8 @@ const placeholderData: Props = {
 const dataToRender = {
   titulo_seccion: titulo_seccion || placeholderData.titulo_seccion,
   titulo_principal: titulo_principal || placeholderData.titulo_principal,
-  texto_introduccion: texto_introduccion || placeholderData.texto_introduccion,
+  contentHtml: stringifyRichText(texto_introduccion) || placeholderData.texto_introduccion,
+  
   caracteristicas: caracteristicas && caracteristicas.length > 0 ? caracteristicas : placeholderData.caracteristicas,
 };
 
@@ -75,7 +78,7 @@ const imageAlt = imagen_principal?.alternativeText || "Imagen principal de la se
       <div class="z-10 p-5 lg:p-0 xl:p-0">
         <h2 class="text-xl md:text-2xl tracking-wider uppercase">{dataToRender.titulo_seccion}</h2>
         <h1 class="text-5xl md:text-7xl font-semibold uppercase my-2">{dataToRender.titulo_principal}</h1>
-        <p class="mt-6 text-base max-w-2xl">{dataToRender.texto_introduccion}</p>
+        <div class="mt-6 text-base max-w-2xl" set:html={dataToRender.contentHtml} ></div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mt-12">
           {dataToRender.caracteristicas.map((feature) => (
             <div>
@@ -83,7 +86,7 @@ const imageAlt = imagen_principal?.alternativeText || "Imagen principal de la se
                 <i class="fas fa-circle-check text-[var(--accent-feedback-strong)] mr-3 flex-shrink-0"></i>
                 {feature.titulo}
               </h3>
-              <p class="text-sm opacity-90">{feature.descripcion}</p>
+              <div class="text-sm opacity-90" set:html={stringifyRichText(feature.descripcion)} ></div>
             </div>
           ))}
         </div>

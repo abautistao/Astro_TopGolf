@@ -60,7 +60,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packagesToRender.map((pkg) => {
                 const contentHtml = stringifyRichText(pkg.descripcion);
-                console.log(pkg.Boton)
+               
 
                 // --- LÓGICA CORREGIDA ---
                 // Ahora pasamos el objeto de imagen COMPLETO a getStrapiUrl
@@ -76,7 +76,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                     tipo: "version_3"
                 }];
 
-                console.log(componentButtons);
+              
                 return (
                     <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                         <div class="relative">
