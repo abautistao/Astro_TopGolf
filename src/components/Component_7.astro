@@ -8,7 +8,7 @@ export interface Props {
   titulo_pequeno: string;
   titulo_principal: string;
   descripcion: any; // Rich Text de Strapi
-  cta_titulo: string;
+  cta_titulo: any;
   Boton: Boton[];
   imagen_fondo: any; // Media de Strapi
 }
@@ -27,6 +27,7 @@ const {
 const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
 const alt_imagen_fondo = imagen_fondo?.data?.attributes?.alternativeText;
 const descriptionHtml = stringifyRichText(descripcion);
+const cta_titulo_boton = stringifyRichText(cta_titulo);
 
 // 4. URLs y contenido de placeholder en caso de que no haya datos en Strapi
 const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo`;
@@ -81,7 +82,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
           ></div>
           <div class="flex h-full flex-col justify-center">
             <h3 class="text-xl font-bold text-[var(--neutral-text-inverted)]">
-              {cta_titulo || "Título del Llamado a la Acción"}
+               <div set:html={cta_titulo_boton || placeholderDescriptionHtml} />
             </h3>
             <ButtonGroup botones={componentButtons} />
             </div>

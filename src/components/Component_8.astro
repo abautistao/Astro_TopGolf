@@ -52,6 +52,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCa
 const placeholderUrl = (text: string) => `https://placehold.co/600x400/2d3748/ffffff?text=${encodeURIComponent(text)}`;
 const placeholderDescriptionHtml = `<p>Encontrarás un nuevo giro en la comida que más te gusta, <strong>especialidades locales</strong> y cervezas, además de nuevas creaciones inesperadas.</p>`;
 const placeholderDisclaimerHtml = `<p>Las selecciones del menú están sujetas a disponibilidad y pueden variar según el lugar.</p>`;
+
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
     {
         id: 1,
@@ -79,7 +80,9 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
       </div>
     </div>
     <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
+      
       {cardsToRender.map((card) => {
+       
         const imageUrl = getStrapiUrl(card.imagen);
         const altText = card.imagen?.data?.attributes?.alternativeText || card.etiqueta;
 

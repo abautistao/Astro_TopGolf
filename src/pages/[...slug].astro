@@ -85,7 +85,7 @@ const componentsMap = {
 // ==========================================================================================
 export async function getStaticPaths() {
   const pages = await getAllPages();
-  console.log("Datos recibidos para getStaticPaths:", pages);
+  
   if (!pages) {
     return [];
   }
