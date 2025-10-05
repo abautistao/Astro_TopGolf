@@ -8,13 +8,11 @@ export interface Props {
     tag: string;
     titulo: string;
     contenido: any; // Rich Text
-    texto_boton: string;
-    url_boton: string;
     Boton?: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { tag, titulo, contenido, texto_boton, url_boton , Boton  } = Astro.props;
+const { tag, titulo, contenido , Boton  } = Astro.props;
 
 
 const placeholderData: Props = {
@@ -25,9 +23,7 @@ const placeholderData: Props = {
         { type: 'text', text: "Tanto si eres un aspirante a profesional del golf como si estás recogiendo un palo por primera vez, Topgolf es el juego de todos. Nuestros objetivos gigantes facilitan la puntuación sin importar tu swing. Y nuestras pelotas de golf con microchip se puntúan solas, para que puedas concentrarte en la diversión. " },
         { type: 'link', url: '#', children: [{ type: 'text', text: '¡Ven a jugar!', bold: true }] }
         ]}
-    ],
-    texto_boton: "¡AGENDA TU VISITA!",
-    url_boton: "#",
+    ]
 };
 
 // 3. Preparamos los datos para renderizar
@@ -35,15 +31,14 @@ const dataToRender = {
     tag: tag || placeholderData.tag,
     titulo: titulo || placeholderData.titulo,
     contenido: stringifyRichText(contenido || placeholderData.contenido),
-    texto_boton: texto_boton || placeholderData.texto_boton,
-    url_boton: url_boton || placeholderData.url_boton,
 };
-const componentButtons: Boton[] = (Boton && Boton.length > 0) ? Boton : [{
-    id: 1,
-    texto: dataToRender.texto_boton,
-    url: dataToRender.url_boton,
-    tipo: 'version_1'
-}];
+
+const componentButtons:  Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+                  {   id: 1,
+                    texto:  "Lorem Ipsum",
+                    url:  "#",
+                    tipo: "version_3"
+                }];
 ---
 
 <section class="w-full text-[var(--neutral-text-inverted)] bg-custom-gradient">

@@ -16,15 +16,15 @@ export interface Tag {
   texto: string;
   color_fondo: string;
   color_texto: string;
+  informacion_etiqueta: string;
 }
 
 export interface Juego {
   id: number;
   titulo: string;
-  descripcion: string;
+  descripcion: any; // Rich Text
   icono: StrapiMedia | null;
-  color_fondo_icono: string;
-  tags: Tag[];
+  tags: Tag[] | Tag; // Can be a single object or an array
 }
 
 export interface Props {
@@ -44,8 +44,8 @@ const placeholderData: Props = {
   texto_boton_cargar_mas: "CARGAR MÁS JUEGOS",
   texto_boton_regresar: "REGRESAR",
   juegos: [
-    { id: 1, titulo: 'TOPGOLF®', descripcion: 'Descripción de ejemplo para el juego.', icono: null, color_fondo_icono: '#0053A0', tags: [{ id: 1, texto: 'PRINCIPIANTE', color_fondo: 'var(--feedback-positive-dark)', color_texto: 'var(--neutral-text-inverted)' }] },
-    { id: 2, titulo: 'TOP SCRAMBLE', descripcion: 'Descripción de ejemplo para el juego.', icono: null, color_fondo_icono: '#4A265F', tags: [{ id: 3, texto: 'INTERMEDIO', color_fondo: 'var(--accent-highlight-primary)', color_texto: 'var(--success-text-default)' }] },
+    { id: 1, titulo: 'TOPGOLF®', descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Descripción de ejemplo para el juego." }] }], icono: null, tags: [{ id: 1, texto: 'PRINCIPIANTE', color_fondo: 'var(--feedback-positive-dark)', color_texto: 'var(--neutral-text-inverted)', informacion_etiqueta: 'Info' }] },
+    { id: 2, titulo: 'TOP SCRAMBLE', descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Descripción de ejemplo para el juego." }] }], icono: null, tags: [{ id: 3, texto: 'INTERMEDIO', color_fondo: 'var(--accent-highlight-primary)', color_texto: 'var(--success-text-default)', informacion_etiqueta: 'Info' }] },
   ]
 };
 
@@ -74,26 +74,27 @@ const dataToRender = {
                     ? getStrapiUrl(game.icono)
                     : FALLBACK_ICON_URL;
                 const iconAlt = game.icono?.alternativeText || game.titulo;
+                const descripcionHtml = stringifyRichText(game.descripcion);
 
                 return (
                     <div class:list={[
                         "bg-[var(--neutral-text-inverted)] rounded-lg border border-[var(--neutral-text-inverted)] p-8 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow duration-300",
                         { 'hidden extra-game-card': index >= 8 }
                     ]}>
-                        <div class="w-20 h-20 rounded-full flex items-center justify-center" style={`background-color: ${game.color_fondo_icono};`}>
+                        <div class="w-20 h-20 rounded-full flex items-center justify-center bg-gray-200">
                             <img src={iconUrl} alt={iconAlt} class="h-10 w-10" />
                         </div>
                         <h3 class="font-bold text-xl mt-6 text-[var(--neutral-background-strong)]" set:html={game.titulo.replace('®', '<sup class="text-xs">®</sup>')}></h3>
                         <div class="flex flex-wrap justify-center gap-2 mt-4">
-                            {game.tags.map(tag => (
+                            {game.tags && (Array.isArray(game.tags) ? game.tags : [game.tags]).map(tag => (
                                 <span class="text-xs font-semibold px-3 py-1 rounded-full" style={`background-color: ${tag.color_fondo}; color: ${tag.color_texto};`}>
                                     {tag.texto}
                                 </span>
+                                 <p>{tag.informacion_etiqueta}</p>
                             ))}
                         </div>
-                        <p class="mt-6 text-sm text-[var(--neutral-background-strong)] flex-grow">
-                            {game.descripcion}
-                        </p>
+                        <div class="mt-6 text-sm text-[var(--neutral-background-strong)] flex-grow" set:html={descripcionHtml}>
+                        </div>
                     </div>
                 );
             })}
