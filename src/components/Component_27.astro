@@ -54,13 +54,13 @@ const dataToRender = {
                 {dataToRender.bonos.map(bonus => (
                     <div class="rounded-lg text-center p-6" style={`background-color: ${bonus.color_fondo}; color: ${bonus.color_texto};`}>
                         <p class="font-bold text-lg">
-                            POR ${bonus.monto_compra}
+                            {bonus.monto_compra}
                         </p>
                         <p class="font-semibold text-lg">
-                            TE REGALAMOS
+                             {bonus.texto}
                         </p>
                         <p class="text-7xl font-bold mt-1">
-                            ${bonus.monto_bono}
+                            {bonus.monto_bono}
                         </p>
                     </div>
                 ))}
