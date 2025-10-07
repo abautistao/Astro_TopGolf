@@ -76,7 +76,11 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 <span class="block text-[var(--accent-highlight-secondary)]">{titulo_linea_2_resaltada || "Memorable"}</span>
             </h2>
             <div class="text-justify mt-6 text-lg text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
-            <ButtonGroup botones={componentButtons} />
+
+            <div class="mt-8">
+                <ButtonGroup botones={componentButtons} />
+            </div>
+
             <img
                 src={dotsPatternMobile.src}
                 alt="Patrón decorativo móvil"

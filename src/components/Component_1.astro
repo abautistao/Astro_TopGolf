@@ -73,18 +73,14 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         <div class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
 
             <div class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6">
-
-            <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]">
-                {texto_banner || "Descubre la mejor manera de jugar"}
-            </p>
-
-                <div class="mt-3 sm:mt-0">
-                    <ButtonGroup botones={buttonBanner} />
-                </div>
+                <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]">
+                    {texto_banner || "Descubre la mejor manera de jugar"}
+                </p>
+                <ButtonGroup botones={buttonBanner} />
             </div>
 
-            <div class="py-2 text-sm text-center">
-                <p class="text-[var(--neutral-text-inverted)] strapi-rich-text" set:html={helpTextHtml}></p>
+            <div class="py-2 text-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text">
+                <p set:html={helpTextHtml}></p>
             </div>
         </div>
     </div>

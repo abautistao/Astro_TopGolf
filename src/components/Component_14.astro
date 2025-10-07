@@ -52,15 +52,12 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
                 </div>
                 <div class="flex flex-col">
                     <h2 class="text-xl font-bold text-[var(--neutral-background-strong)]">{titulo_izquierda}</h2>
-                   
-                      <div class="mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
-                    <a
-                        href={url_link_izquierda}
-                        class="mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] transition-colors duration-200 hover:text-[var(--brand-interactive-base)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] focus:ring-offset-2"
-                    set:html={texto_link_izquierda}
+                    <div class="mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
+                    <a href={url_link_izquierda}
+                        class="mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] transition-colors duration-200 hover:text-[var(--brand-interactive-base)] focus:outline-none focus:ring-2
+                        focus:ring-[var(--brand-interactive-base)] focus:ring-offset-2 decoration-under"
+                            set:html={texto_link_izquierda}
                         >
-                     
-                        
                     </a>
                 </div>
             </div>
@@ -69,12 +66,21 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
         {/* Tarjeta Derecha */}
         <div class="flex-1 rounded-xl bg-[var(--surface-brand-primary)] p-6 shadow-sm md:w-[48%] flex flex-col items-center">
             <div class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-solid border-[var(--surface-brand-primary)] bg-[var(--surface-brand-primary)] text-2xl " set:html={icono_derecha} >
-                
+
             </div>
-            <div class="mt-4 flex h-full flex-col items-center justify-center text-center">
+            <div class="flex h-full flex-col items-center justify-center text-center">
                 <h2 class="text-xl font-bold text-[var(--neutral-text-inverted)]">{titulo_derecha}</h2>
-                <div class="mt-4 text-[var(--neutral-text-inverted)]" set:html={rightCardDescriptionHtml} />
+                <div class="mt-4 text-[var(--neutral-text-inverted)] mx-6" set:html={rightCardDescriptionHtml} />
             </div>
         </div>
     </div>
 </section>
+<style>
+    .decoration-under{
+        text-decoration-color: var(--accent-highlight-secondary) !important;
+        text-decoration-thickness: 2px !important;
+        text-underline-offset: 8px;
+        text-decoration: underline;
+    }
+
+</style>

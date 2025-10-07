@@ -109,7 +109,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
           </h2>
         </div>
 
-        <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 prose lg:prose-lg max-w-none">
+        <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 prose lg:prose-lg max-w-none strapi-rich-text ">
             <div set:html={descriptionHtml || placeholderDescriptionHtml} />
         </div>
 
@@ -118,3 +118,20 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
     </div>
   </div>
 </section>
+<style>
+    .strapi-rich-text :global(strong) {
+        color: var(--brand-interactive-base);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

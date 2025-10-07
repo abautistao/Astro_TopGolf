@@ -80,11 +80,11 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
           <div
             class="absolute left-0 top-0 h-full w-1.5 bg-[var(--accent-highlight-primary)]"
           ></div>
-          <div class="flex h-full flex-col justify-center">
-            <h3 class="text-xl font-bold text-[var(--neutral-text-inverted)]">
-               <div set:html={cta_titulo_boton || placeholderDescriptionHtml} />
-            </h3>
-            <ButtonGroup botones={componentButtons} />
+            <div class="flex h-full flex-col justify-center">
+                <h3 class="mb-4 text-xl font-bold text-[var(--neutral-text-inverted)]">
+                  <div set:html={cta_titulo_boton || placeholderDescriptionHtml} />
+                </h3>
+                <ButtonGroup botones={componentButtons} />
             </div>
           </div>
         </div>
