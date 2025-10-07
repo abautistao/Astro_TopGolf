@@ -1,59 +1,43 @@
 ---
 // src/components/Component_30.astro
 import { stringifyRichText } from "../lib/strapi.js";
-import ButtonGroup from './elements/Button.astro';
+import CalloutSection from './elements/CalloutSection.astro';
 import type { Boton } from './elements/Button.astro';
+
 // 1. Definimos las interfaces para las props de Strapi
 export interface Props {
     titulo: string;
     contenido: any; // Rich Text
-    texto_boton: string;
-    url_boton: string;
     Boton: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo, contenido, texto_boton, url_boton , Boton} = Astro.props;
+const { titulo, contenido, Boton } = Astro.props;
 
 const placeholderData: Props = {
     titulo: "¿QUIERES JUGAR TODO EL DÍA, TODOS LOS DÍAS SIN PREOCUPARTE POR LAS HORAS DE JUEGO?",
     contenido: [{ type: 'paragraph', children: [{ type: 'text', text: "¡Llegaste al lugar correcto!, para eso tenemos nuestras membresías, que te ofrecen una serie de beneficios en juego, alimentos y bebidas. Además podrás traer a tus amigos, familia, colegas o a quien tú quieras para que te acompañen en la diversión. Tenemos cupo limitado cada año. Escríbenos para brindarte más información." }] }],
-    texto_boton: "MÁS INFORMACIÓN",
-    url_boton: "#",
+    Boton: [],
 };
 
 // 3. Preparamos los datos para renderizar
 const dataToRender = {
     titulo: titulo || placeholderData.titulo,
     contenido: stringifyRichText(contenido || placeholderData.contenido),
-    texto_boton: texto_boton || placeholderData.texto_boton,
-    url_boton: url_boton || placeholderData.url_boton,
 };
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
     {
         id: 1,
-        texto: texto_boton || dataToRender.texto_boton,
-        url: url_boton || dataToRender.url_boton,
+        texto: "MÁS INFORMACIÓN",
+        url: "#",
         tipo: "version_3"
     }
 ];
 ---
 
-<section class="bg-[var(--neutral-text-inverted)] py-16 sm:py-24">
-    <div class="mx-auto max-w-5xl px-6 text-center lg:px-8">
-        <h2 class="text-2xl font-bold text-[var(--neutral-background-strong)] sm:text-3xl">
-            {dataToRender.titulo}
-        </h2>
-        <div class="mt-6 text-lg text-[var(--neutral-background-strong)] prose max-w-none" set:html={dataToRender.contenido}>
-        </div>
-        <div class="mt-10 inline-block">
-            <ButtonGroup botones={componentButtons} />
-        </div>
-    </div>
-</section>
-
-<style>
-    .prose :global(p) {
-        margin: 0;
-    }
-</style>
+<CalloutSection
+    version="version_1"
+    titulo={dataToRender.titulo}
+    contenido={dataToRender.contenido}
+    botones={componentButtons}
+/>
