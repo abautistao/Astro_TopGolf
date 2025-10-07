@@ -39,7 +39,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
 <header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
-        
+
         <!-- Logo y Menú Móvil -->
         <div class="flex items-center lg:hidden">
             <button id="mobile-menu-toggle" class="p-2">
@@ -66,14 +66,12 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     {links.map(link => (
                         <li>
                             {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
-                                <button 
+                                <button
                                     class="flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger"
                                     data-dropdown-id={`desktop-${link.id}`}
                                 >
                                     {link.texto}
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                    </svg>
+                                    <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold"></i>
                                 </button>
                             ) : (
                                 <a href={link.url} class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
@@ -86,16 +84,12 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
             <!-- Botones de Acción y Locación -->
             <div class="flex items-center space-x-2 sm:space-x-3 lg:space-x-6">
                 <div class="hidden lg:flex items-center space-x-2 relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[var(--accent-highlight-secondary)]" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                    </svg>
+                    <i class="fa-solid fa-location-dot fa-xl text-[var(--accent-highlight-secondary)]"></i>
                     <button id="location-toggle-desktop" class="text-left text-xs">
                         <p class="text-sm font-bold">{ubicacion}</p>
                         <div class="flex items-center opacity-80">
                             <span class="uppercase">{horario}</span>
-                            <svg id="location-arrow-desktop" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold"></i>
                         </div>
                     </button>
                     <div id="location-details-desktop" class="absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
@@ -185,11 +179,11 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     &times;
                 </button>
                 <h2 class="text-4xl font-bold text-center mb-8">{link.texto}</h2>
-                
+
                 <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
                     {link.dropdown_items.map((item, index) => {
                         // Lógica para diferentes layouts de tarjetas
-                       
+
                         if (index < 2) { // Primeras 2 tarjetas son grandes
                             return (
                                 <a href={item.url} class="relative block overflow-hidden rounded-lg group h-full">
@@ -319,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdownOverlays.forEach(overlay => {
         const closeButton = overlay.querySelector('.dropdown-close');
         const backdrop = overlay.querySelector('.dropdown-backdrop');
-        
+
         if (closeButton) {
             closeButton.addEventListener('click', closeAllDropdowns);
         }

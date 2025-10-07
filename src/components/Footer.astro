@@ -30,66 +30,80 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 
 ---
 
-<footer class="bg-gradient-to-r from-[#000299] to-[#0004FF] text-white font-sans">
+<footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]">
     <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
        <div class="grid grid-cols-1 gap-10 md:grid-cols-3 lg:gap-8">   <!--Iconos de redes sociales (Esta parte ya estaba correcta) -->
             <div>
-                <h3 class="font-bold tracking-wider text-cyan-300 uppercase">{titulo_1}</h3> 
+                <h3 class="font-bold tracking-wider text-[var(--accent-highlight-secondary)]  uppercase">{titulo_1}</h3>
                 <ul class="mt-4 space-y-3 text-sm">
-                    {links_1.map(link => ( 
+                    {links_1.map(link => (
                         <li><a href={link.url} class="hover:underline">{link.texto}</a></li>
 
                     ))}
-                    
+
                 </ul>
             </div>
             <div>
-                <h3 class="font-bold tracking-wider text-cyan-300 uppercase">{titulo_2}</h3>
+                <h3 class="font-bold tracking-wider text-[var(--accent-highlight-secondary)]  uppercase">{titulo_2}</h3>
                 <ul class="mt-4 space-y-3 text-sm">
-                      {links_2.map(link => ( 
+                    {links_2.map(link => (
                         <li><a href={link.url} class="hover:underline">{link.texto}</a></li>
 
                     ))}
             </div>
             <div>
-                <h3 class="font-bold tracking-wider text-cyan-300 uppercase">{titulo_3}</h3>
+                <h3 class="font-bold tracking-wider text-[var(--accent-highlight-secondary)]  uppercase">{titulo_3}</h3>
                 <div class="mt-4 my-2 text-sm" set:html={descripcion_columna_3}></div>
-            <ButtonGroup botones={buttonBanner} />
-                
-                 
+
+                <ButtonGroup botones={buttonBanner} />
+
+
                 <div class="mt-4 flex items-center space-x-2">
                     <div class="relative inline-block w-10 h-5 cursor-pointer">
                         <div class="w-full h-full rounded-full bg-white/30"></div>
-                        <div class="absolute top-1/2 left-1 h-3 w-3 -translate-y-1/2 rounded-full bg-white"></div>
+                        <div class="absolute top-1/2 left-1 h-3 w-3 -translate-y-1/2 rounded-full bg-[var(--neutral-text-inverted)]"></div>
                     </div>
                     <span class="text-xs">Cambiar el contraste</span>
                 </div>
             </div>
         </div>
 
-        <hr class="my-10 border-t-2 border-white" />
+        <hr class="my-10 border-t-2 border-[var(--neutral-text-inverted)]" />
 
-        <div class="flex flex-col items-center gap-8 sm:flex-row sm:justify-between">
-
-            <div class="w-40">
+        <div class="flex flex-col items-center gap-8 sm:flex-row sm:justify-between px-15">
+            <div class="w-60">
                 <a href="/">
                     <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="h-auto w-full" />
                 </a>
             </div>
-
             <div class="text-xs text-center sm:text-left" set:html={terminos_and_conditions}>
-
             </div>
-
             <div class="flex items-center space-x-4">
                 {socialIcons.map(icon => (
-                    <a href={icon.url} title={icon.name} class="text-white hover:text-white/80 transition-opacity">
+                    <a href={icon.url} title={icon.name} class="text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity">
                         <span class="text-2xl" set:html={icon.icon}></span>
                     </a>
                 ))}
             </div>
         </div>
 
-        <div class="mt-4 border-t-2 border-white"></div>
+        <div class="mt-4 border-t-2 border-[var(--neutral-text-inverted)]"></div>
     </div>
 </footer>
+<style>
+    :root {
+        --footer-link-underline: var(--accent-highlight-secondary);
+    }
+
+    footer a {
+        text-decoration-color: transparent;
+        transition: text-decoration-color 0.3s ease, color 0.3s ease;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-decoration-color: var(--footer-link-underline);
+
+    }
+</style>
