@@ -73,16 +73,14 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         <div class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
 
             <div class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6">
-
-            <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]">
-                {texto_banner || "Descubre la mejor manera de jugar"}
-            </p>
+                <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]">
+                    {texto_banner || "Descubre la mejor manera de jugar"}
+                </p>
                 <ButtonGroup botones={buttonBanner} />
-
             </div>
 
-            <div class="py-2 text-sm text-center">
-                <p class="text-[var(--neutral-text-inverted)] strapi-rich-text" set:html={helpTextHtml}></p>
+            <div class="py-2 text-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text">
+                <p set:html={helpTextHtml}></p>
             </div>
         </div>
     </div>
@@ -92,7 +90,7 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
     .strapi-rich-text :global(strong) {
-        color: var(--accent-highlight-secondary);
+        color: var(--neutral-text-inverted);
     }
     .strapi-rich-text :global(u) {
         text-decoration-color: var(--accent-highlight-secondary);
