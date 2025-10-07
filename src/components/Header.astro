@@ -1,12 +1,27 @@
 ---
 // src/components/Header.astro
-import { getHeaderData, getStrapiUrl } from '../lib/strapi';
+import { getHeaderData, getStrapiUrl,stringifyRichText } from '../lib/strapi';
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 
 const headerData = await getHeaderData();
 
 const logoUrl = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
 const links = headerData?.links || [];
 const botones = headerData?.botones || [];
+const ubicacion = headerData?.ubicacion || 'UBICACION';
+const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
+const direccion = stringifyRichText(headerData?.direccion || {});
+const texto_boton = headerData?.texto_boton || 'CLICK AQUI';
+const url_boton = headerData?.url_boton || '#';
+const buttonBanner: Boton[] = (headerData.Boton && !Array.isArray(headerData.Boton) ? [headerData.Boton] : headerData.Boton) || [
+    {
+        id: 1,
+        texto: "Reserva Ahora",
+        url: "#",
+        tipo: "version_1"
+    }
+];
 
 // Filtra los links que tienen dropdowns para crear los overlays
 const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
@@ -30,7 +45,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         <!-- Logo Desktop -->
         <div class="hidden lg:flex items-center h-full w-[280px] bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] shrink-0 px-8 relative">
             <a href="/">
-                <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
+                <img src={logoUrl} alt="Logo" class="w-40 h-auto" />
             </a>
         </div>
 
@@ -65,20 +80,17 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                     </svg>
                     <button id="location-toggle-desktop" class="text-left text-xs">
-                        <p class="text-sm font-bold">MONTERREY</p>
+                        <p class="text-sm font-bold">{ubicacion}</p>
                         <div class="flex items-center opacity-80">
-                            <span class="uppercase">MAR: 9 A.M. A 12 A.M.</span>
+                            <span class="uppercase">{horario}</span>
                             <svg id="location-arrow-desktop" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
                     </button>
                     <div id="location-details-desktop" class="absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
-                        <p class="font-light text-sm">Av. Ignacio Morones Prieto 100, Zona Los Callejones, 66228 San Pedro Garza García, N.L.</p>
-                        <p class="mt-3 font-bold tracking-wide">81 1548 1000</p>
-                        <button class="w-full py-2 mt-4 text-xs font-bold transition-colors border-2 border-[var(--neutral-text-inverted)]rounded-md hover:bg-[var(--neutral-text-inverted)] hover:text-[var(--surface-brand-primary)]">
-                            INFORMACIÓN DE LA LOCACIÓN
-                        </button>
+                        <div class="my-2" set:html={direccion}></div>
+                         <ButtonGroup botones={buttonBanner} />
                     </div>
                 </div>
 
@@ -95,20 +107,17 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 <!-- Barra de Locación Móvil -->
 <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden">
     <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)]">
-        <span>MONTERREY</span>
+        <span>{ubicacion}</span>
         <div class="flex items-center">
-            <span>MAR: 9 A.M. A 12 A.M.</span>
+            <span>{horario}</span>
             <svg id="location-arrow-mobile" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 transition-transform" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
         </div>
     </button>
     <div id="location-details-mobile" class="hidden px-4 py-5 bg-[var(--brand-interactive-base)]">
-        <p class="font-light">Av. Ignacio Morones Prieto 100, Zona Los Callejones, 66228 San Pedro Garza García, N.L.</p>
-        <p class="mt-4 font-bold tracking-widest">81 1548 1000</p>
-        <button class="w-full py-2 mt-4 text-xs font-bold transition-colors border-2 border-[var(--neutral-text-inverted)] rounded-md hover:bg-[var(--neutral-text-inverted)] hover:text-[var(--surface-brand-secondary)]">
-            INFORMACIÓN DE LA LOCACIÓN
-        </button>
+        <div set:html={direccion}></div>
+        <ButtonGroup botones={buttonBanner} />
     </div>
 </div>
 
