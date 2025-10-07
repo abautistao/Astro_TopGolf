@@ -1,0 +1,202 @@
+---
+// src/components/StepWithContent.astro (Lógica desacoplada)
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import ButtonGroup from './Button.astro';
+import type { Boton } from './Button.astro';
+
+// --- Definiciones de Tipos ---
+
+export interface Props {
+  // Contenido Principal
+  etiqueta_paso: string;
+  titulo: string;
+  descripcion: any;
+  imagen_principal: any;
+  // Decoración
+  patron_fondo_escritorio: any;
+  patron_fondo_movil: any;
+
+  // CONTROL DE ORIENTACIÓN: Solo controla la posición de la imagen.
+  orientacion: 'left_image' | 'right_image';
+
+  // CONTROL DE CONTENIDO: Controla el elemento dinámico.
+  tipo_contenido: 'button' | 'alert_card'; // Nuevo campo de control
+
+  // Props de Botón (usadas si tipo_contenido es 'button')
+  texto_boton?: string;
+  url_boton?: string;
+  Boton?: Boton[];
+
+  // Props de Aviso (usadas si tipo_contenido es 'alert_card')
+  aviso_texto?: string;
+  aviso_texto_link?: string;
+  aviso_url_link?: string;
+}
+
+// --- Inicialización de Props con Placeholders / Valores por Defecto ---
+
+const {
+  etiqueta_paso = "PASO X",
+  titulo = "Título del Paso",
+  descripcion,
+  imagen_principal,
+  patron_fondo_escritorio,
+  patron_fondo_movil,
+  orientacion, // Nuevo nombre de prop
+  tipo_contenido, // Nuevo control de contenido
+
+  // Props de Botón
+  texto_boton = "ACCIÓN",
+  url_boton = "#",
+  Boton,
+
+  // Props de Aviso
+  aviso_texto = "Aviso de información",
+  aviso_texto_link = "VER MÁS",
+  aviso_url_link = "#",
+} = Astro.props;
+
+// --- Procesamiento de Contenido y Placeholders ---
+const descriptionHtml = stringifyRichText(descripcion);
+const placeholderDescriptionHtml = `
+  <p>Este es el contenido de descripción de ejemplo. La orientación (${orientacion}) y el contenido (${tipo_contenido}) se manejan independientemente.</p>
+`;
+const finalDescriptionHtml = descripcion ? descriptionHtml : placeholderDescriptionHtml;
+
+const mainImageUrl = getStrapiUrl(imagen_principal);
+const desktopPatternUrl = getStrapiUrl(patron_fondo_escritorio);
+const mobilePatternUrl = getStrapiUrl(patron_fondo_movil);
+const placeholderImage = "https://placehold.co/800x600/2d3748/ffffff?text=Imagen+Paso";
+
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: texto_boton,
+        url: url_boton,
+        tipo: "version_3"
+    }
+];
+
+// --- Lógica de Estructura y Orientación (Basada en 'orientacion') ---
+
+// Control de Orientación
+const isLeftOrientation = orientacion === 'left_image';
+const isRightOrientation = orientacion === 'right_image'; // Aunque no se usa directamente, es útil para claridad.
+
+// Clases de orientación: 'flex-row' para izquierda, 'flex-row-reverse' para derecha
+const mainContainerClasses = isLeftOrientation
+    ? "flex flex-col lg:flex-row items-start lg:justify-items-normal overflow-hidden relative"
+    : "flex flex-col lg:flex-row-reverse items-start lg:justify-items-normal overflow-hidden relative";
+
+// Posición del patrón decorativo
+const patternPositionClasses = isLeftOrientation
+    ? "top-0 left-0 transform -translate-x-1/4 -translate-y-1/15 w-1/2 z-0 hidden lg:block"
+    : "top-0 right-0 z-0 lg:block hidden";
+
+// Posición de la etiqueta de paso para escritorio
+const stepLabelPositionClasses = isLeftOrientation
+    ? "lg:top-1/11 lg:left-7/13"
+    : "lg:top-1/11 lg:right-4/8";
+
+// --- HTML de la Sección ---
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] relative overflow-hidden">
+  {/* --- Patrones Decorativos --- */}
+  {desktopPatternUrl && (
+    <img
+      src={desktopPatternUrl}
+      alt="Patrón de puntos decorativo"
+      class={`absolute ${patternPositionClasses}`}
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  )}
+  {mobilePatternUrl && (
+    <img
+      src={mobilePatternUrl}
+      alt="Patrón de puntos decorativo"
+      class={`absolute top-10 ${isLeftOrientation ? 'left-0' : 'right-0'} z-0 lg:hidden`}
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  )}
+
+  <div class="container mx-auto px-5 py-16 lg:py-10 relative z-10">
+    <div class={mainContainerClasses}>
+
+      {/* --- Imagen Principal --- */}
+      <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
+        <img
+          src={mainImageUrl || placeholderImage}
+          alt={imagen_principal?.data?.attributes?.alternativeText || titulo}
+          class="w-full h-full object-cover rounded-lg shadow-lg"
+        />
+        {/* Etiqueta de Paso (Móvil) */}
+        <div
+            style="transform: rotate(-5.0deg);"
+            class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden"
+        >
+          {etiqueta_paso}
+        </div>
+      </div>
+
+      {/* --- Etiqueta de Paso (Desktop) --- */}
+      {etiqueta_paso && (
+        <div
+            style="transform: rotate(-5.0deg);"
+            class={`bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-0.5 px-3 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute ${stepLabelPositionClasses} lg:z-20 my-4 text-center mx-auto hidden lg:block`}
+        >
+          {etiqueta_paso}
+        </div>
+      )}
+
+      {/* --- Contenido de Texto y Elemento Dinámico --- */}
+      <div class="w-full lg:w-2/3 p-2 lg:p-12 flex flex-col justify-center">
+        <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
+          <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]">
+            {titulo}
+          </h2>
+        </div>
+
+        <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 prose lg:prose-lg max-w-none strapi-rich-text ">
+            <div set:html={finalDescriptionHtml} />
+        </div>
+
+        {/* --- Elemento Dinámico Controlado por 'tipo_contenido' --- */}
+        {tipo_contenido === 'button' && (
+            <ButtonGroup botones={componentButtons} />
+        )}
+
+        {tipo_contenido === 'alert_card' && (
+            <div class="relative mt-8 hidden md:block">
+                <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center">
+                    <p class="text-[var(--neutral-background-strong)]">{aviso_texto}</p>
+                    <a href={aviso_url_link} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
+                </div>
+            </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+    /* Estilos globales para Rich Text de Strapi */
+    .strapi-rich-text :global(strong) {
+        color: var(--brand-interactive-base);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

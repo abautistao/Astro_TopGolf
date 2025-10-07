@@ -1,127 +1,51 @@
 ---
-// src/components/Component_13.astro
-import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+// src/components/Componente_13.astro
+// Este componente es un wrapper para StepWithContent, que define la orientación
+// 'right_image' y el contenido dinámico 'alert_card'.
 
-// 1. Definimos la interfaz de las props que el componente recibirá desde Strapi.
-export interface Props {
-  paso?: string;
-  titulo?: string;
-  descripcion?: any; // Can be Rich Text JSON or a string
-  imagen_principal?: any;
-  aviso_texto?: string;
-  aviso_texto_link?: string;
-  aviso_url_link?: string;
-  patron_decorativo_escritorio?: any;
-  patron_decorativo_movil?: any;
+import StepWithContent from './elements/StepWithContent.astro';
+import type { Props as StepWithContentProps } from './elements/StepWithContent.astro';
+
+// 1. Definimos la interfaz con todas las props de datos que C13 requiere.
+export interface Props extends Omit<StepWithContentProps, 'orientacion' | 'tipo_contenido' | 'texto_boton' | 'url_boton' | 'Boton'> {
+    etiqueta_paso: string;
+    titulo: string;
+    descripcion: any;
+    imagen_principal: any;
+    patron_fondo_escritorio: any;
+    patron_fondo_movil: any;
+    // Props de aviso, requeridas para esta versión
+    aviso_texto: string;
+    aviso_texto_link: string;
+    aviso_url_link: string;
 }
 
-// 2. Recibimos las props de Strapi, con valores por defecto para el placeholder.
+// 2. Recibimos todas las props
 const {
-  paso = "PASO 2",
-  titulo = "HAZ CHECK IN",
-  descripcion = "Al llegar, te asignaremos una bahía. La bahía es como tu 'mesa'. Es el área en donde podrás jugar el tiempo que tu quieras. Cada bahía puede haber grupos de hasta 6 personas.",
-  imagen_principal,
-  aviso_texto = "LO QUE DEBES SABER SI LLEGAS SIN RESERVA A TOPGOLF",
-  aviso_texto_link = "MÁS INFORMACIÓN AQUÍ",
-  aviso_url_link = "#",
-  patron_decorativo_escritorio,
-  patron_decorativo_movil
+    etiqueta_paso,
+    titulo,
+    descripcion,
+    imagen_principal,
+    patron_fondo_escritorio,
+    patron_fondo_movil,
+    aviso_texto,
+    aviso_texto_link,
+    aviso_url_link,
 } = Astro.props;
 
-// 3. Obtenemos las URLs de las imágenes
-const imageUrl = getStrapiUrl(imagen_principal);
-const dotsPatternSquareUrl = getStrapiUrl(patron_decorativo_escritorio);
-const dotsPatternMobileUrl = getStrapiUrl(patron_decorativo_movil);
-
-// Placeholder images
-const placeholderImageUrl = "https://placehold.co/600x400/2d3748/ffffff?text=Imagen+Principal";
-
-// Parsear descripción de Rich Text a HTML
-const parsedDescription = stringifyRichText(descripcion);
+// 3. Pasamos las props al componente reutilizable, forzando la orientación y el tipo de contenido.
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] relative">
-    {dotsPatternSquareUrl && (
-        <img
-            src={dotsPatternSquareUrl}
-            alt="Patrón de puntos decorativo"
-            class="absolute top-0 right-0 z-0 lg:block hidden"
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-        />
-    )}
-    {dotsPatternMobileUrl && (
-        <img
-            src={dotsPatternMobileUrl}
-            alt="Patrón de puntos decorativo"
-            class="absolute top-10 right-0 z-0 lg:hidden"
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-        />
-    )}
-
-    <div class="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-        <div class="flex flex-col lg:flex-row-reverse items-start lg:justify-items-normal overflow-hidden relative">
-            <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
-                <img
-                    src={imageUrl || placeholderImageUrl}
-                    alt={imagen_principal?.data?.attributes?.alternativeText || 'Imagen principal del paso'}
-                    class="w-full h-full object-cover rounded-lg"
-                >
-                {paso && (
-                    <div style="transform: rotate(-5.0deg);" class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden">
-                        {paso}
-                    </div>
-                )}
-            </div>
-
-            {paso && (
-                <div style="transform: rotate(-5.0deg);" class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute lg:top-1/11 lg:right-4/8 lg:z-20 my-4 text-center mx-auto hidden lg:block">
-                    {paso}
-                </div>
-            )}
-
-            <div class="w-full lg:w-2/3 p-2 lg:p-12 flex flex-col justify-center">
-                {titulo && (
-                    <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
-                        <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]">
-                            {titulo}
-                        </h2>
-                    </div>
-                )}
-
-                {descripcion && (
-                    <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 strapi-rich-text" set:html={parsedDescription} />
-                )}
-
-                {aviso_texto && aviso_texto_link && (
-                    <div class="relative mt-8 hidden md:block">
-                        <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center">
-                            <p class="text-[var(--neutral-background-strong)]">{aviso_texto}</p>
-                            <a href={aviso_url_link} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    </div>
-</section>
-<style>
-    .strapi-rich-text :global(strong) {
-        color: var(--brand-interactive-base);
-    }
-    .strapi-rich-text :global(u) {
-        text-decoration-color: var(--accent-highlight-secondary);
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
-    }
-    .strapi-rich-text :global(a) {
-        text-decoration: underline;
-        text-decoration-color: var(--accent-highlight-secondary);
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
-        color: inherit;
-    }
-</style>
+<StepWithContent
+    etiqueta_paso={etiqueta_paso}
+    titulo={titulo}
+    descripcion={descripcion}
+    imagen_principal={imagen_principal}
+    patron_fondo_escritorio={patron_fondo_escritorio}
+    patron_fondo_movil={patron_fondo_movil}
+    orientacion="right_image"
+    tipo_contenido="alert_card"
+    aviso_texto={aviso_texto}
+    aviso_texto_link={aviso_texto_link}
+    aviso_url_link={aviso_url_link}
+/>
