@@ -4,9 +4,6 @@ import { getStrapiUrl } from "../lib/strapi.js";
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
 
-// --- CAMBIO 1: Actualizamos la interfaz de 'Card' ---
-// Eliminamos 'texto_boton' y 'url_boton' y añadimos la relación al componente 'Boton'.
-// Esto alinea la estructura con la que usas en Component_1.
 export interface Card {
   id: number;
   titulo: string;
@@ -86,15 +83,120 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       </div>
     </div>
 
-    {/* El resto del componente permanece igual */}
     <div class="mt-8 flex justify-between items-center">
-      {/* ... */}
+      <div class="flex gap-3">
+        <button
+          id={`prev-btn-${carouselId}`}
+          class="w-10 h-10 bg-[var(--surface-brand-primary)] rounded-full flex items-center justify-center transition-colors disabled:opacity-50 text-[var(--accent-highlight-secondary)]
+                focus-visible:ring-8 focus-visible:ring-[var(--accent-highlight-secondary)] focus-visible:ring-offset-4
+                hover:bg-[var(--surface-brand-primary)]"
+          aria-label="Anterior"
+        >
+          <i class="fa-solid fa-chevron-left fa-xl"></i>
+        </button>
+
+        <button
+          id={`next-btn-${carouselId}`}
+          class="w-10 h-10 bg-[var(--surface-brand-primary)] rounded-full flex items-center justify-center transition-colors text-[var(--accent-highlight-secondary)]
+                focus-visible:ring-8 focus-visible:ring-[var(--accent-highlight-secondary)] focus-visible:ring-offset-4
+                hover:bg-[var(--surface-brand-primary)]"
+          aria-label="Siguiente"
+        >
+          <i class="fa-solid fa-chevron-right fa-xl"></i>
+        </button>
+      </div>
+
+      <div class="hidden sm:flex items-center gap-2 text-sm">
+        <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
+        <span class="text-[var(--neutral-background-strong)]">
+          Estás viendo contenido de <strong>Topgolf Monterrey</strong>
+        </span>
+      </div>
     </div>
+
   </div>
 </section>
 
 <script define:vars={{ carouselId }}>
-  // El script no necesita cambios
+  function setupCarousel(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const prevBtn = document.getElementById(`prev-btn-${containerId}`);
+    const nextBtn = document.getElementById(`next-btn-${containerId}`);
+    const cards = container.querySelectorAll('.carousel-card');
+    const totalCards = parseInt(container.dataset.totalCards, 10);
+
+    if (cards.length === 0 || !prevBtn || !nextBtn) return;
+
+    let currentIndex = 0;
+
+    const updateScrollDistance = () => {
+      if (cards.length === 0) return 0;
+      const cardWidth = cards[0].offsetWidth;
+      const cardGap = parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10) || 0;
+      return cardWidth + cardGap;
+    }
+
+    let scrollDistance = updateScrollDistance();
+
+    const updateButtons = () => {
+      if (!container || !prevBtn || !nextBtn) return;
+      prevBtn.disabled = currentIndex === 0;
+
+      // Cálculo más robusto para deshabilitar el botón "siguiente"
+      const containerWidth = container.clientWidth;
+      const contentWidth = container.scrollWidth;
+      const currentScroll = container.scrollLeft;
+
+      nextBtn.disabled = currentScroll + containerWidth >= contentWidth - 10; // -10 para margen de error
+    };
+
+    const scrollToCurrent = () => {
+        container.scrollTo({ left: currentIndex * scrollDistance, behavior: 'smooth' });
+    };
+
+    nextBtn.addEventListener('click', () => {
+      const visibleCards = Math.floor(container.clientWidth / scrollDistance);
+      const maxIndex = totalCards - visibleCards;
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        scrollToCurrent();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        scrollToCurrent();
+      }
+    });
+
+    // Escuchar el evento de scroll para actualizar los botones
+    container.addEventListener('scroll', updateButtons, { passive: true });
+
+    // Re-calcular en resize para responsividad
+    window.addEventListener('resize', () => {
+      scrollDistance = updateScrollDistance();
+      updateButtons();
+    });
+
+    // Llamada inicial
+    updateButtons();
+  }
+
+  // Inicializamos el carrusel específico de este componente
+  document.addEventListener('astro:page-load', () => {
+    // Usamos la variable carouselId que pasamos desde Astro
+    setupCarousel(carouselId);
+  });
+  // Fallback para cuando no se usan View Transitions
+  if (document.readyState === 'complete') {
+    setupCarousel(carouselId);
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+       setupCarousel(carouselId);
+    });
+  }
 </script>
 
 <style is:global>
