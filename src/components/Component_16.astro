@@ -60,7 +60,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packagesToRender.map((pkg) => {
                 const contentHtml = stringifyRichText(pkg.descripcion);
-               
+
 
                 // --- LÓGICA CORREGIDA ---
                 // Ahora pasamos el objeto de imagen COMPLETO a getStrapiUrl
@@ -76,7 +76,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                     tipo: "version_3"
                 }];
 
-              
+
                 return (
                     <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                         <div class="relative">
@@ -103,7 +103,8 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
 </section>
 
 <style>
-  .prose :global(strong) { color: var(--brand-interactive-base); }
-  .prose :global(a) { color: var(--brand-interactive-base); font-weight: 600; }
-  .prose :global(a:hover) { text-decoration: underline; }
+    .prose :global(strong) { color: var(--brand-interactive-base); }
+    .prose :global(a) { color: var(--accent-highlight-secondary) !important; font-weight: 600; text-decoration-thickness: 2px;}
+    .prose :global(u) { color: var(--accent-highlight-secondary) !important; font-weight: 600; text-decoration-thickness: 2px;}
+    .prose :global(a:hover) { text-decoration: underline; }
 </style>
