@@ -1,14 +1,32 @@
 ---
 // src/components/Component_35.astro
+import { stringifyRichText } from "../lib/strapi.js";
+
+export interface Props {
+    ayuda_texto: any;
+    placeholder_input: string;
+    texto_boton: string;
+}
+
+const {
+    ayuda_texto,
+    placeholder_input,
+    texto_boton,
+} = Astro.props;
+
+const helpTextHtml = stringifyRichText(ayuda_texto);
+
+const placeholderAyuda = `
+<p>
+¿Necesitas ayuda con tu experiencia en Topgolf o tienes preguntas urgentes que necesitas resolver pronto? Haz clic en una de las secciones a continuación para encontrar la respuesta. Si necesitas más ayuda, <a href="#" class="border-b-2 border-[var(--feedback-positive-dark)] pb-0.5 font-medium text-[var(--brand-interactive-base)]">envíanos un mensaje</a>.
+</p>
+`;
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-16 sm:py-24 px-4">
     <div class="mx-auto max-w-7xl">
 
-        <p class="text-center text-lg text-[var(--neutral-background-strong)] ">
-        ¿Necesitas ayuda con tu experiencia en Topgolf o tienes preguntas urgentes que necesitas resolver pronto? Haz clic en una de las secciones a continuación para encontrar la respuesta. Si necesitas más ayuda,
-        <a href="#" class="border-b-2 border-[var(--feedback-positive-dark)] pb-0.5 font-medium text-[var(--brand-interactive-base)]">envíanos un mensaje</a>.
-        </p>
+        <div class="text-center text-lg text-[var(--neutral-background-strong)] strapi-rich-text" set:html={helpTextHtml || placeholderAyuda}></div>
 
         <form action="/" class="mt-8 flex gap-x-3">
             <label for="search-input" class="sr-only">Palabra clave</label>
@@ -19,12 +37,20 @@
                 type="search"
                 required
                 class="block w-full flex-auto rounded-md border-2 border-[var(--surface-brand-primary)]-300 px-4 py-2.5 text-[var(--neutral-background-strong)] sm:text-sm sm:leading-6"
-                placeholder="palabra clave. ejemplo fiestas"
+                placeholder={placeholder_input || "palabra clave. ejemplo fiestas"}
             />
 
             <button type="submit" class="flex-none rounded-md bg-[var(--brand-interactive-base)] px-10 py-2.5 text-sm font-semibold text-[var(--neutral-text-inverted)]">
-                BUSCAR
+                {texto_boton || "BUSCAR"}
             </button>
         </form>
     </div>
 </section>
+<style>
+    .strapi-rich-text :global(a) {
+        border-bottom: 2px solid var(--feedback-positive-dark);
+        padding-bottom: 0.125rem;
+        font-weight: 500;
+        color: var(--brand-interactive-base);
+    }
+</style>

@@ -1,20 +1,26 @@
 ---
 // src/components/Component_34.astro
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
-const pageContent = {
-    tag: "TOPGOLF MONTERREY",
-    headline: "PREGUNTAS FRECUENTES",
-};
+export interface Props {
+    tag: string;
+    headline: string;
+}
+
+const {
+    tag,
+    headline,
+} = Astro.props;
 ---
 
 <section class="w-full text-[var(--neutral-text-inverted)] bg-custom-gradient">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 py-12 sm:py-16">
         <div class="text-left">
             <span class="inline-block bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-xs font-bold tracking-wider uppercase px-3 py-1 rounded">
-                {pageContent.tag}
+                {tag || "TOPGOLF MONTERREY"}
             </span>
             <h1 class="text-4xl md:text-6xl font-bold uppercase mt-4 leading-tight">
-                {pageContent.headline}
+                {headline || "PREGUNTAS FRECUENTES"}
             </h1>
         </div>
     </div>

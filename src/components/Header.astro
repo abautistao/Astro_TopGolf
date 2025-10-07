@@ -1,11 +1,21 @@
 ---
 // src/components/Header.astro
-import logo from '../assets/logo-TopGolf.png';
+import { getHeaderData, getStrapiUrl } from '../lib/strapi';
+
+const headerData = await getHeaderData();
+
+const logoUrl = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
+const links = headerData?.links || [];
+const botones = headerData?.botones || [];
+
+// Filtra los links que tienen dropdowns para crear los overlays
+const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
 ---
 
 <header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
-
+        
+        <!-- Logo y Menú Móvil -->
         <div class="flex items-center lg:hidden">
             <button id="mobile-menu-toggle" class="p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 text-[var(--accent-feedback-strong)]">
@@ -13,33 +23,42 @@ import logo from '../assets/logo-TopGolf.png';
                 </svg>
             </button>
             <a href="/" class="ml-4 sm:ml-0">
-                <img src={logo.src} alt="Logo de TopGolf Monterrey" class="w-32 h-auto" />
+                <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-32 h-auto" />
             </a>
         </div>
 
+        <!-- Logo Desktop -->
         <div class="hidden lg:flex items-center h-full w-[280px] bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] shrink-0 px-8 relative">
             <a href="/">
-                <img src={logo.src} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
+                <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
             </a>
-            </div>
+        </div>
 
         <div class="flex items-center justify-between w-full h-full lg:px-6">
-
+            <!-- Navegación Desktop -->
             <nav class="hidden lg:flex">
                 <ul class="flex items-center space-x-10 text-sm font-bold">
-                    <li><a href="#" class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">FIESTAS Y EVENTOS</a></li>
-                    <li><a href="#" class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">COMIDA Y BEBIDA</a></li>
-                    <li>
-                        <button id="open-jugar-overlay-desktop" class="flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">
-                            JUGAR
-                            <svg id="jugar-desktop-arrow" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1 text-[var(--accent-feedback-strong)] transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                    </li>
+                    {links.map(link => (
+                        <li>
+                            {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
+                                <button 
+                                    class="flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger"
+                                    data-dropdown-id={`desktop-${link.id}`}
+                                >
+                                    {link.texto}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                            ) : (
+                                <a href={link.url} class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                            )}
+                        </li>
+                    ))}
                 </ul>
             </nav>
 
+            <!-- Botones de Acción y Locación -->
             <div class="flex items-center space-x-2 sm:space-x-3 lg:space-x-6">
                 <div class="hidden lg:flex items-center space-x-2 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[var(--accent-highlight-secondary)]" viewBox="0 0 20 20" fill="currentColor">
@@ -63,17 +82,17 @@ import logo from '../assets/logo-TopGolf.png';
                     </div>
                 </div>
 
-                <a href="#" class="bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] font-bold text-[10px] sm:text-xs px-2 sm:px-4 py-2.5 rounded-md whitespace-nowrap hover:bg-gray-200 transition-colors">
-                    RESERVA AQUÍ TU BAHÍA
-                </a>
-                <a href="#" class="border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)] font-bold text-[10px] sm:text-xs px-2 sm:px-4 py-2.5 rounded-md whitespace-nowrap hover:bg-[var(--accent-highlight-secondary)] hover:text-[var(--surface-brand-secondary)] transition-colors">
-                    PLANEA TU EVENTO
-                </a>
+                {botones.map(boton => (
+                    <a href={boton.url} class={`${boton.estilo} font-bold text-[10px] sm:text-xs px-2 sm:px-4 py-2.5 rounded-md whitespace-nowrap transition-colors`}>
+                        {boton.texto}
+                    </a>
+                ))}
             </div>
         </div>
     </div>
 </header>
 
+<!-- Barra de Locación Móvil -->
 <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden">
     <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)]">
         <span>MONTERREY</span>
@@ -93,10 +112,11 @@ import logo from '../assets/logo-TopGolf.png';
     </div>
 </div>
 
+<!-- Overlay Menú Móvil -->
 <div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] overflow-y-auto">
     <div class="flex items-center justify-between h-20 px-4">
         <a href="/">
-            <img src={logo.src} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
+            <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
         </a>
         <button id="mobile-menu-close" class="p-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
@@ -108,193 +128,126 @@ import logo from '../assets/logo-TopGolf.png';
     <div class="p-4">
         <nav>
             <ul class="flex flex-col text-xl font-bold divide-y divide-blue-800">
-                <li class="py-4"><a href="#">FIESTAS Y EVENTOS</a></li>
-                <li class="py-4"><a href="#">COMIDA Y BEBIDA</a></li>
-                <li class="py-4">
-                    <button id="jugar-mobile-toggle" class="flex items-center justify-between w-full">
-                        <span>JUGAR</span>
-                        <svg id="jugar-mobile-arrow" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--accent-feedback-strong)] transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-                </li>
+                {links.map(link => (
+                    <li class="py-4">
+                        {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
+                            <>
+                                <button class="flex items-center justify-between w-full mobile-dropdown-trigger" data-dropdown-id={`mobile-${link.id}`}>
+                                    <span>{link.texto}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <div id={`mobile-${link.id}-submenu`} class="hidden mt-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        {link.dropdown_items.map(item => (
+                                            <a href={item.url} class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
+                                                <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
+                                                <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                                                <h3 class="absolute text-lg font-bold bottom-2 left-2">{item.titulo}</h3>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <a href={link.url}>{link.texto}</a>
+                        )}
+                    </li>
+                ))}
             </ul>
         </nav>
-
-        <div id="jugar-mobile-submenu" class="hidden mt-4">
-            <div class="grid grid-cols-2 gap-4">
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
-                    <img src="https://placehold.co/600x400" alt="Planea tu visita" class="object-cover w-full h-full"/>
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <h3 class="absolute text-lg font-bold bottom-2 left-2">PLANEA TU VISITA</h3>
-                </a>
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
-                    <img src="https://placehold.co/600x400" alt="Fiestas y Eventos" class="object-cover w-full h-full"/>
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <h3 class="absolute text-lg font-bold bottom-2 left-2">FIESTAS Y EVENTOS</h3>
-                </a>
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
-                    <img src="https://placehold.co/600x400" alt="Promociones" class="object-cover w-full h-full"/>
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <h3 class="absolute text-lg font-bold bottom-2 left-2">PROMOCIONES</h3>
-                </a>
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
-                    <img src="https://placehold.co/600x400" alt="Kids & Teens" class="object-cover w-full h-full"/>
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <h3 class="absolute text-lg font-bold bottom-2 left-2">KIDS & TEENS</h3>
-                </a>
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
-                    <img src="https://placehold.co/600x400" alt="Membresías" class="object-cover w-full h-full"/>
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <h3 class="absolute text-lg font-bold bottom-2 left-2">MEMBRESÍAS</h3>
-                </a>
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
-                    <img src="https://placehold.co/600x400" alt="Cómo Jugar" class="object-cover w-full h-full"/>
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <h3 class="absolute text-lg font-bold bottom-2 left-2">COMO JUGAR</h3>
-                </a>
-            </div>
-        </div>
-
-        <div class="pt-8 mt-8 border-t-2">
-            <a href="#" class="flex items-center text-lg font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[var(--accent-feedback-strong)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-                Tarjetas de regalo
-            </a>
-            <a href="#" class="flex items-center mt-4 text-lg font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[var(--accent-feedback-strong)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Preguntas frecuentes
-            </a>
-        </div>
     </div>
 </div>
 
-<div id="jugar-overlay-container-desktop" class="fixed inset-0 hidden z-50">
-    <div id="jugar-backdrop-desktop" class="absolute inset-0 bg-black bg-opacity-70"></div>
-    <div class="relative w-full h-full flex items-start justify-center pt-24 pb-8 overflow-y-auto">
-        <div class="bg-[var(--surface-brand-primary)] p-8 text-[var(--neutral-text-inverted)] rounded-lg max-w-7xl w-full mx-4 relative">
-            <button id="close-jugar-overlay-desktop" class="absolute text-5xl font-light text-[var(--neutral-text-inverted)] transition-transform top-4 right-10 hover:scale-125 z-50">
-                &times;
-            </button>
-            <h2 class="text-4xl font-bold text-center mb-8">JUGAR</h2>
+<!-- Overlays para Dropdowns de Escritorio -->
+{linksWithDropdowns.map(link => (
+    <div id={`desktop-${link.id}-overlay`} class="fixed inset-0 hidden z-50 dropdown-overlay">
+        <div class="absolute inset-0 bg-black bg-opacity-70 dropdown-backdrop"></div>
+        <div class="relative w-full h-full flex items-start justify-center pt-24 pb-8 overflow-y-auto">
+            <div class="bg-[var(--surface-brand-primary)] p-8 text-[var(--neutral-text-inverted)] rounded-lg max-w-7xl w-full mx-4 relative">
+                <button class="absolute text-5xl font-light text-[var(--neutral-text-inverted)] transition-transform top-4 right-10 hover:scale-125 z-50 dropdown-close">
+                    &times;
+                </button>
+                <h2 class="text-4xl font-bold text-center mb-8">{link.texto}</h2>
+                
+                <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
+                    {link.dropdown_items.map((item, index) => {
+                        // Lógica para diferentes layouts de tarjetas
+                        if (index < 2) { // Primeras 2 tarjetas son grandes
+                            return (
+                                <a href={item.url} class="relative block overflow-hidden rounded-lg group h-full">
+                                    <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                                    <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
+                                        <h3 class="text-2xl font-bold">{item.titulo}</h3>
+                                        <p class="text-sm opacity-80">{item.subtitulo}</p>
+                                    </div>
+                                    <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                                    </div>
+                                </a>
+                            );
+                        } else { // El resto se agrupan en una cuadrícula
+                            return null; // Renderiza las siguientes en el siguiente bloque
+                        }
+                    })}
 
-            <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
-
-            <a href="#" class="relative block overflow-hidden rounded-lg group h-full">
-                <img src="https://placehold.co/600x400" alt="Planea tu visita" class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                    <h3 class="text-2xl font-bold">PLANEA TU VISITA</h3>
-                    <p class="text-sm opacity-80">Encuentra la mejor manera de Jugar</p>
+                    <div class="grid grid-cols-2 grid-rows-2 gap-5">
+                         {link.dropdown_items.slice(2).map(item => (
+                            <a href={item.url} class="relative block overflow-hidden rounded-lg group aspect-square">
+                                <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="text-xl font-bold">{item.titulo}</h3>
+                                    <p class="text-xs opacity-80">{item.subtitulo}</p>
+                                </div>
+                                <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
                 </div>
-                <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                </div>
-            </a>
-
-            <a href="#" class="relative block overflow-hidden rounded-lg group h-full">
-                <img src="https://placehold.co/600x400" alt="Fiestas" class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                    <h3 class="text-2xl font-bold">FIESTAS Y EVENTOS</h3>
-                    <p class="text-sm opacity-80">Para grupos de 7 hasta 1000 personas</p>
-                </div>
-                <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                </div>
-            </a>
-
-            <div class="grid grid-cols-2 grid-rows-2 gap-5">
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-square">
-                    <img src="https://placehold.co/600x400" alt="Promociones" class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute bottom-0 left-0 p-4">
-                        <h3 class="text-xl font-bold">PROMOCIONES</h3>
-                        <p class="text-xs opacity-80">Ofertas y novedades</p>
-                    </div>
-                    <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                    </div>
-                </a>
-
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-square">
-                    <img src="https://placehold.co/600x400" alt="Membresías" class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute bottom-0 left-0 p-4">
-                        <h3 class="text-xl font-bold">MEMBRESÍAS</h3>
-                        <p class="text-xs opacity-80">Mejora tu juego a modo platinum</p>
-                    </div>
-                    <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                    </div>
-                </a>
-
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-square">
-                    <img src="https://placehold.co/600x400" alt="Kids & Teens" class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute bottom-0 left-0 p-4">
-                        <h3 class="text-xl font-bold">KIDS & TEENS</h3>
-                        <p class="text-xs opacity-80">Ofertas y novedades</p>
-                    </div>
-                    <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                    </div>
-                </a>
-
-                <a href="#" class="relative block overflow-hidden rounded-lg group aspect-square">
-                    <img src="https://placehold.co/600x400" alt="Cómo Jugar" class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute bottom-0 left-0 p-4">
-                        <h3 class="text-xl font-bold">CÓMO JUGAR</h3>
-                        <p class="text-xs opacity-80">Conoce más antes de tu visita</p>
-                    </div>
-                    <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                    </div>
-                </a>
             </div>
-        </div>
-
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-8 pt-8 mt-8 border-t-2">
-                <a href="#" class="flex items-center text-lg font-semibold">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[var(--accent-feedback-strong)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-                    Tarjetas de regalo
-                </a>
-                <a href="#" class="flex items-center text-lg font-semibold">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[var(--accent-feedback-strong)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Preguntas frecuentes
-                </a>
-            </div>
-
         </div>
     </div>
-</div>
+))}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
     // --- LÓGICA PARA EL MENÚ MÓVIL ---
-    const mobileMenuToggle  = document.getElementById('mobile-menu-toggle');
-    const mobileMenuClose   = document.getElementById('mobile-menu-close');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
     const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
 
-    mobileMenuToggle.addEventListener('click', () => {
-        mobileMenuOverlay.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    });
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    if (mobileMenuClose) {
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenuOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+    }
 
-    mobileMenuClose.addEventListener('click', () => {
-        mobileMenuOverlay.classList.add('hidden');
-        document.body.style.overflow = '';
-    });
-
-    // --- LÓGICA PARA EL SUBMENÚ "JUGAR" EN MÓVIL ---
-    const jugarMobileToggle     = document.getElementById('jugar-mobile-toggle');
-    const jugarMobileSubmenu    = document.getElementById('jugar-mobile-submenu');
-    const jugarMobileArrow      = document.getElementById('jugar-mobile-arrow');
-
-    jugarMobileToggle.addEventListener('click', () => {
-        jugarMobileSubmenu.classList.toggle('hidden');
-        jugarMobileArrow.classList.toggle('rotate-180');
+    // --- LÓGICA PARA DROPDOWNS EN MÓVIL ---
+    const mobileDropdownTriggers = document.querySelectorAll('.mobile-dropdown-trigger');
+    mobileDropdownTriggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            const dropdownId = trigger.getAttribute('data-dropdown-id');
+            const submenu = document.getElementById(`${dropdownId}-submenu`);
+            const arrow = trigger.querySelector('.dropdown-arrow');
+            if (submenu) {
+                submenu.classList.toggle('hidden');
+            }
+            if (arrow) {
+                arrow.classList.toggle('rotate-180');
+            }
+        });
     });
 
     // --- LÓGICA PARA EL DESPLEGABLE DE UBICACIÓN (MÓVIL) ---
@@ -302,38 +255,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const locationDetailsMobile = document.getElementById('location-details-mobile');
     const locationArrowMobile   = document.getElementById('location-arrow-mobile');
 
-    locationToggleMobile.addEventListener('click', () => {
-        locationDetailsMobile.classList.toggle('hidden');
-        locationArrowMobile.classList.toggle('rotate-180');
+    if (locationToggleMobile) {
+        locationToggleMobile.addEventListener('click', () => {
+            locationDetailsMobile.classList.toggle('hidden');
+            locationArrowMobile.classList.toggle('rotate-180');
+        });
+    }
+
+    // --- LÓGICA GENÉRICA PARA DROPDOWNS DE ESCRITORIO ---
+    const desktopDropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+    const dropdownOverlays = document.querySelectorAll('.dropdown-overlay');
+
+    desktopDropdownTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdownId = trigger.getAttribute('data-dropdown-id');
+            const overlay = document.getElementById(`${dropdownId}-overlay`);
+            const arrow = trigger.querySelector('.dropdown-arrow');
+
+            // Cierra otros overlays abiertos
+            closeAllDropdowns();
+
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            if (arrow) {
+                arrow.classList.add('rotate-180');
+            }
+        });
     });
 
-
-    // --- LÓGICA PARA EL OVERLAY "JUGAR" EN ESCRITORIO ---
-    const openButtonDesktop         = document.getElementById('open-jugar-overlay-desktop');
-    const closeButtonDesktop        = document.getElementById('close-jugar-overlay-desktop');
-    const overlayContainerDesktop   = document.getElementById('jugar-overlay-container-desktop');
-    const backdropDesktop           = document.getElementById('jugar-backdrop-desktop');
-    const jugarDesktopArrow         = document.getElementById('jugar-desktop-arrow');
-
-    function openOverlayDesktop() {
-        overlayContainerDesktop.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        jugarDesktopArrow.classList.add('rotate-180');
-    }
-
-    function closeOverlayDesktop() {
-        overlayContainerDesktop.classList.add('hidden');
+    function closeAllDropdowns() {
+        dropdownOverlays.forEach(overlay => {
+            overlay.classList.add('hidden');
+        });
+        desktopDropdownTriggers.forEach(trigger => {
+            const arrow = trigger.querySelector('.dropdown-arrow');
+            if (arrow) {
+                arrow.classList.remove('rotate-180');
+            }
+        });
         document.body.style.overflow = '';
-        jugarDesktopArrow.classList.remove('rotate-180');
     }
 
-    openButtonDesktop.addEventListener('click', openOverlayDesktop);
-    closeButtonDesktop.addEventListener('click', closeOverlayDesktop);
-    backdropDesktop.addEventListener('click', closeOverlayDesktop);
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && !overlayContainerDesktop.classList.contains('hidden')) {
-            closeOverlayDesktop();
+    // Event listeners para cerrar overlays
+    dropdownOverlays.forEach(overlay => {
+        const closeButton = overlay.querySelector('.dropdown-close');
+        const backdrop = overlay.querySelector('.dropdown-backdrop');
+        
+        if (closeButton) {
+            closeButton.addEventListener('click', closeAllDropdowns);
+        }
+        if (backdrop) {
+            backdrop.addEventListener('click', closeAllDropdowns);
         }
     });
 
@@ -342,19 +317,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const locationDetailsDesktop    = document.getElementById('location-details-desktop');
     const locationArrowDesktop      = document.getElementById('location-arrow-desktop');
 
-    locationToggleDesktop.addEventListener('click', (event) => {
-        event.stopPropagation(); // Evita que el clic se propague y cierre inmediatamente
-        locationDetailsDesktop.classList.toggle('hidden');
-        locationArrowDesktop.classList.remove('rotate-180'); // Asegura que la flecha se cierre si el detalle está oculto
-    });
+    if (locationToggleDesktop) {
+        locationToggleDesktop.addEventListener('click', (event) => {
+            event.stopPropagation();
+            locationDetailsDesktop.classList.toggle('hidden');
+            locationArrowDesktop.classList.toggle('rotate-180');
+        });
+    }
 
     // Cierra el menú de ubicación de escritorio si se hace clic fuera
-    document.body.addEventListener('click', (event) => {
-        if (!locationToggleDesktop.contains(event.target) && !locationDetailsDesktop.contains(event.target)) {
+    document.addEventListener('click', (event) => {
+        if (locationToggleDesktop && !locationToggleDesktop.contains(event.target) && locationDetailsDesktop && !locationDetailsDesktop.contains(event.target)) {
             locationDetailsDesktop.classList.add('hidden');
-            locationArrowDesktop.classList.remove('rotate-180');
+            if (locationArrowDesktop) {
+                locationArrowDesktop.classList.remove('rotate-180');
+            }
         }
     });
 
+    // Cerrar con la tecla Escape
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
 });
 </script>

@@ -1,6 +1,6 @@
 ---
 // src/components/Component_36.astro
-import { stringifyRichText } from "../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 
 // --- INTERFACES ---
 export interface HorarioEspecial {
@@ -10,32 +10,34 @@ export interface HorarioEspecial {
 
 export interface Props {
     // Sección: ACERCA DE TOPGOLF MONTERREY
-    titulo_acerca: string;
-    texto_acerca: any; // Rich Text para el cuerpo del texto
-    texto_enlace_acerca: string;
-    url_enlace_acerca: string;
+    titulo?: string;
+    descripcion?: any; // Rich Text para el cuerpo del texto
+
+    
+    texto_enlace_acerca?: string;
+    url_enlace_acerca?: string;
 
     // Sección: DIRECCIÓN
-    titulo_direccion: string;
-    texto_direccion: any; // Rich Text para la dirección física
-    telefono: string;
-    url_telefono: string;
-    texto_cta_bahia: string;
-    url_cta_bahia: string;
+    titulo_direccion?: string;
+    texto_direccion?: any; // Rich Text para la dirección física
+    telefono?: string;
+    url_telefono?: string;
+    texto_cta_bahia?: string;
+    url_cta_bahia?: string;
 
     // Sección: HORARIOS
-    titulo_horarios: string;
-    horario_lunes_miercoles: string;
-    horario_jueves: string;
-    horario_viernes_sabado: string;
-    titulo_horarios_especiales: string;
-    horarios_especiales: HorarioEspecial[]; // Array de textos simples para horarios especiales
+    titulo_horarios?: string;
+    horario_lunes_miercoles?: string;
+    horario_jueves?: string;
+    horario_viernes_sabado?: string;
+    titulo_horarios_especiales?: string;
+    horarios_especiales?: HorarioEspecial[]; // Array de textos simples para horarios especiales
 }
 
 // --- DESTRUCTURING Y FALLBACKS ---
 const {
-    titulo_acerca,
-    texto_acerca,
+    titulo,
+    descripcion,
     texto_enlace_acerca,
     url_enlace_acerca,
     titulo_direccion,
@@ -54,7 +56,7 @@ const {
 
 
 // --- PROCESAMIENTO DINÁMICO ---
-const acercaHtml = stringifyRichText(texto_acerca);
+const acercaHtml = stringifyRichText(descripcion);
 const direccionHtml = stringifyRichText(texto_direccion);
 
 // --- PLACEHOLDERS ---
@@ -95,17 +97,17 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
         {/* --- COLUMNA 1: ACERCA DE TOPGOLF MONTERREY --- */}
         <div class="p-6 md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-3">
             <h3 class="text-xl font-bold uppercase tracking-wider text-[var(--neutral-background-strong)] mb-6">
-                {titulo_acerca || "ACERCA DE TOPGOLF MONTERREY"}
+                {titulo || "ACERCA DE TOPGOLF MONTERREY"}
             </h3>
             <div class="text-[var(--neutral-background-strong)] leading-relaxed prose max-w-none">
                 <div set:html={acercaHtml || placeholderAcerca} />
             </div>
-            <div class="mt-4">
+            <div class="mt-4 text-[var(--neutral-background-strong)]">
                 <span class="text-[var(--neutral-background-strong)] font-semibold text-md">
                     ¿Eres nuevo en Topgolf?
                 </span>
                 <a href={url_enlace_acerca || '#'} class="text-sm ml-1 relative group text-[var(--brand-interactive-base)]">
-                    {texto_enlace_acerca || "¿Eres nuevo en Topgolf?"}
+                    {texto_enlace_acerca || "Aprende a jugar"}
                     <span class="absolute bottom-0 left-0 w-full h-0.5"></span>
                 </a>
             </div>
@@ -118,7 +120,7 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
             </div>
 
             <div class="text-sm text-[var(--neutral-background-strong)] leading-relaxed whitespace-pre-line">
-                {direccionHtml || placeholderDireccion}
+                <div set:html={direccionHtml || placeholderDireccion} />
             </div>
 
             <div class="mt-6 flex items-center text-[var(--brand-interactive-base)]">
