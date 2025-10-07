@@ -38,12 +38,32 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
           {subtitulo || "de Topgolf"}
         </h3>
       </div>
-      <div class="mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg">
+      <div class="mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text">
           <div set:html={descriptionHtml || placeholderDescriptionHtml} />
       </div>
     </div>
   </div>
-  <p class="mt-8 text-center text-lg font-bold text-[var(--neutral-text-heavy)]">
+  <p class="mt-8 text-center text-lg font-bold text-[--neutral-background-strong)]">
     {texto_final || "Así es como funciona Topgolf:"}
   </p>
 </section>
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--neutral-background-strong);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--neutral-background-strong);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--neutral-background-strong);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

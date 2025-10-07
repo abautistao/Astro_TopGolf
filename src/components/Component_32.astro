@@ -1,58 +1,43 @@
 ---
 // src/components/Component_32.astro
 import { stringifyRichText } from "../lib/strapi.js";
-import ButtonGroup from './elements/Button.astro';
+import CalloutSection from './elements/CalloutSection.astro'; // Nuevo componente base
 import type { Boton } from './elements/Button.astro';
+
 export interface Props {
     titulo: string;
     contenido: any; // Rich Text
-    texto_boton: string;
-    url_boton: string;
     Boton: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo, contenido, texto_boton, url_boton, Boton } = Astro.props;
+const { titulo, contenido, Boton } = Astro.props;
 
 const placeholderData: Props = {
     titulo: "MEMBRESÍA CORPORATIVA",
     contenido: [{ type: 'paragraph', children: [{ type: 'text', text: "Somos el lugar perfecto para cerrar ventas, o celebrar eventos especiales con tus colegas de la oficina. Las membresías corporativas están diseñadas para que varios colaboradores puedan disfrutar de los beneficios VIP que tenemos disponibles, desde juego gratis hasta acceso prioritario, con una o más tarjetas." }] }],
-    texto_boton: "CONOCE MÁS",
-    url_boton: "#",
+    Boton: [],
 };
 
 // 3. Preparamos los datos para renderizar
 const dataToRender = {
     titulo: titulo || placeholderData.titulo,
     contenido: stringifyRichText(contenido || placeholderData.contenido),
-    texto_boton: texto_boton || placeholderData.texto_boton,
-    url_boton: url_boton || placeholderData.url_boton,
 };
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
     {
         id: 1,
-        texto: texto_boton || dataToRender.texto_boton,
-        url: url_boton || dataToRender.url_boton,
+        texto: "CONOCE MÁS",
+        url: "#",
         tipo: "version_3"
     }
 ];
 ---
 
-<section class="bg-[var(--neutral-text-inverted)] py-16 sm:py-24">
-    <div class="mx-auto max-w-5xl px-6 text-center lg:px-8">
-        <h2 class="text-2xl font-bold text-[var(--surface-brand-primary)] sm:text-3xl">
-            {dataToRender.titulo}
-        </h2>
-        <div class="mt-6 text-lg text-[var(--neutral-background-strong)] prose max-w-none" set:html={dataToRender.contenido}>
-        </div>
-        <div class="mt-10 inline-block">
-            <ButtonGroup botones={componentButtons} />
-        </div>
-    </div>
-</section>
-
-<style>
-    .prose :global(p) {
-        margin: 0;
-    }
-</style>
+<!-- Usamos el nuevo componente base y pasamos los props -->
+<CalloutSection
+    version="version_3"
+    titulo={dataToRender.titulo}
+    contenido={dataToRender.contenido}
+    botones={componentButtons}
+/>

@@ -7,35 +7,36 @@ const FALLBACK_IMAGE_URL = "https://placehold.co/600x400/4a5568/ffffff?text=Prom
 
 // 1. Definimos las interfaces para las props de Strapi
 export interface StrapiMedia {
-  id: number;
-  url: string;
-  alternativeText: string | null;
+    id: number;
+    url: string;
+    alternativeText: string | null;
 }
 
 export interface Promocion {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  imagen: StrapiMedia | null;
-  url: string;
+    id: number;
+    titulo: string;
+    descripcion: string;
+    imagen: StrapiMedia | null;
+    url: string;
+    etiqueta: string | null;
 }
 
 export interface Props {
-  tag: string;
-  titulo_principal: string;
-  promociones: Promocion[];
+    tag: string;
+    titulo_principal: string;
+    promociones: Promocion[];
 }
 
 // 2. Recibimos las props y definimos placeholders
 const { tag, titulo_principal, promociones } = Astro.props;
 
 const placeholderData: Props = {
-  tag: "LA DIVERSIÓN SIGUE EN TOPGOLF MONTERREY",
-  titulo_principal: "CONOCE NUESTRAS PROMOCIONES",
-  promociones: [
-    { id: 1, titulo: "JUEGA GRATIS TODO LO QUE QUIERAS", descripcion: "Contenido de ejemplo para la promoción.", imagen: null, url: "#" },
-    { id: 2, titulo: "LOS LUNES YA NO VAN A SER LO MISMO", descripcion: "Contenido de ejemplo para la promoción.", imagen: null, url: "#" },
-  ]
+    tag: "LA DIVERSIÓN SIGUE EN TOPGOLF MONTERREY",
+    titulo_principal: "CONOCE NUESTRAS PROMOCIONES",
+    promociones: [
+        { id: 1, titulo: "JUEGA GRATIS TODO LO QUE QUIERAS", descripcion: "Consume $650 por persona en alimentos y bebidas, y nosotros te regalamos el juego.", imagen: null, url: "#" ,etiqueta: "PROMO ESPECIAL"},
+        { id: 2, titulo: "LOS LUNES YA NO VAN A SER LO MISMO", descripcion: "Lunes vas a poder venir a jugar por solo $500 la hora, ahora sí, ¡ya no tienes excusas!", imagen: null, url: "#",etiqueta: null },
+    ]
 };
 
 // 3. Preparamos los datos para renderizar
@@ -62,20 +63,30 @@ const promotionsToRender = promociones && promociones.length > 0 ? promociones :
 
                 return (
                     <a href={promo.url} class="group flex flex-col bg-[var(--neutral-background-subtle)] shadow-md hover:shadow-xl transition-all duration-300 ease-in-out overflow-hidden">
-                        <div class="overflow-hidden">
+
+                        <div class="relative mb-4">
                             <img
                                 src={imageUrl}
                                 alt={imageAlt}
                                 class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
                             />
+
+                            {promo.etiqueta && (
+                                <div class="absolute bottom-[-16px] right-0 py-2 px-20 bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-primary)] font-bold uppercase text-base z-20"
+                                    aria-label={promo.etiqueta}>
+                                    {promo.etiqueta}
+                                </div>
+                            )}
+
                         </div>
-                        <div class="p-6 flex-grow flex justify-between items-start">
+
+                        <div class="p-6 pt-0 flex-grow flex justify-between items-start">
                             <div class="flex-1 pr-4">
                                 <h3 class="text-[26px] leading-tight text-[var(--brand-interactive-base)]">
                                     {promo.titulo}
                                 </h3>
                                 <div class="mt-3 text-base text-[var(--neutral-background-strong)]" set:html={stringifyRichText(promo.descripcion)}>
-                                    
+
                                 </div>
                             </div>
                             <div class="flex-shrink-0 pt-1">
