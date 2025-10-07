@@ -1,5 +1,5 @@
 ---
-// src/components/StepWithContent.astro (Lógica desacoplada)
+// src/components/StepWithContent.astro
 import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 import ButtonGroup from './Button.astro';
 import type { Boton } from './Button.astro';
@@ -8,26 +8,26 @@ import type { Boton } from './Button.astro';
 
 export interface Props {
   // Contenido Principal
-  etiqueta_paso: string;
-  titulo: string;
-  descripcion: any;
-  imagen_principal: any;
+  etiqueta_paso: string; // Step label
+  titulo: string; // Title
+  descripcion: any; // Rich Text
+  imagen_principal: any; // Media
   // Decoración
-  patron_fondo_escritorio: any;
-  patron_fondo_movil: any;
+  patron_fondo_escritorio: any; // Media
+  patron_fondo_movil: any; // Media
 
   // CONTROL DE ORIENTACIÓN: Solo controla la posición de la imagen.
   orientacion: 'left_image' | 'right_image';
 
   // CONTROL DE CONTENIDO: Controla el elemento dinámico.
-  tipo_contenido: 'button' | 'alert_card'; // Nuevo campo de control
+  tipo_contenido: 'button' | 'alert_card';
 
-  // Props de Botón (usadas si tipo_contenido es 'button')
+  // Props de Botón
   texto_boton?: string;
   url_boton?: string;
   Boton?: Boton[];
 
-  // Props de Aviso (usadas si tipo_contenido es 'alert_card')
+  // Props de Aviso
   aviso_texto?: string;
   aviso_texto_link?: string;
   aviso_url_link?: string;
@@ -42,8 +42,8 @@ const {
   imagen_principal,
   patron_fondo_escritorio,
   patron_fondo_movil,
-  orientacion, // Nuevo nombre de prop
-  tipo_contenido, // Nuevo control de contenido
+  orientacion,
+  tipo_contenido,
 
   // Props de Botón
   texto_boton = "ACCIÓN",
@@ -78,18 +78,15 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 ];
 
 // --- Lógica de Estructura y Orientación (Basada en 'orientacion') ---
-
-// Control de Orientación
 const isLeftOrientation = orientacion === 'left_image';
-const isRightOrientation = orientacion === 'right_image'; // Aunque no se usa directamente, es útil para claridad.
 
-// Clases de orientación: 'flex-row' para izquierda, 'flex-row-reverse' para derecha
+// Clases de orientación: 'flex-row' para izquierda (C11), 'flex-row-reverse' para derecha (C13)
 const mainContainerClasses = isLeftOrientation
     ? "flex flex-col lg:flex-row items-start lg:justify-items-normal overflow-hidden relative"
     : "flex flex-col lg:flex-row-reverse items-start lg:justify-items-normal overflow-hidden relative";
 
-// Posición del patrón decorativo
-const patternPositionClasses = isLeftOrientation
+// Posición del patrón decorativo (C11: top-0 left-0, C13: top-0 right-0)
+const desktopPatternClasses = isLeftOrientation
     ? "top-0 left-0 transform -translate-x-1/4 -translate-y-1/15 w-1/2 z-0 hidden lg:block"
     : "top-0 right-0 z-0 lg:block hidden";
 
@@ -103,16 +100,18 @@ const stepLabelPositionClasses = isLeftOrientation
 
 <section class="w-full bg-[var(--neutral-text-inverted)] relative overflow-hidden">
   {/* --- Patrones Decorativos --- */}
+  {/* Patrón de Escritorio: Usa desktopPatternClasses para la posición */}
   {desktopPatternUrl && (
     <img
       src={desktopPatternUrl}
       alt="Patrón de puntos decorativo"
-      class={`absolute ${patternPositionClasses}`}
+      class={`absolute ${desktopPatternClasses}`}
       aria-hidden="true"
       loading="lazy"
       decoding="async"
     />
   )}
+  {/* Patrón Móvil: Usa left-0 o right-0 dependiendo de la orientación */}
   {mobilePatternUrl && (
     <img
       src={mobilePatternUrl}
@@ -134,7 +133,7 @@ const stepLabelPositionClasses = isLeftOrientation
           alt={imagen_principal?.data?.attributes?.alternativeText || titulo}
           class="w-full h-full object-cover rounded-lg shadow-lg"
         />
-        {/* Etiqueta de Paso (Móvil) */}
+        {/* Etiqueta de Paso (Móvil) - text-3xl */}
         <div
             style="transform: rotate(-5.0deg);"
             class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden"
@@ -143,11 +142,11 @@ const stepLabelPositionClasses = isLeftOrientation
         </div>
       </div>
 
-      {/* --- Etiqueta de Paso (Desktop) --- */}
+      {/* --- Etiqueta de Paso (Desktop) - text-3xl restaurado --- */}
       {etiqueta_paso && (
         <div
             style="transform: rotate(-5.0deg);"
-            class={`bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-0.5 px-3 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute ${stepLabelPositionClasses} lg:z-20 my-4 text-center mx-auto hidden lg:block`}
+            class={`bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute ${stepLabelPositionClasses} lg:z-20 my-4 text-center mx-auto hidden lg:block`}
         >
           {etiqueta_paso}
         </div>
