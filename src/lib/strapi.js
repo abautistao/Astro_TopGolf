@@ -55,6 +55,10 @@ export async function getHeaderData() {
   return await fetchAPI("/header?populate=*");
 }
 
+export async function getFooterData() {
+  return await fetchAPI("/footer?populate=*");
+}
+
 export const getStrapiUrl = (media) => {
     // La API de Strapi puede devolver el objeto de medios directamente o dentro de una envoltura 'data'.
     // Esta función ahora comprueba ambas estructuras para ser más robusta.
