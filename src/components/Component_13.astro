@@ -16,7 +16,7 @@ export interface Props {
 }
 
 // 2. Recibimos las props de Strapi, con valores por defecto para el placeholder.
-const { 
+const {
   paso = "PASO 2",
   titulo = "HAZ CHECK IN",
   descripcion = "Al llegar, te asignaremos una bahía. La bahía es como tu 'mesa'. Es el área en donde podrás jugar el tiempo que tu quieras. Cada bahía puede haber grupos de hasta 6 personas.",
@@ -65,9 +65,9 @@ const parsedDescription = stringifyRichText(descripcion);
     <div class="container mx-auto px-4 py-16 lg:py-10 relative z-10">
         <div class="flex flex-col lg:flex-row-reverse items-start lg:justify-items-normal overflow-hidden relative">
             <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
-                <img 
-                    src={imageUrl || placeholderImageUrl} 
-                    alt={imagen_principal?.data?.attributes?.alternativeText || 'Imagen principal del paso'} 
+                <img
+                    src={imageUrl || placeholderImageUrl}
+                    alt={imagen_principal?.data?.attributes?.alternativeText || 'Imagen principal del paso'}
                     class="w-full h-full object-cover rounded-lg"
                 >
                 {paso && (
@@ -93,7 +93,7 @@ const parsedDescription = stringifyRichText(descripcion);
                 )}
 
                 {descripcion && (
-                    <div class="text-[var(--neutral-background-strong)] mb-6 mt-4" set:html={parsedDescription} />
+                    <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 strapi-rich-text" set:html={parsedDescription} />
                 )}
 
                 {aviso_texto && aviso_texto_link && (
@@ -108,3 +108,20 @@ const parsedDescription = stringifyRichText(descripcion);
         </div>
     </div>
 </section>
+<style>
+    .strapi-rich-text :global(strong) {
+        color: var(--brand-interactive-base);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

@@ -74,7 +74,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                     {dataToRender.titulo_linea_1} <br class="hidden lg:block"/>
                     <span class="text-[var(--neutral-background-strong)]">{dataToRender.titulo_linea_2}</span>
                 </h1>
-                <div class="mt-6 text-base lg:text-lg text-[var(--neutral-background-strong)] max-w-lg prose" set:html={dataToRender.contenido}></div>
+                <div class="mb-6 mt-6 text-base lg:text-lg text-[var(--neutral-background-strong)] max-w-lg prose" set:html={dataToRender.contenido}></div>
                 <ButtonGroup botones={componentButtons} />
             </div>
             <div class="flex justify-center items-center h-full order-first lg:order-last">

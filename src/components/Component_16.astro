@@ -91,7 +91,9 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                             <h2 class="text-3xl font-semibold text-[var(--surface-brand-primary)] uppercase">{pkg.titulo}</h2>
                             <p class="text-sm font-semibold text-[var(--surface-brand-primary)] mt-1 uppercase tracking-wider">{pkg.subtitulo}</p>
                             <div class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow prose max-w-none" set:html={contentHtml} />
-                            <ButtonGroup botones={componentButtons} />
+                            <div class="mt-8 flex justify-center">
+                                <ButtonGroup botones={componentButtons} />
+                            </div>
                         </div>
                     </div>
                 );

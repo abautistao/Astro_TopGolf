@@ -71,7 +71,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                     <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase">
                         {dataToRender.titulo}
                     </h2>
-                    <div class="mt-6 text-lg text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
+                    <div class="mb-6 mt-6 text-lg text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
                     <ButtonGroup botones={componentButtons} />
                 </div>
             </div>

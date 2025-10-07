@@ -71,7 +71,9 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
                 <h3 class="text-3xl font-bold  text-[var(--accent-highlight-primary)]">{card.titulo}</h3>
                 <p class="mt-2 text-sm  text-[var(--neutral-text-inverted)]">{card.descripcion}</p>
 
-                <ButtonGroup botones={cardButtons} />
+                <div class="mt-8">
+                  <ButtonGroup botones={cardButtons} />
+                </div>
 
               </div>
               {card.etiqueta && (
