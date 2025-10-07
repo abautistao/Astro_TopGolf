@@ -212,7 +212,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     <div class="grid grid-cols-2 grid-rows-2 gap-5">
                          {link.dropdown_items.slice(2).map(item => (
                             <a href={item.url} class="relative block overflow-hidden rounded-lg group aspect-square">
-                                <img src={getStrapiUrl(item.imagen.url)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0  "></div>
                                 <div class="absolute bottom-0 left-0 p-4">
                                     <h3 class="text-xl font-bold">{item.titulo}</h3>
