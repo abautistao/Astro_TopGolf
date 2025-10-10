@@ -56,19 +56,19 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
       class="grid grid-cols-1 items-center gap-y-12 lg:grid-cols-2 lg:gap-x-16"
     >
       <div class="text-center lg:text-left">
-        <h3
+        <h3 style="font-family: var(--font-shields-sans-semibold);"
           class="mt-5 lg:mt-0  py-1 px-2 text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)]"
         >
           {titulo_pequeno || "Título Pequeño"}
         </h3>
 
-        <h2
+        <h2 style="font-family: var(--font-shields-sans-black);"
           class="mt-4 text-4xl font-extrabold text-[var(--neutral-text-inverted)] sm:text-5xl lg:text-6xl"
         >
           {titulo_principal || "Título Principal de la Sección"}
         </h2>
 
-        <div class="mt-6 text-lg text-[var(--neutral-text-inverted)] prose prose-invert">
+        <div style="font-family: var(--font-shields-sans-regular);" class="mt-6 text-lg text-[var(--neutral-text-inverted)] prose prose-invert">
             <div set:html={descriptionHtml || placeholderDescriptionHtml} />
         </div>
       </div>
@@ -81,7 +81,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
             class="absolute left-0 top-0 h-full w-1.5 bg-[var(--accent-highlight-primary)]"
           ></div>
             <div class="flex h-full flex-col justify-center">
-                <h3 class="mb-4 text-xl font-bold text-[var(--neutral-text-inverted)]">
+                <h3 class="mb-4 text-xl font-bold text-[var(--neutral-text-inverted)]" style="font-family: var(--font-shields-sans-regular);">
                   <div set:html={cta_titulo_boton || placeholderDescriptionHtml} />
                 </h3>
                 <ButtonGroup botones={componentButtons} />

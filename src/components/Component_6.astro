@@ -67,18 +67,18 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         <div class="lg:w-1/2 relative"> {/* Hacemos este div relative para que la imagen de puntos se posicione respecto a él */}
             {/* Contenedor del Texto */}
             <div class="relative z-10 w-full text-center bg-[var(--neutral-background-subtle)] p-8 sm:px-12 md:p-16 text-[var(--surface-brand-primary)] shadow-2xl lg:text-left">
-                <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase">
+                <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase" style="font-family: var(--font-shields-sans-semibold);">
                     {titulo || "PLANEA TU VISITA"}
                 </h2>
-                <div class="text-justify mt-6 text-lg text-[var(--surface-brand-secondary)]  strapi-rich-text" set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
+                <div style="font-family: var(--font-shields-sans-regular);" class="text-justify mt-6 text-lg text-[var(--surface-brand-secondary)]  strapi-rich-text" set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
                 <div class="flex items-center gap-2 mt-8 mb-8">
                     <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
-                    <span class="text-sm font-bold text-[var(--brand-interactive-base)] uppercase tracking-wider">
+                    <span class="text-sm font-bold text-[var(--brand-interactive-base)] uppercase tracking-wider" style="font-family: var(--font-shields-sans-semibold);">
                     {texto_ubicacion || "TOPGOLF PLAYA DEL CARMEN"}
                     </span>
                 </div>
                 <ButtonGroup botones={componentButtons} />
-                <div class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
+                <div style="font-family: var(--font-shields-sans-regular);" class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
                     set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`} />
             </div>
 

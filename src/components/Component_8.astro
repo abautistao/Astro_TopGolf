@@ -70,10 +70,10 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 ---
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" style="font-family: var(--font-shields-sans-regular);">
     <div class="text-center">
 
-      <h2 class="relative text-3xl font-xl text-[var(--neutral-background-strong)] sm:text-4xl pb-4">
+      <h2 class="relative text-3xl font-xl text-[var(--neutral-background-strong)] sm:text-4xl pb-4" >
         {titulo || "¡HAZ QUE TU JUEGO SEPA MEJOR!"}
         <span class="block"></span>
     </h2>
@@ -97,7 +97,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
               <div class="absolute bottom-0 w-full bg-[#0D111791] p-4">
-                <h3 class="text-sm font-semibold uppercase text-[var(--neutral-text-inverted)] tracking-wider">
+                <h3 class="text-sm font-semibold uppercase text-[var(--neutral-text-inverted)] tracking-wider" style="font-family: var(--font-shields-sans-semibold) !important;">
                   {card.etiqueta}
                 </h3>
               </div>

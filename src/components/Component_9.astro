@@ -58,7 +58,7 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
   <div class="container mx-auto px-4">
     <h2 class="text-center text-4xl font-bold uppercase mb-10">
-      <div class="inline-block relative">
+      <div class="inline-block relative" style="font-family: var(--font-shields-sans-black);">
         <span class="text-[var(--neutral-background-strong)]">{titulo_normal || "PREGUNTAS"}</span>
         <span class="text-[var(--brand-interactive-base)]">{titulo_resaltado || "FRECUENTES"}</span>
         <div class="absolute left-1/2 -translate-x-1/2 bottom-[-8px] h-[3px] w-16 bg-[var(--brand-interactive-base)]"></div>
@@ -71,13 +71,13 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
         {column1Items.map((item) => (
           <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-              <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">{item.pregunta}</h3>
+              <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{item.pregunta}</h3>
               <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
             </div>
             <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-              <div class="prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
+              <div  style="font-family: var(--font-shields-sans-regular);" class="prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>
           </div>
         ))}
@@ -88,28 +88,28 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
         {column2Items.map((item) => (
           <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-              <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]">{item.pregunta}</h3>
+              <h3 class="text-lg font-medium text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{item.pregunta}</h3>
               <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
             </div>
             <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-                <div class="prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
+                <div style="font-family: var(--font-shields-sans-regular);" class="prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>
           </div>
         ))}
       </div>
     </div>
 
-    <div class="mt-8 text-center text-sm text-[var(--neutral-background-strong)] max-w-2xl mx-auto prose">
+    <div style="font-family: var(--font-shields-sans-regular);" class="mt-8 text-center text-sm text-[var(--neutral-background-strong)] max-w-2xl mx-auto prose">
         <div set:html={disclaimerHtml || placeholderDisclaimerHtml} />
     </div>
   </div>
 </section>
 
 <style>
-  /* 
-    Estos estilos fuerzan la aparición de los marcadores de lista (bullets y números) 
+  /*
+    Estos estilos fuerzan la aparición de los marcadores de lista (bullets y números)
     dentro del contenido renderizado por la clase .prose en este componente.
   */
   .prose :global(ul) {

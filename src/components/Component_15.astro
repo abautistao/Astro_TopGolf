@@ -83,19 +83,19 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
     </div>
 
     <div class="relative bg-[var(--neutral-text-inverted)] pb-10">
-        <div class="relative -top-28 sm:-top-20 -mt-28 sm:-mt-20 z-20 mx-4 md:mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] px-6 py-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white">
+        <div style="font-family: var(--font-shields-sans-semibold);" class="relative -top-28 sm:-top-20 -mt-28 sm:-mt-20 z-20 mx-4 md:mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] px-6 py-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white">
             <div class="w-full md:w-5/12 flex-shrink-0">
-                <span class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs px-3 py-1 mb-4 inline-block">
+                <span class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs px-3 py-1 mb-4 inline-block" >
                     {etiqueta || placeholder.etiqueta}
                 </span>
                 <h1 class="text-4xl lg:text-5xl font-semibold uppercase leading-none" set:html={titulo || placeholder.titulo} />
-                <p class="text-base font-semibold uppercase tracking-wider mt-2">
+                <p class="text-base font-semibold uppercase tracking-wider mt-2" style="font-family: var(--font-shields-sans-regular) !important;">
                     {subtitulo || placeholder.subtitulo}
                 </p>
             </div>
 
             <div class="w-full md:w-7/12">
-                <div class="mb-6 text-md leading-relaxed strapi-rich-text" set:html={descriptionHtml} />
+                <div style="font-family: var(--font-shields-sans-regular);" class="mb-6 text-md leading-relaxed strapi-rich-text" set:html={descriptionHtml} />
                 <ButtonGroup botones={componentButtons} />
             </div>
         </div>

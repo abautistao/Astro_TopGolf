@@ -56,7 +56,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-16 sm:py-24">
-    <div class="container mx-auto px-4">
+    <div style="font-family: var(--font-shields-sans-regular);" class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packagesToRender.map((pkg) => {
                 const contentHtml = stringifyRichText(pkg.descripcion);
@@ -82,13 +82,13 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                         <div class="relative">
                             <img src={imageUrl} alt={imageAlt} class="w-full h-60 object-cover" />
                             <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                                <span class="bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] text-xs font-bold tracking-wider px-4 py-2 rounded-sm uppercase">
+                                <span style="font-family: var(--font-shields-sans-semibold) !important;" class="bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] text-xs font-bold tracking-wider px-4 py-2 rounded-sm uppercase">
                                     {pkg.tag}
                                 </span>
                             </div>
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
-                            <h2 class="text-3xl font-semibold text-[var(--surface-brand-primary)] uppercase">{pkg.titulo}</h2>
+                            <h2 class="text-3xl font-semibold text-[var(--surface-brand-primary)] uppercase" style="font-family: var(--font-shields-sans-semibold) !important;">{pkg.titulo}</h2>
                             <p class="text-sm font-semibold text-[var(--surface-brand-primary)] mt-1 uppercase tracking-wider">{pkg.subtitulo}</p>
                             <div class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow prose max-w-none" set:html={contentHtml} />
                             <div class="mt-8 flex justify-center">

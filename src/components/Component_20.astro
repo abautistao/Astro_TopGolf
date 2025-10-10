@@ -48,7 +48,7 @@ const dataToRender = {
   titulo_seccion: titulo_seccion || placeholderData.titulo_seccion,
   titulo_principal: titulo_principal || placeholderData.titulo_principal,
   contentHtml: stringifyRichText(texto_introduccion) || placeholderData.texto_introduccion,
-  
+
   caracteristicas: caracteristicas && caracteristicas.length > 0 ? caracteristicas : placeholderData.caracteristicas,
 };
 
@@ -75,9 +75,9 @@ const imageAlt = imagen_principal?.alternativeText || "Imagen principal de la se
     <img src={dotsPatternSquare.src} alt="Patrón decorativo de puntos" class="absolute bottom-32 left-0 z-0 w-40 lg:hidden" aria-hidden="true" loading="lazy" decoding="async" />
 
     <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] py-8 px-0 sm:p-16 lg:p-20 relative flex flex-col justify-center">
-      <div class="z-10 p-5 lg:p-0 xl:p-0">
+      <div style="font-family: var(--font-shields-sans-regular);" class="z-10 p-5 lg:p-0 xl:p-0">
         <h2 class="text-xl md:text-2xl tracking-wider uppercase">{dataToRender.titulo_seccion}</h2>
-        <h1 class="text-5xl md:text-7xl font-semibold uppercase my-2">{dataToRender.titulo_principal}</h1>
+        <h1 class="text-5xl md:text-7xl font-semibold uppercase my-2" style="font-family: var(--font-shields-sans-semibold) !important;">{dataToRender.titulo_principal}</h1>
         <div class="mt-6 text-base max-w-2xl" set:html={dataToRender.contentHtml} ></div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mt-12">
           {dataToRender.caracteristicas.map((feature) => (

@@ -34,12 +34,12 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         <div class="flex flex-col items-center gap-4 md:flex-row md:gap-x-8">
 
             <div class="inline-block bg-[var(--accent-feedback-strong)] transform -rotate-3 shadow-md shrink-0">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-[var(--surface-brand-primary)] py-3 px-8 uppercase tracking-tighter">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-[var(--surface-brand-primary)] py-3 px-8 uppercase tracking-tighter" style="font-family: var(--font-shields-sans-semibold);">
                 {titulo || "¿Listo para jugar?"}
             </h2>
             </div>
 
-            <p class="text-xl text-center md:text-left text-[var(--neutral-background-strong)]">
+            <p class="text-xl text-center md:text-left text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-regular);">
             {subtitulo || "Arma tu plan y visita Topgolf Monterrey"}
             </p>
 

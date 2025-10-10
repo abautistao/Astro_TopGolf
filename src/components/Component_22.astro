@@ -44,7 +44,7 @@ const componentButtons:  Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : B
 <section class="w-full text-[var(--neutral-text-inverted)] bg-custom-gradient">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 py-20 lg:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 items-center">
-            <div class="text-left max-w-lg">
+            <div style="font-family: var(--font-shields-sans-semibold);" class="text-left max-w-lg">
                 <span class="inline-block bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-xs font-bold tracking-wider uppercase px-3 py-1 rounded">
                     {dataToRender.tag}
                 </span>
@@ -54,7 +54,7 @@ const componentButtons:  Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : B
             </div>
 
             <div class="flex flex-col items-start lg:items-center">
-                <div class="mb-8 text-base lg:text-lg text-left lg:text-center max-w-lg prose" set:html={dataToRender.contenido}>
+                <div style="font-family: var(--font-shields-sans-regular);"  class="mb-8 text-base lg:text-lg text-left lg:text-center max-w-lg prose" set:html={dataToRender.contenido}>
                 </div>
                 <ButtonGroup botones={componentButtons} />
             </div>

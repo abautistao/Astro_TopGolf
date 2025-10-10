@@ -51,8 +51,8 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
                     />
                 </div>
                 <div class="flex flex-col">
-                    <h2 class="text-xl font-bold text-[var(--neutral-background-strong)]">{titulo_izquierda}</h2>
-                    <div class="mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
+                    <h2 class="text-xl font-bold text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{titulo_izquierda}</h2>
+                    <div style="font-family: var(--font-shields-sans-regular);" class="mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
 
                     <a href={url_link_izquierda}
                         class="mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] link-underline"
@@ -68,8 +68,8 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
             <div class="flex h-10 w-10 items-center justify-center rounded-full text-[var(--neutral-text-inverted)] text-2xl" set:html={icono_derecha} >
             </div>
             <div class="flex h-full flex-col items-center justify-center text-center">
-                <h2 class="text-xl font-bold text-[var(--neutral-text-inverted)]">{titulo_derecha}</h2>
-                <div class="mt-4 text-[var(--neutral-text-inverted)] mx-6 strapi-rich-text" set:html={rightCardDescriptionHtml} />
+                <h2 class="text-xl font-bold text-[var(--neutral-text-inverted)]" style="font-family: var(--font-shields-sans-semibold);">{titulo_derecha}</h2>
+                <div style="font-family: var(--font-shields-sans-regular);" class="mt-4 text-[var(--neutral-text-inverted)] mx-6 strapi-rich-text" set:html={rightCardDescriptionHtml} />
             </div>
         </div>
     </div>

@@ -28,6 +28,10 @@ const customStyles = setupData ? `
         --feedback-positive-base: ${setupData.feedback_positive_base};
         --feedback-info-background: ${setupData.feedback_info_background};
         --neutral-background-strong: ${setupData.neutral_background_strong};
+        --font-shields-sans-semibold: 'ShieldSans', 600;
+        --font-tee-line-bold: 'Tee Line', 700;
+        --font-shields-sans-regular: 'ShieldSans', 400;
+        --font-shields-sans-black: 'ShieldSans', 900;
     }
     .bg-custom-gradient {
         background-image: linear-gradient(to right, var(--surface-brand-secondary), var(--brand-interactive-base));
@@ -46,7 +50,7 @@ const allStyles = fontStyles + customStyles;
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>Astro Basics</title>
-        
+
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
         <style is:global set:html={allStyles} />
     </head>

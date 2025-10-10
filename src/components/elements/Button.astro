@@ -17,7 +17,7 @@ export interface Props {
 const { botones } = Astro.props;
 ---
 
-<div class="flex flex-col gap-4 sm:flex-row">
+<div class="flex flex-col gap-4 sm:flex-row" style="font-family: var(--font-shields-sans-semibold) !important;">
     {botones.map(boton => (
         <a
             href={boton.url}

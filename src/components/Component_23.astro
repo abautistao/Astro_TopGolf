@@ -60,9 +60,9 @@ const dataToRender = {
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div style="font-family: var(--font-shields-sans-regular);" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-            <h2 class="text-3xl sm:text-4xl font-semibold text-[var(--neutral-background-strong)] tracking-tight">
+            <h2 style="font-family: var(--font-shields-sans-semibold) !important;"  class="text-3xl sm:text-4xl font-semibold text-[var(--neutral-background-strong)] tracking-tight">
                 {dataToRender.titulo_seccion}
             </h2>
             <div class="mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>

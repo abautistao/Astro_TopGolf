@@ -96,17 +96,17 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
 
         {/* --- COLUMNA 1: ACERCA DE TOPGOLF MONTERREY --- */}
         <div class="md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-3">
-            <h3 class="text-xl font-bold uppercase tracking-wider text-[var(--neutral-background-strong)] mb-6">
+            <h3 style="font-family: var(--font-shields-sans-semibold);" class="text-xl font-bold uppercase tracking-wider text-[var(--neutral-background-strong)] mb-6">
                 {titulo || "ACERCA DE TOPGOLF MONTERREY"}
             </h3>
-            <div class="text-[var(--neutral-background-strong)] leading-relaxed prose max-w-none">
+            <div style="font-family: var(--font-shields-sans-regular);" class="text-[var(--neutral-background-strong)] leading-relaxed prose max-w-none">
                 <div set:html={acercaHtml || placeholderAcerca} />
             </div>
-            <div class="mt-4 text-[var(--neutral-background-strong)]">
-                <span class="text-[var(--neutral-background-strong)] font-semibold text-md">
+            <div class="mt-4">
+                <span style="font-family: var(--font-shields-sans-semibold);" class="text-[var(--neutral-background-strong)] font-semibold text-md">
                     ¿Eres nuevo en Topgolf?
                 </span>
-                <a href={url_enlace_acerca || '#'} class="text-sm ml-1 relative group text-[var(--brand-interactive-base)]">
+                <a style="font-family: var(--font-shields-sans-regular);" href={url_enlace_acerca || '#'} class="text-sm ml-1 relative group text-[var(--brand-interactive-base)]">
                     {texto_enlace_acerca || "Aprende a jugar"}
                     <span class="absolute bottom-0 left-0 w-full h-0.5"></span>
                 </a>
@@ -115,15 +115,15 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
 
         {/* --- COLUMNA 2: DIRECCIÓN Y CONTACTO --- */}
         <div class="p-6 md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-2">
-            <div class="bg-[var(--accent-highlight-secondary)] inline-block px-2 py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]" >
+            <div style="font-family: var(--font-shields-sans-black);" class="bg-[var(--accent-highlight-secondary)] inline-block px-2 py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]" >
                 {titulo_direccion || "DIRECCIÓN"}
             </div>
 
-            <div class="text-sm text-[var(--neutral-background-strong)] leading-relaxed whitespace-pre-line">
+            <div style="font-family: var(--font-shields-sans-regular);" class="text-sm text-[var(--neutral-background-strong)] leading-relaxed whitespace-pre-line">
                 <div set:html={direccionHtml || placeholderDireccion} />
             </div>
 
-            <div class="mt-6 flex items-center text-[var(--brand-interactive-base)]">
+            <div style="font-family: var(--font-shields-sans-black);" class="mt-6 flex items-center text-[var(--brand-interactive-base)]">
                 <i class="fas fa-phone fa-sm"></i>
                 <a href={`tel:${url_telefono || '8115481000'}`} class="text-sm font-semibold" >
                 {telefono || '81 1548 1000'}
@@ -131,7 +131,7 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
             </div>
 
             {/* Botón/Enlace de Reserva */}
-            <div class="mt-4 flex items-center text-[var(--brand-interactive-base)]">
+            <div style="font-family: var(--font-shields-sans-black);" class="mt-4 flex items-center text-[var(--brand-interactive-base)]">
                 <i class="fas fa-shopping-cart fa-sm"></i>
                 <a href={url_cta_bahia || '#'} class="text-sm font-semibold uppercase">
                 {texto_cta_bahia || 'RESERVA TU BAHÍA'}
@@ -140,8 +140,8 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
         </div>
 
         {/* --- COLUMNA 3: HORARIOS --- */}
-        <div class="p-6 md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-2">
-            <div class="bg-[var(--accent-highlight-secondary)] inline-block px-2 py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]">
+        <div style="font-family: var(--font-shields-sans-regular);" class="p-6 md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-2">
+            <div style="font-family: var(--font-shields-sans-black) !important;" class="bg-[var(--accent-highlight-secondary)] inline-block px-2 py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]">
                 {titulo_horarios || "HORARIOS"}
             </div>
 
@@ -156,7 +156,7 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
             </p>
 
             {/* Horarios Especiales */}
-            <div class="inline-block px-2 py-1 mt-4 mb-3 font-semibold uppercase text-[var(--surface-brand-primary)] bg-[var(--accent-highlight-primary)]">
+            <div style="font-family: var(--font-shields-sans-black);" class="inline-block px-2 py-1 mt-4 mb-3 font-semibold uppercase text-[var(--surface-brand-primary)] bg-[var(--accent-highlight-primary)]">
                 {titulo_horarios_especiales || "HORARIOS ESPECIALES"}
             </div>
 

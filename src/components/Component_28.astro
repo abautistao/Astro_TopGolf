@@ -40,10 +40,10 @@ const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-center text-3xl lg:text-4xl font-bold text-[var(--neutral-background-strong)]">
+        <h2 style="font-family: var(--font-tee-line-bold);" class="text-center text-3xl lg:text-4xl font-bold text-[var(--neutral-background-strong)]">
             {tituloToRender}
         </h2>
-        <div class="mt-8 text-[var(--neutral-background-strong)] prose max-w-none" set:html={terminosHtml}></div>
+        <div style="font-family: var(--font-shields-sans-semibold);" class="mt-8 text-[var(--neutral-background-strong)] prose max-w-none" set:html={terminosHtml}></div>
     </div>
 </section>
 
