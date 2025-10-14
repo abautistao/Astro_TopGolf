@@ -1,1 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'ShieldSans';
+    src: url('/fonts/Shield-Sans/ShieldSans-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans';
+    src: url('/fonts/Shield-Sans/ShieldSans-Bold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans';
+    src: url('/fonts/Shield-Sans/ShieldSans-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tee Line';
+    src: url('/fonts/Tee-Line/TeeLine-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --font-shields-sans-semibold: 'ShieldSans', sans-serif;
+    --font-tee-line-bold: 'Tee Line', sans-serif;
+    --font-shields-sans-regular: 'ShieldSans', sans-serif;
+    --font-shields-sans-black: 'ShieldSans', sans-serif;
+}
+
 @import "tailwindcss";

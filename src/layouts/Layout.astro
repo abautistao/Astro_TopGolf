@@ -11,7 +11,7 @@ import { getSiteSetup, generateFontFaces } from '../lib/strapi.js';
 const setupData = await getSiteSetup();
 
 // Genera las declaraciones @font-face si los datos de tipografía existen.
-const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
+//const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
 
 // Define variables CSS personalizadas y otros estilos basados en los datos de configuración.
 const customStyles = setupData ? `
@@ -28,10 +28,6 @@ const customStyles = setupData ? `
         --feedback-positive-base: ${setupData.feedback_positive_base};
         --feedback-info-background: ${setupData.feedback_info_background};
         --neutral-background-strong: ${setupData.neutral_background_strong};
-        --font-shields-sans-semibold: 'ShieldSans', 600;
-        --font-tee-line-bold: 'Tee Line', 700;
-        --font-shields-sans-regular: 'ShieldSans', 400;
-        --font-shields-sans-black: 'ShieldSans', 900;
     }
     .bg-custom-gradient {
         background-image: linear-gradient(to right, var(--surface-brand-secondary), var(--brand-interactive-base));
@@ -39,7 +35,7 @@ const customStyles = setupData ? `
 ` : '';
 
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
-const allStyles = fontStyles + customStyles;
+const allStyles = customStyles;
 ---
 
 <!doctype html>
