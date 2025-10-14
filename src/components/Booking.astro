@@ -1,0 +1,144 @@
+---
+/**
+ * @component Booking
+ * @description Este componente renderiza un plugin de booking externo dentro de un <iframe>
+ * para encapsular completamente sus estilos (Bootstrap) y scripts (jQuery), evitando
+ * conflictos con los estilos globales del sitio (Tailwind CSS).
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+// La interfaz de Props no cambia.
+export interface Props extends HTMLAttributes<'div'> {
+    plugin_id: string | number;
+    user_language: string;
+    producto_id?: string | number;
+    set_producto_id?: string | number;
+    promocode?: string;
+    set_promocode?: string;
+    pax_min?: string | number;
+    pax_max?: string | number;
+    reservacion_fecha?: string;
+}
+
+const {
+    plugin_id,
+    user_language,
+    producto_id,
+    set_producto_id,
+    promocode,
+    set_promocode,
+    pax_min,
+    pax_max,
+    reservacion_fecha,
+    ...rest
+} = Astro.props;
+
+const vmgPluginUrl = import.meta.env.VMG_PLUGIN_URL;
+
+// Construye el objeto de parámetros para el script.
+const scriptParams: Record<string, any> = {
+    plugin_id,
+    user_language,
+};
+if (producto_id) scriptParams.producto_id = producto_id;
+if (set_producto_id) scriptParams.set_producto_id = set_producto_id;
+if (promocode) scriptParams.promocode = promocode;
+if (set_promocode) scriptParams.set_promocode = set_promocode;
+if (pax_min) scriptParams.pax_min = pax_min;
+if (pax_max) scriptParams.pax_max = pax_max;
+if (reservacion_fecha) scriptParams.reservacion_fecha = reservacion_fecha;
+
+// Convertimos los parámetros a un string JSON para pasarlos de forma segura al script del cliente.
+const scriptParamsJSON = JSON.stringify(scriptParams);
+---
+
+<!-- El contenedor principal ahora solo tiene el iframe. -->
+<div {...rest}>
+    <iframe
+        id="booking-iframe"
+        style="width: 100%; border: none; min-height: 500px;"
+        scrolling="no"
+        title="Formulario de Reservación">
+    </iframe>
+</div>
+
+<script define:vars={{ vmgPluginUrl, scriptParamsJSON }}>
+    document.addEventListener('DOMContentLoaded', function() {
+        const iframe = document.getElementById('booking-iframe');
+        if (!iframe) return;
+
+        // Parsea los parámetros JSON que vienen del frontmatter de Astro.
+        const scriptParams = JSON.parse(scriptParamsJSON);
+
+        // Construye el contenido HTML completo que irá dentro del iframe.
+        const iframeContent = `
+            <!DOCTYPE html>
+            <html lang="${scriptParams.user_language || 'es'}">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Booking Plugin</title>
+                <!-- Estilos encapsulados dentro del iframe -->
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+                <style>
+                    /* Evita el flash de contenido sin estilo y asegura que el body ocupe espacio */
+                    body { visibility: hidden; min-height: 400px; }
+                </style>
+            </head>
+            <body>
+                <!-- El contenedor del plugin, dentro del iframe -->
+                <div id="pluginContainer" class="container"></div>
+
+                <!-- Scripts encapsulados dentro del iframe -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"><\/script>
+                <script>
+                    // Espera a que jQuery esté listo dentro del iframe.
+                    jQuery(document).ready(function($) {
+                        if (!'${vmgPluginUrl}') {
+                            console.error('VMG_PLUGIN_URL no está configurada.');
+                            return;
+                        }
+                        
+                        const pluginBaseUrl = 'https://${vmgPluginUrl}';
+                        const scriptUrl = pluginBaseUrl + '/js/pluginscripts.js';
+
+                        $.getScript(scriptUrl, function() {
+                            "use strict";
+                            $.pluginUrl = pluginBaseUrl + '/requesterv2.php';
+                            
+                            $.post($.pluginUrl, ${JSON.stringify(scriptParams)}, function(data, status) {
+                                jQuery("#pluginContainer").html(data);
+                                // Una vez cargado el contenido, hacemos visible el body.
+                                document.body.style.visibility = 'visible';
+                            });
+                        });
+
+                        // Lógica para auto-ajustar la altura del iframe
+                        let lastHeight = 0;
+                        const observer = new MutationObserver(() => {
+                            const newHeight = document.body.scrollHeight;
+                            if (newHeight !== lastHeight) {
+                                lastHeight = newHeight;
+                                // Envía un mensaje a la página padre con la nueva altura.
+                                window.parent.postMessage({ type: 'resize-iframe', height: newHeight }, '*');
+                            }
+                        });
+                        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+                    });
+                <\/script>
+            </body>
+            </html>
+        `;
+
+        // Escribe el contenido en el iframe.
+        iframe.srcdoc = iframeContent;
+
+        // Escucha los mensajes de redimensionamiento que vienen del iframe.
+        window.addEventListener('message', function(event) {
+            if (event.source === iframe.contentWindow && event.data.type === 'resize-iframe') {
+                iframe.style.height = event.data.height + 'px';
+            }
+        });
+    });
+</script>
