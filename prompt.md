@@ -32,10 +32,41 @@ HTML y CSS: Estándares semánticos y accesibles.
 
 ACCIONES:
 
-Necesito crear una carpeta de tipografias para que pueda agregar las tipografias que se definen en el Layout.astro  para que funcione lo soguientes.  --font-shields-sans-semibold: 'ShieldSans', 600;
-        --font-tee-line-bold: 'Tee Line', 700;
-        --font-shields-sans-regular: 'ShieldSans', 400;
-        --font-shields-sans-black: 'ShieldSans', 900;
+Necesito crear un nuevo componente llamado Booking este componente debera contenner el siguiente codigo o una adaptacion de el
+<input id="vmg_plugin_id" type="hidden" value="1">
+<input id="vmg_plugin_url" type="hidden" value="dev-plugin.venturae.com.mx">
+<div  id="pluginContainer" class="container"></div>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+	jQuery(document).ready(function($){
+		var vmg_plugin_id = $('#vmg_plugin_id').val();
+		var vmg_plugin_url = $('#vmg_plugin_url').val();
+		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
+			"use strict";
+			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2.php`;
+			var params = {
+				'plugin_id': vmg_plugin_id
+			};
+			
+			const urlParams = new URLSearchParams(window.location.search);
+			urlParams.forEach((value, key) => {
+			  params[key] = value;
+			});$.post($.pluginUrl,params,function(data, status){
+				jQuery( "#pluginContainer" ).html(data);
+			});
+		});
+	});
+</script>
 
-
-Por que es importante estas variables ya estan inclustradas en el codigo el los componentene esto hara que solo al cargar las fuentes ya se abran puesto las tipografias en elos elementos correspondientes. asi es como se usara en los componentes style="font-family: var(--font-tee-line-bold);
+Debemos crear na varibale en el .env el cual se ponga vmg_plugin_url , de igual manera este componente podrra obtener a traves del metodo get si en la la url hace algo como esto https://localhos/?plugin_id=3&user_language=es los siguientes variables:
+plugin_id: requerido
+user_language: requerido
+producto_id
+set_producto_id
+promocode
+set_promocode
+pax_min
+pax_max
+reservacion_fecha
