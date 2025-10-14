@@ -1,47 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Booking from '../components/Booking.astro';
-
-// Extrae todos los parámetros de búsqueda de la URL actual.
-const { searchParams } = Astro.url;
-
-const plugin_id = searchParams.get('plugin_id');
-const user_language = searchParams.get('user_language');
-
-// Convierte los parámetros de la URL en un objeto de props para el componente.
-// Astro pasa todos los valores como string, el componente Booking los usará así.
-const bookingProps = Object.fromEntries(searchParams.entries());
-
-const debugInfo = {
-    url: Astro.url.href,
-    hasPluginId: searchParams.has('plugin_id'),
-    pluginIdValue: plugin_id,
-    hasUserLanguage: searchParams.has('user_language'),
-    userLanguageValue: user_language,
-    allParams: bookingProps
-};
 ---
 
 <Layout>
   <main class="py-12">
-    <!-- Bloque de Depuración -->
-    <div class="container mx-auto mb-6 p-4 border rounded bg-gray-100 text-sm font-mono">
-        <h2 class="font-bold text-lg mb-2">Debug Information:</h2>
-        <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-    </div>
-
-    {plugin_id && user_language ? (
-      <Booking {...bookingProps} />
-    ) : (
-      <div class="container text-center mx-auto px-4">
-        <h1 class="text-2xl font-bold" style="font-family: var(--font-shields-sans-bold);">Faltan parámetros requeridos</h1>
-        <p class="mt-4" style="font-family: var(--font-shields-sans-regular);">
-          Por favor, asegúrate de que la URL incluya los parámetros <strong>plugin_id</strong> y <strong>user_language</strong> para continuar.
-        </p>
-        <p class="mt-2 text-sm text-gray-500">
-          Ejemplo: <code>/reservar?plugin_id=1&user_language=es</code>
-        </p>
-      </div>
-    )}
+    <!-- 
+      El componente Booking ahora se encargará de leer los parámetros 
+      de la URL en el lado del cliente.
+    -->
+    <Booking />
   </main>
 </Layout>
