@@ -1,0 +1,40 @@
+---
+// src/components/elements/Button_Footer.astro
+// 1. Definimos la interfaz para un único botón, que será usada por el array de botones.
+export interface Boton {
+    id: number;
+    texto: string;
+    url: string;
+    tipo: 'version_1' | 'version_2'| 'version_3'| 'version_4'| 'version_5'| 'version_6';
+}
+
+// 2. Definimos la interfaz para las props del componente, que espera un array de botones.
+export interface Props {
+    botones: Boton[];
+}
+
+// 3. Recibimos el array de botones de las props.
+const { botones } = Astro.props;
+---
+
+<div class="flex flex-col gap-3 sm:flex-row" style="font-family: var(--font-shields-sans-semibold) !important;">
+    {botones.map(boton => (
+        <a
+            href={boton.url}
+            class:list={[
+                // Modificación: Agregamos 'w-full' para ocupar todo el ancho en móvil (apilados verticalmente)
+                'w-full transform rounded-full px-6 py-2 text-sm font-semibold uppercase transition-all hover:scale-105 sm:w-auto',
+                {
+                    'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
+                    'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
+                    'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
+                    'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
+                    'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'version_5',
+                    'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_6',
+                }
+            ]}
+            set:html={boton.texto}
+        >
+        </a>
+    ))}
+</div>
