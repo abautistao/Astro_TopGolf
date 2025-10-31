@@ -1,6 +1,6 @@
 ---
 // src/components/Header.astro
-import { getHeaderData, getStrapiUrl,stringifyRichText } from '../lib/strapi';
+import { getHeaderData, getStrapiUrl,stringifyRichText, formatUrl } from '../lib/strapi';
 import ButtonGroup from './elements/ButtonHeader.astro';
 import type { Boton } from './elements/ButtonHeader.astro';
 
@@ -74,7 +74,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold"></i>
                                 </button>
                             ) : (
-                                <a href={link.url} class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                                <a href={formatUrl(link.url)} class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
                             )}
                         </li>
                     ))}
@@ -150,7 +150,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 <div id={`mobile-${link.id}-submenu`} class="hidden mt-4">
                                     <div class="grid grid-cols-2 gap-4">
                                         {link.dropdown_items.map(item => (
-                                            <a href={item.url} class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
+                                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
                                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
                                                 <div class="absolute inset-0  bg-opacity-40"></div>
                                                 <h3 class="absolute text-lg font-bold bottom-2 left-2">{item.titulo}</h3>
@@ -160,7 +160,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 </div>
                             </>
                         ) : (
-                            <a href={link.url}>{link.texto}</a>
+                            <a href={formatUrl(link.url)}>{link.texto}</a>
                         )}
                     </li>
                 ))}
@@ -186,7 +186,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
                         if (index < 2) { // Primeras 2 tarjetas son grandes
                             return (
-                                <a href={item.url} class="relative block overflow-hidden rounded-lg group h-full">
+                                <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-full">
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                     <div class="absolute inset-0 "></div>
                                     <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
@@ -205,7 +205,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
                     <div class="grid grid-cols-2 grid-rows-2 gap-5">
                          {link.dropdown_items.slice(2).map(item => (
-                            <a href={item.url} class="relative block overflow-hidden rounded-lg group aspect-square">
+                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group aspect-square">
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0  "></div>
                                 <div class="absolute bottom-0 left-0 p-4">

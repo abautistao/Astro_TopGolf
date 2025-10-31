@@ -1,6 +1,6 @@
 ---
 // 1. Importa el logo, igual que en el Header
-import { getFooterData, getStrapiUrl,stringifyRichText } from '../lib/strapi';
+import { getFooterData, getStrapiUrl,stringifyRichText, formatUrl } from '../lib/strapi';
 import logo from '../assets/logo-TopGolf.png';
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
@@ -26,8 +26,6 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
         tipo: "version_1"
     }
 ];
-
-
 ---
 
 <footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]" style="font-family: var(--font-shields-sans-regular);">
@@ -37,7 +35,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                 <h3 class="font-bold tracking-wider text-[var(--accent-highlight-secondary)] uppercase" style="font-family: var(--font-shields-sans-black) !important;">{titulo_1}</h3>
                 <ul class="mt-4 space-y-3 text-sm">
                     {links_1.map(link => (
-                        <li><a href={link.url} class="hover:underline">{link.texto}</a></li>
+                        <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
 
                     ))}
 
@@ -47,7 +45,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                 <h3 class="font-bold tracking-wider text-[var(--accent-highlight-secondary)] uppercase" style="font-family: var(--font-shields-sans-black) !important;">{titulo_2}</h3>
                 <ul class="mt-4 space-y-3 text-sm">
                     {links_2.map(link => (
-                        <li><a href={link.url} class="hover:underline">{link.texto}</a></li>
+                        <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
 
                     ))}
             </div>
@@ -80,7 +78,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
             </div>
             <div class="flex items-center space-x-4">
                 {socialIcons.map(icon => (
-                    <a href={icon.url} title={icon.name} class="text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity">
+                    <a href={formatUrl(icon.url)} title={icon.name} class="text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity">
                         <span class="text-2xl" set:html={icon.icon}></span>
                     </a>
                 ))}

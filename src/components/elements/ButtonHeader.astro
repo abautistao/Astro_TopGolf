@@ -1,5 +1,6 @@
 ---
 // src/components/elements/Button_Footer.astro
+import { formatUrl } from "../../lib/strapi";
 // 1. Definimos la interfaz para un único botón, que será usada por el array de botones.
 export interface Boton {
     id: number;
@@ -20,7 +21,7 @@ const { botones } = Astro.props;
 <div class="flex flex-col gap-3 sm:flex-row" style="font-family: var(--font-shields-sans-semibold) !important;">
     {botones.map(boton => (
         <a
-            href={boton.url}
+            href={formatUrl(boton.url)}
             class:list={[
                 // Modificación: Agregamos 'w-full' para ocupar todo el ancho en móvil (apilados verticalmente)
                 'w-full transform rounded-full px-6 py-2 text-sm font-semibold uppercase transition-all hover:scale-105 sm:w-auto',

@@ -1,6 +1,6 @@
 ---
 // src/components/Component_14.astro
-import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, formatUrl } from "../lib/strapi.js";
 
 // 1. Definimos la interfaz para las props con la estructura aplanada
 export interface Props {
@@ -54,7 +54,7 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
                     <h2 class="text-xl font-bold text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{titulo_izquierda}</h2>
                     <div style="font-family: var(--font-shields-sans-regular);" class="mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
 
-                    <a href={url_link_izquierda}
+                    <a href={formatUrl(url_link_izquierda)}
                         class="mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] link-underline"
                         set:html={texto_link_izquierda}
                     >

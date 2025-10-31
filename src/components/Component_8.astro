@@ -1,6 +1,6 @@
 ---
 // src/components/Component_8.astro
-import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, formatUrl } from "../lib/strapi.js";
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
 // 1. Definimos la interfaz para las tarjetas anidadas
@@ -89,7 +89,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         const altText = card.imagen?.data?.attributes?.alternativeText || card.etiqueta;
 
         return (
-          <a href={card.url_tarjeta || '#'} class="relative block overflow-hidden rounded-lg group">
+          <a href={formatUrl(card.url_tarjeta)} class="relative block overflow-hidden rounded-lg group">
             <img
               src={imageUrl || placeholderUrl(card.etiqueta)}
               alt={altText}

@@ -137,7 +137,7 @@ export const stringifyRichText = (richText) => {
         const isExternal = child.url.startsWith('http');
         const target = isExternal ? '_blank' : '_self';
         const rel = isExternal ? 'noopener noreferrer' : '';
-        return `<a href="${child.url}" target="${target}" rel="${rel}">${linkText}</a>`;
+        return `<a href="${formatUrl(child.url)}" target="${target}" rel="${rel}">${linkText}</a>`;
       }
       return processTextNode(child);
     }).join('');
@@ -170,4 +170,12 @@ export const stringifyRichText = (richText) => {
   }
 
   return '';
+};
+
+export const formatUrl = (url) => {
+    if (!url) return '#';
+    if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/')) {
+        return url;
+    }
+    return `/${url}`;
 };

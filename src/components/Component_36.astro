@@ -1,6 +1,6 @@
 ---
 // src/components/Component_36.astro
-import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, formatUrl } from "../lib/strapi.js";
 
 // --- INTERFACES ---
 export interface HorarioEspecial {
@@ -106,7 +106,7 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
                 <span style="font-family: var(--font-shields-sans-semibold);" class="text-[var(--neutral-background-strong)] font-semibold text-md">
                     ¿Eres nuevo en Topgolf?
                 </span>
-                <a style="font-family: var(--font-shields-sans-regular);" href={url_enlace_acerca || '#'} class="text-sm ml-1 relative group text-[var(--brand-interactive-base)]">
+                <a style="font-family: var(--font-shields-sans-regular);" href={formatUrl(url_enlace_acerca)} class="text-sm ml-1 relative group text-[var(--brand-interactive-base)]">
                     {texto_enlace_acerca || "Aprende a jugar"}
                     <span class="absolute bottom-0 left-0 w-full h-0.5"></span>
                 </a>
@@ -133,7 +133,7 @@ const specialColor = '#FFFF00'; // Color del fondo de Horarios Especiales
             {/* Botón/Enlace de Reserva */}
             <div style="font-family: var(--font-shields-sans-black);" class="mt-4 flex items-center text-[var(--brand-interactive-base)]">
                 <i class="fas fa-shopping-cart fa-sm"></i>
-                <a href={url_cta_bahia || '#'} class="text-sm font-semibold uppercase">
+                <a href={formatUrl(url_cta_bahia)} class="text-sm font-semibold uppercase">
                 {texto_cta_bahia || 'RESERVA TU BAHÍA'}
                 </a>
             </div>

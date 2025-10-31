@@ -1,6 +1,6 @@
 ---
 // src/components/StepWithContent.astro
-import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, formatUrl } from "../../lib/strapi.js";
 import ButtonGroup from './Button.astro';
 import type { Boton } from './Button.astro';
 
@@ -173,7 +173,7 @@ const stepLabelPositionClasses = isLeftOrientation
             <div class="relative mt-8 hidden md:block" style="font-family: var(--font-shields-sans-regular);">
                 <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center">
                     <p class="text-[var(--neutral-background-strong)]">{aviso_texto}</p>
-                    <a href={aviso_url_link} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
+                    <a href={formatUrl(aviso_url_link)} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
                 </div>
             </div>
         )}
