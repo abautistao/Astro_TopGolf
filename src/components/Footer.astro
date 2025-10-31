@@ -57,51 +57,94 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 
 
                 <div class="mt-4 flex items-center space-x-2">
-                    <div class="relative inline-block w-10 h-5 cursor-pointer">
-                        <div class="w-full h-full rounded-full bg-white/30"></div>
-                        <div class="absolute top-1/2 left-1 h-3 w-3 -translate-y-1/2 rounded-full bg-[var(--neutral-text-inverted)]"></div>
+                                    <div id="contrast-switcher" class="relative inline-block w-10 h-5 cursor-pointer">
+                                        <div class="w-full h-full rounded-full bg-white/30"></div>
+                                        <div class="absolute top-1/2 left-1 h-3 w-3 -translate-y-1/2 rounded-full bg-[var(--neutral-text-inverted)] transition-transform duration-200 ease-in-out"></div>
+                                    </div>
+                                    <span class="text-xs">Cambiar el contraste</span>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <hr class="my-10 border-t-2 border-[var(--neutral-text-inverted)]" />
+                
+                        <div class="flex flex-col items-center gap-8 sm:flex-row sm:justify-between px-15">
+                            <div class="w-60">
+                                <a href="/">
+                                    <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="h-auto w-full" />
+                                </a>
+                            </div>
+                            <div class="text-xs text-center sm:text-left" set:html={terminos_and_conditions}>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                {socialIcons.map(icon => (
+                                    <a href={formatUrl(icon.url)} title={icon.name} class="text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity">
+                                        <span class="text-2xl" set:html={icon.icon}></span>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                
+                        <div class="mt-4 border-t-2 border-[var(--neutral-text-inverted)]"></div>
                     </div>
-                    <span class="text-xs">Cambiar el contraste</span>
-                </div>
-            </div>
-        </div>
-
-        <hr class="my-10 border-t-2 border-[var(--neutral-text-inverted)]" />
-
-        <div class="flex flex-col items-center gap-8 sm:flex-row sm:justify-between px-15">
-            <div class="w-60">
-                <a href="/">
-                    <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="h-auto w-full" />
-                </a>
-            </div>
-            <div class="text-xs text-center sm:text-left" set:html={terminos_and_conditions}>
-            </div>
-            <div class="flex items-center space-x-4">
-                {socialIcons.map(icon => (
-                    <a href={formatUrl(icon.url)} title={icon.name} class="text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity">
-                        <span class="text-2xl" set:html={icon.icon}></span>
-                    </a>
-                ))}
-            </div>
-        </div>
-
-        <div class="mt-4 border-t-2 border-[var(--neutral-text-inverted)]"></div>
-    </div>
-</footer>
-<style>
-    :root {
-        --footer-link-underline: var(--accent-highlight-secondary);
-    }
-
-    footer a {
-        text-decoration-color: transparent;
-        transition: text-decoration-color 0.3s ease, color 0.3s ease;
-    }
-
-    footer a:hover {
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-decoration-color: var(--footer-link-underline);
-
-    }
-</style>
+                </footer>
+                <style>
+                    :root {
+                        --footer-link-underline: var(--accent-highlight-secondary);
+                    }
+                
+                    footer a {
+                        text-decoration-color: transparent;
+                        transition: text-decoration-color 0.3s ease, color 0.3s ease;
+                    }
+                
+                    footer a:hover {
+                        text-decoration: underline;
+                        text-decoration-thickness: 2px;
+                        text-decoration-color: var(--footer-link-underline);
+                    }
+                
+                    #contrast-switcher.active > div:last-child {
+                        transform: translateX(20px);
+                    }
+                </style>
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const switcher = document.getElementById('contrast-switcher');
+                        const body = document.body;
+                
+                        const dispatchThemeChangeEvent = (theme) => {
+                            const event = new CustomEvent('theme-changed', { detail: { theme } });
+                            document.dispatchEvent(event);
+                        };
+                
+                        const activateDarkMode = () => {
+                            body.classList.add('dark-mode');
+                            switcher.classList.add('active');
+                            localStorage.setItem('theme', 'dark');
+                            dispatchThemeChangeEvent('dark');
+                        };
+                
+                        const deactivateDarkMode = () => {
+                            body.classList.remove('dark-mode');
+                            switcher.classList.remove('active');
+                            localStorage.removeItem('theme');
+                            dispatchThemeChangeEvent('light');
+                        };
+                
+                        if (localStorage.getItem('theme') === 'dark') {
+                            activateDarkMode();
+                        } else {
+                            // Dispatch initial theme for components that load after this script
+                            dispatchThemeChangeEvent('light');
+                        }
+                
+                        switcher.addEventListener('click', () => {
+                            if (body.classList.contains('dark-mode')) {
+                                deactivateDarkMode();
+                            } else {
+                                activateDarkMode();
+                            }
+                        });
+                    });
+                </script>
