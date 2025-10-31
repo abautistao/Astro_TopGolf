@@ -40,19 +40,17 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 <header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-family: var(--font-shields-sans-regular);">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
-        <!-- Logo y Menú Móvil -->
         <div class="flex items-center lg:hidden">
             <button id="mobile-menu-toggle" class="p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 text-[var(--accent-feedback-strong)]">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </button>
-            <a href="/" class="ml-4 sm:ml-0">
+            <a href="/" class="">
                 <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-32 h-auto" />
             </a>
         </div>
 
-        <!-- Logo Desktop -->
         <div class="hidden lg:flex items-center h-full w-[280px] bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] shrink-0 px-8 relative">
             <a href="/">
                 <img src={logoUrl} alt="Logo" class="w-40 h-auto" />
@@ -60,28 +58,23 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         </div>
 
         <div class="flex items-center justify-between w-full h-full lg:px-6">
-            <!-- Navegación Desktop -->
             <nav class="hidden lg:flex">
-                <ul class="flex items-center space-x-10 text-sm font-bold">
+                <ul class="flex items-center space-x-10 text-md font-bold">
                     {links.map(link => (
                         <li>
                             {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
-                                <button
-                                    class="flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger"
-                                    data-dropdown-id={`desktop-${link.id}`}
-                                >
+                                <button style="font-family: var(--font-shields-sans-semibold);" class="flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger" data-dropdown-id={`desktop-${link.id}`}>
                                     {link.texto}
-                                    <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold"></i>
+                                    <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                                 </button>
                             ) : (
-                                <a href={formatUrl(link.url)} class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                                <a href={link.url} style="font-family: var(--font-shields-sans-semibold);"class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
                             )}
                         </li>
                     ))}
                 </ul>
             </nav>
 
-            <!-- Botones de Acción y Locación -->
             <div class="flex items-center space-x-2 sm:space-x-3 lg:space-x-6">
                 <div class="hidden lg:flex items-center space-x-2 relative">
                     <i class="fa-solid fa-location-dot fa-xl text-[var(--accent-highlight-secondary)]"></i>
@@ -89,22 +82,20 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         <p class="text-sm font-bold">{ubicacion}</p>
                         <div class="flex items-center opacity-80">
                             <span class="uppercase">{horario}</span>
-                            <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold"></i>
+                            <i id="location-arrow-desktop" class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                         </div>
                     </button>
                     <div id="location-details-desktop" class="absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
                         <div class="my-2" set:html={direccion}></div>
-                         <ButtonGroup botones={buttonBanner} />
+                        <ButtonGroup botones={buttonBanner} />
                     </div>
                 </div>
-
-             <ButtonGroup botones={buttons} />
+                <ButtonGroup botones={buttons} />
             </div>
         </div>
     </div>
 </header>
 
-<!-- Barra de Locación Móvil -->
 <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden">
     <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)]">
         <span>{ubicacion}</span>
@@ -120,9 +111,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         <ButtonGroup botones={buttonBanner} />
     </div>
 </div>
-
-<!-- Overlay Menú Móvil -->
-<div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] overflow-y-auto">
+<div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] flex flex-col">
     <div class="flex items-center justify-between h-20 px-4">
         <a href="/">
             <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
@@ -133,8 +122,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
             </svg>
         </button>
     </div>
-
-    <div class="p-4">
+    <div class="p-4 flex-1 overflow-y-auto">
         <nav>
             <ul class="flex flex-col text-xl font-bold divide-y divide-blue-800">
                 {links.map(link => (
@@ -142,88 +130,120 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
                             <>
                                 <button class="flex items-center justify-between w-full mobile-dropdown-trigger" data-dropdown-id={`mobile-${link.id}`}>
-                                    <span>{link.texto}</span>
+                                    <span class="block w-full text-center mobile-dropdown-text">{link.texto}</span>
+
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
                                 </button>
-                                <div id={`mobile-${link.id}-submenu`} class="hidden mt-4">
+                                <div id={`mobile-${link.id}-submenu`} class="hidden mt-4 mobile-submenu">
                                     <div class="grid grid-cols-2 gap-4">
                                         {link.dropdown_items.map(item => (
-                                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group aspect-w-1 aspect-h-1">
+                                            <a href={item.url} class="relative block overflow-hidden rounded-lg group h-36">
                                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
-                                                <div class="absolute inset-0  bg-opacity-40"></div>
-                                                <h3 class="absolute text-lg font-bold bottom-2 left-2">{item.titulo}</h3>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                                <h3 class="absolute text-xs font-bold bottom-2 left-2 right-2 truncate">{item.titulo}</h3>
+                                                <div class="absolute rounded-full bottom-2 right-2 border-2 border-[var(--accent-feedback-strong)] w-6 h-6 flex items-center justify-center">
+                                                    <i class="fa-solid fa-chevron-right text-sm text-[var(--neutral-text-inverted)]"></i>
+                                                </div>
                                             </a>
                                         ))}
                                     </div>
                                 </div>
                             </>
                         ) : (
-                            <a href={formatUrl(link.url)}>{link.texto}</a>
+                            <a href={link.url} class="block w-full text-center">{link.texto}</a>
                         )}
                     </li>
                 ))}
             </ul>
         </nav>
+        <div id="mobile-links-footer" class="mt-8 flex justify-evenly items-center text-sm font-bold hidden">
+            <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
+                <i class="fa-solid fa-credit-card text-xl text-[var(--accent-feedback-strong)]"></i>
+                <span>Tarjetas de regalo</span>
+            </a>
+            <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
+                <i class="fa-solid fa-circle-question text-xl text-[var(--accent-feedback-strong)]"></i>
+                <span>Preguntas frecuentes</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-center gap-x-8 py-6">
+        <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
+            <i class="fa-brands fa-facebook-f text-3xl"></i>
+        </a>
+        <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
+            <i class="fa-brands fa-instagram text-3xl"></i>
+        </a>
+        <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
+            <i class="fa-brands fa-tiktok text-3xl"></i>
+        </a>
+        <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
+            <i class="fa-brands fa-youtube text-3xl"></i>
+        </a>
     </div>
 </div>
 
-<!-- Overlays para Dropdowns de Escritorio -->
 {linksWithDropdowns.map(link => (
-    <div id={`desktop-${link.id}-overlay`} class="fixed inset-0 hidden z-50 dropdown-overlay">
-        <div class="absolute inset-0 bg-black bg-opacity-70 dropdown-backdrop"></div>
-        <div class="relative w-full h-full flex items-start justify-center pt-24 pb-8 overflow-y-auto">
-            <div class="bg-[var(--surface-brand-primary)] p-8 text-[var(--neutral-text-inverted)] rounded-lg max-w-7xl w-full mx-4 relative">
-                <button class="absolute text-5xl font-light text-[var(--neutral-text-inverted)] transition-transform top-4 right-10 hover:scale-125 z-50 dropdown-close">
-                    &times;
-                </button>
-                <h2 class="text-4xl font-bold text-center mb-8">{link.texto}</h2>
-
-                <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
+    <div id={`desktop-${link.id}-overlay`} class="fixed top-[96px] inset-x-0 bottom-0 hidden z-50 dropdown-overlay">
+        <div class="absolute inset-0 bg-black bg-opacity-40 dropdown-backdrop"></div>
+        <div class="relative w-full h-full flex items-start justify-center py-4 overflow-y-auto">
+            <div class="bg-[var(--surface-brand-primary)] p-8 text-[var(--neutral-text-inverted)] rounded-lg w-full mx-12 relative">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                     {link.dropdown_items.map((item, index) => {
-                        // Lógica para diferentes layouts de tarjetas
 
-                        if (index < 2) { // Primeras 2 tarjetas son grandes
+                        if (index < 2) {
                             return (
                                 <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-full">
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                                    <div class="absolute inset-0 "></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                     <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
                                         <h3 class="text-2xl font-bold">{item.titulo}</h3>
                                         <p class="text-sm opacity-80">{item.subtitulo}</p>
                                     </div>
-                                    <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                                    </div>
+                                    <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
+                                </div>
                                 </a>
                             );
-                        } else { // El resto se agrupan en una cuadrícula
-                            return null; // Renderiza las siguientes en el siguiente bloque
+                        } else {
+                            return null;
                         }
                     })}
 
-                    <div class="grid grid-cols-2 grid-rows-2 gap-5">
-                         {link.dropdown_items.slice(2).map(item => (
-                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group aspect-square">
+                    <div class="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-5 h-full">
+                        {link.dropdown_items.slice(2).map(item => (
+                            <a href={item.url} class="relative block overflow-hidden rounded-lg group h-full">
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                                <div class="absolute inset-0  "></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">
                                     <h3 class="text-xl font-bold">{item.titulo}</h3>
                                     <p class="text-xs opacity-80">{item.subtitulo}</p>
                                 </div>
-                                <div class="absolute p-2 bg-[var(--accent-feedback-strong)] rounded-full bottom-4 right-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-[var(--neutral-text-inverted)]"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                                <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
                                 </div>
                             </a>
                         ))}
                     </div>
                 </div>
+                <div class="mt-8 flex justify-center items-center gap-x-12 text-base font-bold">
+                    <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
+                        <i class="fa-solid fa-credit-card text-2xl text-[var(--accent-feedback-strong)]"></i>
+                        <span>Tarjetas de regalo</span>
+                    </a>
+                    <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
+                        <i class="fa-solid fa-circle-question text-2xl text-[var(--accent-feedback-strong)]"></i>
+                        <span>Preguntas frecuentes</span>
+                    </a>
+                </div>
+
             </div>
         </div>
     </div>
 ))}
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA PARA EL MENÚ MÓVIL ---
@@ -244,18 +264,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA PARA DROPDOWNS EN MÓVIL ---
+    // --- LÓGICA PARA DROPDOWNS EN MÓVIL (MODIFICADA) ---
     const mobileDropdownTriggers = document.querySelectorAll('.mobile-dropdown-trigger');
+    const allMobileSubmenus = document.querySelectorAll('.mobile-submenu');
+    const linksFooter = document.getElementById('mobile-links-footer');
+
     mobileDropdownTriggers.forEach(trigger => {
         trigger.addEventListener('click', () => {
             const dropdownId = trigger.getAttribute('data-dropdown-id');
             const submenu = document.getElementById(`${dropdownId}-submenu`);
             const arrow = trigger.querySelector('.dropdown-arrow');
+            const span = trigger.querySelector('.mobile-dropdown-text'); // <-- Se busca el span
+
+            // Toggles para el submenú y la flecha
             if (submenu) {
                 submenu.classList.toggle('hidden');
             }
             if (arrow) {
                 arrow.classList.toggle('rotate-180');
+            }
+
+            // --- NUEVA LÓGICA PARA EL COLOR DEL TEXTO ---
+            if (span) {
+                if (submenu && !submenu.classList.contains('hidden')) {
+                    // Si el submenú AHORA ESTÁ ABIERTO
+                    span.style.color = 'var(--accent-feedback-strong)';
+                } else {
+                    // Si el submenú AHORA ESTÁ CERRADO
+                    span.style.color = ''; // Vuelve al color por defecto
+                }
+            }
+            // --- FIN DE LA NUEVA LÓGICA ---
+
+
+            // Lógica para mostrar/ocultar "Tarjetas de regalo"
+            const anySubmenuIsOpen = Array.from(allMobileSubmenus).some(
+                menu => !menu.classList.contains('hidden')
+            );
+
+            if (anySubmenuIsOpen) {
+                linksFooter.classList.remove('hidden'); // Muestra
+            } else {
+                linksFooter.classList.add('hidden');    // Oculta
             }
         });
     });
@@ -281,17 +331,19 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             const dropdownId = trigger.getAttribute('data-dropdown-id');
             const overlay = document.getElementById(`${dropdownId}-overlay`);
-            const arrow = trigger.querySelector('.dropdown-arrow');
+            const icon = trigger.querySelector('i.fa-chevron-down');
 
-            // Cierra otros overlays abiertos
+            const isAlreadyOpen = overlay && !overlay.classList.contains('hidden');
             closeAllDropdowns();
 
-            if (overlay) {
-                overlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-            if (arrow) {
-                arrow.classList.add('rotate-180');
+            if (!isAlreadyOpen) {
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+                if (icon) {
+                    icon.classList.add('rotate-180');
+                }
             }
         });
     });
@@ -301,9 +353,9 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.classList.add('hidden');
         });
         desktopDropdownTriggers.forEach(trigger => {
-            const arrow = trigger.querySelector('.dropdown-arrow');
-            if (arrow) {
-                arrow.classList.remove('rotate-180');
+            const icon = trigger.querySelector('i.fa-chevron-down');
+            if (icon) {
+                icon.classList.remove('rotate-180');
             }
         });
         document.body.style.overflow = '';
@@ -311,14 +363,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listeners para cerrar overlays
     dropdownOverlays.forEach(overlay => {
-        const closeButton = overlay.querySelector('.dropdown-close');
         const backdrop = overlay.querySelector('.dropdown-backdrop');
+        const contentWrapper = overlay.querySelector('.relative.w-full.h-full.flex');
 
-        if (closeButton) {
-            closeButton.addEventListener('click', closeAllDropdowns);
-        }
         if (backdrop) {
             backdrop.addEventListener('click', closeAllDropdowns);
+        }
+
+        if (contentWrapper) {
+            contentWrapper.addEventListener('click', (event) => {
+                if (event.target === contentWrapper) {
+                    closeAllDropdowns();
+                }
+            });
         }
     });
 
@@ -331,7 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
         locationToggleDesktop.addEventListener('click', (event) => {
             event.stopPropagation();
             locationDetailsDesktop.classList.toggle('hidden');
-            locationArrowDesktop.classList.toggle('rotate-180');
+            if (locationArrowDesktop) {
+                locationArrowDesktop.classList.toggle('rotate-180');
+            }
         });
     }
 
@@ -349,6 +408,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeAllDropdowns();
+            if (locationDetailsDesktop && !locationDetailsDesktop.classList.contains('hidden')) {
+                locationDetailsDesktop.classList.add('hidden');
+                if (locationArrowDesktop) {
+                    locationArrowDesktop.classList.remove('rotate-180');
+                }
+            }
         }
     });
 });

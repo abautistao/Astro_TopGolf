@@ -18,13 +18,12 @@ export interface Props {
 const { botones } = Astro.props;
 ---
 
-<div class="flex flex-col gap-3 sm:flex-row" style="font-family: var(--font-shields-sans-semibold) !important;">
+<div class="flex flex-row justify-end gap-3 sm:flex-row sm:justify-start" style="font-family: var(--font-shields-sans-semibold) !important;">
     {botones.map(boton => (
-        <a
-            href={formatUrl(boton.url)}
+        <a style="font-family: var(--font-shields-sans-semibold) !important;"
+            href={boton.url}
             class:list={[
-                // Modificación: Agregamos 'w-full' para ocupar todo el ancho en móvil (apilados verticalmente)
-                'w-full transform rounded-full px-6 py-2 text-sm font-semibold uppercase transition-all hover:scale-105 sm:w-auto',
+                'sm:flex-none text-center transform rounded-full px-3 py-1.5 text-xs uppercase transition-all hover:scale-105 sm:w-auto sm:px-6 sm:py-2 sm:text-sm whitespace-nowrap',
                 {
                     'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
                     'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
