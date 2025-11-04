@@ -40,16 +40,19 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 <header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-family: var(--font-shields-sans-regular);">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
-        <div class="flex items-center lg:hidden">
+        <div class="flex items-center justify-between w-full lg:hidden">
             <button id="mobile-menu-toggle" class="p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 text-[var(--accent-feedback-strong)]">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </button>
-            <a href="/" class="">
-                <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-32 h-auto" />
+            <a href="/" class="ml-2"> <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
             </a>
+            <div class="flex items-center space-x-2">
+                <ButtonGroup botones={buttons} />
+            </div>
         </div>
+
 
         <div class="hidden lg:flex items-center h-full w-[280px] bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] shrink-0 px-8 relative">
             <a href="/">
@@ -57,7 +60,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
             </a>
         </div>
 
-        <div class="flex items-center justify-between w-full h-full lg:px-6">
+        <div class="hidden lg:flex items-center justify-between h-full w-full lg:px-6">
             <nav class="hidden lg:flex">
                 <ul class="flex items-center space-x-10 text-md font-bold">
                     {links.map(link => (
@@ -75,7 +78,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                 </ul>
             </nav>
 
-            <div class="flex items-center space-x-2 sm:space-x-3 lg:space-x-6">
+            <div class="flex items-center space-x-2 lg:space-x-6">
                 <div class="hidden lg:flex items-center space-x-2 relative">
                     <i class="fa-solid fa-location-dot fa-xl text-[var(--accent-highlight-secondary)]"></i>
                     <button id="location-toggle-desktop" class="text-left text-xs">
@@ -253,13 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', () => {
-            mobileMenuOverlay.classList.remove('hidden');
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.classList.remove('hidden');
+            }
             document.body.style.overflow = 'hidden';
         });
     }
     if (mobileMenuClose) {
         mobileMenuClose.addEventListener('click', () => {
-            mobileMenuOverlay.classList.add('hidden');
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.classList.add('hidden');
+            }
             document.body.style.overflow = '';
         });
     }
@@ -274,9 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const dropdownId = trigger.getAttribute('data-dropdown-id');
             const submenu = document.getElementById(`${dropdownId}-submenu`);
             const arrow = trigger.querySelector('.dropdown-arrow');
-            const span = trigger.querySelector('.mobile-dropdown-text'); // <-- Se busca el span
+            const span = trigger.querySelector('.mobile-dropdown-text');
 
-            // Toggles para el submenú y la flecha
             if (submenu) {
                 submenu.classList.toggle('hidden');
             }
@@ -284,28 +290,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 arrow.classList.toggle('rotate-180');
             }
 
-            // --- NUEVA LÓGICA PARA EL COLOR DEL TEXTO ---
             if (span) {
                 if (submenu && !submenu.classList.contains('hidden')) {
-                    // Si el submenú AHORA ESTÁ ABIERTO
                     span.style.color = 'var(--accent-feedback-strong)';
                 } else {
-                    // Si el submenú AHORA ESTÁ CERRADO
-                    span.style.color = ''; // Vuelve al color por defecto
+                    span.style.color = '';
                 }
             }
-            // --- FIN DE LA NUEVA LÓGICA ---
 
-
-            // Lógica para mostrar/ocultar "Tarjetas de regalo"
             const anySubmenuIsOpen = Array.from(allMobileSubmenus).some(
                 menu => !menu.classList.contains('hidden')
             );
 
-            if (anySubmenuIsOpen) {
-                linksFooter.classList.remove('hidden'); // Muestra
-            } else {
-                linksFooter.classList.add('hidden');    // Oculta
+            if (linksFooter) {
+                if (anySubmenuIsOpen) {
+                    linksFooter.classList.remove('hidden');
+                } else {
+                    linksFooter.classList.add('hidden');
+                }
             }
         });
     });
@@ -317,8 +319,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (locationToggleMobile) {
         locationToggleMobile.addEventListener('click', () => {
-            locationDetailsMobile.classList.toggle('hidden');
-            locationArrowMobile.classList.toggle('rotate-180');
+            if (locationDetailsMobile) {
+                locationDetailsMobile.classList.toggle('hidden');
+            }
+            if (locationArrowMobile) {
+                locationArrowMobile.classList.toggle('rotate-180');
+            }
         });
     }
 
@@ -361,7 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    // Event listeners para cerrar overlays
     dropdownOverlays.forEach(overlay => {
         const backdrop = overlay.querySelector('.dropdown-backdrop');
         const contentWrapper = overlay.querySelector('.relative.w-full.h-full.flex');
@@ -387,33 +392,48 @@ document.addEventListener('DOMContentLoaded', () => {
     if (locationToggleDesktop) {
         locationToggleDesktop.addEventListener('click', (event) => {
             event.stopPropagation();
-            locationDetailsDesktop.classList.toggle('hidden');
+
+            // --- INICIO DE CORRECCIÓN ---
+            if (locationDetailsDesktop) {
+                locationDetailsDesktop.classList.toggle('hidden');
+            }
             if (locationArrowDesktop) {
                 locationArrowDesktop.classList.toggle('rotate-180');
             }
+            // --- FIN DE CORRECCIÓN ---
         });
     }
 
     // Cierra el menú de ubicación de escritorio si se hace clic fuera
     document.addEventListener('click', (event) => {
-        if (locationToggleDesktop && !locationToggleDesktop.contains(event.target) && locationDetailsDesktop && !locationDetailsDesktop.contains(event.target)) {
+        // --- INICIO DE CORRECCIÓN ---
+        // Nos aseguramos que todos los elementos existan antes de usarlos
+        if (
+            locationToggleDesktop &&
+            !locationToggleDesktop.contains(event.target as Node) &&
+            locationDetailsDesktop &&
+            !locationDetailsDesktop.contains(event.target as Node)
+        ) {
             locationDetailsDesktop.classList.add('hidden');
             if (locationArrowDesktop) {
                 locationArrowDesktop.classList.remove('rotate-180');
             }
         }
+        // --- FIN DE CORRECCIÓN ---
     });
 
     // Cerrar con la tecla Escape
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeAllDropdowns();
+            // --- INICIO DE CORRECCIÓN ---
             if (locationDetailsDesktop && !locationDetailsDesktop.classList.contains('hidden')) {
                 locationDetailsDesktop.classList.add('hidden');
                 if (locationArrowDesktop) {
                     locationArrowDesktop.classList.remove('rotate-180');
                 }
             }
+            // --- FIN DE CORRECCIÓN ---
         }
     });
 });
