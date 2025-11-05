@@ -37,7 +37,7 @@ const buttons: Boton[] = (headerData.Botones2 && !Array.isArray(headerData.Boton
 const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
 ---
 
-<header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-family: var(--font-shields-sans-regular);">
+<header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-size: 23px; font-family: var(--font-shields-sans-regular);">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
         <div class="flex items-center justify-between w-full lg:hidden">
@@ -53,7 +53,6 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
             </div>
         </div>
 
-
         <div class="hidden lg:flex items-center h-full w-[280px] bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] shrink-0 px-8 relative">
             <a href="/">
                 <img src={logoUrl} alt="Logo" class="w-40 h-auto" />
@@ -62,7 +61,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
         <div class="hidden lg:flex items-center justify-between h-full w-full lg:px-6">
             <nav class="hidden lg:flex">
-                <ul class="flex items-center space-x-10 text-md font-bold">
+                <ul class="flex items-center space-x-10 text-md font-semibold">
                     {links.map(link => (
                         <li>
                             {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
@@ -71,7 +70,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                                 </button>
                             ) : (
-                                <a href={link.url} style="font-family: var(--font-shields-sans-semibold);"class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                                <a href={link.url} style="font-family: var(--font-shields-sans-semibold); font-size: 23px;"class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
                             )}
                         </li>
                     ))}
@@ -82,14 +81,14 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                 <div class="hidden lg:flex items-center space-x-2 relative">
                     <i class="fa-solid fa-location-dot fa-xl text-[var(--accent-highlight-secondary)]"></i>
                     <button id="location-toggle-desktop" class="text-left text-xs">
-                        <p class="text-sm font-bold">{ubicacion}</p>
+                        <p class="text-sm font-bold" style="font-size: 18px;">{ubicacion}</p>
                         <div class="flex items-center opacity-80">
-                            <span class="uppercase">{horario}</span>
+                            <span class="uppercase" style="font-size: 11px;">{horario}</span>
                             <i id="location-arrow-desktop" class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                         </div>
                     </button>
                     <div id="location-details-desktop" class="absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
-                        <div class="my-2" set:html={direccion}></div>
+                        <div style="font-size:14px;" class="my-2" set:html={direccion}></div>
                         <ButtonGroup botones={buttonBanner} />
                     </div>
                 </div>
@@ -99,32 +98,42 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     </div>
 </header>
 
-<div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden">
-    <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)]">
-        <span>{ubicacion}</span>
-        <div class="flex items-center">
-            <span>{horario}</span>
-            <svg id="location-arrow-mobile" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-        </div>
-    </button>
-    <div id="location-details-mobile" class="hidden px-4 py-5 bg-[var(--brand-interactive-base)]">
-        <div set:html={direccion}></div>
-        <ButtonGroup botones={buttonBanner} />
-    </div>
+<div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden hidden">
 </div>
+
+
 <div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] flex flex-col">
-    <div class="flex items-center justify-between h-20 px-4">
-        <a href="/">
-            <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-40 h-auto" />
-        </a>
-        <button id="mobile-menu-close" class="p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
+
+    <div class="relative flex items-center justify-between h-20 px-4">
+        <div class="flex items-center">
+            <button id="mobile-menu-close" class="p-2 text-[var(--accent-feedback-strong)]">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <a href="/" class="ml-2">
+                <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
+            </a>
+        </div>
+        <ButtonGroup botones={buttons} />
     </div>
+
+    <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] px-4">
+        <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)]">
+            <span>{ubicacion}</span>
+            <div class="flex items-center">
+                <span>{horario}</span>
+                <svg id="location-arrow-mobile" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </button>
+        <div id="location-details-mobile" class="hidden px-4 py-5 bg-[var(--brand-interactive-base)]">
+            <div set:html={direccion}></div>
+            <ButtonGroup botones={buttonBanner} />
+        </div>
+    </div>
+
     <div class="p-4 flex-1 overflow-y-auto">
         <nav>
             <ul class="flex flex-col text-xl font-bold divide-y divide-blue-800">
@@ -133,8 +142,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
                             <>
                                 <button class="flex items-center justify-between w-full mobile-dropdown-trigger" data-dropdown-id={`mobile-${link.id}`}>
-                                    <span class="block w-full text-center mobile-dropdown-text">{link.texto}</span>
-
+                                    <span class="block w-full text-center mobile-dropdown-text font-semibold" style="font-size: 30px;">{link.texto}</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
@@ -145,7 +153,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                             <a href={item.url} class="relative block overflow-hidden rounded-lg group h-36">
                                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                                                <h3 class="absolute text-xs font-bold bottom-2 left-2 right-2 truncate">{item.titulo}</h3>
+                                                <h3 class="absolute font-semibold bottom-2 left-2 right-2 truncate" style="font-size: 18px; font-family: var(--font-shields-sans-regular);">{item.titulo}</h3>
                                                 <div class="absolute rounded-full bottom-2 right-2 border-2 border-[var(--accent-feedback-strong)] w-6 h-6 flex items-center justify-center">
                                                     <i class="fa-solid fa-chevron-right text-sm text-[var(--neutral-text-inverted)]"></i>
                                                 </div>
@@ -155,13 +163,14 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 </div>
                             </>
                         ) : (
-                            <a href={link.url} class="block w-full text-center">{link.texto}</a>
+                            <a href={link.url} class="block w-full text-center font-semibold" style="font-size: 30px;">{link.texto}</a>
                         )}
                     </li>
                 ))}
             </ul>
         </nav>
-        <div id="mobile-links-footer" class="mt-8 flex justify-evenly items-center text-sm font-bold hidden">
+
+        <div id="mobile-links-footer" class="mt-40 flex justify-evenly items-center text-sm font-bold" style="font-size: 13px;">
             <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
                 <i class="fa-solid fa-credit-card text-xl text-[var(--accent-feedback-strong)]"></i>
                 <span>Tarjetas de regalo</span>
@@ -171,23 +180,24 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                 <span>Preguntas frecuentes</span>
             </a>
         </div>
-    </div>
 
-    <div class="flex items-center justify-center gap-x-8 py-6">
-        <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
-            <i class="fa-brands fa-facebook-f text-3xl"></i>
-        </a>
-        <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
-            <i class="fa-brands fa-instagram text-3xl"></i>
-        </a>
-        <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
-            <i class="fa-brands fa-tiktok text-3xl"></i>
-        </a>
-        <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
-            <i class="fa-brands fa-youtube text-3xl"></i>
-        </a>
-    </div>
-</div>
+        <div class="flex items-center justify-center gap-x-8 py-6 mt-8">
+            <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
+                <i class="fa-brands fa-facebook-f text-3xl"></i>
+            </a>
+            <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
+                <i class="fa-brands fa-instagram text-3xl"></i>
+            </a>
+            <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
+                <i class="fa-brands fa-tiktok text-3xl"></i>
+            </a>
+            <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
+                <i class="fa-brands fa-youtube text-3xl"></i>
+            </a>
+        </div>
+
+    </div> </div>
+
 
 {linksWithDropdowns.map(link => (
     <div id={`desktop-${link.id}-overlay`} class="fixed top-[96px] inset-x-0 bottom-0 hidden z-50 dropdown-overlay">
@@ -203,8 +213,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                     <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                                        <h3 class="text-2xl font-bold">{item.titulo}</h3>
-                                        <p class="text-sm opacity-80">{item.subtitulo}</p>
+                                        <h3 class="font-semibold" style="font-size: 30px;">{item.titulo}</h3>
+                                        <p class="opacity-80" style="font-size: 16px;">{item.subtitulo}</p>
                                     </div>
                                     <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
@@ -222,8 +232,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">
-                                    <h3 class="text-xl font-bold">{item.titulo}</h3>
-                                    <p class="text-xs opacity-80">{item.subtitulo}</p>
+                                    <h3 class="font-semibold" style="font-size: 30px;">{item.titulo}</h3>
+                                    <p class="opacity-80" style="font-size: 16px;">{item.subtitulo}</p>
                                 </div>
                                 <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
@@ -232,13 +242,14 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         ))}
                     </div>
                 </div>
-                <div class="mt-8 flex justify-center items-center gap-x-12 text-base font-bold">
+
+                <div class="mt-8 flex justify-center items-center gap-x-12 font-bold">
                     <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
-                        <i class="fa-solid fa-credit-card text-2xl text-[var(--accent-feedback-strong)]"></i>
+                        <i class="fa-solid fa-credit-card text-[var(--accent-feedback-strong)]" style="font-size: 14px;"></i>
                         <span>Tarjetas de regalo</span>
                     </a>
                     <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
-                        <i class="fa-solid fa-circle-question text-2xl text-[var(--accent-feedback-strong)]"></i>
+                        <i class="fa-solid fa-circle-question text-[var(--accent-feedback-strong)]" style="font-size: 14px;"></i>
                         <span>Preguntas frecuentes</span>
                     </a>
                 </div>
@@ -247,6 +258,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         </div>
     </div>
 ))}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA PARA EL MENÚ MÓVIL ---
@@ -271,10 +283,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA PARA DROPDOWNS EN MÓVIL (MODIFICADA) ---
+    // --- LÓGICA PARA DROPDOWNS EN MÓVIL (SIMPLIFICADA) ---
     const mobileDropdownTriggers = document.querySelectorAll('.mobile-dropdown-trigger');
     const allMobileSubmenus = document.querySelectorAll('.mobile-submenu');
-    const linksFooter = document.getElementById('mobile-links-footer');
+    // 'linksFooter' ya no es necesario aquí
 
     mobileDropdownTriggers.forEach(trigger => {
         trigger.addEventListener('click', () => {
@@ -298,17 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            const anySubmenuIsOpen = Array.from(allMobileSubmenus).some(
-                menu => !menu.classList.contains('hidden')
-            );
-
-            if (linksFooter) {
-                if (anySubmenuIsOpen) {
-                    linksFooter.classList.remove('hidden');
-                } else {
-                    linksFooter.classList.add('hidden');
-                }
-            }
+            // Lógica de 'linksFooter' eliminada
         });
     });
 
@@ -393,21 +395,16 @@ document.addEventListener('DOMContentLoaded', () => {
         locationToggleDesktop.addEventListener('click', (event) => {
             event.stopPropagation();
 
-            // --- INICIO DE CORRECCIÓN ---
             if (locationDetailsDesktop) {
                 locationDetailsDesktop.classList.toggle('hidden');
             }
             if (locationArrowDesktop) {
                 locationArrowDesktop.classList.toggle('rotate-180');
             }
-            // --- FIN DE CORRECCIÓN ---
         });
     }
 
-    // Cierra el menú de ubicación de escritorio si se hace clic fuera
     document.addEventListener('click', (event) => {
-        // --- INICIO DE CORRECCIÓN ---
-        // Nos aseguramos que todos los elementos existan antes de usarlos
         if (
             locationToggleDesktop &&
             !locationToggleDesktop.contains(event.target as Node) &&
@@ -419,21 +416,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 locationArrowDesktop.classList.remove('rotate-180');
             }
         }
-        // --- FIN DE CORRECCIÓN ---
     });
 
-    // Cerrar con la tecla Escape
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeAllDropdowns();
-            // --- INICIO DE CORRECCIÓN ---
             if (locationDetailsDesktop && !locationDetailsDesktop.classList.contains('hidden')) {
                 locationDetailsDesktop.classList.add('hidden');
                 if (locationArrowDesktop) {
                     locationArrowDesktop.classList.remove('rotate-180');
                 }
             }
-            // --- FIN DE CORRECCIÓN ---
         }
     });
 });

@@ -17,33 +17,12 @@ export interface Props {
 // 3. Recibimos el array de botones de las props.
 const { botones } = Astro.props;
 ---
-
-<!-- <div class="flex flex-row justify-end gap-2 lg:flex-row lg:justify-start lg:gap-3" style="font-family: var(--font-shields-sans-semibold) !important;">
-    {botones.map(boton => (
-        <a style="font-family: var(--font-shields-sans-semibold) !important;"
-            href={boton.url}
-            class:list={[
-                'lg:flex-none text-center transform rounded-full px-2 py-1.5 text-xs uppercase transition-all hover:scale-105 lg:w-auto lg:px-6 lg:py-2 lg:text-sm whitespace-nowrap',
-                {
-                    'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
-                    'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
-                    'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
-                    'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
-                    'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'version_5',
-                    'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_6',
-                }
-            ]}
-            set:html={boton.texto}
-        >
-        </a>
-    ))}
-</div> -->
 <div class="flex flex-row justify-end gap-1 lg:flex-row lg:justify-start lg:gap-3" style="font-family: var(--font-shields-sans-semibold) !important;">
     {botones.map(boton => (
-        <a style="font-family: var(--font-shields-sans-semibold) !important;"
+        <a class="font-bold" style="font-family: var(--font-shields-sans-semibold) !important;"
             href={boton.url}
             class:list={[
-                'lg:flex-none text-center transform rounded-full px-2 py-1 text-[8px] uppercase transition-all hover:scale-105 lg:w-auto lg:px-5 lg:py-1.5 lg:text-xs whitespace-nowrap',
+                'lg:flex-none text-center transform rounded-full px-2 py-1 text-[9px] uppercase transition-all hover:scale-105 lg:w-auto lg:px-5 lg:py-1.5 lg:text-[10px] whitespace-nowrap',
                 {
                     'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
                     'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
