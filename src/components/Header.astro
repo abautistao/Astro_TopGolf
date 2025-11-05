@@ -37,7 +37,7 @@ const buttons: Boton[] = (headerData.Botones2 && !Array.isArray(headerData.Boton
 const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
 ---
 
-<header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-size: 23px; font-family: var(--font-shields-sans-regular);">
+<header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-family: var(--font-shields-sans-regular);">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
         <div class="flex items-center justify-between w-full lg:hidden">
@@ -65,12 +65,12 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     {links.map(link => (
                         <li>
                             {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
-                                <button style="font-family: var(--font-shields-sans-semibold);" class="flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger" data-dropdown-id={`desktop-${link.id}`}>
+                                <button style="font-family: var(--font-shields-sans-semibold);" class="text-2xl flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger" data-dropdown-id={`desktop-${link.id}`}>
                                     {link.texto}
                                     <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                                 </button>
                             ) : (
-                                <a href={link.url} style="font-family: var(--font-shields-sans-semibold); font-size: 23px;"class="tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                                <a href={link.url} style="font-family: var(--font-shields-sans-semibold);"class="text-2xl tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
                             )}
                         </li>
                     ))}
@@ -88,7 +88,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         </div>
                     </button>
                     <div id="location-details-desktop" class="absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
-                        <div style="font-size:14px;" class="my-2" set:html={direccion}></div>
+                        <div class="my-2 font-sm" set:html={direccion}></div>
                         <ButtonGroup botones={buttonBanner} />
                     </div>
                 </div>
@@ -134,7 +134,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         </div>
     </div>
 
-    <div class="p-4 flex-1 overflow-y-auto">
+    <div class="p-4 flex-1 overflow-y-auto flex flex-col">
+
         <nav>
             <ul class="flex flex-col text-xl font-bold divide-y divide-blue-800">
                 {links.map(link => (
@@ -142,7 +143,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
                             <>
                                 <button class="flex items-center justify-between w-full mobile-dropdown-trigger" data-dropdown-id={`mobile-${link.id}`}>
-                                    <span class="block w-full text-center mobile-dropdown-text font-semibold" style="font-size: 30px;">{link.texto}</span>
+                                    <span class="block w-full text-center mobile-dropdown-text font-semibold text-3xl">{link.texto}</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
@@ -163,37 +164,38 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 </div>
                             </>
                         ) : (
-                            <a href={link.url} class="block w-full text-center font-semibold" style="font-size: 30px;">{link.texto}</a>
+                            <a href={link.url} class="block w-full text-center font-semibold text-3xl">{link.texto}</a>
                         )}
                     </li>
                 ))}
             </ul>
         </nav>
 
-        <div id="mobile-links-footer" class="mt-40 flex justify-evenly items-center text-sm font-bold" style="font-size: 13px;">
-            <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
-                <i class="fa-solid fa-credit-card text-xl text-[var(--accent-feedback-strong)]"></i>
-                <span>Tarjetas de regalo</span>
-            </a>
-            <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
-                <i class="fa-solid fa-circle-question text-xl text-[var(--accent-feedback-strong)]"></i>
-                <span>Preguntas frecuentes</span>
-            </a>
-        </div>
+        <div class="mt-auto pt-8"> <div id="mobile-links-footer" class="flex justify-evenly items-center text-sm font-bold" style="font-size: 13px;">
+                <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
+                    <i class="fa-solid fa-credit-card text-xl text-[var(--accent-feedback-strong)]"></i>
+                    <span>Tarjetas de regalo</span>
+                </a>
+                <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
+                    <i class="fa-solid fa-circle-question text-xl text-[var(--accent-feedback-strong)]"></i>
+                    <span>Preguntas frecuentes</span>
+                </a>
+            </div>
 
-        <div class="flex items-center justify-center gap-x-8 py-6 mt-8">
-            <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
-                <i class="fa-brands fa-facebook-f text-3xl"></i>
-            </a>
-            <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
-                <i class="fa-brands fa-instagram text-3xl"></i>
-            </a>
-            <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
-                <i class="fa-brands fa-tiktok text-3xl"></i>
-            </a>
-            <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
-                <i class="fa-brands fa-youtube text-3xl"></i>
-            </a>
+            <div class="flex items-center justify-center gap-x-8 py-6 mt-8">
+                <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-facebook-f text-3xl"></i>
+                </a>
+                <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-instagram text-3xl"></i>
+                </a>
+                <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-tiktok text-3xl"></i>
+                </a>
+                <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-youtube text-3xl"></i>
+                </a>
+            </div>
         </div>
 
     </div> </div>
@@ -213,8 +215,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                     <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                                        <h3 class="font-semibold" style="font-size: 30px;">{item.titulo}</h3>
-                                        <p class="opacity-80" style="font-size: 16px;">{item.subtitulo}</p>
+                                        <h3 class="font-semibold text-3xl">{item.titulo}</h3>
+                                        <p class="opacity-80 text-base">{item.subtitulo}</p>
                                     </div>
                                     <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
@@ -232,8 +234,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">
-                                    <h3 class="font-semibold" style="font-size: 30px;">{item.titulo}</h3>
-                                    <p class="opacity-80" style="font-size: 16px;">{item.subtitulo}</p>
+                                    <h3 class="font-semibold text-3xl">{item.titulo}</h3>
+                                    <p class="opacity-80 text-base">{item.subtitulo}</p>
                                 </div>
                                 <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
@@ -245,11 +247,11 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
                 <div class="mt-8 flex justify-center items-center gap-x-12 font-bold">
                     <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
-                        <i class="fa-solid fa-credit-card text-[var(--accent-feedback-strong)]" style="font-size: 14px;"></i>
+                        <i class="fa-solid fa-credit-card text-[var(--accent-feedback-strong)] text-sm"></i>
                         <span>Tarjetas de regalo</span>
                     </a>
                     <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 underline decoration-[var(--accent-feedback-strong)] decoration-2 underline-offset-4">
-                        <i class="fa-solid fa-circle-question text-[var(--accent-feedback-strong)]" style="font-size: 14px;"></i>
+                        <i class="fa-solid fa-circle-question text-[var(--accent-feedback-strong)] text-sm"></i>
                         <span>Preguntas frecuentes</span>
                     </a>
                 </div>
@@ -261,7 +263,6 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- LÓGICA PARA EL MENÚ MÓVIL ---
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenuClose = document.getElementById('mobile-menu-close');
     const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
@@ -283,10 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA PARA DROPDOWNS EN MÓVIL (SIMPLIFICADA) ---
     const mobileDropdownTriggers = document.querySelectorAll('.mobile-dropdown-trigger');
     const allMobileSubmenus = document.querySelectorAll('.mobile-submenu');
-    // 'linksFooter' ya no es necesario aquí
 
     mobileDropdownTriggers.forEach(trigger => {
         trigger.addEventListener('click', () => {
@@ -309,12 +308,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     span.style.color = '';
                 }
             }
-
-            // Lógica de 'linksFooter' eliminada
         });
     });
 
-    // --- LÓGICA PARA EL DESPLEGABLE DE UBICACIÓN (MÓVIL) ---
     const locationToggleMobile  = document.getElementById('location-toggle-mobile');
     const locationDetailsMobile = document.getElementById('location-details-mobile');
     const locationArrowMobile   = document.getElementById('location-arrow-mobile');
@@ -330,7 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA GENÉRICA PARA DROPDOWNS DE ESCRITORIO ---
     const desktopDropdownTriggers = document.querySelectorAll('.dropdown-trigger');
     const dropdownOverlays = document.querySelectorAll('.dropdown-overlay');
 
