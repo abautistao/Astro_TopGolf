@@ -63,8 +63,8 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         alt={alt_logo || "Logo de placeholder"}
         class="transform w-80 -rotate-6 md:w-96"
         />
-        <h1 class="-mt-4 font-extrabold tracking-tighter uppercase text-shadow-md text-7xl md:text-8xl text-[var(--neutral-text-inverted)]" style="font-family: var(--font-shields-sans-semibold);">
-        {titulo || "Título de Ejemplo"}
+        <h1 class="-mt-4 tracking-tighter uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]" style="font-family: var(--font-shields-sans-semibold);">
+            {titulo || "Título de Ejemplo"}
         </h1>
     </div>
 
@@ -79,7 +79,7 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
                 <ButtonGroup botones={buttonBanner} />
             </div>
 
-            <div class="py-2 text-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text" style="font-family: var(--font-shields-sans-regular);">
+            <div class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text" style="font-family: var(--font-shields-sans-regular);">
                 <p set:html={helpTextHtml}></p>
             </div>
         </div>

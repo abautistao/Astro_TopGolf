@@ -56,16 +56,14 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 <section class="bg-[var(--neutral-background-subtle)] py-16 sm:py-24">
   <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
-      {/* --- CONTENIDO DE TEXTO (DINÁMICO) --- */}
       <div class="flex flex-col gap-6 order-2 md:order-1">
-        <p class="uppercase md:text-4xl font-semibold text-[var(--surface-brand-primary)] tracking-wide" style="font-family: var(--font-shields-sans-regular);">
+        <p class="uppercase text-[32px] md:text-[52px] font-normal text-[var(--surface-brand-primary)] tracking-wide" style="font-family: var(--font-shields-sans-regular);">
           {pre_titulo || "ES GOLF. NO ES GOLF."}
         </p>
-        <h1 class="uppercase md:text-5xl font-bold text-[var(--brand-interactive-base)]" style="font-family: var(--font-shields-sans-semibold);">
+        <h1 class="uppercase text-5xl md:text-7xl font-semibold text-[var(--brand-interactive-base)]" style="font-family: var(--font-shields-sans-semibold);">
           {titulo || "ES TOPGOLF"}
         </h1>
-        <div class="prose prose-lg text-[var(--neutral-background-strong)] strapi-rich-text" style="font-family: var(--font-shields-sans-regular);">
+        <div class="text-[var(--neutral-background-strong)] strapi-rich-text text-lg" style="font-family: var(--font-shields-sans-regular);">
           <div set:html={contentHtml || "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"} />
         </div>
         <ButtonGroup botones={componentButtons} />

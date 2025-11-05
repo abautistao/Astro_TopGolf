@@ -68,10 +68,10 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
             </div>
             <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-1/2 lg:mx-0 lg:mt-0 z-10">
                 <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)] rounded-lg shadow-2xl lg:text-left">
-                    <h2 style="font-family: var(--font-shields-sans-semibold);" class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase">
+                    <h2 style="font-family: var(--font-shields-sans-semibold);" class="text-[28px] lg:text-[40px] font-semibold tracking-tight uppercase">
                         {dataToRender.titulo}
                     </h2>
-                    <div style="font-family: var(--font-shields-sans-regular);"  class="mb-6 mt-6 text-lg text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
+                    <div style="font-family: var(--font-shields-sans-regular);"  class="mb-6 mt-6 text-[13px] md:text-base text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
                     <ButtonGroup botones={componentButtons} />
                 </div>
             </div>
