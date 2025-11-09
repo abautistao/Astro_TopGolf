@@ -3,6 +3,7 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import BloqueDeTexto from '../components/BloqueDeTexto.astro';
+import Booking from '../components/Booking.astro';
 import Component_1 from '../components/Component_1.astro';
 import Component_2 from '../components/Component_2.astro'; // <- IMPORTAMOS COMPONENTE 2
 import Component_3 from '../components/Component_3.astro';
@@ -49,6 +50,7 @@ export const prerender = true;
 // SECCIÓN 2: MAPA DE COMPONENTES
 // ==========================================================================================
 const componentsMap = {
+  'secciones.booking': Booking,
   'secciones.bloque-de-texto': BloqueDeTexto,
   'secciones.hero-principal': Component_1,
   'secciones.carrusel': Component_2, 

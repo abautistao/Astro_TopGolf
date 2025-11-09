@@ -1,37 +1,78 @@
 ---
 /**
  * @component Booking
- * @description Este componente renderiza un plugin de booking externo dentro de un <iframe>
- * para encapsular sus estilos y scripts. Lee los parámetros de configuración
- * directamente desde la URL en el lado del cliente.
+ * @description Este componente renderiza un plugin de booking externo dentro de un <iframe>.
+ * Prioriza los parámetros de la URL, pero puede usar valores preconfigurados desde Strapi como fallback.
  */
 import type { HTMLAttributes } from 'astro/types';
 
-// La interfaz de Props se mantiene para documentación y posibles usos futuros.
-export interface Props extends HTMLAttributes<'div'> {}
+// Interfaz de props para recibir datos desde Strapi.
+export interface Props extends HTMLAttributes<'div'> {
+    plugin_id?: string | null;
+    user_language?: string | null;
+    producto_id?: string | null;
+    set_producto_id?: string | null;
+    promocode?: string | null;
+    set_promocode?: string | null;
+    pax_min?: number | null;
+    pax_max?: number | null;
+    reservacion_fecha?: string | null; // Se usa string para fechas para simplificar el paso
+}
 
-const { ...rest } = Astro.props;
+const { 
+    plugin_id: strapiPluginId = null, 
+    user_language: strapiUserLanguage = null,
+    producto_id: strapiProductoId = null,
+    set_producto_id: strapiSetProductoId = null,
+    promocode: strapiPromocode = null,
+    set_promocode: strapiSetPromocode = null,
+    pax_min: strapiPaxMin = null,
+    pax_max: strapiPaxMax = null,
+    reservacion_fecha: strapiReservacionFecha = null,
+    ...rest 
+} = Astro.props;
 
 const vmgPluginUrl = import.meta.env.VMG_PLUGIN_URL;
 ---
 
-<!-- 
-  El contenedor principal ahora tiene un ID para que el script del cliente
-  pueda encontrarlo y renderizar el iframe o un mensaje de error.
--->
 <div id="booking-container" {...rest}>
-    <!-- El contenido se generará dinámicamente por el script de abajo -->
+    <!-- El contenido se generará dinámicamente por el script -->
 </div>
 
-<script define:vars={{ vmgPluginUrl }}>
+<script define:vars={{ 
+    vmgPluginUrl, 
+    strapiPluginId, 
+    strapiUserLanguage,
+    strapiProductoId,
+    strapiSetProductoId,
+    strapiPromocode,
+    strapiSetPromocode,
+    strapiPaxMin,
+    strapiPaxMax,
+    strapiReservacionFecha
+}}>
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('booking-container');
         if (!container) return;
 
-        // 1. Leer los parámetros desde la URL del navegador.
+        // 1. Leer parámetros desde la URL (prioridad alta).
         const searchParams = new URLSearchParams(window.location.search);
-        const plugin_id = searchParams.get('plugin_id');
-        const user_language = searchParams.get('user_language');
+        
+        // Función auxiliar para obtener el valor: URL > Strapi > null
+        const getParam = (paramName, strapiValue) => {
+            const urlValue = searchParams.get(paramName);
+            return urlValue !== null ? urlValue : strapiValue;
+        };
+
+        const plugin_id = getParam('plugin_id', strapiPluginId);
+        const user_language = getParam('user_language', strapiUserLanguage);
+        const producto_id = getParam('producto_id', strapiProductoId);
+        const set_producto_id = getParam('set_producto_id', strapiSetProductoId);
+        const promocode = getParam('promocode', strapiPromocode);
+        const set_promocode = getParam('set_promocode', strapiSetPromocode);
+        const pax_min = getParam('pax_min', strapiPaxMin);
+        const pax_max = getParam('pax_max', strapiPaxMax);
+        const reservacion_fecha = getParam('reservacion_fecha', strapiReservacionFecha);
 
         // 2. Validar que los parámetros requeridos existan.
         if (!plugin_id || !user_language) {
@@ -39,17 +80,14 @@ const vmgPluginUrl = import.meta.env.VMG_PLUGIN_URL;
                 <div class="container text-center mx-auto px-4">
                     <h1 class="text-2xl font-bold" style="font-family: var(--font-shields-sans-bold);">Faltan parámetros requeridos</h1>
                     <p class="mt-4" style="font-family: var(--font-shields-sans-regular);">
-                        Por favor, asegúrate de que la URL incluya los parámetros <strong>plugin_id</strong> y <strong>user_language</strong> para continuar.
-                    </p>
-                    <p class="mt-2 text-sm text-gray-500">
-                        Ejemplo: <code>?plugin_id=1&user_language=es</code>
+                        Asegúrate de que la URL incluya <strong>plugin_id</strong> y <strong>user_language</strong>, o que el componente esté configurado en el CMS.
                     </p>
                 </div>
             `;
             return;
         }
 
-        // 3. Si los parámetros son válidos, crear y configurar el iframe.
+        // 3. Crear y configurar el iframe si los parámetros son válidos.
         const iframe = document.createElement('iframe');
         iframe.id = 'booking-iframe';
         iframe.style.width = '100%';
@@ -59,8 +97,20 @@ const vmgPluginUrl = import.meta.env.VMG_PLUGIN_URL;
         iframe.title = 'Formulario de Reservación';
         container.appendChild(iframe);
 
-        // 4. Construir el contenido del iframe y el script del plugin.
-        const scriptParams = Object.fromEntries(searchParams.entries());
+        // 4. Construir el objeto de parámetros para el script del plugin,
+        //    incluyendo solo los que tienen un valor.
+        const scriptParams = {
+            plugin_id,
+            user_language,
+        };
+        if (producto_id) scriptParams.producto_id = producto_id;
+        if (set_producto_id) scriptParams.set_producto_id = set_producto_id;
+        if (promocode) scriptParams.promocode = promocode;
+        if (set_promocode) scriptParams.set_promocode = set_promocode;
+        if (pax_min) scriptParams.pax_min = pax_min;
+        if (pax_max) scriptParams.pax_max = pax_max;
+        if (reservacion_fecha) scriptParams.reservacion_fecha = reservacion_fecha;
+        
         const scriptParamsJSON = JSON.stringify(scriptParams);
 
         const iframeContent = `
