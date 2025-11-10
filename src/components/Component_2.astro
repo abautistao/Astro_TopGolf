@@ -41,10 +41,10 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
 ---
 
 <section class="w-full py-12 font-sans bg-[var(--neutral-text-inverted)]">
-  <div class="relative max-w-8xl mx-auto px-4 sm:px-6">
+  <div class="relative px-4 mx-auto max-w-8xl sm:px-6">
     <div
       id={carouselId}
-      class="overflow-x-auto scroll-smooth pb-8 -mb-8 scrollbar-hide"
+      class="pb-8 -mb-8 overflow-x-auto scroll-smooth scrollbar-hide"
       data-total-cards={cardsToRender.length}
     >
       <div class="flex gap-6">
@@ -61,7 +61,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
               <img
                 src={imageUrl || placeholderImageUrl}
                 alt={card.alt_imagen || "Imagen de la tarjeta"}
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
               />
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,_rgba(0,0,0,0.9)_0%,_rgba(0,0,0,0.6)_35%,_rgba(0,0,0,0)_70%)]"></div>
               <div class="relative z-10 flex flex-col justify-end h-full p-6" style="font-family: var(--font-shields-sans-semibold); ">
@@ -83,7 +83,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       </div>
     </div>
 
-    <div class="mt-8 flex justify-between items-center">
+    <div class="flex items-center justify-between mt-8">
       <div class="flex gap-3">
         <button
           id={`prev-btn-${carouselId}`}
@@ -106,9 +106,9 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
         </button>
       </div>
 
-      <div class="hidden sm:flex items-center gap-2 text-sm">
+      <div class="items-center hidden gap-2 text-sm sm:flex">
         <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
-        <span class="text-[var(--neutral-background-strong)]">
+        <span id="topgolf-content-text" class="text-[var(--neutral-background-strong)]">
           Estás viendo contenido de <strong>Topgolf Monterrey</strong>
         </span>
       </div>
@@ -117,7 +117,22 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
   </div>
 </section>
 
-<script define:vars={{ carouselId }}>
+<script type="module" define:vars={{ carouselId }}>
+  import { onThemeChange } from '../lib/theme.js';
+
+  function setupDarkModeHandler() {
+    const topgolfText = document.getElementById('topgolf-content-text');
+    if (!topgolfText) return;
+
+    onThemeChange((theme) => {
+      if (theme === 'dark') {
+        topgolfText.style.color = 'var(--accent-highlight-secondary)';
+      } else {
+        topgolfText.style.color = 'var(--neutral-background-strong)';
+      }
+    });
+  }
+
   function setupCarousel(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -143,12 +158,11 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       if (!container || !prevBtn || !nextBtn) return;
       prevBtn.disabled = currentIndex === 0;
 
-      // Cálculo más robusto para deshabilitar el botón "siguiente"
       const containerWidth = container.clientWidth;
       const contentWidth = container.scrollWidth;
       const currentScroll = container.scrollLeft;
 
-      nextBtn.disabled = currentScroll + containerWidth >= contentWidth - 10; // -10 para margen de error
+      nextBtn.disabled = currentScroll + containerWidth >= contentWidth - 10;
     };
 
     const scrollToCurrent = () => {
@@ -171,30 +185,28 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       }
     });
 
-    // Escuchar el evento de scroll para actualizar los botones
     container.addEventListener('scroll', updateButtons, { passive: true });
 
-    // Re-calcular en resize para responsividad
     window.addEventListener('resize', () => {
       scrollDistance = updateScrollDistance();
       updateButtons();
     });
 
-    // Llamada inicial
     updateButtons();
   }
 
-  // Inicializamos el carrusel específico de este componente
   document.addEventListener('astro:page-load', () => {
-    // Usamos la variable carouselId que pasamos desde Astro
     setupCarousel(carouselId);
+    setupDarkModeHandler();
   });
-  // Fallback para cuando no se usan View Transitions
+
   if (document.readyState === 'complete') {
     setupCarousel(carouselId);
+    setupDarkModeHandler();
   } else {
     document.addEventListener('DOMContentLoaded', () => {
        setupCarousel(carouselId);
+       setupDarkModeHandler();
     });
   }
 </script>
