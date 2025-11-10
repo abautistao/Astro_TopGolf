@@ -70,7 +70,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                                 </button>
                             ) : (
-                                <a href={link.url} style="font-family: var(--font-shields-sans-semibold);"class="text-2xl tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                                <a href={formatUrl(link.url)} style="font-family: var(--font-shields-sans-semibold);"class="text-2xl tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
                             )}
                         </li>
                     ))}
@@ -151,7 +151,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 <div id={`mobile-${link.id}-submenu`} class="hidden mt-4 mobile-submenu">
                                     <div class="grid grid-cols-2 gap-4">
                                         {link.dropdown_items.map(item => (
-                                            <a href={item.url} class="relative block overflow-hidden rounded-lg group h-36">
+                                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-36">
                                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                                                 <h3 class="absolute font-semibold bottom-2 left-2 right-2 truncate" style="font-size: 18px; font-family: var(--font-shields-sans-regular);">{item.titulo}</h3>
@@ -164,7 +164,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 </div>
                             </>
                         ) : (
-                            <a href={link.url} class="block w-full text-center font-semibold text-3xl">{link.texto}</a>
+                            <a href={formatUrl(link.url)} class="block w-full text-center font-semibold text-3xl">{link.texto}</a>
                         )}
                     </li>
                 ))}
@@ -230,7 +230,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
                     <div class="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-5 h-full">
                         {link.dropdown_items.slice(2).map(item => (
-                            <a href={item.url} class="relative block overflow-hidden rounded-lg group h-full">
+                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-full">
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">

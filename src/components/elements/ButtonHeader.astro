@@ -20,7 +20,7 @@ const { botones } = Astro.props;
 <div class="flex flex-row justify-end gap-1 lg:flex-row lg:justify-start lg:gap-3" style="font-family: var(--font-shields-sans-semibold) !important;">
     {botones.map(boton => (
         <a class="font-bold" style="font-family: var(--font-shields-sans-semibold) !important;"
-            href={boton.url}
+            href={formatUrl(boton.url)}
             class:list={[
                 'lg:flex-none text-center transform rounded-full px-2 py-1 text-[9px] uppercase transition-all hover:scale-105 lg:w-auto lg:px-5 lg:py-1.5 lg:text-[10px] whitespace-nowrap',
                 {
