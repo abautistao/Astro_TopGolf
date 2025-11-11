@@ -41,7 +41,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
         <div class="flex items-center justify-between w-full lg:hidden">
-            <button id="mobile-menu-toggle" class="p-2">
+            <button id="mobile-menu-toggle">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 text-[var(--accent-feedback-strong)]">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
@@ -65,12 +65,12 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     {links.map(link => (
                         <li>
                             {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
-                                <button style="font-family: var(--font-shields-sans-semibold);" class="text-2xl flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger" data-dropdown-id={`desktop-${link.id}`}>
+                                <button style="font-family: var(--font-shields-sans-semibold);" class="text-lg flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger" data-dropdown-id={`desktop-${link.id}`}>
                                     {link.texto}
                                     <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                                 </button>
                             ) : (
-                                <a href={formatUrl(link.url)} style="font-family: var(--font-shields-sans-semibold);"class="text-2xl tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                                <a href={formatUrl(link.url)} style="font-family: var(--font-shields-sans-semibold);"class="text-lg tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
                             )}
                         </li>
                     ))}
@@ -106,7 +106,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
     <div class="relative flex items-center justify-between h-20 px-4">
         <div class="flex items-center">
-            <button id="mobile-menu-close" class="p-2 text-[var(--accent-feedback-strong)]">
+            <button id="mobile-menu-close" class="text-[var(--accent-feedback-strong)]">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -137,7 +137,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     <div class="p-4 flex-1 overflow-y-auto flex flex-col">
 
         <nav>
-            <ul class="flex flex-col text-xl font-bold divide-y divide-blue-800">
+            <ul class="flex flex-col text-xl font-bold">
                 {links.map(link => (
                     <li class="py-4">
                         {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
@@ -154,7 +154,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                             <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-36">
                                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                                                <h3 class="absolute font-semibold bottom-2 left-2 right-2 truncate" style="font-size: 18px; font-family: var(--font-shields-sans-regular);">{item.titulo}</h3>
+                                                <h3 class="text-xs absolute font-semibold bottom-2 left-2 right-2 truncate" style="font-family: var(--font-shields-sans-regular);">{item.titulo}</h3>
                                                 <div class="absolute rounded-full bottom-2 right-2 border-2 border-[var(--accent-feedback-strong)] w-6 h-6 flex items-center justify-center">
                                                     <i class="fa-solid fa-chevron-right text-sm text-[var(--neutral-text-inverted)]"></i>
                                                 </div>
@@ -215,8 +215,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                     <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                                        <h3 class="font-semibold text-3xl">{item.titulo}</h3>
-                                        <p class="opacity-80 text-base">{item.subtitulo}</p>
+                                        <h3 class="font-semibold text-xl">{item.titulo}</h3>
+                                        <p class="opacity-80 text-xs">{item.subtitulo}</p>
                                     </div>
                                     <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
@@ -234,8 +234,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">
-                                    <h3 class="font-semibold text-3xl">{item.titulo}</h3>
-                                    <p class="opacity-80 text-base">{item.subtitulo}</p>
+                                    <h3 class="font-semibold text-xl">{item.titulo}</h3>
+                                    <p class="opacity-80 text-xs">{item.subtitulo}</p>
                                 </div>
                                 <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>

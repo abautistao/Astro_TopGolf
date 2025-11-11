@@ -24,10 +24,10 @@ const { botones } = Astro.props;
             class:list={[
                 'lg:flex-none text-center transform rounded-full px-2 py-1 text-[9px] uppercase transition-all hover:scale-105 lg:w-auto lg:px-5 lg:py-1.5 lg:text-[10px] whitespace-nowrap',
                 {
-                    'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
+                    'border-2 border-[var(--neutral-text-inverted)] bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
                     'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
-                    'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
-                    'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
+                    'border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
+                    'border-2 border-[var(--surface-brand-primary)]  bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
                     'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]': boton.tipo === 'version_5',
                     'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)]': boton.tipo === 'version_6',
                 }
