@@ -1,0 +1,59 @@
+---
+// ==========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+
+
+import Layout from '../../layouts/Layout.astro'; // Importamos el Layout principal
+
+
+export const prerender = true;
+
+
+
+
+---
+
+<Layout>
+  <main class="mx-auto container-full">
+
+<section class="bg-white font-sans">
+  
+  <div class="p-6 sm:p-8 md:p-12 lg:p-16">
+    
+    <span class="font-(family-name:--font-shields-sans-regular)  font-bold inline-block bg-[#0C9D46] text-white text-xs  px-3 py-1 rounded-sm uppercase tracking-wider">
+      Status de pago: Aprobado
+    </span>
+
+    <h1 class="font-(family-name:--font-shields-sans-condensed)  text-3xl font-semibold text-[--neutral-background-strong] mt-4 sm:text-4xl ">
+      Tu pago se procesó correctamente
+    </h1>
+
+    <p class="font-(family-name:--font-shields-sans-regular) font-bold mt-3 text-lg text-[--neutral-background-strong]">
+      ¡Tu lugar ya está reservado en el lugar más popular de Monterrey!
+    </p>
+
+    <p class="font-(family-name:--font-shields-sans-regular) text-2xl font-bold text-[--neutral-background-strong] my-6 md:text-3xl">
+      3AC-251003-002869332
+    </p>
+
+    <p class="font-(family-name:--font-shields-sans-regular) font-normal mt-4 text-base text-[--neutral-background-strong] leading-relaxed">
+      Muchas gracias por reservar en Topgolf. Estamos seguros de que la pasarás en grande. Hemos enviado un mensaje a tu correo electrónico con todos los detalles de tu visita.
+    </p>
+
+    <p class="font-(family-name:--font-shields-sans-regular) font-normal mt-6 text-base text-[--neutral-background-strong]">
+      Si tienes alguna pregunta, no dudes en 
+      <a href="#" class="font-bold text-blue-600 hover:text-blue-700">
+        contactarnos
+      </a>.
+    </p>
+
+    <p class="font-(family-name:--font-shields-sans-regular) font-bold mt-8 text-sm text-[--neutral-background-strong]">
+      Ten presente que tu reservación puede llegar a tener tiempo de espera dependiendo del día y la hora en la que hagas tu reservación, pero haremos nuestro mayor esfuerzo para tener tu bahía lista cuanto antes. En caso de espera, te recomendamos visitar nuestro Sportsbar y Skybar.
+    </p>
+
+  </div>
+  
+</section>
+  </main>
+</Layout>
