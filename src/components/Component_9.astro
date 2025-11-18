@@ -69,15 +69,18 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
       <!-- Columna 1 -->
       <div class="space-y-4">
         {column1Items.map((item) => (
-          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
+          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
               <h3 class="text-base font-bold text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{item.pregunta}</h3>
-              <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-              </svg>
-            </div>
+              <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
+                <i
+                  class="text-xs fa-solid fa-plus text-white transition-transform duration-300"
+                  :class="{'rotate-45': open}"
+                ></i>
+              </div>
+              </div>
             <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
-              <div  style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
+              <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>
           </div>
         ))}
@@ -86,13 +89,17 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
       <!-- Columna 2 -->
       <div class="space-y-4">
         {column2Items.map((item) => (
-          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--surface-brand-primary)]">
+          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
               <h3 class="text-base font-bold text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{item.pregunta}</h3>
-              <svg :class="{'rotate-45': open}" class="w-6 h-6 text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-              </svg>
-            </div>
+
+              <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
+                <i
+                  class="text-xs fa-solid fa-plus text-white transition-transform duration-300"
+                  :class="{'rotate-45': open}"
+                ></i>
+              </div>
+              </div>
             <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4">
                 <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>

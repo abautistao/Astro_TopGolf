@@ -25,7 +25,6 @@ const placeholderAyuda = `
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-16 sm:py-24 px-4">
     <div style="font-family: var(--font-shields-sans-regular);" class="mx-auto max-w-7xl">
-
         <div class="text-center text-lg text-[var(--neutral-background-strong)] strapi-rich-text" set:html={helpTextHtml || placeholderAyuda}></div>
 
         <form action="/" class="mt-8 flex gap-x-3">
@@ -36,11 +35,11 @@ const placeholderAyuda = `
                 name="query"
                 type="search"
                 required
-                class="block w-full flex-auto rounded-md border-2 border-[var(--surface-brand-primary)]-300 px-4 py-2.5 text-[var(--neutral-background-strong)] sm:text-sm sm:leading-6"
+                class="block w-full flex-auto rounded-md border-1 border-[var(--brand-interactive-base)]-300 px-4 py-2.5 text-[var(--neutral-background-strong)] sm:text-sm sm:leading-6"
                 placeholder={placeholder_input || "palabra clave. ejemplo fiestas"}
             />
 
-            <button type="submit" class="flex-none rounded-md bg-[var(--brand-interactive-base)] px-10 py-2.5 text-sm font-semibold text-[var(--neutral-text-inverted)]">
+            <button type="submit" class="flex-none rounded-md bg-[var(--brand-interactive-base)] px-10 py-2.5 text-sm font-normal text-[var(--neutral-text-inverted)]">
                 {texto_boton || "BUSCAR"}
             </button>
         </form>

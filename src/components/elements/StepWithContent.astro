@@ -166,16 +166,18 @@ const stepLabelPositionClasses = isLeftOrientation
 
         {/* --- Elemento Dinámico Controlado por 'tipo_contenido' --- */}
         {tipo_contenido === 'button' && (
-            <ButtonGroup botones={componentButtons} />
+          <div class="w-fit mr-auto">
+              <ButtonGroup botones={componentButtons} />
+          </div>
         )}
 
         {tipo_contenido === 'alert_card' && (
-            <div class="relative mt-8 hidden md:block" style="font-family: var(--font-shields-sans-regular);">
-                <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center">
-                    <p class="text-[var(--neutral-background-strong)]">{aviso_texto}</p>
-                    <a href={formatUrl(aviso_url_link)} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
-                </div>
-            </div>
+          <div class="relative mt-8 hidden md:block" style="font-family: var(--font-shields-sans-regular);">
+              <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center rounded-md">
+                  <p class="text-[var(--neutral-background-strong)]">{aviso_texto}</p>
+                  <a href={formatUrl(aviso_url_link)} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
+              </div>
+          </div>
         )}
       </div>
     </div>

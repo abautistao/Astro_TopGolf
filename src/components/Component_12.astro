@@ -41,16 +41,18 @@ const placeholderCards: InfoCard[] = [
 const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCards;
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+<section class="w-full bg-[var(--neutral-text-inverted)]">
   <div class="container mx-auto px-4">
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {cardsToRender.map((card) => {
         const contentHtml = stringifyRichText(card.contenido);
         return (
-          <div class="relative rounded-lg bg-[var(--neutral-background-subtle)] px-6 py-8 text-[var(--neutral-background-strong)] shadow-md sm:py-10">
-            <span class="absolute right-0 top-0 pr-6 pt-8 text-[9rem] font-bold text-[var(--brand-interactive-base)] opacity-20 sm:pr-8">
+          <div class="relative rounded-lg bg-[var(--neutral-background-subtle)] px-6 py-8 text-[var(--neutral-background-strong)] shadow-md sm:py-10 overflow-hidden">
+
+            <span class="absolute right-0 top-0 pr-4 -mt-2 text-[8rem] leading-none font-bold text-[var(--brand-interactive-base)] opacity-20 select-none pointer-events-none">
               {card.simbolo_fondo || '?'}
             </span>
+
             <h3 class="relative mb-3 text-lg font-bold sm:text-xl" style="font-family: var(--font-tee-line-bold);">{card.titulo}</h3>
             <div style="font-family: var(--font-shields-sans-regular);" class="relative text-sm sm:text-base prose max-w-none strapi-rich-text" set:html={contentHtml} />
           </div>
