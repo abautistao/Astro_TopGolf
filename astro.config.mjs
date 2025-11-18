@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static', // Cambiado a 'static' para generar archivos HTML/CSS/JS
+  output: 'hybrid', // Cambiado a 'hybrid' para renderizado mixto
   site: 'http://localhost:4321', // URL para pruebas locales.
 
   vite: {
