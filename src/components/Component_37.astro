@@ -25,56 +25,15 @@ export interface Props {
 }
 
 const {
+
+
     titulo_normal,
     titulo_resaltado,
     secciones = [],
     nota_aclaratoria,
 } = Astro.props;
 
-// --- DATOS DE EJEMPLO (PLACEHOLDERS) ---
-// Creamos una estructura que imita tu imagen para cuando no haya datos reales
-const placeholderSections: FaqSection[] = [
-    {
-        id: 1,
-        titulo_seccion: "LAS MÁS POPULARES",
-        faq_items: [
-        { id: 1, pregunta: "¿Mis bahías estarán una al lado de la otra?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Haremos todo lo posible para ubicarlos juntos.' }] }] },
-        { id: 2, pregunta: "¿Puedo traer mis propios palos?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Sí, puedes traerlos.' }] }] },
-        ]
-    },
-    {
-        id: 2,
-        titulo_seccion: "PLANEA TU VISITA",
-        faq_items: [
-            { id: 3, pregunta: "¿Cuál es el horario?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: '10am a 10pm.' }] }] },
-            { id: 4, pregunta: "¿Necesito reservación?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Recomendado.' }] }] },
-        ]
-    },
-    {
-        id: 3,
-        titulo_seccion: "FIESTAS Y EVENTOS",
-        faq_items: [
-            { id: 5, pregunta: "¿Puedo usar una tarjeta de regalo?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Sí, son válidas.' }] }] },
-        ]
-    },
-    {
-        id: 4,
-        titulo_seccion: "TARJETAS DE REGALO",
-        faq_items: [
-            { id: 6, pregunta: "¿Dónde las compro?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'En recepción o en línea.' }] }] },
-            { id: 7, pregunta: "¿Tienen vigencia?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: '1 año a partir de la compra.' }] }] },
-        ]
-    },
-    {
-        id: 5,
-        titulo_seccion: "ALIMENTOS Y BEBIDAS",
-        faq_items: [
-            { id: 8, pregunta: "¿Puedo llevar un pastel?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Sí, con un costo de descorche.' }] }] },
-        ]
-    }
-];
-
-const sectionsToRender = secciones && secciones.length > 0 ? secciones : placeholderSections;
+const sectionsToRender = secciones || [];
 const leftColumnSections = sectionsToRender.filter((_, index) => index % 2 === 0);
 const rightColumnSections = sectionsToRender.filter((_, index) => index % 2 !== 0);
 
@@ -82,7 +41,6 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
 ---
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
 
 <section class="w-full bg-[var(--neutral-text-inverted)]">
     <div class="container mx-auto px-4">
