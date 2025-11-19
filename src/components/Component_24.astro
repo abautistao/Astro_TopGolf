@@ -63,16 +63,21 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         <img src={dotsPatternMobile.src} alt="Patrón de puntos decorativo" class="absolute bottom-0 -left-2 transform w-3/8 translate-y-1/12 z-0 lg:hidden" aria-hidden="true" loading="lazy" decoding="async" />
 
         <div class="relative lg:flex lg:items-center lg:justify-start lg:min-h-[500px] xl:min-h-[600px]">
-            <div class="lg:absolute lg:-top-10 lg:right-0 lg:w-4/5 lg:h-full">
+            <div class="lg:absolute lg:-top-10 lg:-right-40 lg:w-4/5 lg:h-full">
                 <img src={mainImageUrl} alt={mainImageAlt} class="w-full object-cover shadow-xl" loading="lazy" decoding="async" />
             </div>
-            <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-1/2 lg:mx-0 lg:mt-0 z-10">
+            <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-[calc(1/2*90%)] lg:mx-0 lg:mt-0 z-10">
                 <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)] rounded-lg shadow-2xl lg:text-left">
-                    <h2 style="font-family: var(--font-shields-sans-semibold);" class="text-[28px] lg:text-[40px] font-semibold tracking-tight uppercase">
+                    <h2 class="whitespace-nowrap text-2xl lg:text-[40px] font-semibold tracking-tight uppercase font-(family-name:--font-shields-sans-condensed)">
                         {dataToRender.titulo}
                     </h2>
                     <div style="font-family: var(--font-shields-sans-regular);"  class="mb-6 mt-6 text-[13px] md:text-base text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
-                    <ButtonGroup botones={componentButtons} />
+                    <div class="w-full flex justify-start mt-4">
+                        <div class="transform hover:scale-105 transition-transform duration-300 ease-in-out origin-left">
+                            <ButtonGroup botones={componentButtons} />
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

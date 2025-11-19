@@ -28,10 +28,10 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 ];
 ---
 
-<footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]" style="font-family: var(--font-shields-sans-regular);">
-    <div class="px-12 py-12 lg:px-20">
+<footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) ">
+    <div class="px-6 py-12 lg:px-20 overflow-hidden">
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="grid grid-cols-2 gap-4 md:gap-10">
                 <div>
                     <h3 class="font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-2xl">{titulo_1}</h3>
                     <ul class="mt-4 space-y-3 text-xs md:text-base">
@@ -40,7 +40,6 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                         ))}
                     </ul>
                 </div>
-
                 <div>
                     <h3 class="font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-2xl">{titulo_2}</h3>
                     <ul class="mt-4 space-y-3 text-xs md:text-base">
@@ -51,45 +50,66 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                 </div>
             </div>
 
-            <div>
+            <div class="flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-20">
                 <h3 class="font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-2xl">{titulo_3}</h3>
                 <div class="mt-4 my-2 text-sm md:text-base" set:html={descripcion_columna_3}></div>
+
                 <ButtonGroup botones={buttonBanner} />
-                <div class="mt-4 flex items-center space-x-2">
-                    <div id="contrast-switcher" class="relative inline-block w-10 h-5 cursor-pointer">
-                        <div class="w-full h-full rounded-full bg-white/30"></div>
-                        <div class="absolute top-1/2 left-1 h-3 w-3 -translate-y-1/2 rounded-full bg-[var(--neutral-text-inverted)] transition-transform duration-200 ease-in-out"></div>
+
+                <div class="mt-4 flex items-center justify-center lg:justify-start space-x-2">
+                    <div id="contrast-switcher" class="relative w-6 h-6 cursor-pointer rounded-full overflow-hidden border-2 border-[var(--accent-highlight-secondary)] shadow-sm">
+
+                        <div class="absolute inset-0 bg-[var(--accent-highlight-secondary)]"></div>
+
+                        <div class="absolute inset-0 bg-[var(--surface-brand-primary)]" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);"></div>
+
+                        <div class="absolute inset-y-0 left-1/2 w-[1px] -ml-[0.5px] bg-[var(--accent-highlight-secondary)]"></div>
+
                     </div>
                     <span class="text-xs">Cambiar el contraste</span>
                 </div>
             </div>
         </div>
 
-        <hr class="my-10 border-t-[3px] border-[var(--neutral-text-inverted)]" />
+        <div class="flex w-full justify-between items-center mt-12 mb-6 sm:hidden">
+            {socialIcons.map(icon => (
+                <a
+                    href={formatUrl(icon.url)}
+                    title={icon.name}
+                    class="text-[var(--accent-highlight-secondary)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
+                >
+                    <span class="text-2xl" set:html={icon.icon}></span>
+                </a>
+            ))}
+        </div>
 
-        <div class="flex flex-col items-center gap-8 sm:flex-row sm:justify-between">
-            <div class="order-2 sm:order-1">
+        <hr class="-mx-6 lg:mx-0 my-6 border-t-[2px] border-[var(--neutral-text-inverted)]/50" />
+
+        <div class="flex flex-col items-center gap-6 sm:flex-row sm:justify-between lg:mx-8">
+
+            <div class="order-1 sm:order-1">
                 <a href="/">
-                    <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="h-20 w-auto" />
+                    <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="h-16 w-auto sm:h-20" />
                 </a>
             </div>
-
-            <div class="order-3 sm:order-2 text-xs text-center sm:text-left sm:text-sm" set:html={terminos_and_conditions}></div>
-
-           <div class="order-1 sm:order-3 flex items-center space-x-4">
+            <div
+                class="order-2 sm:order-2 text-[10px] sm:text-sm whitespace-nowrap text-center sm:text-left"
+                set:html={terminos_and_conditions}
+            ></div>
+            <div class="hidden sm:flex order-3 items-center space-x-4">
                 {socialIcons.map(icon => (
                     <a
                         href={formatUrl(icon.url)}
                         title={icon.name}
-                        class="text-[var(--accent-highlight-secondary)] sm:text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
+                        class="sm:text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
                     >
                         <span class="text-2xl" set:html={icon.icon}></span>
                     </a>
                 ))}
             </div>
         </div>
+        <hr class="-mx-6 lg:mx-0 my-6 border-t-[2px] border-[var(--neutral-text-inverted)]/50" />
 
-        <hr class="my-10 border-t-[3px] border-[var(--neutral-text-inverted)]" />
     </div>
 </footer>
 <style>
@@ -108,8 +128,16 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
         text-decoration-color: var(--footer-link-underline);
     }
 
+    #contrast-switcher.active .bg-gradient-to-r {
+    }
+
+    #contrast-switcher > div:last-child {
+        clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        background-color: var(--surface-brand-primary);
+        opacity: 1; /* Asegura que sea visible */
+    }
     #contrast-switcher.active > div:last-child {
-        transform: translateX(20px);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
 </style>
 <script>

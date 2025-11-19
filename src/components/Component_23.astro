@@ -60,9 +60,9 @@ const dataToRender = {
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div style="font-family: var(--font-shields-sans-regular);" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-(family-name:--font-shields-sans-regular)">
         <div class="text-center">
-            <h2 style="font-family: var(--font-shields-sans-semibold) !important;"  class="text-3xl sm:text-4xl font-semibold text-[var(--neutral-background-strong)] tracking-tight">
+            <h2 class="font-(family-name:--font-shields-sans-condensed) text-[28px] sm:text-[38px] font-semibold text-[var(--neutral-background-strong)] tracking-tight">
                 {dataToRender.titulo_seccion}
             </h2>
             <div class="mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>
@@ -84,19 +84,22 @@ const dataToRender = {
                         <div class="w-20 h-20 flex items-center justify-cente">
                             <img src={iconUrl} alt={iconAlt} class="h-full w-full" />
                         </div>
-                        <h3 class="font-bold text-xl mt-6 text-[var(--neutral-background-strong)]" set:html={game.titulo.replace('®', '<sup class="text-xs">®</sup>')}></h3>
+                        <h3 class="font-black text-3xl text-[var(--neutral-background-strong)] uppercase" set:html={game.titulo.replace('®', '<sup class="text-xs">®</sup>')}></h3>
                         <div class="flex flex-wrap items-center justify-center gap-2 mt-4">
-                                {game.tags && (Array.isArray(game.tags) ? game.tags : [game.tags]).map(tag => (
-                                <>
-                                    <span class="text-sm font-semibold px-4 py-1.5" style={`background-color: ${tag.color_fondo}; color: ${tag.color_texto};`}>
+                            {game.tags && (Array.isArray(game.tags) ? game.tags : [game.tags]).map(tag => (
+
+                                <div class="flex flex-row items-center">
+                                    <span class="whitespace-nowrap text-xs font-semibold px-4 py-1.5" style={`background-color: ${tag.color_fondo}; color: ${tag.color_texto};`}>
                                         {tag.texto}
                                     </span>
+
                                     {tag.informacion_etiqueta && (
-                                        <span class="text-sm px-4 py-1.5 text-[var(--neutral-background-strong)] bg-[var(--neutral-background-subtle)]">
+                                        <span class="whitespace-nowrap text-xs px-4 py-1.5 text-[var(--neutral-background-strong)] bg-[var(--neutral-background-subtle)]">
                                             {tag.informacion_etiqueta}
                                         </span>
                                     )}
-                                </>
+
+                                </div>
                             ))}
                         </div>
                         <div class="mt-6 text-sm text-[var(--neutral-background-strong)] flex-grow" set:html={descripcionHtml}>

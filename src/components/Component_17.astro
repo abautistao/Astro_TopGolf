@@ -48,10 +48,10 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="container mx-auto px-4 flex flex-col items-center text-center gap-10">
         <div class="border-[3px] border-[#9981DC] rounded-lg p-4 max-w-3xl text-center">
-            <div style="font-family: var(--font-tee-line-regular);" class="text-[var(--neutral-background-strong)] text-sm prose max-w-none font-normal" set:html={bannerHtml} />
+            <div class="font-(family-name:--font-tee-line-bold) text-[var(--neutral-background-strong)] text-sm prose max-w-none font-normal" set:html={bannerHtml} />
         </div>
 
-        <div style="font-family: var(--font-tee-line-bold); letter-spacing: normal; line-height: 100%;" class="text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose " set:html={tituloHtml}></div>
+        <div class="font-(family-name:--font-tee-line-bold) whitespace-nowrap text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose " set:html={tituloHtml}></div>
         <div class="flex flex-col sm:flex-row items-center gap-4">
             <ButtonGroup botones={botonesToRender} />
         </div>

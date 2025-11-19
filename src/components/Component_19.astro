@@ -47,7 +47,7 @@ const imgInfDerUrl = imagen_inferior_derecha ? getStrapiUrl(imagen_inferior_dere
 const imgInfDerAlt = imagen_inferior_derecha?.alternativeText || "Imagen inferior derecha";
 ---
 
-<section class="bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+<section class="bg-[var(--neutral-text-inverted)]">
     <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-15">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
@@ -91,13 +91,11 @@ const imgInfDerAlt = imagen_inferior_derecha?.alternativeText || "Imagen inferio
                 </div>
             </div>
 
-            {/* --- CONTENIDO DE TEXTO (A LA DERECHA EN ESCRITORIO) --- */}
-            {/* CLAVE: order-2 (Móvil: segundo), md:order-2 (Escritorio: segundo/derecha) */}
             <div class="flex flex-col gap-6 order-2 md:order-2">
-                <p class="uppercase font-semibold text-[var(--surface-brand-primary)] tracking-wide text-[32px] md:text-5xl" style="font-family: var(--font-shields-sans-semibold);">
+                <p class="whitespace-nowrap leading-none mb-0 uppercase font-semibold text-[var(--surface-brand-primary)] tracking-wide text-3xl md:text-5xl font-(family-name:--font-shields-sans-condensed)">
                     {preTituloToRender}
                 </p>
-                <div style="font-family: var(--font-shields-sans-regular);" class="prose prose-lg text-base text-[var(--neutral-background-strong)] strapi-rich-text font-normal" set:html={contentHtml} />
+                <div class="font-(family-name:--font-shields-sans-regular) prose prose-lg text-base text-[var(--neutral-background-strong)] strapi-rich-text font-normal" set:html={contentHtml} />
             </div>
 
         </div>
