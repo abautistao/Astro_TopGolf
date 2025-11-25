@@ -57,7 +57,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         />
 
         <div class="relative lg:flex lg:items-center lg:justify-end lg:min-h-[500px]">
-            <div class="lg:absolute lg:top-0 lg:left-0 lg:w-4/5 lg:h-full">
+            <div class="lg:absolute lg:top-0 lg:left-0 lg:w-3/5 lg:h-full">
                 <img
                 src={mainImageUrl || placeholderImageUrl}
                 alt={alt_imagen_principal || "Grupo de amigos disfrutando de un evento"}
@@ -69,17 +69,16 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 />
             </div>
 
-        <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-1/2 lg:mx-0 lg:mt-0">
-
-            <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)]  rounded-lg shadow-2xl lg:text-left">
-                <h2 class="text-[32px] lg:text-[54px] font-semibold tracking-tight uppercase leading-none" style="font-family: var(--font-shields-sans-semibold);">
+        <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-3/5 lg:mx-0 lg:mt-0 lg:-mr-[55px]">
+            <div class="relative z-10 bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)]  rounded-lg shadow-2xl lg:text-left">
+                <h2 class="text-[29px] lg:text-[54px] font-semibold tracking-normal uppercase leading-none font-(family-name:--font-shields-sans-semibold-condensed) whitespace-nowrap lg:whitespace-normal">
                     {titulo_linea_1 || "Haz tu evento"}
-                    <span class="block text-[var(--accent-highlight-secondary)]">{titulo_linea_2_resaltada || "Memorable"}</span>
+                    <span class="inline lg:block text-[var(--accent-highlight-secondary)]"> {titulo_linea_2_resaltada || "Memorable"}</span>
                 </h2>
-                <div style="font-family: var(--font-shields-sans-regular);" class="mt-2 font-normal text-lg text-justify text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
+                <div class="font-(family-name:--font-shields-sans-regular) mt-5 font-normal text-lg text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
 
                 <div class="mt-8">
-                    <ButtonGroup botones={componentButtons} />
+                    <ButtonGroup botones={componentButtons} clase="flex flex-col items-start"/>
                 </div>
             </div>
 

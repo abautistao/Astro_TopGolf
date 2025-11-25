@@ -1,5 +1,4 @@
 ---
-// src/components/elements/Button.astro
 import { formatUrl } from '../../lib/strapi';
 export interface Boton {
     id: number;
@@ -10,17 +9,25 @@ export interface Boton {
 
 export interface Props {
     botones: Boton[];
+    clase?: string;
 }
 
-const { botones } = Astro.props;
+const {
+    botones,
+    clase = "w-full flex flex-col items-center gap-4 sm:w-auto sm:flex-row"
+} = Astro.props;
 ---
 
-<div class="flex flex-col gap-4 sm:flex-row">
+<div class={clase}>
     {botones.map(boton => (
         <a
             href={formatUrl(boton.url)}
             class:list={[
-                'transform rounded-full px-8 py-3 font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-regular)',
+                'transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)',
+                'w-[60%] sm:w-auto',
+                'px-4 py-3 sm:px-8 sm:py-3',
+                'text-center flex justify-center items-center text-sm sm:text-base',
+
                 {
                     'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg': boton.tipo === 'version_1',
                     'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',

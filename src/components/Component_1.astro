@@ -61,9 +61,9 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         <img
         src={topgolfLogoUrl || placeholderLogoUrl}
         alt={alt_logo || "Logo de placeholder"}
-        class="transform w-80 -rotate-6 md:w-96"
+        class="transform w-80 md:w-96 z-20"
         />
-        <h1 class="font-(family-name:--font-shields-sans-condensed) -mt-4 tracking-tighter uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]">
+        <h1 class="leading-none font-(family-name:--font-shields-sans-semibold-condensed) mt-2 md:-mt-10 tracking-normal uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]">
             {titulo || "Título de Ejemplo"}
         </h1>
     </div>
@@ -73,13 +73,13 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
         <div class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
 
             <div class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6">
-                <p class="text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)]" style="font-family: var(--font-tee-line-bold);">
+                <p class="tracking-normal text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-tee-line-bold-italic)">
                     {texto_banner || "Descubre la mejor manera de jugar"}
                 </p>
                 <ButtonGroup botones={buttonBanner} />
             </div>
 
-            <div class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text" style="font-family: var(--font-shields-sans-regular);">
+            <div class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text font-(family-name:--font-shields-sans-regular)">
                 <p set:html={helpTextHtml}></p>
             </div>
         </div>

@@ -37,7 +37,7 @@ const buttons: Boton[] = (headerData.Botones2 && !Array.isArray(headerData.Boton
 const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
 ---
 
-<header class="relative z-40 flex flex-col font-sans text-[var(--neutral-text-inverted)] shadow-md" style="font-family: var(--font-shields-sans-regular);">
+<header class="relative z-40 flex flex-col text-[var(--neutral-text-inverted)] shadow-md">
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
         <div class="flex items-center justify-between w-full lg:hidden">
@@ -81,14 +81,14 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                 <div class="hidden lg:flex items-center space-x-2 relative">
                     <i class="fa-solid fa-location-dot fa-xl text-[var(--accent-highlight-secondary)]"></i>
                     <button id="location-toggle-desktop" class="text-left text-xs">
-                        <p class="text-sm font-bold" style="font-size: 18px;">{ubicacion}</p>
+                        <p class="text-lg font-bold font-(family-name:--font-shields-sans-black)">{ubicacion}</p>
                         <div class="flex items-center opacity-80">
-                            <span class="uppercase" style="font-size: 11px;">{horario}</span>
+                            <span class="uppercase text-xs">{horario}</span>
                             <i id="location-arrow-desktop" class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                         </div>
                     </button>
-                    <div id="location-details-desktop" class="absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
-                        <div class="my-2 font-sm" set:html={direccion}></div>
+                    <div id="location-details-desktop" class="font-(family-name:--font-shields-sans-regular) absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
+                        <div class="my-2 text-sm" set:html={direccion}></div>
                         <ButtonGroup botones={buttonBanner} />
                     </div>
                 </div>
@@ -119,7 +119,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     </div>
 
     <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] px-4">
-        <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)]">
+        <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-black)">
             <span>{ubicacion}</span>
             <div class="flex items-center">
                 <span>{horario}</span>
@@ -128,8 +128,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                 </svg>
             </div>
         </button>
-        <div id="location-details-mobile" class="hidden px-4 py-5 bg-[var(--brand-interactive-base)]">
-            <div set:html={direccion}></div>
+        <div id="location-details-mobile" class="font-(family-name:--font-shields-sans-regular) hidden px-4 py-5 bg-[var(--brand-interactive-base)]">
+            <div class="text-sm" set:html={direccion}></div>
             <ButtonGroup botones={buttonBanner} />
         </div>
     </div>
@@ -154,7 +154,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                             <a href={formatUrl(item.url)} class="font-(family-name:--font-shields-sans-condensed) relative block overflow-hidden rounded-lg group h-36">
                                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                                                <h3 class="text-xs absolute font-semibold bottom-2 left-2 right-2 truncate" style="font-family: var(--font-shields-sans-regular);">{item.titulo}</h3>
+                                                <h3 class="text-xs absolute font-semibold bottom-2 left-2 right-2 truncate font-(family-name:--font-shields-sans-condensed)">{item.titulo}</h3>
                                                 <div class="absolute rounded-full bottom-2 right-2 border-2 border-[var(--accent-feedback-strong)] w-6 h-6 flex items-center justify-center">
                                                     <i class="fa-solid fa-chevron-right text-sm text-[var(--neutral-text-inverted)]"></i>
                                                 </div>
@@ -221,8 +221,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                     <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                                        <h3 class="font-semibold text-xl">{item.titulo}</h3>
-                                        <p class="opacity-80 text-xs w-80">{item.subtitulo}</p>
+                                        <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed)">{item.titulo}</h3>
+                                        <p class="opacity-80 text-xs w-80 font-(family-name:--font-shields-sans-regular)">{item.subtitulo}</p>
                                     </div>
                                     <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
@@ -240,8 +240,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">
-                                    <h3 class="font-semibold text-xl">{item.titulo}</h3>
-                                    <p class="opacity-80 text-xs w-80">{item.subtitulo}</p>
+                                    <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed)">{item.titulo}</h3>
+                                    <p class="opacity-80 text-xs w-80 font-(family-name:--font-shields-sans-regular)">{item.subtitulo}</p>
                                 </div>
                                 <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
                                     <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>

@@ -5,7 +5,6 @@ import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
 
-// 2. Define la interfaz de las props que el componente recibirá desde Strapi
 export interface Props {
   pre_titulo: string;
   titulo: string;
@@ -19,7 +18,6 @@ export interface Props {
   Boton: Boton[];
 }
 
-// 3. Recibe las props desde Astro
 const {
   pre_titulo,
   titulo,
@@ -33,13 +31,11 @@ const {
   Boton,
 } = Astro.props;
 
-// 4. Procesa las URLs de las imágenes y el texto enriquecido
 const imageUrl1 = getStrapiUrl(imagen_superior);
 const imageUrl2 = getStrapiUrl(imagen_inferior_izquierda);
 const imageUrl3 = getStrapiUrl(imagen_inferior_derecha);
 const contentHtml = stringifyRichText(contenido);
 
-// 5. Define URLs de placeholder por si no hay contenido en Strapi
 const placeholderUrl1 = "https://placehold.co/800x600/a0aec0/ffffff?text=Imagen+1";
 const placeholderUrl2 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+2";
 const placeholderUrl3 = "https://placehold.co/400x400/a0aec0/ffffff?text=Imagen+3";
@@ -53,53 +49,47 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 ];
 ---
 
-<section class="bg-[var(--neutral-background-subtle)]">
-  <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      <div class="flex flex-col gap-6 order-2 md:order-1">
-        <p class="uppercase text-[32px] md:text-[52px] font-normal text-[var(--surface-brand-primary)] tracking-wide font-(family-name:--font-shields-sans-regular)">
+<section class="bg-[var(--neutral-background-subtle)] py-10 md:py-20 px-1 md:px-10">
+
+  <div class="max-w-8xl mx-auto px-0 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+
+      <div class="flex flex-col gap-2 order-2 md:order-1 md:col-span-2 px-4 md:px-0" >
+        <p class="whitespace-nowrap uppercase text-[32px] md:text-[52px] font-normal text-[var(--neutral-background-strong)] tracking-wide font-(family-name:--font-shields-sans-regular)">
           {pre_titulo || "ES GOLF. NO ES GOLF."}
         </p>
-        <h1 class="uppercase text-5xl md:text-7xl font-semibold text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-condensed)">
+        <h1 class="tracking-normal uppercase text-5xl md:text-7xl font-semibold text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-semibold-condensed)">
           {titulo || "ES TOPGOLF"}
         </h1>
         <div class="text-[var(--neutral-background-strong)] strapi-rich-text text-lg font-(family-name:--font-shields-sans-regular)">
           <div set:html={contentHtml || "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"} />
         </div>
-        <ButtonGroup botones={componentButtons} />
+        <div class="mt-5">
+          <ButtonGroup botones={componentButtons} clase="flex flex-col items-start"/>
+      </div>
       </div>
 
-      {/* --- CONTENIDO DE IMÁGENES (DINÁMICO) --- */}
-      <div class="flex flex-col gap-4 order-1 md:order-2">
-        {/* --- IMAGEN SUPERIOR ALINEADA A LA DERECHA DE SU ESPACIO --- */}
-        <div class="flex">
-          {/* 1. Contenedor que ocupa el mismo ancho (2/3) que la imagen de abajo */}
-          <div class="w-2/3">
-            {/* 2. Flexbox para alinear la imagen a la derecha (justify-end) DENTRO de ese espacio */}
-            <div class="flex justify-end">
-              <img
-                src={imageUrl1 || placeholderUrl1}
-                alt={alt_imagen_superior || "Imagen de mujer comiendo"}
-                class="w-3/4 object-cover shadow-lg h-[200px]"
-              />
-            </div>
+      <div class="flex flex-col gap-4 order-1 md:order-2 md:col-span-3" style="overflow: hidden;">
+        <div class="w-3/5">
+          <div class="flex justify-end">
+            <img
+              src={imageUrl1 || placeholderUrl1}
+              alt={alt_imagen_superior || "Imagen de mujer comiendo"}
+              class="w-4/5 md:w-3/5 object-cover shadow-lg h-[230px]"
+            />
           </div>
-          {/* El 1/3 restante a la derecha queda vacío */}
         </div>
 
-        {/* --- IMÁGENES INFERIORES (COMO REFERENCIA DE ANCHO) --- */}
         <div class="flex gap-4">
-          {/* Imagen inferior izquierda (la referencia, 2/3) */}
           <img
             src={imageUrl2 || placeholderUrl2}
             alt={alt_imagen_inferior_izquierda || "Personas celebrando"}
-            class="w-2/3 object-cover shadow-lg h-[300px]"
+            class="w-3/5 object-cover shadow-lg h-[400px]"
           />
-          {/* Imagen inferior derecha (1/3) */}
           <img
             src={imageUrl3 || placeholderUrl3}
             alt={alt_imagen_inferior_derecha || "Familia en Topgolf"}
-            class="w-1/3 object-cover shadow-lg h-[300px]"
+            class="w-2/6 object-cover shadow-lg h-[400px]"
           />
         </div>
       </div>
