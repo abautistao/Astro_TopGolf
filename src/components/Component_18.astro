@@ -42,16 +42,16 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
 ---
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
-    <div style="font-family: var(--font-shields-sans-regular);"  class="container mx-auto flex flex-col items-center gap-6 px-4 text-center">
-        <p class="text-md font-bold uppercase text-[var(--brand-interactive-base)]">
+    <div class=" container mx-auto flex flex-col items-center gap-6 px-4 text-center">
+        <p class="font-(family-name:--font-shields-sans-bold) text-md font-bold uppercase text-[var(--brand-interactive-base)]">
             {tagToRender}
         </p>
 
-        <h2 class="text-3xl font-semibold uppercase text-[var(--neutral-background-strong)] sm:text-5xl md:text-5xl" style="font-family: var(--font-shields-sans-regular) !important;">
+        <h2 class="font-(family-name:--font-shields-sans-condensed) text-3xl font-semibold uppercase text-[var(--neutral-background-strong)] sm:text-5xl md:text-5xl">
             {tituloToRender}
         </h2>
 
-        <div class="max-w-4xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose max-w-none" set:html={contentHtml}></div>
+        <div class="font-(family-name:--font-shields-sans-regular) max-w-3xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose" set:html={contentHtml}></div>
 
         <div class="mt-8 flex flex-col gap-4 sm:flex-row">
             <ButtonGroup botones={botonesToRender} />

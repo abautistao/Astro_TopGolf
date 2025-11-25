@@ -70,7 +70,7 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                 const imageAlt = pkg.imagen?.alternativeText || pkg.titulo;
 
                 const componentButtons: Boton[] = (pkg.Boton && !Array.isArray(pkg.Boton) ? [pkg.Boton] : pkg.Boton) || [
-                  {   id: 1,
+                {   id: 1,
                     texto: pkg.texto_boton || "Lorem Ipsum",
                     url: pkg.url_boton || "#",
                     tipo: "version_3"
@@ -90,8 +90,8 @@ const packagesToRender = paquetes && paquetes.length > 0 ? paquetes : placeholde
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <h2 class="text-4xl font-semibold text-[var(--surface-brand-primary)] uppercase font-(family-name:--font-shields-sans-condensed) whitespace-nowrap leading-none mb-0">{pkg.titulo}</h2>
-                            <p class="text-base font-normal text-[var(--surface-brand-primary)] uppercase tracking-wider mt-0">{pkg.subtitulo}</p>
-                            <div class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow prose max-w-none font-normal" set:html={contentHtml} />
+                            <p class="text-base font-normal text-[var(--surface-brand-primary)] uppercase tracking-wider mt-0 font-(family-name:--font-shields-sans-regular)">{pkg.subtitulo}</p>
+                            <div class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow prose max-w-none font-normal font-(family-name:--font-shields-sans-regular)" set:html={contentHtml} />
                             <div class="mt-8 flex justify-center">
                                 <ButtonGroup botones={componentButtons} />
                             </div>

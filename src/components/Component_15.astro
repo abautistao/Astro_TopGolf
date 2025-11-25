@@ -85,7 +85,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
     <div class="relative bg-[var(--neutral-text-inverted)] pb-10">
         <div class="font-(family-name:--font-shields-sans-regular) relative -top-28 sm:-top-20 -mt-28 sm:-mt-20 z-20 mx-4 md:mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] px-6 py-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white">
             <div class="w-full md:w-5/12 flex-shrink-0">
-                <span class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs px-3 py-1 mb-4 inline-block font-(family-name:--font-shields-sans-regular)">
+                <span class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs px-3 py-1 mb-4 inline-block font-(family-name:--font-shields-sans-bold)">
                     {etiqueta || placeholder.etiqueta}
                 </span>
                 <h1 class="text-[40px] lg:text-[75px] font-semibold uppercase leading-none font-(family-name:--font-shields-sans-condensed) tracking-[0.01em]" set:html={titulo || placeholder.titulo}/>
@@ -95,7 +95,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
             </div>
 
             <div class="w-full md:w-7/12">
-                <div class="font-(family-name:--font-shields-sans-regular) mb-6 leading-relaxed strapi-rich-text text-base font-normal" set:html={descriptionHtml} />
+                <div class="font-(family-name:--font-shields-sans-regular) mb-6 leading-relaxed strapi-rich-text text-lg font-normal" set:html={descriptionHtml} />
                 <ButtonGroup botones={componentButtons} />
             </div>
         </div>

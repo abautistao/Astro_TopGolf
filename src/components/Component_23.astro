@@ -84,7 +84,7 @@ const dataToRender = {
                         <div class="w-20 h-20 flex items-center justify-cente">
                             <img src={iconUrl} alt={iconAlt} class="h-full w-full" />
                         </div>
-                        <h3 class="font-black text-3xl text-[var(--neutral-background-strong)] uppercase" set:html={game.titulo.replace('®', '<sup class="text-xs">®</sup>')}></h3>
+                        <h3 class="font-(family-name:--font-shields-sans-black) font-black text-3xl text-[var(--neutral-background-strong)] uppercase" set:html={game.titulo.replace('®', '<sup class="text-xs">®</sup>')}></h3>
                         <div class="flex flex-wrap items-center justify-center gap-2 mt-4">
                             {game.tags && (Array.isArray(game.tags) ? game.tags : [game.tags]).map(tag => (
 

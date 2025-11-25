@@ -76,7 +76,7 @@ const imageAlt = imagen_principal?.alternativeText || "Imagen principal de la se
 
     <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] py-8 px-0 sm:p-16 lg:p-20 relative flex flex-col justify-center">
       <div class="z-10 p-5 lg:p-0 xl:p-0 font-(family-name:--font-shields-sans-regular)">
-        <h2 class="text-xl md:text-2xl tracking-wider uppercase">{dataToRender.titulo_seccion}</h2>
+        <h2 class="text-xl md:text-[28px] tracking-wider uppercase">{dataToRender.titulo_seccion}</h2>
         <h1 class="text-5xl md:text-7xl font-semibold uppercase my-2 font-(family-name:--font-shields-sans-condensed)">{dataToRender.titulo_principal}</h1>
         <div class="mt-6 text-base max-w-2xl" set:html={dataToRender.contentHtml} ></div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mt-12">

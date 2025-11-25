@@ -51,8 +51,11 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
             <div class="font-(family-name:--font-tee-line-bold) text-[var(--neutral-background-strong)] text-sm prose max-w-none font-normal" set:html={bannerHtml} />
         </div>
 
-        <div class="font-(family-name:--font-tee-line-bold) whitespace-nowrap text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose " set:html={tituloHtml}></div>
-        <div class="flex flex-col sm:flex-row items-center gap-4">
+        <div
+          class="font-(family-name:--font-tee-line-bold) text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose md:whitespace-nowrap"
+          set:html={tituloHtml}>
+        </div>
+        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4">
             <ButtonGroup botones={botonesToRender} />
         </div>
     </div>

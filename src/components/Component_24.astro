@@ -71,9 +71,9 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                     <h2 class="whitespace-nowrap text-2xl lg:text-[40px] font-semibold tracking-tight uppercase font-(family-name:--font-shields-sans-condensed)">
                         {dataToRender.titulo}
                     </h2>
-                    <div style="font-family: var(--font-shields-sans-regular);"  class="mb-6 mt-6 text-[13px] md:text-base text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
+                    <div class="font-(family-name:--font-shields-sans-regular) mb-6 mt-6 text-[13px] md:text-base text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
                     <div class="w-full flex justify-start mt-4">
-                        <div class="transform hover:scale-105 transition-transform duration-300 ease-in-out origin-left">
+                        <div class="w-full transform hover:scale-105 transition-transform duration-300 ease-in-out origin-left">
                             <ButtonGroup botones={componentButtons} />
                         </div>
 
