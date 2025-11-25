@@ -22,28 +22,28 @@ const descriptionHtml = stringifyRichText(descripcion);
 const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a Topgolf,</strong> tu principal destino de entretenimiento. Y por destino de entretenimiento nos referimos a un lugar donde puedes venir para festejar un cumpleaños, despedidas de soltero o soltera, eventos corporativos, citas nocturnas o simplemente para divertirte con tus amigos y pasarla en grande.</p>`;
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16" style="font-family: var(--font-shields-sans-regular);">
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
   <div class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row">
     <div class="flex flex-col items-center justify-center">
       <div class="relative flex items-center justify-center mb-8">
         <h2
-          class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-center text-4xl font-semibold uppercase sm:text-5xl md:text-6xl lg:text-7xl px-4 py-2"
-          style="transform: rotate(-1.66deg); font-family: var(--font-shields-sans-semibold) !important;"
+          class="font-(family-name:--font-shields-sans-semibold-condensed) bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-center text-4xl font-semibold uppercase sm:text-5xl md:text-6xl lg:text-7xl px-4 py-2"
+          style="transform: rotate(-1.66deg);"
         >
           {titulo_principal || "La Experiencia"}
         </h2>
         <h3
-          class="bg-[var(--surface-brand-primary)] absolute top-[85%] text-center text-xl uppercase text-[var(--neutral-text-inverted)] px-4 py-1"
+          class="bg-[var(--surface-brand-primary)] font-normal absolute top-[85%] text-center text-xl uppercase text-[var(--neutral-text-inverted)] px-4 py-1 font-(family-name:--font-shields-sans-regular)"
         >
           {subtitulo || "de Topgolf"}
         </h3>
       </div>
-      <div class="mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text">
+      <div class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text">
           <div set:html={descriptionHtml || placeholderDescriptionHtml} />
       </div>
     </div>
   </div>
-  <p class="mt-8 text-center text-lg font-bold text-[--neutral-background-strong)]">
+  <p class="font-(family-name:--font-tee-line-bold-italic) mt-8 text-center text-lg md:text-xl font-bold text-[--neutral-background-strong)]">
     {texto_final || "Así es como funciona Topgolf:"}
   </p>
 </section>

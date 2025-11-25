@@ -135,8 +135,8 @@ const stepLabelPositionClasses = isLeftOrientation
         />
         {/* Etiqueta de Paso (Móvil) - text-3xl */}
         <div
-            style="transform: rotate(-5.0deg); font-family: var(--font-shields-sans-semibold);"
-            class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden"
+            style="transform: rotate(-5.0deg);"
+            class="font-(family-name:--font-shields-sans-semibold-condensed) bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 text-center lg:hidden"
         >
           {etiqueta_paso}
         </div>
@@ -145,8 +145,8 @@ const stepLabelPositionClasses = isLeftOrientation
       {/* --- Etiqueta de Paso (Desktop) - text-3xl restaurado --- */}
       {etiqueta_paso && (
         <div
-            style="transform: rotate(-5.0deg); font-family: var(--font-shields-sans-semibold);"
-            class={`bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute ${stepLabelPositionClasses} lg:z-20 my-4 text-center mx-auto hidden lg:block`}
+            style="transform: rotate(-5.0deg);"
+            class={`font-(family-name:--font-shields-sans-semibold-condensed) bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-semibold py-1 px-4 text-3xl tracking-wide uppercase whitespace-nowrap lg:absolute ${stepLabelPositionClasses} lg:z-20 my-4 text-center mx-auto hidden lg:block`}
         >
           {etiqueta_paso}
         </div>
@@ -154,25 +154,25 @@ const stepLabelPositionClasses = isLeftOrientation
 
       {/* --- Contenido de Texto y Elemento Dinámico --- */}
       <div class="w-full lg:w-2/3 p-2 lg:p-12 flex flex-col justify-center">
-        <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
-          <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]" style="font-family: var(--font-shields-sans-semibold);">
+        <div class="font-(family-name:--font-shields-sans-semibold-condensed) bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2">
+          <h2 class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]">
             {titulo}
           </h2>
         </div>
 
-        <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 prose lg:prose-lg max-w-none strapi-rich-text " style="font-family: var(--font-shields-sans-regular);">
+        <div class="text-[var(--neutral-background-strong)] mb-6 mt-4 prose lg:prose-lg max-w-none strapi-rich-text font-(family-name:--font-shields-sans-regular)" >
             <div set:html={finalDescriptionHtml} />
         </div>
 
         {/* --- Elemento Dinámico Controlado por 'tipo_contenido' --- */}
         {tipo_contenido === 'button' && (
-          <div class="w-fit mr-auto">
-              <ButtonGroup botones={componentButtons} />
+          <div class="w-full mr-auto">
+              <ButtonGroup botones={componentButtons} clase="flex flex-col items-start"/>
           </div>
         )}
 
         {tipo_contenido === 'alert_card' && (
-          <div class="relative mt-8 hidden md:block" style="font-family: var(--font-shields-sans-regular);">
+          <div class="relative mt-8 hidden md:block font-(family-name:--font-shields-sans-regular)">
               <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center rounded-md">
                   <p class="text-[var(--neutral-background-strong)]">{aviso_texto}</p>
                   <a href={formatUrl(aviso_url_link)} class="text-[var(--brand-interactive-base)] font-bold">{aviso_texto_link}</a>
