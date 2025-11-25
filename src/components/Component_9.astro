@@ -49,18 +49,16 @@ const placeholderDisclaimerHtml = `<p><strong>NOTA:</strong> En esta cocina se a
 const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
 ---
 <script>
-  // This is a minimal script to add Alpine.js to your page.
-  // You would typically have this in your layout file.
     import Alpine from 'alpinejs';
     window.Alpine = Alpine;
     Alpine.start();
 </script>
 <section class="w-full bg-[var(--neutral-text-inverted)] py-4 sm:py-4">
   <div class="container mx-auto px-4">
-    <h2 class="text-center text-4xl font-bold uppercase mb-10">
-      <div class="inline-block relative font-semibold text-2xl md:text-5xl font-(family-name:--font-shields-sans-condensed) leading-none">
-        <span class="text-[var(--neutral-background-strong)]">{titulo_normal || "PREGUNTAS"}</span>
-        <span class="text-[var(--neutral-background-strong)]">{titulo_resaltado || "FRECUENTES"}</span>
+    <h2 class="text-center text-4xl uppercase mb-10">
+      <div class="inline-block relative font-semibold text-2xl md:text-5xl leading-none">
+        <span class="font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-black)">{titulo_normal || "PREGUNTAS"}</span>
+        <span class="font-normal text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-regular)">{titulo_resaltado || "FRECUENTES"}</span>
     </div>
     </h2>
 
@@ -70,7 +68,7 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
         {column1Items.map((item) => (
           <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-              <h3 class="text-base font-bold text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{item.pregunta}</h3>
+              <h3 class="text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold)">{item.pregunta}</h3>
               <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
                 <i
                   class="text-xs fa-solid fa-plus text-white transition-transform duration-300"
@@ -90,7 +88,7 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
         {column2Items.map((item) => (
           <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
             <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-              <h3 class="text-base font-bold text-[var(--neutral-background-strong)]" style="font-family: var(--font-shields-sans-semibold);">{item.pregunta}</h3>
+              <h3 class="text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold)">{item.pregunta}</h3>
 
               <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
                 <i
@@ -107,7 +105,7 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
       </div>
     </div>
 
-    <div class=" font-(family-name:--font-shields-sans-regular) text-base font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-2xl mx-auto prose">
+    <div class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose">
         <div set:html={disclaimerHtml || placeholderDisclaimerHtml} />
     </div>
   </div>

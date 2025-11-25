@@ -47,8 +47,6 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 ---
 
 <section class="relative overflow-hidden">
-
-    {/* Contenedor de la Imagen (Ocupa el 60% derecho de la pantalla) */}
     <div class="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5">
         <img
             class="w-full h-full object-cover"
@@ -61,28 +59,38 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         />
     </div>
 
-    {/* Contenedor del Contenido */}
-    <div class="relative py-16 sm:py-24 lg:py-32">
-        {/* Contenedor del texto ahora ocupa el 50% izquierdo sin margen */}
-        <div class="lg:w-1/2 relative"> {/* Hacemos este div relative para que la imagen de puntos se posicione respecto a él */}
-            {/* Contenedor del Texto */}
-            <div class="relative z-10 w-full text-center bg-[var(--neutral-background-subtle)] p-8 sm:px-12 md:p-16 text-[var(--surface-brand-primary)] shadow-2xl lg:text-left">
-                <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase" style="font-family: var(--font-shields-sans-semibold);">
+    <div class="relative lg:py-10 flex items-center lg:min-h-[500px]">
+
+        <div class="lg:w-1/2 relative w-full flex justify-center lg:block">
+
+            <div class="relative z-10 w-full max-w-xl mx-auto text-center bg-[var(--neutral-background-subtle)] p-8 md:p-12 text-[var(--surface-brand-primary)] shadow-2xl lg:text-left lg:mx-0 lg:ml-auto lg:mr-8">
+
+                <h2 class="text-4xl lg:text-5xl font-semibold tracking-tight uppercase font-(family-name:--font-shields-sans-semibold-condensed)">
                     {titulo || "PLANEA TU VISITA"}
                 </h2>
-                <div style="font-family: var(--font-shields-sans-regular);" class="text-justify mt-6 text-lg text-[var(--surface-brand-secondary)]  strapi-rich-text" set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
-                <div class="flex items-center gap-2 mt-8 mb-8">
+
+                <div class="text-base font-(family-name:--font-shields-sans-regular) text-justify mt-4 text-[var(--surface-brand-secondary)] strapi-rich-text"
+                    set:html={descriptionHtml || `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`} />
+
+                <div class="flex items-center justify-start lg:justify-start gap-2 mt-8 mb-8">
                     <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
-                    <span class="text-sm font-bold text-[var(--brand-interactive-base)] uppercase tracking-wider" style="font-family: var(--font-shields-sans-semibold);">
+                    <span class="text-sm font-bold text-[var(--brand-interactive-base)] uppercase tracking-wider font-(family-name:--font-shields-sans-semibold-condensed)">
                     {texto_ubicacion || "TOPGOLF PLAYA DEL CARMEN"}
                     </span>
                 </div>
-                <ButtonGroup botones={componentButtons} />
-                <div style="font-family: var(--font-shields-sans-regular);" class="mt-8 text-sm  text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
-                    set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`} />
+
+                <div class="hidden lg:flex mt-6 justify-center w-full">
+                    <ButtonGroup
+                        botones={componentButtons}
+                        clase="flex flex-col items-center"
+                    />
+                </div>
+
+                <div class="flex justify-center lg:justify-start mt-6 text-sm font-(family-name:--font-shields-sans-regular) text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
+                    set:html={helpTextHtml || `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`}
+                />
             </div>
 
-            {/* Patrón decorativo para desktop, ahora con un ancho del 50% de su contenedor */}
             <img
                 src={dotsPattern.src}
                 alt="Patrón de puntos decorativo"
