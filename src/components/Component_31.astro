@@ -54,7 +54,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 <div style="font-family: var(--font-shields-sans-regular);" class="mt-6 text-md leading-8 text-[var(--neutral-text-inverted)] prose max-w-none" set:html={dataToRender.contenido}>
                 </div>
                 <div class="w-full mt-10">
-                    <ButtonGroup botones={componentButtons} />
+                    <ButtonGroup botones={componentButtons} clase="flex flex-col items-center" />
                 </div>
             </div>
         </div>
