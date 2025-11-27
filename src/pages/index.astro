@@ -2,100 +2,105 @@
 // =========================================================================================
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
-import BloqueDeTexto from '../components/BloqueDeTexto.astro';
-import Component_1 from '../components/Component_1.astro';
-import Component_2 from '../components/Component_2.astro';
-import Component_3 from '../components/Component_3.astro';
-import Component_4 from '../components/Component_4.astro';
-import Component_5 from '../components/Component_5.astro';
-import Component_6 from '../components/Component_6.astro';
-import Component_7 from '../components/Component_7.astro';
-import Component_8 from '../components/Component_8.astro';
-import Component_9 from '../components/Component_9.astro';
-import Component_10 from '../components/Component_10.astro';
-import Component_11 from '../components/Component_11.astro';
-import Component_12 from '../components/Component_12.astro';
-import Component_13 from '../components/Component_13.astro';
-import Component_14 from '../components/Component_14.astro';
-import Component_15 from '../components/Component_15.astro';
-import Component_16 from '../components/Component_16.astro';
-import Component_17 from '../components/Component_17.astro';
-import Component_18 from '../components/Component_18.astro';
-import Component_19 from '../components/Component_19.astro';
-import Component_20 from '../components/Component_20.astro';
-import Component_21 from '../components/Component_21.astro';
-import Component_22 from '../components/Component_22.astro';
-import Component_23 from '../components/Component_23.astro';
-import Component_24 from '../components/Component_24.astro';
-import Component_25 from '../components/Component_25.astro';
-import Component_26 from '../components/Component_26.astro';
-import Component_27 from '../components/Component_27.astro';
-import Component_28 from '../components/Component_28.astro';
-import Component_29 from '../components/Component_29.astro';
-import Component_30 from '../components/Component_30.astro';
-import Component_31 from '../components/Component_31.astro';
-import Component_32 from '../components/Component_32.astro';
-import Component_33 from '../components/Component_33.astro';
-import Component_34 from '../components/Component_34.astro';
-import Component_35 from '../components/Component_35.astro';
+import BloqueDeTexto from "../components/BloqueDeTexto.astro";
+import Component_1 from "../components/Component_1.astro";
+import Component_2 from "../components/Component_2.astro";
+import Component_3 from "../components/Component_3.astro";
+import Component_4 from "../components/Component_4.astro";
+import Component_5 from "../components/Component_5.astro";
+import Component_6 from "../components/Component_6.astro";
+import Component_7 from "../components/Component_7.astro";
+import Component_8 from "../components/Component_8.astro";
+import Component_9 from "../components/Component_9.astro";
+import Component_10 from "../components/Component_10.astro";
+import Component_11 from "../components/Component_11.astro";
+import Component_12 from "../components/Component_12.astro";
+import Component_13 from "../components/Component_13.astro";
+import Component_14 from "../components/Component_14.astro";
+import Component_15 from "../components/Component_15.astro";
+import Component_16 from "../components/Component_16.astro";
+import Component_17 from "../components/Component_17.astro";
+import Component_18 from "../components/Component_18.astro";
+import Component_19 from "../components/Component_19.astro";
+import Component_20 from "../components/Component_20.astro";
+import Component_21 from "../components/Component_21.astro";
+import Component_22 from "../components/Component_22.astro";
+import Component_23 from "../components/Component_23.astro";
+import Component_24 from "../components/Component_24.astro";
+import Component_25 from "../components/Component_25.astro";
+import Component_26 from "../components/Component_26.astro";
+import Component_27 from "../components/Component_27.astro";
+import Component_28 from "../components/Component_28.astro";
+import Component_29 from "../components/Component_29.astro";
+import Component_30 from "../components/Component_30.astro";
+import Component_31 from "../components/Component_31.astro";
+import Component_32 from "../components/Component_32.astro";
+import Component_33 from "../components/Component_33.astro";
+import Component_34 from "../components/Component_34.astro";
+import Component_35 from "../components/Component_35.astro";
 
-import Layout from '../layouts/Layout.astro'; // Importamos el Layout principal
-import { getPageBySlug } from '../lib/strapi.js';
+import Layout from "../layouts/Layout.astro"; // Importamos el Layout principal
+import { getPageBySlug } from "../lib/strapi.js";
+
+export const prerender = true;
 
 // ==========================================================================================
 // SECCIÓN 2: MAPA DE COMPONENTES
 // ==========================================================================================
 const componentsMap = {
-  'secciones.bloque-de-texto': BloqueDeTexto,
-  'secciones.hero-principal': Component_1,
-  'secciones.carrusel': Component_2, 
-  'secciones.componente-3': Component_3,
-  'secciones.componente-4': Component_4, 
-  'secciones.componente-5': Component_5, 
-  'secciones.componente-6': Component_6, 
-  'secciones.componente-7': Component_7, 
-  'secciones.componente-8': Component_8, 
-  'secciones.componente-9': Component_9, 
-  'secciones.componente-10': Component_10,
-  'secciones.componente-11': Component_11,
-  'secciones.componente-12': Component_12,
-  'secciones.componente-13': Component_13,
-  'secciones.componente-14': Component_14,
-  'secciones.componente-15': Component_15,
-  'secciones.componente-16': Component_16,
-  'secciones.componente-17': Component_17,
-  'secciones.componente-18': Component_18,
-  'secciones.componente-19': Component_19,
-  'secciones.componente-20': Component_20,
-  'secciones.componente-21': Component_21,
-  'secciones.componente-22': Component_22,
-  'secciones.componente-23': Component_23,
-  'secciones.componente-24': Component_24,
-  'secciones.componente-25': Component_25,
-  'secciones.componente-26': Component_26,
-  'secciones.componente-27': Component_27,
-  'secciones.componente-28': Component_28,
-  'secciones.componente-29': Component_29,
-  'secciones.componente-30': Component_30,
-  'secciones.componente-31': Component_31,
-  'secciones.componente-32': Component_32,
-  'secciones.componente-33': Component_33,
-  'secciones.componente-34': Component_34,
-  'secciones.componente-35': Component_35,
+  "secciones.bloque-de-texto": BloqueDeTexto,
+  "secciones.hero-principal": Component_1,
+  "secciones.carrusel": Component_2,
+  "secciones.componente-3": Component_3,
+  "secciones.componente-4": Component_4,
+  "secciones.componente-5": Component_5,
+  "secciones.componente-6": Component_6,
+  "secciones.componente-7": Component_7,
+  "secciones.componente-8": Component_8,
+  "secciones.componente-9": Component_9,
+  "secciones.componente-10": Component_10,
+  "secciones.componente-11": Component_11,
+  "secciones.componente-12": Component_12,
+  "secciones.componente-13": Component_13,
+  "secciones.componente-14": Component_14,
+  "secciones.componente-15": Component_15,
+  "secciones.componente-16": Component_16,
+  "secciones.componente-17": Component_17,
+  "secciones.componente-18": Component_18,
+  "secciones.componente-19": Component_19,
+  "secciones.componente-20": Component_20,
+  "secciones.componente-21": Component_21,
+  "secciones.componente-22": Component_22,
+  "secciones.componente-23": Component_23,
+  "secciones.componente-24": Component_24,
+  "secciones.componente-25": Component_25,
+  "secciones.componente-26": Component_26,
+  "secciones.componente-27": Component_27,
+  "secciones.componente-28": Component_28,
+  "secciones.componente-29": Component_29,
+  "secciones.componente-30": Component_30,
+  "secciones.componente-31": Component_31,
+  "secciones.componente-32": Component_32,
+  "secciones.componente-33": Component_33,
+  "secciones.componente-34": Component_34,
+  "secciones.componente-35": Component_35,
 };
 
 // ==========================================================================================
 // SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE INICIO
 // ==========================================================================================
-const slug = 'home'; // Usamos 'home' como el slug para la página de inicio
+const slug = "home"; // Usamos 'home' como el slug para la página de inicio
 const pagina = await getPageBySlug(slug);
 
 // Si la página no se encuentra, mostramos un error 404.
 if (!pagina) {
-  return new Response('Contenido de la página principal no encontrado en Strapi. Asegúrate de que el slug "home" existe y que la API tiene permisos para acceder.', {
-    status: 404,
-    statusText: 'No Encontrado'
-  });
+  return new Response(
+    'Contenido de la página principal no encontrado en Strapi. Asegúrate de que el slug "home" existe y que la API tiene permisos para acceder.',
+    {
+      status: 404,
+      statusText: "No Encontrado",
+    },
+  );
 }
 
 const { titulo, ContenidoPagina } = pagina;
@@ -103,10 +108,16 @@ const { titulo, ContenidoPagina } = pagina;
 
 <Layout>
   <main class="mx-auto container-full">
-
-    {ContenidoPagina && ContenidoPagina.map(bloque => {
-      const Componente = componentsMap[bloque.__component];
-      return Componente ? <Componente {...bloque} /> : <p>Componente no encontrado: {bloque.__component}</p>;
-    })}
+    {
+      ContenidoPagina &&
+        ContenidoPagina.map((bloque) => {
+          const Componente = componentsMap[bloque.__component];
+          return Componente ? (
+            <Componente {...bloque} />
+          ) : (
+            <p>Componente no encontrado: {bloque.__component}</p>
+          );
+        })
+    }
   </main>
 </Layout>
