@@ -30,7 +30,7 @@ export async function getPageBySlug(slug) {
 }
 
 export async function getAllPages() {
-    return await fetchAPI("/paginas");
+  return await fetchAPI("/paginas");
 }
 
 export async function getBlogBySlug(slug) {
@@ -39,7 +39,7 @@ export async function getBlogBySlug(slug) {
 }
 
 export async function getAllBlogs() {
-    return await fetchAPI("/blogs");
+  return await fetchAPI("/blogs");
 }
 
 export async function getPromocionBySlug(slug) {
@@ -48,7 +48,7 @@ export async function getPromocionBySlug(slug) {
 }
 
 export async function getAllPromociones() {
-    return await fetchAPI("/promociones");
+  return await fetchAPI("/promociones");
 }
 
 export async function getHeaderData() {
@@ -60,18 +60,18 @@ export async function getFooterData() {
 }
 
 export const getStrapiUrl = (media) => {
-    // La API de Strapi puede devolver el objeto de medios directamente o dentro de una envoltura 'data'.
-    // Esta función ahora comprueba ambas estructuras para ser más robusta.
-    const url = media?.data?.attributes?.url || media?.url;
-    if (url) {
-      const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
-      // Asegurarse de que no haya dobles barras al unir las URLs
-      const cleanStrapiUrl = strapiUrl.endsWith('/') ? strapiUrl.slice(0, -1) : strapiUrl;
-      const cleanMediaUrl = url.startsWith('/') ? url.slice(1) : url;
-      return `${cleanStrapiUrl}/${cleanMediaUrl}`;
-    }
-    return null;
+  // La API de Strapi puede devolver el objeto de medios directamente o dentro de una envoltura 'data'.
+  // Esta función ahora comprueba ambas estructuras para ser más robusta.
+  const url = media?.data?.attributes?.url || media?.url;
+  if (url) {
+    const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+    // Asegurarse de que no haya dobles barras al unir las URLs
+    const cleanStrapiUrl = strapiUrl.endsWith('/') ? strapiUrl.slice(0, -1) : strapiUrl;
+    const cleanMediaUrl = url.startsWith('/') ? url.slice(1) : url;
+    return `${cleanStrapiUrl}/${cleanMediaUrl}`;
   }
+  return null;
+}
 
 export const generateFontFaces = (tipografias) => {
   if (!tipografias || tipografias.length === 0) {
@@ -125,6 +125,7 @@ export const stringifyRichText = (richText) => {
     if (node.italic) text = `<em>${text}</em>`;
     if (node.underline) text = `<u>${text}</u>`;
     if (node.strikethrough) text = `<s>${text}</s>`;
+    if (node.code) text = `<code>${text}</code>`;
     return text;
   };
 
@@ -156,6 +157,8 @@ export const stringifyRichText = (richText) => {
         return `<${tag}>${items}</${tag}>`;
       case 'quote':
         return `<blockquote>${processChildren(block.children)}</blockquote>`;
+      case 'code':
+        return `<pre><code>${processChildren(block.children)}</code></pre>`;
       case 'image':
         const imageUrl = getStrapiUrl({ data: { attributes: block.image } });
         return `<img src="${imageUrl}" alt="${block.image.alternativeText || ''}" />`;
@@ -173,10 +176,10 @@ export const stringifyRichText = (richText) => {
 };
 
 export const formatUrl = (url) => {
-    if (!url) return '#';
-    if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/')) {
-        return url;
-    }
-    return `/${url}`;
+  if (!url) return '#';
+  if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/')) {
+    return url;
+  }
+  return `/${url}`;
 };
 
