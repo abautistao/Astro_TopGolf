@@ -3,12 +3,16 @@
 // Este componente es un wrapper para StepWithContent, que define la orientación
 // 'right_image' y el contenido dinámico 'alert_card'.
 
-import StepWithContent from './elements/StepWithContent.astro';
-import type { Props as StepWithContentProps } from './elements/StepWithContent.astro';
+import StepWithContent from "./elements/StepWithContent.astro";
+import type { Props as StepWithContentProps } from "./elements/StepWithContent.astro";
 
 // 1. Definimos la interfaz con todas las props de datos que C13 requiere.
-export interface Props extends Omit<StepWithContentProps, 'orientacion' | 'tipo_contenido' | 'texto_boton' | 'url_boton' | 'Boton'> {
-    etiqueta_paso: string;
+export interface Props
+    extends Omit<
+        StepWithContentProps,
+        "orientacion" | "tipo_contenido" | "texto_boton" | "url_boton" | "Boton"
+    > {
+    paso: string;
     titulo: string;
     descripcion: any;
     imagen_principal: any;
@@ -22,7 +26,7 @@ export interface Props extends Omit<StepWithContentProps, 'orientacion' | 'tipo_
 
 // 2. Recibimos todas las props
 const {
-    etiqueta_paso,
+    paso,
     titulo,
     descripcion,
     imagen_principal,
@@ -37,7 +41,7 @@ const {
 ---
 
 <StepWithContent
-    etiqueta_paso={etiqueta_paso}
+    etiqueta_paso={paso}
     titulo={titulo}
     descripcion={descripcion}
     imagen_principal={imagen_principal}

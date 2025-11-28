@@ -11,19 +11,16 @@ export interface Props {
 }
 
 // 2. Recibimos las props y definimos placeholders
-const {
-  titulo_principal,
-  subtitulo,
-  descripcion,
-  texto_final,
-} = Astro.props;
+const { titulo_principal, subtitulo, descripcion, texto_final } = Astro.props;
 
 const descriptionHtml = stringifyRichText(descripcion);
 const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a Topgolf,</strong> tu principal destino de entretenimiento. Y por destino de entretenimiento nos referimos a un lugar donde puedes venir para festejar un cumpleaños, despedidas de soltero o soltera, eventos corporativos, citas nocturnas o simplemente para divertirte con tus amigos y pasarla en grande.</p>`;
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-  <div class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row">
+  <div
+    class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row"
+  >
     <div class="flex flex-col items-center justify-center">
       <div class="relative flex items-center justify-center mb-8">
         <h2
@@ -38,32 +35,50 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
           {subtitulo || "de Topgolf"}
         </h3>
       </div>
-      <div class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text">
-          <div set:html={descriptionHtml || placeholderDescriptionHtml} />
+      <div
+        class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text"
+      >
+        <div set:html={descriptionHtml || placeholderDescriptionHtml} />
       </div>
     </div>
   </div>
-  <p class="font-(family-name:--font-tee-line-bold-italic) mt-8 text-center text-lg md:text-xl font-bold text-[--neutral-background-strong)]">
+  <p
+    class="font-(family-name:--font-tee-line-bold-italic) mt-8 text-center text-lg md:text-xl font-bold text-[--neutral-background-strong)]"
+  >
     {texto_final || "Así es como funciona Topgolf:"}
   </p>
 </section>
 <style>
-    .text-shadow-md {
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-    .strapi-rich-text :global(strong) {
-        color: var(--neutral-background-strong);
-    }
-    .strapi-rich-text :global(u) {
-        text-decoration-color: var(--neutral-background-strong);
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
-    }
-    .strapi-rich-text :global(a) {
-        text-decoration: underline;
-        text-decoration-color: var(--neutral-background-strong);
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
-        color: inherit;
-    }
+  .text-shadow-md {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .strapi-rich-text :global(strong) {
+    color: var(--neutral-background-strong);
+    font-family: var(--font-tee-line-bold-italic);
+    font-weight: bold;
+  }
+
+  .strapi-rich-text :global(u) {
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .strapi-rich-text :global(a) {
+    text-decoration: underline;
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    color: var(--brand-interactive-base);
+  }
+
+  /* --- Agrega esto aquí --- */
+  .strapi-rich-text :global(li::marker) {
+    /* Usa la variable de color que desees para el punto/número */
+    color: var(--neutral-background-strong);
+
+    /* Opcional: Si quieres que el bullet sea más grande o negrita */
+    font-weight: bold;
+    font-size: 1.2em;
+  }
 </style>
