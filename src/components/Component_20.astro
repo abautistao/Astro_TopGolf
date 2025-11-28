@@ -5,8 +5,8 @@ import dotsPattern from "../assets/Artwork.png";
 import dotsPatternSquare from "../assets/Artwork_square.png";
 import { stringifyRichText } from "../lib/strapi.js";
 
-
-const FALLBACK_IMAGE_URL = "https://placehold.co/1024x1280/4a5568/ffffff?text=Imagen+no+disponible";
+const FALLBACK_IMAGE_URL =
+  "https://placehold.co/1024x1280/4a5568/ffffff?text=Imagen+no+disponible";
 
 // 1. Definimos las interfaces para las props de Strapi
 export interface Feature {
@@ -30,7 +30,13 @@ export interface Props {
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { imagen_principal, titulo_seccion, titulo_principal, texto_introduccion, caracteristicas } = Astro.props;
+const {
+  imagen_principal,
+  titulo_seccion,
+  titulo_principal,
+  texto_introduccion,
+  caracteristicas,
+} = Astro.props;
 
 const placeholderData: Props = {
   titulo_seccion: "EN TOPGOLF HACEMOS",
@@ -38,28 +44,43 @@ const placeholderData: Props = {
   texto_introduccion: "Olvídate de los planes aburridos...",
   imagen_principal: null,
   caracteristicas: [
-    { id: 1, titulo: "¡DIVERSIÓN PARA TODOS!", descripcion: "Ya sea que seas un aspirante a profesional del golf..." },
-    { id: 2, titulo: "TU EVENTO COMO TE GUSTA", descripcion: "Contamos con un equipo completo..." },
-  ]
+    {
+      id: 1,
+      titulo: "¡DIVERSIÓN PARA TODOS!",
+      descripcion: "Ya sea que seas un aspirante a profesional del golf...",
+    },
+    {
+      id: 2,
+      titulo: "TU EVENTO COMO TE GUSTA",
+      descripcion: "Contamos con un equipo completo...",
+    },
+  ],
 };
 
 // 3. Preparamos los datos para renderizar
 const dataToRender = {
   titulo_seccion: titulo_seccion || placeholderData.titulo_seccion,
   titulo_principal: titulo_principal || placeholderData.titulo_principal,
-  contentHtml: stringifyRichText(texto_introduccion) || placeholderData.texto_introduccion,
+  contentHtml:
+    stringifyRichText(texto_introduccion) || placeholderData.texto_introduccion,
 
-  caracteristicas: caracteristicas && caracteristicas.length > 0 ? caracteristicas : placeholderData.caracteristicas,
+  caracteristicas:
+    caracteristicas && caracteristicas.length > 0
+      ? caracteristicas
+      : placeholderData.caracteristicas,
 };
 
 const imageUrl = imagen_principal
-    ? getStrapiUrl(imagen_principal)
-    : FALLBACK_IMAGE_URL;
-const imageAlt = imagen_principal?.alternativeText || "Imagen principal de la sección";
+  ? getStrapiUrl(imagen_principal)
+  : FALLBACK_IMAGE_URL;
+const imageAlt =
+  imagen_principal?.alternativeText || "Imagen principal de la sección";
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-  <div class="grid grid-cols-1 lg:grid-cols-2 min-h-screen font-sans p-4 lg:p-16 lg:pl-20 relative">
+  <div
+    class="grid grid-cols-1 lg:grid-cols-2 min-h-screen font-sans p-4 lg:p-16 lg:pl-20 relative"
+  >
     <div class="lg:order-last">
       <img
         src={imageUrl}
@@ -70,27 +91,86 @@ const imageAlt = imagen_principal?.alternativeText || "Imagen principal de la se
       />
     </div>
 
-    <img src={dotsPattern.src} alt="Patrón decorativo de puntos" class="absolute z-0 bottom-0 left-0 w-125 hidden lg:block" aria-hidden="true" loading="lazy" decoding="async" />
-    <img src={dotsPatternSquare.src} alt="Patrón decorativo de puntos" class="absolute bottom-0 left-0 z-0 w-40 lg:hidden" aria-hidden="true" loading="lazy" decoding="async" />
-    <img src={dotsPatternSquare.src} alt="Patrón decorativo de puntos" class="absolute bottom-32 left-0 z-0 w-40 lg:hidden" aria-hidden="true" loading="lazy" decoding="async" />
+    <img
+      src={dotsPattern.src}
+      alt="Patrón decorativo de puntos"
+      class="absolute z-0 bottom-0 left-0 w-125 hidden lg:block"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+    <img
+      src={dotsPatternSquare.src}
+      alt="Patrón decorativo de puntos"
+      class="absolute bottom-0 left-0 z-0 w-40 lg:hidden"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+    <img
+      src={dotsPatternSquare.src}
+      alt="Patrón decorativo de puntos"
+      class="absolute bottom-32 left-0 z-0 w-40 lg:hidden"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
 
-    <div class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] py-8 px-0 sm:p-16 lg:p-20 relative flex flex-col justify-center">
-      <div class="z-10 p-5 lg:p-0 xl:p-0 font-(family-name:--font-shields-sans-regular)">
-        <h2 class="text-xl md:text-[28px] tracking-wider uppercase">{dataToRender.titulo_seccion}</h2>
-        <h1 class="text-5xl md:text-7xl font-semibold uppercase my-2 font-(family-name:--font-shields-sans-condensed)">{dataToRender.titulo_principal}</h1>
-        <div class="mt-6 text-base max-w-2xl" set:html={dataToRender.contentHtml} ></div>
+    <div
+      class="bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] py-8 px-0 sm:p-16 lg:p-20 relative flex flex-col justify-center"
+    >
+      <div
+        class="z-10 p-5 lg:p-0 xl:p-0 font-(family-name:--font-shields-sans-regular)"
+      >
+        <h2 class="text-xl md:text-[28px] tracking-wider uppercase">
+          {dataToRender.titulo_seccion}
+        </h2>
+        <h1
+          class="text-5xl md:text-7xl font-semibold uppercase my-2 font-(family-name:--font-shields-sans-condensed)"
+        >
+          {dataToRender.titulo_principal}
+        </h1>
+        <div
+          class="mt-6 text-base max-w-2xl strapi-rich-text"
+          set:html={dataToRender.contentHtml}
+        />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mt-12">
-          {dataToRender.caracteristicas.map((feature) => (
-            <div>
-              <h3 class="flex items-center mb-2 text-[var(--accent-highlight-secondary)]">
-                <i class="fas fa-circle-check text-[var(--accent-feedback-strong)] mr-3 flex-shrink-0"></i>
-                {feature.titulo}
-              </h3>
-              <div class="text-sm opacity-90" set:html={stringifyRichText(feature.descripcion)} ></div>
-            </div>
-          ))}
+          {
+            dataToRender.caracteristicas.map((feature) => (
+              <div>
+                <h3 class="flex items-center mb-2 text-[var(--accent-highlight-secondary)]">
+                  <i class="fas fa-circle-check text-[var(--accent-feedback-strong)] mr-3 flex-shrink-0" />
+                  {feature.titulo}
+                </h3>
+                <div
+                  class="text-sm opacity-90 strapi-rich-text"
+                  set:html={stringifyRichText(feature.descripcion)}
+                />
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .strapi-rich-text :global(strong) {
+    color: var(--neutral_background_strong);
+    font-family: var(--font-tee-line-bold-italic) !important;
+    font-weight: bold;
+  }
+  .strapi-rich-text :global(u) {
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .strapi-rich-text :global(a) {
+    text-decoration: underline;
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    color: inherit;
+  }
+</style>
