@@ -106,7 +106,7 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
       </div>
     </div>
 
-    <div class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose">
+    <div class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose strapi-rich-text">
         <div set:html={disclaimerHtml || placeholderDisclaimerHtml} />
     </div>
   </div>
@@ -130,4 +130,36 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
   .prose :global(li) {
     padding-left: 0.5rem;
   }
+
+
+  .text-shadow-md {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .strapi-rich-text :global(strong) {
+    color: var(--neutral-background-strong);
+    font-family: var(--font-tee-line-bold-italic);
+    font-weight: bold;
+  }
+
+  .strapi-rich-text :global(u) {
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .strapi-rich-text :global(a) {
+     font-weight: bold;
+    color: var(--brand-interactive-base);
+  }
+
+  /* --- Agrega esto aquí --- */
+  .strapi-rich-text :global(li::marker) {
+    /* Usa la variable de color que desees para el punto/número */
+    color: var(--neutral-background-strong);
+
+    /* Opcional: Si quieres que el bullet sea más grande o negrita */
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
 </style>
