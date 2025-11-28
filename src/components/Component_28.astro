@@ -111,21 +111,13 @@ const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
 ---
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2
-      style="font-family: var(--font-shields-sans-semibold);"
-      class="text-righ text-3xl lg:text-xl font-bold text-[var(--neutral-background-strong)]"
-    >
-      {tituloToRender}
-    </h2>
-    <div
-      style="font-family: var(--font-shields-sans-regular);"
-      class="mt-8 text-[var(--neutral-background-strong)] prose max-w-none strapi-rich-text"
-      set:html={terminosHtml}
-    />
-  </div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-(family-name:--font-tee-line-bold-italic) text-center text-xl lg:text-[32px] font-bold text-[var(--neutral-background-strong)]">
+            {tituloToRender}
+        </h2>
+        <div class="font-(family-name:--font-shields-sans-regular) mt-8 text-[var(--neutral-background-strong)] prose max-w-none text-lg strapi-rich-text" set:html={terminosHtml}></div>
+    </div>
 </section>
-
 <style>
   .prose :global(ul) {
     list-style-type: disc;
@@ -158,10 +150,7 @@ const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
 
   /* --- Agrega esto aquí --- */
   .strapi-rich-text :global(li::marker) {
-    /* Usa la variable de color que desees para el punto/número */
     color: var(--neutral-background-strong);
-
-    /* Opcional: Si quieres que el bullet sea más grande o negrita */
     font-weight: bold;
     font-size: 1.2em;
   }

@@ -62,10 +62,11 @@ const dataToRender = {
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-(family-name:--font-shields-sans-regular)">
         <div class="text-center">
-            <h2 class="font-(family-name:--font-shields-sans-condensed) text-[28px] sm:text-[38px] font-semibold text-[var(--neutral-background-strong)] tracking-tight">
+            <h2 class="font-(family-name:--font-shields-sans-semibold-condensed) text-[28px] sm:text-[38px] font-semibold text-[var(--neutral-background-strong)] leading-none
+                tracking-[0]">
                 {dataToRender.titulo_seccion}
             </h2>
-            <div class="mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>
+            <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>
         </div>
 
         <div id="games-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-2">

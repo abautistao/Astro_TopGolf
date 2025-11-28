@@ -67,15 +67,20 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
     <div class="max-w-7xl mx-auto px-4 sm:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 items-center">
             <div class="bg-[var(--neutral-text-inverted)] p-4 md:p-12 text-left z-10 order-last lg:order-first">
-                <span style="font-family: var(--font-shields-sans-semibold);" class="inline-block bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] text-xs font-bold tracking-wider uppercase px-3 py-1 rounded">
+                <span class="font-(family-name:--font-shields-sans-bold) inline-block bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] text-xs font-bold tracking-wider uppercase px-3 py-1 rounded">
                     {dataToRender.tag}
                 </span>
-                <h1 style="font-family: var(--font-shields-sans-semibold);" class="text-3xl sm:text-4xl md:text-5xl font-semibold uppercase mt-4 leading-none text-[var(--neutral-background-strong)] break-words">
+                <h1 class="text-[28px] sm:text-[82px] font-(family-name:--font-shields-sans-semibold-condensed) font-semibold uppercase mt-4 leading-none text-[var(--neutral-background-strong)] break-words">
                     {dataToRender.titulo_linea_1} <br class="hidden lg:block"/>
-                    <span class="text-[var(--neutral-background-strong)]">{dataToRender.titulo_linea_2}</span>
+                    <span class="text-[var(--neutral-backßground-strong)]">{dataToRender.titulo_linea_2}</span>
                 </h1>
-                <div style="font-family: var(--font-shields-sans-regular);" class="mb-6 mt-6 text-base lg:text-lg text-[var(--neutral-background-strong)] max-w-lg prose" set:html={dataToRender.contenido}></div>
-                <ButtonGroup botones={componentButtons} />
+                <div  class="font-(family-name:--font-shields-sans-regular)  mb-6 mt-6 text-base lg:text-lg text-[var(--neutral-background-strong)] max-w-lg prose" set:html={dataToRender.contenido}></div>
+                <div class="mt-4 w-full">
+                    <ButtonGroup
+                        botones={componentButtons}
+                        clase="flex flex-row items-center gap-4"
+                    />
+                </div>
             </div>
             <div class="flex justify-center items-center h-full order-first lg:order-last">
                 <img src={imageUrl} alt={imageAlt} class="w-full h-auto max-w-xl" loading="lazy" decoding="async" />

@@ -67,14 +67,18 @@ const promotionsToRender =
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p
-            class="font-(family-name:--font-shields-sans-condensed) text-left text-lg font-semibold text-[var(--brand-interactive-base)] uppercase tracking-wider"
-        >
+        <p class="font-(family-name:--font-shields-sans-bold) text-left text-sm font-semibold text-[var(--brand-interactive-base)] uppercase tracking-wider">
             {tagToRender}
         </p>
         <h2
-            class="font-(family-name:--font-shields-sans-condensed) text-3xl md:text-[80px] font-bold text-[var(--neutral-background-strong)] mb-10 md:mb-16 tracking-[0px]"
-        >
+            class="font-(family-name:--font-shields-sans-condensed)
+                text-3xl md:text-[80px]
+                font-bold
+                text-[var(--neutral-background-strong)]
+                mb-10 md:mb-16
+                leading-none
+                tracking-[0]
+            ">
             {tituloToRender}
         </h2>
 
@@ -125,6 +129,7 @@ const promotionsToRender =
                                     <i class="fa-solid fa-chevron-right text-2xl text-[var(--feedback-positive-base)]" />
                                 </div>
                             </div>
+
                         </a>
                     );
                 })
