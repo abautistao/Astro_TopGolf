@@ -66,13 +66,13 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
             <div class="lg:absolute lg:-top-10 lg:-right-40 lg:w-4/5 lg:h-full">
                 <img src={mainImageUrl} alt={mainImageAlt} class="w-full object-cover shadow-xl" loading="lazy" decoding="async" />
             </div>
-            <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-[calc(1/2*90%)] lg:mx-0 lg:mt-0 z-10">
-                <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-12 text-[var(--neutral-text-inverted)] rounded-lg shadow-2xl lg:text-left">
-                    <h2 class="whitespace-nowrap text-2xl lg:text-[40px] font-semibold tracking-[0] leading-none uppercase font-(family-name:--font-shields-sans-semibold-condensed)">
+            <div class="relative w-[90%] mx-auto -mt-[20px] lg:w-[calc(1/2*80%)] lg:mx-0 lg:mt-0 z-10">
+                <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-9 text-[var(--neutral-text-inverted)]  shadow-2xl lg:text-left">
+                    <h2 class="text-xl lg:text-[40px] whitespace-nowrap lg:whitespace-normal font-semibold tracking-[0] leading-none uppercase font-(family-name:--font-shields-sans-semibold-condensed)">
                         {dataToRender.titulo}
                     </h2>
                     <div class="font-(family-name:--font-shields-sans-regular) mb-6 mt-6 text-[13px] md:text-base text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
-                    <div class="w-full flex justify-start mt-4">
+                    <div class="mt-5 w-full flex justify-start">
                         <div class="w-full transform hover:scale-105 transition-transform duration-300 ease-in-out origin-left">
                             <ButtonGroup botones={componentButtons} />
                         </div>

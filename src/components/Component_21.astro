@@ -67,7 +67,7 @@ const promotionsToRender =
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="font-(family-name:--font-shields-sans-bold) text-left text-sm font-semibold text-[var(--brand-interactive-base)] uppercase tracking-wider">
+        <p class="font-(family-name:--font-shields-sans-bold) text-left text-sm font-semibold text-[var(--brand-interactive-base)] uppercase tracking-[0] leading-none">
             {tagToRender}
         </p>
         <h2
@@ -105,7 +105,7 @@ const promotionsToRender =
 
                                 {promo.etiqueta && (
                                     <div
-                                        class="font-(family-name:--font-shields-sans-regular) absolute bottom-[-16px] right-0 py-2 px-20 bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-primary)] font-bold uppercase text-base z-20"
+                                        class="font-(family-name:--font-shields-sans-bold) absolute bottom-[-16px] right-0 py-2 px-20 bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-primary)] font-bold uppercase text-base z-20"
                                         aria-label={promo.etiqueta}
                                     >
                                         {promo.etiqueta}
@@ -115,7 +115,7 @@ const promotionsToRender =
 
                             <div class="font-(family-name:--font-shields-sans-regular) p-6 pt-0 flex-grow flex justify-between items-start tracking-[0px]">
                                 <div class="flex-1 pr-4">
-                                    <h3 class="text-[26px] leading-tight text-[var(--brand-interactive-base)]">
+                                    <h3 class="text-[22px] md:text-[26px] leading-tight text-[var(--brand-interactive-base)]">
                                         {promo.titulo}
                                     </h3>
                                     <div

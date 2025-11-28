@@ -41,10 +41,10 @@ const dataToRender = {
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
     <div class="font-(family-name:--font-shields-sans-black) max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-            <h2 class="text-2xl lg:text-[38px] font-bold uppercase tracking-wide text-[var(--neutral-background-strong)]">
+            <h2 class="text-xl lg:text-[38px] font-bold uppercase tracking-[0] text-[var(--neutral-background-strong)] leading-none">
                 {dataToRender.titulo}
             </h2>
-            <p class="font-(family-name:--font-shields-sans-semibold-condensed)  mt-2 text-lg uppercase text-[var(--neutral-background-strong)]">
+            <p class="font-(family-name:--font-shields-sans-semibold-condensed)  mt-2 text-[25px] lg:text-[32px] uppercase text-[var(--neutral-background-strong)]">
                 {dataToRender.subtitulo}
             </p>
         </div>
@@ -53,13 +53,13 @@ const dataToRender = {
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {dataToRender.bonos.map(bonus => (
                     <div class="rounded-lg text-center p-6" style={`background-color: ${bonus.color_fondo}; color: ${bonus.color_texto};`}>
-                        <p class="font-bold text-lg">
+                        <p class="font-(family-name:--font-shields-sans-black) text-5xl md:text-4xl">
                             {bonus.monto_compra}
                         </p>
-                        <p class="font-semibold text-lg">
+                        <p class="text-4xl md:text-4xl font-(family-name:--font-shields-sans-semibold-condensed)">
                              {bonus.texto}
                         </p>
-                        <p class="text-7xl font-bold mt-1">
+                        <p class="text-7xl md:text-[80px] font-bold mt-1 font-(family-name:--font-shields-sans-black)">
                             {bonus.monto_bono}
                         </p>
                     </div>
