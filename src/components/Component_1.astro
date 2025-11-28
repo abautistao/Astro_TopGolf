@@ -2,8 +2,8 @@
 // src/components/Component_1.astro
 import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
-import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro';
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 // Definimos la interfaz de las props que el componente recibirá desde Strapi.
 export interface Props {
     imagen_fondo: any;
@@ -15,7 +15,7 @@ export interface Props {
     texto_boton: string;
     url_boton: string;
     texto_ayuda: any;
-    Boton: Boton[];// Puede ser un string o un arreglo de Strapi
+    Boton: Boton[]; // Puede ser un string o un arreglo de Strapi
 }
 
 const {
@@ -29,8 +29,6 @@ const {
     texto_ayuda,
 } = Astro.props;
 
-
-
 const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
 const topgolfLogoUrl = getStrapiUrl(logo);
 
@@ -39,15 +37,18 @@ const placeholderBgUrl = `https://placehold.co/1280x720/2d3748/ffffff?text=Image
 const placeholderLogoUrl = `https://placehold.co/300x80/ffffff/2d3748?text=Logo`;
 
 const helpTextHtml = stringifyRichText(texto_ayuda);
-const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton)
+    ? [Boton]
+    : Boton) || [
     {
         id: 1,
         texto: "Reserva Ahora",
         url: "#",
-        tipo: "version_1"
-    }
+        tipo: "version_1",
+    },
 ];
 ---
+
 <section class="relative w-full min-h-[550px] md:min-h-[650px]">
     <img
         src={heroBackgroundUrl || placeholderBgUrl}
@@ -57,30 +58,42 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
     <div class="absolute inset-0 bg-black/30"></div>
 
     <!-- Contenido central -->
-    <div class="relative z-10 flex flex-col items-center justify-center h-[550px] md:h-[650px] text-center">
+    <div
+        class="relative z-10 flex flex-col items-center justify-center h-[550px] md:h-[650px] text-center"
+    >
         <img
-        src={topgolfLogoUrl || placeholderLogoUrl}
-        alt={alt_logo || "Logo de placeholder"}
-        class="transform w-80 md:w-96 z-20"
+            src={topgolfLogoUrl || placeholderLogoUrl}
+            alt={alt_logo || "Logo de placeholder"}
+            class="transform w-80 md:w-96 z-20"
         />
-        <h1 class="leading-none font-(family-name:--font-shields-sans-semibold-condensed) mt-2 md:-mt-10 tracking-normal uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]">
+        <h1
+            class="leading-none font-(family-name:--font-shields-sans-semibold-condensed) mt-2 md:-mt-10 tracking-normal uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]"
+        >
             {titulo || "Título de Ejemplo"}
         </h1>
     </div>
 
     <!-- Franja blanca dentro del section -->
     <div class="relative bg-[var(--neutral-text-inverted)] h-40">
-        <div class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center">
-
-            <div class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6">
-                <p class="tracking-normal text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-tee-line-bold-italic)">
+        <div
+            class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center"
+        >
+            <div
+                class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6"
+            >
+                <p
+                    class="tracking-normal text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-tee-line-bold-italic)"
+                >
                     {texto_banner || "Descubre la mejor manera de jugar"}
                 </p>
                 <ButtonGroup botones={buttonBanner} />
             </div>
 
-            <div class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text font-(family-name:--font-shields-sans-regular)">
-                <p set:html={helpTextHtml}></p>
+            <div
+                id="texto_ayuda"
+                class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text font-(family-name:--font-shields-sans-regular)"
+            >
+                <p set:html={helpTextHtml} />
             </div>
         </div>
     </div>
@@ -91,6 +104,8 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton)
     }
     .strapi-rich-text :global(strong) {
         color: var(--accent-highlight-secondary);
+        font-family: var(--font-tee-line-bold-italic);
+        font-weight: bold;
     }
     .strapi-rich-text :global(u) {
         text-decoration-color: var(--accent-highlight-secondary);

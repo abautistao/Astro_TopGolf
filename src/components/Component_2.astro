@@ -1,8 +1,8 @@
 ---
 // src/components/Component_2.astro
 import { getStrapiUrl } from "../lib/strapi.js";
-import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro';
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 
 export interface Card {
   id: number;
@@ -29,15 +29,19 @@ const placeholderCard: Card = {
   descripcion: "Esta es una descripción de ejemplo para la tarjeta.",
   alt_imagen: "Imagen de placeholder",
   imagen: { data: null },
-  Boton: [{ // El placeholder ahora contiene un array de Boton
-    id: 1,
-    texto: "VER MÁS",
-    url: "#",
-    tipo: "version_1"
-  }],
+  Boton: [
+    {
+      // El placeholder ahora contiene un array de Boton
+      id: 1,
+      texto: "VER MÁS",
+      url: "#",
+      tipo: "version_1",
+    },
+  ],
 };
 
-const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderCard];
+const cardsToRender =
+  tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderCard];
 ---
 
 <section class="w-full py-12 font-sans bg-[var(--neutral-text-inverted)]">
@@ -48,38 +52,56 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       data-total-cards={cardsToRender.length}
     >
       <div class="flex gap-6">
-        {cardsToRender.map(card => {
-          const imageUrl = getStrapiUrl(card.imagen);
-          const placeholderImageUrl = `https://placehold.co/400x450/2d3748/ffffff?text=${encodeURIComponent(card.titulo)}`;
+        {
+          cardsToRender.map((card) => {
+            const imageUrl = getStrapiUrl(card.imagen);
+            const placeholderImageUrl = `https://placehold.co/400x450/2d3748/ffffff?text=${encodeURIComponent(card.titulo)}`;
 
-          const cardButtons: Boton[] = (card.Boton && !Array.isArray(card.Boton) ? [card.Boton] : card.Boton) || [
-            { id: card.id, texto: "Ver Más", url: "#", tipo: "version_1" }
-          ];
+            const cardButtons: Boton[] = (card.Boton &&
+            !Array.isArray(card.Boton)
+              ? [card.Boton]
+              : card.Boton) || [
+              { id: card.id, texto: "Ver Más", url: "#", tipo: "version_1" },
+            ];
 
-          return (
-            <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
-              <img
-                src={imageUrl || placeholderImageUrl}
-                alt={card.alt_imagen || "Imagen de la tarjeta"}
-                class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-              />
-              <div class="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,_rgba(0,0,0,0.9)_0%,_rgba(0,0,0,0.6)_35%,_rgba(0,0,0,0)_70%)]"></div>
-              <div class="relative z-10 flex flex-col justify-end h-full p-6" style="font-family: var(--font-shields-sans-semibold); ">
-                <h3 class="text-3xl font-bold  text-[var(--accent-highlight-primary)]" style="font-size: 32px;">{card.titulo}</h3>
-                <p class="mt-2 text-base font-normal text-[var(--neutral-text-inverted)]">{card.descripcion}</p>
+            return (
+              <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
+                <img
+                  src={imageUrl || placeholderImageUrl}
+                  alt={card.alt_imagen || "Imagen de la tarjeta"}
+                  class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,_rgba(0,0,0,0.9)_0%,_rgba(0,0,0,0.6)_35%,_rgba(0,0,0,0)_70%)]" />
+                <div
+                  class="relative z-10 flex flex-col justify-end h-full p-6"
+                  style="font-family: var(--font-shields-sans-semibold); "
+                >
+                  <h3
+                    class="text-3xl font-bold  text-[var(--accent-highlight-primary)]"
+                    style="font-size: 32px; font-family: var(--font-shields-sans-bold); "
+                  >
+                    {card.titulo}
+                  </h3>
+                  <p class="mt-2 text-base font-normal text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular)">
+                    {card.descripcion}
+                  </p>
 
-                <div class="mt-8">
-                  <ButtonGroup botones={cardButtons} clase="flex flex-col items-start" />
+                  <div class="mt-8">
+                    <ButtonGroup
+                      botones={cardButtons}
+                      clase="flex flex-col items-start"
+                    />
+                  </div>
                 </div>
-
+                {card.etiqueta && (
+                  <div class="absolute top-4 left-4 bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] text-base px-3 py-1 rounded-md z-20 font-(family-name:--font-shields-sans-semibold-condensed) uppercase">
+                    {card.etiqueta}
+                  </div>
+                )}
               </div>
-              {card.etiqueta && (
-                <div class="absolute top-4 left-4 bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] text-base px-3 py-1 rounded-md z-20 font-(family-name:--font-shields-sans-semibold-condensed) uppercase">{card.etiqueta}</div>
-              )}
-
-            </div>
-          )
-        })}
+            );
+          })
+        }
       </div>
     </div>
 
@@ -107,28 +129,32 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       </div>
 
       <div class="items-center hidden gap-2 text-sm sm:flex">
-        <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"></i>
-        <span id="topgolf-content-text" class="text-[var(--neutral-background-strong)]">
+        <i
+          class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"
+        ></i>
+        <span
+          id="topgolf-content-text"
+          class="text-[var(--neutral-background-strong)]"
+        >
           Estás viendo contenido de <strong>Topgolf Monterrey</strong>
         </span>
       </div>
     </div>
-
   </div>
 </section>
 
 <script type="module" define:vars={{ carouselId }}>
-  import { onThemeChange } from '../lib/theme.js';
+  import { onThemeChange } from "../lib/theme.js";
 
   function setupDarkModeHandler() {
-    const topgolfText = document.getElementById('topgolf-content-text');
+    const topgolfText = document.getElementById("topgolf-content-text");
     if (!topgolfText) return;
 
     onThemeChange((theme) => {
-      if (theme === 'dark') {
-        topgolfText.style.color = 'var(--accent-highlight-secondary)';
+      if (theme === "dark") {
+        topgolfText.style.color = "var(--accent-highlight-secondary)";
       } else {
-        topgolfText.style.color = 'var(--neutral-background-strong)';
+        topgolfText.style.color = "var(--neutral-background-strong)";
       }
     });
   }
@@ -138,7 +164,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
     if (!container) return;
     const prevBtn = document.getElementById(`prev-btn-${containerId}`);
     const nextBtn = document.getElementById(`next-btn-${containerId}`);
-    const cards = container.querySelectorAll('.carousel-card');
+    const cards = container.querySelectorAll(".carousel-card");
     const totalCards = parseInt(container.dataset.totalCards, 10);
 
     if (cards.length === 0 || !prevBtn || !nextBtn) return;
@@ -148,9 +174,10 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
     const updateScrollDistance = () => {
       if (cards.length === 0) return 0;
       const cardWidth = cards[0].offsetWidth;
-      const cardGap = parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10) || 0;
+      const cardGap =
+        parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10) || 0;
       return cardWidth + cardGap;
-    }
+    };
 
     let scrollDistance = updateScrollDistance();
 
@@ -166,10 +193,13 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
     };
 
     const scrollToCurrent = () => {
-        container.scrollTo({ left: currentIndex * scrollDistance, behavior: 'smooth' });
+      container.scrollTo({
+        left: currentIndex * scrollDistance,
+        behavior: "smooth",
+      });
     };
 
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener("click", () => {
       const visibleCards = Math.floor(container.clientWidth / scrollDistance);
       const maxIndex = totalCards - visibleCards;
       if (currentIndex < maxIndex) {
@@ -178,16 +208,16 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
       }
     });
 
-    prevBtn.addEventListener('click', () => {
+    prevBtn.addEventListener("click", () => {
       if (currentIndex > 0) {
         currentIndex--;
         scrollToCurrent();
       }
     });
 
-    container.addEventListener('scroll', updateButtons, { passive: true });
+    container.addEventListener("scroll", updateButtons, { passive: true });
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       scrollDistance = updateScrollDistance();
       updateButtons();
     });
@@ -195,23 +225,28 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderC
     updateButtons();
   }
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener("astro:page-load", () => {
     setupCarousel(carouselId);
     setupDarkModeHandler();
   });
 
-  if (document.readyState === 'complete') {
+  if (document.readyState === "complete") {
     setupCarousel(carouselId);
     setupDarkModeHandler();
   } else {
-    document.addEventListener('DOMContentLoaded', () => {
-       setupCarousel(carouselId);
-       setupDarkModeHandler();
+    document.addEventListener("DOMContentLoaded", () => {
+      setupCarousel(carouselId);
+      setupDarkModeHandler();
     });
   }
 </script>
 
 <style is:global>
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 </style>
