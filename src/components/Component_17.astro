@@ -1,8 +1,8 @@
 ---
 // src/components/Component_17.astro
 import { stringifyRichText } from "../lib/strapi.js";
-import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro';
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 // 1. Definimos las interfaces para las props de Strapi
 export interface Props {
   texto_banner: any; // Rich Text
@@ -21,44 +21,69 @@ const { texto_banner, titulo, botones } = Astro.props;
 
 const placeholderData: Props = {
   texto_banner: [
-    { type: 'paragraph', children: [
-      { type: 'text', text: '¡Un torneo de golf diferente!', bold: true },
-      { type: 'text', text: ' Sin suspensiones por lluvia, más social y fácil de planificar. ' },
-      { type: 'link', url: '#', children: [{ type: 'text', text: 'Más información', bold: true }] }
-    ]}
+    {
+      type: "paragraph",
+      children: [
+        { type: "text", text: "¡Un torneo de golf diferente!", bold: true },
+        {
+          type: "text",
+          text: " Sin suspensiones por lluvia, más social y fácil de planificar. ",
+        },
+        {
+          type: "link",
+          url: "#",
+          children: [{ type: "text", text: "Más información", bold: true }],
+        },
+      ],
+    },
   ],
   titulo: [
-    { type: 'paragraph', children: [
-      { type: 'text', text: '¿Tienes dudas? ' },
-      { type: 'text', text: 'o algo más en mente', italic: true }
-    ]}
+    {
+      type: "paragraph",
+      children: [
+        { type: "text", text: "¿Tienes dudas? " },
+        { type: "text", text: "o algo más en mente", italic: true },
+      ],
+    },
   ],
   botones: [
     // Aseguramos que el texto y la URL son dinámicos según el esquema de Strapi
-    { id: 1, texto: 'Solicitar Información', url: '#', tipo: 'version_3' },
-    { id: 2, texto: 'Platica con un ejecutivo', url: '#', tipo: 'version_5' },
-  ] as Boton[]
+    { id: 1, texto: "Solicitar Información", url: "#", tipo: "version_3" },
+    { id: 2, texto: "Platica con un ejecutivo", url: "#", tipo: "version_5" },
+  ] as Boton[],
 };
 
-const bannerHtml = stringifyRichText(texto_banner || placeholderData.texto_banner);
+const bannerHtml = stringifyRichText(
+  texto_banner || placeholderData.texto_banner,
+);
 const tituloHtml = stringifyRichText(titulo || placeholderData.titulo);
-const botonesToRender = botones && botones.length > 0 ? botones : placeholderData.botones;
+const botonesToRender =
+  botones && botones.length > 0 ? botones : placeholderData.botones;
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
-    <div class="container mx-auto px-4 flex flex-col items-center text-center gap-10">
-        <div class="border-[3px] border-[#9981DC] rounded-lg p-4 max-w-3xl text-center">
-            <div class="font-(family-name:--font-tee-line-bold) text-[var(--neutral-background-strong)] text-sm prose max-w-none font-normal" set:html={bannerHtml} />
-        </div>
-
-        <div
-          class="font-(family-name:--font-tee-line-bold) text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose md:whitespace-nowrap"
-          set:html={tituloHtml}>
-        </div>
-        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4">
-            <ButtonGroup botones={botonesToRender} />
-        </div>
+  <div
+    class="container mx-auto px-4 flex flex-col items-center text-center gap-10"
+  >
+    <div
+      class="border-[3px] border-[#9981DC] rounded-lg p-4 max-w-3xl text-center"
+    >
+      <div
+        class="font-(family-name:--font-shields-sans-regular) text-[var(--neutral-background-strong)] text-sm prose max-w-none font-normal strapi-rich-text"
+        set:html={bannerHtml}
+      />
     </div>
+
+    <div
+      class="font-(family-name:--font-tee-line-bold) text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose md:whitespace-nowrap"
+      set:html={tituloHtml}
+    />
+    <div
+      class="w-full flex flex-col sm:flex-row items-center justify-center gap-4"
+    >
+      <ButtonGroup botones={botonesToRender} />
+    </div>
+  </div>
 </section>
 
 <style>
@@ -75,5 +100,40 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
   }
   .prose :global(a:hover) {
     text-decoration: underline;
+  }
+  <style > .prose :global(ul) {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+  }
+
+  .text-shadow-md {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .strapi-rich-text :global(strong) {
+    color: var(--neutral-background-strong);
+    font-family: var(--font-tee-line-bold-italic);
+    font-weight: bold;
+  }
+
+  .strapi-rich-text :global(u) {
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .strapi-rich-text :global(a) {
+    font-family: var(--font-shields-sans-bold);
+    color: var(--brand-interactive-base);
+  }
+
+  /* --- Agrega esto aquí --- */
+  .strapi-rich-text :global(li::marker) {
+    /* Usa la variable de color que desees para el punto/número */
+    color: var(--neutral-background-strong);
+
+    /* Opcional: Si quieres que el bullet sea más grande o negrita */
+    font-weight: bold;
+    font-size: 1.2em;
   }
 </style>
