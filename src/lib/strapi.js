@@ -120,7 +120,10 @@ export const stringifyRichText = (richText) => {
   const processTextNode = (node) => {
     let text = node.text || '';
     // Basic HTML escaping for security
-    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Basic HTML escaping for security - REMOVED to allow HTML tags
+    // text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Handle line breaks
+    text = text.replace(/\n/g, '<br/>');
     if (node.bold) text = `<strong>${text}</strong>`;
     if (node.italic) text = `<em>${text}</em>`;
     if (node.underline) text = `<u>${text}</u>`;
@@ -148,7 +151,8 @@ export const stringifyRichText = (richText) => {
   const processBlock = (block) => {
     switch (block.type) {
       case 'paragraph':
-        return `<p>${processChildren(block.children)}</p>`;
+        const content = processChildren(block.children);
+        return `<p>${content || '<br/>'}</p>`;
       case 'heading':
         return `<h${block.level}>${processChildren(block.children)}</h${block.level}>`;
       case 'list':
