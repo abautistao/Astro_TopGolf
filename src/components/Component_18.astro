@@ -53,7 +53,8 @@ const botonesToRender = botones && botones.length > 0 ? botones : placeholderDat
 
         <div class="font-(family-name:--font-shields-sans-regular) max-w-3xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose" set:html={contentHtml}></div>
 
-        <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+
+        <div class="w-full flex flex-row flex-wrap justify-center gap-4">
             <ButtonGroup botones={botonesToRender} />
         </div>
     </div>

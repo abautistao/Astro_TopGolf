@@ -44,11 +44,12 @@ const componentButtons:  Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : B
 <section class="w-full text-[var(--neutral-text-inverted)] bg-custom-gradient">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 py-20 lg:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 items-center">
-            <div class="text-left max-w-lg font-(family-name:--font-shields-sans-semibold)">
+            <div class="text-left max-w-lg font-(family-name:--font-shields-sans-bold)">
                 <span class="inline-block bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] text-xs font-bold tracking-wider uppercase px-3 py-1">
                     {dataToRender.tag}
                 </span>
-                <h1 class="font-(family-name:--font-shields-sans-condensed) text-[26px] md:text-[80px] uppercase mt-4 leading-tight font-semibold" style="line-height: 100%;">
+                <h1 class="font-(family-name:--font-shields-sans-semibold-condensed) text-[40px] md:text-[80px] uppercase mt-4 leading-none
+                tracking-[0]">
                     {dataToRender.titulo}
                 </h1>
             </div>
