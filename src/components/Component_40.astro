@@ -1,6 +1,6 @@
 ---
 // src/components/Component_40.astro
-import { stringifyRichText } from "../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 
@@ -13,14 +13,7 @@ export interface Props {
   texto_final: any;
   Boton: Boton[];
   lista_beneficios?: { texto: string }[];
-  imagen?: {
-    data: {
-      attributes: {
-        url: string;
-        alternativeText?: string;
-      };
-    };
-  };
+  imagen: any;
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -33,6 +26,8 @@ const {
   Boton,
   imagen,
 } = Astro.props;
+
+const imagenUrl = getStrapiUrl(imagen);
 
 // Placeholders
 const subtitlePlaceholder = "Topgolf Monterrey (7-24 Personas)";
@@ -162,7 +157,7 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
     >
       <!-- Imagen -->
       <img
-        src={imageUrl}
+        src={imagenUrl}
         alt="Promo Image"
         class="absolute inset-0 w-full h-full object-cover object-center"
       />
