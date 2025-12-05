@@ -46,7 +46,7 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
         </h2>
       </div>
       <div
-        class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text"
+        class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text px-3"
       >
         <div set:html={descriptionHtml || placeholderDescriptionHtml} />
       </div>
@@ -56,7 +56,7 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
     <ButtonGroup botones={componentButtons} />
   </div>
   <div
-    class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose strapi-rich-text2"
+    class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose strapi-rich-text2 px-3"
   >
     <div set:html={texto_finalHtml || "Lorem Ipsum"} />
   </div>
