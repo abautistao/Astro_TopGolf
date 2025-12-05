@@ -31,7 +31,6 @@ const placeholderCard: Card = {
   imagen: { data: null },
   Boton: [
     {
-      // El placeholder ahora contiene un array de Boton
       id: 1,
       texto: "VER MÁS",
       url: "#",
@@ -128,16 +127,13 @@ const cardsToRender =
         </button>
       </div>
 
-      <div class="items-center hidden gap-2 text-sm sm:flex">
-        <i
-          class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"
-        ></i>
-        <span
-          id="topgolf-content-text"
-          class="text-[var(--neutral-background-strong)]"
-        >
-          Estás viendo contenido de <strong>Topgolf Monterrey</strong>
-        </span>
+      <div class="flex items-center gap-2 text-[11px] leading-tight sm:text-sm sm:leading-normal">
+          <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)] shrink-0"></i>
+
+          <span id="topgolf-content-text" class="text-[var(--neutral-background-strong)]">
+              Estás viendo contenido de
+              <strong class="block sm:inline">Topgolf Monterrey</strong>
+          </span>
       </div>
     </div>
   </div>

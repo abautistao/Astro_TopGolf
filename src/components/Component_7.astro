@@ -42,48 +42,46 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 ];
 ---
 
-<section
-  class="relative flex items-center w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px]"
->
+<section class="relative flex items-center w-full text-[var(--neutral-text-inverted)] py-12 lg:py-20">
   <img
     src={heroBackgroundUrl || placeholderBgUrl}
     alt={alt_imagen_fondo || "Imagen de fondo de la sección"}
     class="absolute inset-0 object-cover w-full h-full"
   />
   <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/30"></div>
-  <div class="relative w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div
-      class="grid grid-cols-1 items-center gap-y-12 lg:grid-cols-2 lg:gap-x-16"
-    >
-      <div class="text-center lg:text-left">
-        <h3 class="font-(family-name:--font-shields-sans-bold) mt-5 lg:mt-0  py-1 px-2 text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)]"
-        >
+  <div class="relative w-full mx-auto max-w-7xl">
+    <div class="grid grid-cols-1 items-center gap-y-12 lg:grid-cols-2 lg:gap-x-16">
+      <div class="text-left lg:text-left px-4 sm:px-6 lg:px-8">
+        <h3 class="font-(family-name:--font-shields-sans-bold) mt-5 lg:mt-0  py-1 px-2 text-xs lg:text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)]">
           {titulo_pequeno || "Título Pequeño"}
         </h3>
 
         <h2 class="font-(family-name:--font-shields-sans-black) mt-4 text-[44px] font-extrabold text-[var(--neutral-text-inverted)] sm:text-5xl lg:text-[83px]">
           {titulo_principal || "Título Principal de la Sección"}
         </h2>
-
-        <div class="font-(family-name:--font-shields-sans-regular) mt-6 text-xl text-[var(--neutral-text-inverted)] prose prose-invert">
-            <div set:html={descriptionHtml || placeholderDescriptionHtml} />
+        <div class="font-(family-name:--font-shields-sans-regular) mt-6 text-[13px] lg:text-xl text-[var(--neutral-text-inverted)] prose prose-invert">
+            <div set:html={descriptionHtml || placeholderDescriptionHtml}>  </div>
         </div>
       </div>
+      <div class="flex justify-center lg:justify-end w-full">
+        <div class="relative w-full
+                    max-w-[22rem] ml-auto
+                    lg:max-w-md lg:ml-0
+                    bg-[var(--surface-brand-primary)] p-4 sm:p-5">
 
-      <div class="flex justify-center lg:justify-end">
-        <div class="relative w-full max-w-md bg-[var(--surface-brand-primary)] p-8 sm:p-5">
-          <div class="absolute left-0 top-0 h-full w-1.5 bg-[var(--accent-highlight-primary)]"></div>
-            <div class="flex h-full flex-col justify-center">
-                <h3 class="mb-4 text-xl text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) ">
-                  <div set:html={cta_titulo_boton || placeholderDescriptionHtml} />
-                </h3>
-                <div class="flex justify-center w-full mt-5 scale-80 origin-center">
-                    <ButtonGroup botones={componentButtons} />
-                </div>
+          <div class="absolute left-0 top-0 h-full w-1.5 bg-[var(--accent-highlight-primary)]">
+          </div>
+          <div class="flex h-full flex-col justify-center">
+            <h3 class="mb-4 text-[16px] text-xl text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) strapi-rich-text">
+              <div set:html={cta_titulo_boton || placeholderDescriptionHtml}></div>
+            </h3>
+            <div class="flex justify-center w-full mt-5 scale-80 origin-center">
+              <ButtonGroup botones={componentButtons} />
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -97,4 +95,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         color: var(--accent-highlight-secondary);
         text-decoration: underline;
     }
+  .strapi-rich-text :global(strong) {
+    font-family: var(--font-shields-sans-bold);
+    font-weight: bold;
+  }
 </style>

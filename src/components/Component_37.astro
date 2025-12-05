@@ -1,5 +1,5 @@
 ---
-// src/components/Component_9.astro
+// src/components/Component_37.astro
 import { stringifyRichText } from "../lib/strapi.js";
 
 // INTERFACES
@@ -39,9 +39,6 @@ const rightColumnSections = sectionsToRender.filter((_, index) => index % 2 !== 
 
 const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
 ---
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
 <section class="w-full bg-[var(--neutral-text-inverted)]">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
