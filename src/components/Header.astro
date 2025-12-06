@@ -1,19 +1,20 @@
 ---
 // src/components/Header.astro
-import { getHeaderData, getStrapiUrl,stringifyRichText, formatUrl } from '../lib/strapi';
+import { getHeaderData, getStrapiUrl, stringifyRichText, formatUrl } from '../lib/strapi';
 import ButtonGroup from './elements/ButtonHeader.astro';
 import type { Boton } from './elements/ButtonHeader.astro';
+import dotsLogoMobile from '../assets/topgolf_mobile.svg';
 
 const headerData = await getHeaderData();
 
-const logoUrl = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
+const logoUrl       = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
+const logoUrlMobile = dotsLogoMobile;
+
 const links = headerData?.links || [];
-const botones = headerData?.botones || [];
 const ubicacion = headerData?.ubicacion || 'UBICACION';
 const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
 const direccion = stringifyRichText(headerData?.direccion || {});
-const texto_boton = headerData?.texto_boton || 'CLICK AQUI';
-const url_boton = headerData?.url_boton || '#';
+
 console.log(headerData);
 const buttonBanner: Boton[] = (headerData.Boton && !Array.isArray(headerData.Boton) ? [headerData.Boton] : headerData.Boton) || [
     {
@@ -41,13 +42,15 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
 
         <div class="flex items-center justify-between w-full lg:hidden">
-            <button id="mobile-menu-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 text-[var(--accent-feedback-strong)]">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-            </button>
-            <a href="/" class="ml-2"> <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
-            </a>
+            <div class="flex items-center">
+                <button id="mobile-menu-toggle" class="w-12 h-12 flex items-center justify-center text-[var(--accent-feedback-strong)]">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+                <a href="/" class="ml-2 block">
+                    <img src={logoUrlMobile.src} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
+                </a>
+            </div>
+
             <div class="flex items-center space-x-2">
                 <ButtonGroup botones={buttons} />
             </div>
@@ -102,20 +105,20 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 </div>
 
 
-<div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] flex flex-col">
+<div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-secondary)] text-[var(--neutral-text-inverted)] flex flex-col">
 
-    <div class="relative flex items-center justify-between h-20 px-4">
+    <div class="relative flex items-center justify-between h-20 px-4 shrink-0">
         <div class="flex items-center">
-            <button id="mobile-menu-close" class="text-[var(--accent-feedback-strong)]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <button id="mobile-menu-close" class="w-12 h-12 flex items-center justify-center text-[var(--accent-feedback-strong)]">
+                <i class="fa-solid fa-xmark text-2xl"></i>
             </button>
-            <a href="/" class="ml-2">
-                <img src={logoUrl} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
+            <a href="/" class="ml-2 block">
+                <img src={logoUrlMobile.src} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
             </a>
         </div>
-        <ButtonGroup botones={buttons} />
+        <div class="flex items-center space-x-2">
+            <ButtonGroup botones={buttons} />
+        </div>
     </div>
 
     <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] px-4">
@@ -174,14 +177,14 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         <div class="mt-auto pt-8">
             <div id="mobile-links-footer" class="flex justify-evenly items-center text-sm font-bold" style="font-size: 13px;">
                 <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2">
-                    <i class="fa-solid fa-credit-card text-xl text-[var(--accent-feedback-strong)]"></i>
+                    <i class="fa-solid fa-credit-card text-2xl text-[var(--accent-feedback-strong)]"></i>
                     <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4">
                         Tarjetas de regalo
                     </span>
                 </a>
 
                 <a href="/preguntas-frecuentes" class="flex items-center gap-x-2">
-                    <i class="fa-solid fa-circle-question text-xl text-[var(--accent-feedback-strong)]"></i>
+                    <i class="fa-solid fa-circle-question text-2xl text-[var(--accent-feedback-strong)]"></i>
                     <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4">
                         Preguntas frecuentes
                     </span>
@@ -190,21 +193,22 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
             <div class="flex items-center justify-center gap-x-8 py-6 mt-8">
                 <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
-                    <i class="fa-brands fa-facebook-f text-3xl"></i>
+                    <i class="fa-brands fa-facebook-f text-2xl"></i>
                 </a>
                 <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
-                    <i class="fa-brands fa-instagram text-3xl"></i>
+                    <i class="fa-brands fa-instagram text-2xl"></i>
                 </a>
                 <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
-                    <i class="fa-brands fa-tiktok text-3xl"></i>
+                    <i class="fa-brands fa-tiktok text-2xl"></i>
                 </a>
                 <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
-                    <i class="fa-brands fa-youtube text-3xl"></i>
+                    <i class="fa-brands fa-youtube text-2xl"></i>
                 </a>
             </div>
         </div>
 
-    </div> </div>
+    </div>
+</div>
 
 
 {linksWithDropdowns.map(link => (
