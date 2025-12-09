@@ -4,7 +4,7 @@ import { getHeaderData, getStrapiUrl, stringifyRichText, formatUrl } from '../li
 import ButtonGroup from './elements/ButtonHeader.astro';
 import type { Boton } from './elements/ButtonHeader.astro';
 import dotsLogoMobile from '../assets/topgolf_mobile.svg';
-
+import MobileLocationBar from './elements/MobileLocationBar.astro';
 const headerData = await getHeaderData();
 
 const logoUrl       = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
@@ -100,7 +100,15 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         </div>
     </div>
 </header>
-
+<div class="lg:hidden absolute w-full z-50 shadow-xl px-4">
+    <MobileLocationBar
+        ubicacion={ubicacion}
+        horario={horario}
+        direccion={direccion}
+        botones={buttonBanner}
+        idSuffix="bar"
+    />
+</div>
 <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden hidden">
 </div>
 
@@ -121,20 +129,14 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         </div>
     </div>
 
-    <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] px-4">
-        <button id="location-toggle-mobile" class="flex items-center justify-between w-full px-4 py-3 text-sm font-bold bg-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-black)">
-            <span>{ubicacion}</span>
-            <div class="flex items-center">
-                <span>{horario}</span>
-                <svg id="location-arrow-mobile" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-            </div>
-        </button>
-        <div id="location-details-mobile" class="font-(family-name:--font-shields-sans-regular) hidden px-4 py-5 bg-[var(--brand-interactive-base)]">
-            <div class="text-sm" set:html={direccion}></div>
-            <ButtonGroup botones={buttonBanner} />
-        </div>
+    <div class="px-4">
+        <MobileLocationBar
+            ubicacion={ubicacion}
+            horario={horario}
+            direccion={direccion}
+            botones={buttonBanner}
+            idSuffix="menu"
+        />
     </div>
 
     <div class="p-4 flex-1 overflow-y-auto flex flex-col">
@@ -324,21 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-    const locationToggleMobile  = document.getElementById('location-toggle-mobile');
-    const locationDetailsMobile = document.getElementById('location-details-mobile');
-    const locationArrowMobile   = document.getElementById('location-arrow-mobile');
-
-    if (locationToggleMobile) {
-        locationToggleMobile.addEventListener('click', () => {
-            if (locationDetailsMobile) {
-                locationDetailsMobile.classList.toggle('hidden');
-            }
-            if (locationArrowMobile) {
-                locationArrowMobile.classList.toggle('rotate-180');
-            }
-        });
-    }
 
     const desktopDropdownTriggers = document.querySelectorAll('.dropdown-trigger');
     const dropdownOverlays = document.querySelectorAll('.dropdown-overlay');
