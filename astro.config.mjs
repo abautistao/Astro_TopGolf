@@ -18,6 +18,6 @@ export default defineConfig({
   },
 
   integrations: [sitemap(),alpinejs({
-        entrypoint: '/src/entrypoint.ts' 
+        entrypoint: './src/entrypoint.js' 
     })]
 });
