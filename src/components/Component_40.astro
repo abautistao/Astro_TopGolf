@@ -78,15 +78,15 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
 ---
 
 <section
-  class="w-full flex items-center justify-center min-h-screen p-4 font-(family-name:--font-shields-sans-regular)"
+  class="w-full flex items-center justify-center p-4 font-(family-name:--font-shields-sans-regular)"
 >
   <!-- Contenedor Principal de la Tarjeta -->
   <div
-    class="bg-slate-50 rounded-3xl overflow-hidden shadow-xl max-w-6xl w-full flex flex-col lg:flex-row min-h-[600px]"
+    class="bg-slate-50 rounded-3xl overflow-hidden shadow-xl max-w-6xl w-full flex flex-col lg:flex-row min-h-[400px]"
   >
     <!-- Columna Izquierda: Contenido -->
     <div
-      class="w-full lg:w-3/5 p-8 md:p-12 flex flex-col justify-center relative bg-[var(--neutral-background-subtle)]"
+      class="w-full lg:w-3/5 p-8 md:p-12 flex flex-col justify-center relative bg-[var(--neutral-background-subtle)] order-2 md:order-1"
     >
       <!-- Subtítulo Superior -->
       <h3
@@ -153,7 +153,7 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
 
     <!-- Columna Derecha: Imagen -->
     <div
-      class="w-full lg:w-2/5 bg-[#00bfff] relative h-64 lg:h-auto overflow-hidden"
+      class="w-full lg:w-2/5 bg-[#00bfff] relative h-64 lg:h-auto overflow-hidden order-1 md:order-2"
     >
       <!-- Imagen -->
       <img
