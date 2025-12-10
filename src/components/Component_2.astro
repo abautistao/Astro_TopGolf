@@ -140,95 +140,110 @@ const cardsToRender =
 </section>
 
 <script type="module" define:vars={{ carouselId }}>
-  import { onThemeChange } from "../lib/theme.js";
+  //import { onThemeChange } from "../lib/theme.js";
 
   function setupDarkModeHandler() {
     const topgolfText = document.getElementById("topgolf-content-text");
     if (!topgolfText) return;
 
-    onThemeChange((theme) => {
+    /* onThemeChange((theme) => {
       if (theme === "dark") {
         topgolfText.style.color = "var(--accent-highlight-secondary)";
       } else {
         topgolfText.style.color = "var(--neutral-background-strong)";
       }
-    });
+    }); */
   }
 
   function setupCarousel(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
     const prevBtn = document.getElementById(`prev-btn-${containerId}`);
     const nextBtn = document.getElementById(`next-btn-${containerId}`);
     const cards = container.querySelectorAll(".carousel-card");
-    const totalCards = parseInt(container.dataset.totalCards, 10);
 
     if (cards.length === 0 || !prevBtn || !nextBtn) return;
 
-    let currentIndex = 0;
-
-    const updateScrollDistance = () => {
+    // Función para obtener el ancho de una tarjeta + el gap dinámicamente
+    const getScrollDistance = () => {
       if (cards.length === 0) return 0;
       const cardWidth = cards[0].offsetWidth;
-      const cardGap =
-        parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10) || 0;
-      return cardWidth + cardGap;
+      // Obtiene el gap del contenedor padre (flex)
+      const gap = parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10) || 0;
+      return cardWidth + gap;
     };
-
-    let scrollDistance = updateScrollDistance();
 
     const updateButtons = () => {
-      if (!container || !prevBtn || !nextBtn) return;
-      prevBtn.disabled = currentIndex === 0;
+      if (!container) return;
 
-      const containerWidth = container.clientWidth;
-      const contentWidth = container.scrollWidth;
-      const currentScroll = container.scrollLeft;
+      // Margen de error pequeño (10px) para cálculos de punto flotante
+      const tolerance = 10;
 
-      nextBtn.disabled = currentScroll + containerWidth >= contentWidth - 10;
+      // ¿Estamos al principio?
+      prevBtn.disabled = container.scrollLeft <= tolerance;
+
+      // ¿Estamos al final?
+      // scrollWidth = ancho total del contenido
+      // clientWidth = ancho visible
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      nextBtn.disabled = container.scrollLeft >= maxScroll - tolerance;
     };
 
-    const scrollToCurrent = () => {
-      container.scrollTo({
-        left: currentIndex * scrollDistance,
-        behavior: "smooth",
-      });
-    };
+    // --- EVENTOS DE BOTONES ---
 
     nextBtn.addEventListener("click", () => {
-      const visibleCards = Math.floor(container.clientWidth / scrollDistance);
-      const maxIndex = totalCards - visibleCards;
-      if (currentIndex < maxIndex) {
-        currentIndex++;
-        scrollToCurrent();
-      }
+      const distance = getScrollDistance();
+      if (distance === 0) return;
+
+      const currentScroll = container.scrollLeft;
+      // Calculamos en qué índice visual estamos actualmente
+      const currentIndex = Math.round(currentScroll / distance);
+
+      // Saltamos al siguiente (+1)
+      container.scrollTo({
+        left: (currentIndex + 1) * distance,
+        behavior: "smooth",
+      });
     });
 
     prevBtn.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        scrollToCurrent();
-      }
+      const distance = getScrollDistance();
+      if (distance === 0) return;
+
+      const currentScroll = container.scrollLeft;
+      // Calculamos en qué índice visual estamos actualmente
+      const currentIndex = Math.round(currentScroll / distance);
+
+      // Saltamos al anterior (-1)
+      container.scrollTo({
+        left: (currentIndex - 1) * distance,
+        behavior: "smooth",
+      });
     });
 
+    // --- LISTENERS GENERALES ---
+
+    // Actualizar estado de botones al hacer scroll (manual o automático)
     container.addEventListener("scroll", updateButtons, { passive: true });
 
-    window.addEventListener("resize", () => {
-      scrollDistance = updateScrollDistance();
-      updateButtons();
-    });
+    // Actualizar botones al cambiar tamaño de ventana
+    window.addEventListener("resize", updateButtons);
 
+    // Inicializar estado de botones
     updateButtons();
   }
 
+  // Configuración de carga para Astro ViewTransitions y carga normal
   document.addEventListener("astro:page-load", () => {
     setupCarousel(carouselId);
     setupDarkModeHandler();
   });
 
-  if (document.readyState === "complete") {
-    setupCarousel(carouselId);
-    setupDarkModeHandler();
+  // Respaldo para carga inicial si astro:page-load no dispara
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+     setupCarousel(carouselId);
+     setupDarkModeHandler();
   } else {
     document.addEventListener("DOMContentLoaded", () => {
       setupCarousel(carouselId);
