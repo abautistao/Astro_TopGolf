@@ -15,7 +15,6 @@ const ubicacion = headerData?.ubicacion || 'UBICACION';
 const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
 const direccion = stringifyRichText(headerData?.direccion || {});
 
-console.log(headerData);
 const buttonBanner: Boton[] = (headerData.Boton && !Array.isArray(headerData.Boton) ? [headerData.Boton] : headerData.Boton) || [
     {
         id: 1,

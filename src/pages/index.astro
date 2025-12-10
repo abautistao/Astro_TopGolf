@@ -25,10 +25,11 @@ if (!pagina) {
   );
 }
 
-const { titulo, ContenidoPagina } = pagina;
+const { titulo, ContenidoPagina, SEO } = pagina;
+
 ---
 
-<Layout>
+<Layout seo={SEO}>
   <main class="mx-auto container-full">
     <RenderBlocks blocks={ContenidoPagina} />
   </main>

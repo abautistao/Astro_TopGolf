@@ -1,0 +1,56 @@
+---
+import { getStrapiUrl } from '../lib/strapi';
+
+interface Props {
+  metaTitle: string;
+  metaDescription: string;
+  metaImage?: any;
+  openGraph?: any;
+  keywords?: string;
+  metaRobots?: string;
+  metaViewport?: string;
+  canonicalURL?: string;
+  structuredData?: any;
+}
+
+const {
+  metaTitle,
+  metaDescription,
+  metaImage,
+  openGraph,
+  keywords,
+  metaRobots,
+  metaViewport,
+  canonicalURL,
+  structuredData,
+} = Astro.props;
+
+const imageUrl = metaImage ? getStrapiUrl(metaImage) : null;
+const canonical = canonicalURL || Astro.url.href;
+---
+
+<title>{metaTitle}</title>
+<meta name="description" content={metaDescription} />
+{keywords && <meta name="keywords" content={keywords} />}
+{metaRobots && <meta name="robots" content={metaRobots} />}
+<meta name="viewport" content={metaViewport || "width=device-width, initial-scale=1"} />
+<link rel="canonical" href={canonical} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={openGraph?.title || metaTitle} />
+<meta property="og:description" content={openGraph?.description || metaDescription} />
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonical} />
+<meta property="twitter:title" content={openGraph?.title || metaTitle} />
+<meta property="twitter:description" content={openGraph?.description || metaDescription} />
+{imageUrl && <meta property="twitter:image" content={imageUrl} />}
+
+<!-- Structured Data -->
+{structuredData && (
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+)}
