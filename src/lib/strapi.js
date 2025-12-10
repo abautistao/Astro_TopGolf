@@ -19,7 +19,7 @@ async function fetchAPI(endpoint) {
 }
 
 export async function getSiteSetup() {
-  return await fetchAPI("/setup-site?populate[tipografias][populate]=archivo_fuente");
+  return await fetchAPI("/setup-site?populate=*");
 }
 
 export async function getPageBySlug(slug) {

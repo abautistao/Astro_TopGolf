@@ -6,10 +6,11 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
 // Importa las funciones para obtener datos de configuración y generar fuentes desde Strapi.
-import { getSiteSetup, generateFontFaces } from '../lib/strapi.js';
+import { getSiteSetup, generateFontFaces, getStrapiUrl } from '../lib/strapi.js';
 
 // Obtiene los datos de configuración del sitio.
 const setupData = await getSiteSetup();
+const faviconUrl = setupData?.favicon ? getStrapiUrl(setupData.favicon) : '/favicon.svg';
 
 // Genera las declaraciones @font-face si los datos de tipografía existen.
 //const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
@@ -53,7 +54,7 @@ const seoProps = seo || defaultSeo;
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href={faviconUrl} />
         <meta name="generator" content={Astro.generator} />
         <SEO {...seoProps} />
 
