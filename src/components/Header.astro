@@ -211,27 +211,30 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     </div>
 </div>
 
-
 {linksWithDropdowns.map(link => (
     <div id={`desktop-${link.id}-overlay`} class="fixed top-[96px] inset-x-0 bottom-0 hidden z-50 dropdown-overlay">
-        <div class="absolute inset-0 bg-black bg-opacity-40 dropdown-backdrop"></div>
-        <div class="relative w-full h-full flex items-start justify-center py-4 overflow-y-auto">
-            <div class="bg-[var(--surface-brand-primary)] p-8 text-[var(--neutral-text-inverted)] rounded-lg w-full mx-12 relative">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="absolute inset-0 bg-[var(--neutral-background-strong)] bg-opacity-20 dropdown-backdrop"></div>
+        <div class="relative w-full h-auto flex items-start justify-center py-4">
+            <div class="bg-[var(--surface-brand-primary)] p-6 text-[var(--neutral-text-inverted)] rounded-lg w-full mx-12 relative shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {link.dropdown_items.map((item, index) => {
 
                         if (index < 2) {
                             return (
-                                <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-full">
+                                <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-96">
                                     <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                    <div class="relative flex flex-col justify-end h-full p-4 min-h-[400px]">
-                                        <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed)">{item.titulo}</h3>
-                                        <p class="opacity-80 text-xs w-80 font-(family-name:--font-shields-sans-regular)">{item.subtitulo}</p>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+
+                                    <div class="relative flex flex-col justify-end h-full p-4">
+                                        <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed) leading-tight">{item.titulo}</h3>
+                                        <p class="opacity-90 text-xs w-full pr-14 font-(family-name:--font-shields-sans-regular) mt-1">
+                                            {item.subtitulo}
+                                        </p>
                                     </div>
-                                    <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
-                                    <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
-                                </div>
+
+                                    <div class="absolute rounded-full bottom-4 right-4 border-2 border-[var(--accent-feedback-strong)] w-9 h-9 flex items-center justify-center">
+                                        <i class="fa-solid fa-chevron-right text-sm text-[var(--accent-feedback-strong)]"></i>
+                                    </div>
                                 </a>
                             );
                         } else {
@@ -239,33 +242,33 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                         }
                     })}
 
-                    <div class="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-5 h-full">
+                    <div class="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-4 h-96">
                         {link.dropdown_items.slice(2).map(item => (
                             <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-full">
                                 <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 p-4">
-                                    <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed)">{item.titulo}</h3>
-                                    <p class="opacity-80 text-xs w-80 font-(family-name:--font-shields-sans-regular)">{item.subtitulo}</p>
+                                    <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed) leading-tight">{item.titulo}</h3>
+                                    <p class="opacity-90 text-xs w-full font-(family-name:--font-shields-sans-regular) mt-1 pr-14">{item.subtitulo}</p>
                                 </div>
-                                <div class="absolute rounded-full bottom-4 right-4 border-4 border-[var(--accent-feedback-strong)] w-10 h-10 flex items-center justify-center">
-                                    <i class="fa-solid fa-chevron-right text-xl text-[var(--accent-feedback-strong)]"></i>
+                                <div class="absolute rounded-full bottom-4 right-4 border-2 border-[var(--accent-feedback-strong)] w-9 h-9 flex items-center justify-center">
+                                    <i class="fa-solid fa-chevron-right text-sm text-[var(--accent-feedback-strong)]"></i>
                                 </div>
                             </a>
                         ))}
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-center items-center gap-x-12 font-bold">
-                    <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2">
+                <div class="mt-6 flex justify-center items-center gap-x-12 font-bold py-2">
+                    <a href="/tarjetas-de-regalo" class="flex items-center gap-x-2 transition-opacity hover:opacity-80">
                         <i class="fa-solid fa-credit-card text-[var(--accent-feedback-strong)] text-sm"></i>
-                        <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4">
+                        <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4 text-sm">
                             Tarjetas de regalo
                         </span>
                     </a>
-                    <a href="/preguntas-frecuentes" class="flex items-center gap-x-2">
+                    <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 transition-opacity hover:opacity-80">
                         <i class="fa-solid fa-circle-question text-[var(--accent-feedback-strong)] text-sm"></i>
-                        <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4">
+                        <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4 text-sm">
                             Preguntas frecuentes
                         </span>
                     </a>
