@@ -3,12 +3,12 @@
 import { getHeaderData, getStrapiUrl, stringifyRichText, formatUrl } from '../lib/strapi';
 import ButtonGroup from './elements/ButtonHeader.astro';
 import type { Boton } from './elements/ButtonHeader.astro';
-import dotsLogoMobile from '../assets/topgolf_mobile.svg';
+
 import MobileLocationBar from './elements/MobileLocationBar.astro';
 const headerData = await getHeaderData();
 
 const logoUrl       = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
-const logoUrlMobile = dotsLogoMobile;
+const logoUrlMobile = getStrapiUrl(headerData?.logo_mobile) || '/default-logo.svg';;
 
 const links = headerData?.links || [];
 const ubicacion = headerData?.ubicacion || 'UBICACION';
@@ -46,7 +46,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     <i class="fa-solid fa-bars text-2xl"></i>
                 </button>
                 <a href="/" class="ml-2 block">
-                    <img src={logoUrlMobile.src} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
+                    <img src={logoUrlMobile} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
                 </a>
             </div>
 
@@ -120,7 +120,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                 <i class="fa-solid fa-xmark text-2xl"></i>
             </button>
             <a href="/" class="ml-2 block">
-                <img src={logoUrlMobile.src} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
+                <img src={logoUrlMobile} alt="Logo de TopGolf Monterrey" class="w-24 h-auto" />
             </a>
         </div>
         <div class="flex items-center space-x-2">
