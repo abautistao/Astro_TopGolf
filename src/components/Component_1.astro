@@ -47,14 +47,40 @@ const buttonBanner: Boton[] = (Boton && !Array.isArray(Boton)
         tipo: "version_1",
     },
 ];
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(heroBackgroundUrl);
 ---
 
 <section class="relative w-full min-h-[550px] md:min-h-[650px]">
-    <img
-        src={heroBackgroundUrl || placeholderBgUrl}
-        alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
-        class="absolute inset-0 object-cover w-full h-full"
-    />
+    {
+        showVideo ? (
+            <video
+                src={heroBackgroundUrl}
+                autoplay
+                loop
+                muted
+                playsinline
+                class="absolute inset-0 w-full h-full object-cover"
+            />
+        ) : (
+            <img
+                src={heroBackgroundUrl || placeholderBgUrl}
+                alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
+                class="absolute inset-0 object-cover w-full h-full"
+            />
+        )
+    }
     <div class="absolute inset-0 bg-black/30"></div>
 
     <!-- Contenido central -->
