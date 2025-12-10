@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
+import alpinejs from '@astrojs/alpinejs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,5 +17,10 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [sitemap()]
+  integrations: [
+    sitemap(),
+    alpinejs({
+        entrypoint: '/src/entrypoint.js' // <--- Agrega esto
+    })
+  ]
 });
