@@ -1,0 +1,230 @@
+---
+// src/components/Component_44.astro
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+console.log(Astro.props);
+interface Props {
+    titulo_principal?: string;
+    precio?: string;
+    descripcion?: any;
+    horario?: string;
+    promo_texto?: string;
+    video_thumbnail?: any;
+    video_url?: string;
+}
+
+const {
+    titulo_principal,
+    precio,
+    descripcion,
+    horario,
+    promo_texto,
+    video_thumbnail,
+    video_url,
+} = Astro.props;
+const video_thumbnail_url = getStrapiUrl(video_thumbnail);
+const descriptionHtml = stringifyRichText(descripcion);
+const promo_textoHtml = stringifyRichText(promo_texto);
+// Fallback data if props are missing
+const data = {
+    titulo_principal:
+        titulo_principal ||
+        "JUEGA HASTA <span class='font-black'>CIERRE</span>",
+    precio: precio || "POR $1499",
+    descripcion:
+        descriptionHtml ||
+        "¡Las noches más divertidas de Topgolf! Vive una experiencia temática iluminada por luces de neón, buena música y el mejor ambiente para disfrutar, jugar y brillar toda la noche.",
+    horario:
+        horario ||
+        "Los jueves desde las 10:00 pm y viernes y sábados desde las 11:00 pm.",
+    promo_texto:
+        promo_texto ||
+        "Y además te incluye <span class='font-black uppercase'>nachos regios</span>",
+    video_thumbnail:
+        video_thumbnail_url ||
+        "https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=1200&auto=format&fit=crop",
+    video_url:
+        video_url || "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // Example video
+};
+---
+
+<div class="relative max-w-[1200px] w-full mx-auto my-12 px-4 md:px-8">
+    <!-- DECORACIÓN: Patrón de puntos (Dots) - Esquina superior derecha -->
+    <div
+        class="absolute -top-10 -right-4 w-48 h-32 hidden lg:grid grid-cols-8 gap-3 z-0 opacity-80 pointer-events-none"
+    >
+        {
+            Array.from({ length: 40 }).map((_, i) => (
+                <div class="w-1.5 h-1.5 bg-blue-900 rounded-full" />
+            ))
+        }
+    </div>
+
+    <!-- TARJETA PRINCIPAL -->
+    <div
+        class="flex flex-col lg:flex-row relative z-10 overflow-hidden text-left w-full"
+    >
+        <!-- 1. COLUMNA IZQUIERDA: Información (Texto) -->
+        <div
+            class="w-full lg:w-5/12 p-8 lg:p-12 flex flex-col justify-center bg-white z-20"
+        >
+            <!-- Título Principal -->
+            <div
+                class="uppercase leading-none text-[var(--neutral-background-strong)]"
+            >
+                <h2
+                    class="text-4xl lg:text-5xl font-(family-name:--font-shields-sans-regular)"
+                >
+                    {data.titulo_principal}
+                    <span class="font-(family-name:--font-shields-sans-bold)"
+                        >{data.precio}</span
+                    >
+                </h2>
+            </div>
+
+            <!-- Descripción -->
+            <div
+                class="text-[var(--neutral-background-strong)] strapi-rich-text py-4 text-sm lg:text-base mb-3 leading-relaxed font-(family-name:--font-shields-sans-regular)"
+                set:html={descriptionHtml}
+            />
+
+            <!-- Caja Azul Promocional -->
+            <div
+                class="bg-blue-50 py-4 px-5 rounded-sm flex items-center gap-4 border-l-4 border-blue-700 mt-2"
+            >
+                <div
+                    class="text-blue-900 text-sm lg:text-base font-bold"
+                    set:html={promo_textoHtml}
+                />
+            </div>
+        </div>
+
+        <!-- 2. COLUMNA DERECHA: Video / Thumbnail Completo -->
+        <div
+            class="w-full lg:w-7/12 relative group cursor-pointer bg-black min-h-[300px] lg:min-h-auto"
+            id="video-container"
+        >
+            <!-- CONTENEDOR DE IMAGEN (Thumbnail) -->
+            <div
+                id="thumbnail-view"
+                class="absolute inset-0 w-full h-full transition-opacity duration-500"
+            >
+                <!-- Imagen Thumbnail -->
+                <img
+                    src={data.video_thumbnail}
+                    alt="Video Promocional"
+                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-60"
+                />
+
+                <!-- Overlay Gradiente -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-black/20 to-purple-900/40 mix-blend-multiply"
+                >
+                </div>
+
+                <!-- BOTÓN DE PLAY -->
+                <button
+                    id="play-btn"
+                    class="absolute inset-0 m-auto bg-white text-purple-600 rounded-full w-20 h-20 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 group-active:scale-95 z-30"
+                >
+                    <svg
+                        class="w-8 h-8 ml-1"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M8 5v14l11-7z"></path>
+                    </svg>
+                    <span
+                        class="absolute inline-flex h-full w-full rounded-full bg-white opacity-30 animate-ping"
+                    ></span>
+                </button>
+
+                <!-- Etiqueta opcional "Ver Video" -->
+                <div
+                    class="absolute bottom-6 w-full text-center text-white font-bold tracking-widest uppercase text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none"
+                >
+                    Ver experiencia
+                </div>
+            </div>
+
+            <!-- CONTENEDOR DEL IFRAME (Video) - Oculto inicialmente -->
+            <div
+                id="video-frame"
+                class="hidden absolute inset-0 w-full h-full bg-black z-40"
+            >
+                <!-- Se inyectará el iframe aquí al hacer click -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer disclaimer (Opcional, según diseño original) -->
+    <!-- <div class="text-center mt-8 text-gray-400 text-xs">
+        * Aplican restricciones. Sujeto a disponibilidad.
+    </div> -->
+</div>
+
+<script define:vars={{ videoUrl: data.video_url }}>
+    const container = document.getElementById("video-container");
+    const thumbnailView = document.getElementById("thumbnail-view");
+    const videoFrame = document.getElementById("video-frame");
+    const playBtn = document.getElementById("play-btn");
+
+    if (container && thumbnailView && videoFrame && playBtn) {
+        container.addEventListener("click", () => {
+            // Ocultar thumbnail
+            thumbnailView.classList.add("opacity-0", "pointer-events-none");
+
+            // Mostrar container de video
+            videoFrame.classList.remove("hidden");
+
+            // Inyectar iframe
+            videoFrame.innerHTML = `
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="${videoUrl}" 
+                    title="Video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+             `;
+        });
+    }
+</script>
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--neutral-background-strong);
+        font-family: var(--font-tee-line-bold-italic);
+        font-weight: bold;
+    }
+
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: var(--brand-interactive-base);
+    }
+    .strapi-rich-text2 :global(a) {
+        color: var(--brand-interactive-base);
+    }
+
+    /* --- Agrega esto aquí --- */
+    .strapi-rich-text :global(li::marker) {
+        /* Usa la variable de color que desees para el punto/número */
+        color: var(--neutral-background-strong);
+
+        /* Opcional: Si quieres que el bullet sea más grande o negrita */
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+</style>
