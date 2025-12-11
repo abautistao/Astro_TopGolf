@@ -33,7 +33,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-8">
             <div class="grid grid-cols-2 gap-4 md:gap-10">
                 <div>
-                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-2xl">{titulo_1}</h3>
+                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_1}</h3>
                     <ul class="mt-4 space-y-3 text-xs md:text-base">
                         {links_1.map(link => (
                             <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
@@ -41,7 +41,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                     </ul>
                 </div>
                 <div>
-                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-2xl">{titulo_2}</h3>
+                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_2}</h3>
                     <ul class="mt-4 space-y-3 text-xs md:text-base">
                         {links_2.map(link => (
                             <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
@@ -51,7 +51,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
             </div>
 
             <div class="flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-20">
-                <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-2xl">{titulo_3}</h3>
+                <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_3}</h3>
                 <div class="mt-4 my-2 text-sm md:text-base" set:html={descripcion_columna_3}></div>
 
                 <ButtonGroup botones={buttonBanner} />
@@ -67,7 +67,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 
                     </div>
                     <span class="text-xs">Cambiar el contraste</span>
-                </div> -->
+                </div>
             </div>
         </div>
 
