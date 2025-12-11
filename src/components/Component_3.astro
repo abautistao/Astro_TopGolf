@@ -53,75 +53,58 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
   },
 ];
 ---
-
-<section
-  class="bg-[var(--neutral-background-subtle)] py-10 md:py-20 px-1 md:px-10"
->
-  <div class="max-w-8xl mx-auto px-0 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
-      <div
-        class="flex flex-col gap-2 order-2 md:order-1 md:col-span-2 px-4 md:px-0"
-      >
-        <div class="flex flex-col gap-[0vw]">
-          <p
-            class="whitespace-nowrap uppercase text-[32px] md:text-[52px] font-normal text-[var(--neutral-background-strong)] tracking-wide font-(family-name:--font-shields-sans-regular)"
-          >
-            {pre_titulo || "ES GOLF. NO ES GOLF."}
-          </p>
-          <h1
-            class="tracking-normal uppercase text-5xl md:text-7xl font-semibold text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-semibold-condensed)"
-          >
-            {titulo || "ES TOPGOLF"}
-          </h1>
+<section class="content relative bg-[var(--neutral-background-subtle)]">
+  <div class="mx-auto bg-transparent overflow-hidden pt-8 lg:pt-16 pb-8 lg:pb-16 pl-4 md:pl-8 lg:pl-16 pr-4 md:pr-8 lg:pr-0">
+    <div class="-mt-8 md:mt-0 md:grid md:grid-cols-12 md:gap-8">
+      <div class="absolute top-0 left-0 w-full h-8 md:hidden bg-white dark:bg-brand-navy"></div>
+      <div class="-mx-4 md:m-0 md:row-start-1 md:col-span-7 relative z-0 md:col-start-6">
+        <div class="size-full grid grid-rows-5 md:grid-rows-6 grid-cols-5 gap-4 md:gap-6">
+          <div class="col-span-2 row-span-2 col-start-2 md:col-start-2">
+            <img
+              src={imageUrl1 || placeholderUrl1}
+              alt={alt_imagen_superior || "Imagen de mujer comiendo"}
+              class="size-full object-cover object-center"
+            />
+          </div>
+          <div class="col-span-3 row-start-3 row-span-3 md:row-span-4 col-start-1">
+            <img
+            src={imageUrl2 || placeholderUrl2}
+            alt={alt_imagen_inferior_izquierda || "Personas celebrando"}
+            class="size-full object-cover object-center"
+          />
+          </div>
+          <div class="mb-4 md:mb-0 col-span-2 row-span-4 row-start-2 col-start-4">
+            <img
+            src={imageUrl3 || placeholderUrl3}
+            alt={alt_imagen_inferior_derecha || "Familia en Topgolf"}
+            class="size-full object-cover object-center"
+          />
+          </div>
         </div>
-
-        <div
-          class="text-[var(--neutral-background-strong)] strapi-rich-text text-lg font-(family-name:--font-shields-sans-regular)"
-        >
+      </div>
+      <div class="mt-8 md:m-0 lg:py-12 xl:py-24 md:row-start-1 md:col-span-5 flex flex-col justify-center relative z-10 md:col-start-1">
+        <div class="md:pr-6">
+          <h2 class="mb-4 uppercase ">
+            <span class="block font-(family-name:--font-shields-sans-condensed) text-4xl md:text-6xl">{pre_titulo || "ES GOLF. NO ES GOLF."}</span>
+            <span class="block tracking-normal uppercase text-4xl md:text-6xl font-semibold text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-semibold-condensed)">{titulo || "ES TOPGOLF"}</span>
+          </h2>
+         
           <div
+            class="font-(family-name:--font-shields-sans-regular)"
             set:html={contentHtml ||
               "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"}
           />
-        </div>
-        <div class="mt-5">
+          <div class="mt-5">
           <ButtonGroup
             botones={componentButtons}
             clase="flex flex-col items-start"
           />
         </div>
-      </div>
-
-      <div
-        class="flex flex-col gap-4 order-1 md:order-2 md:col-span-3"
-        style="overflow: hidden;"
-      >
-        <div class="w-3/5">
-          <div class="flex justify-end">
-            <img
-              src={imageUrl1 || placeholderUrl1}
-              alt={alt_imagen_superior || "Imagen de mujer comiendo"}
-              class="w-4/5 md:w-3/5 object-cover shadow-lg h-[230px]"
-            />
-          </div>
-        </div>
-
-        <div class="flex gap-4">
-          <img
-            src={imageUrl2 || placeholderUrl2}
-            alt={alt_imagen_inferior_izquierda || "Personas celebrando"}
-            class="w-3/5 object-cover shadow-lg h-[400px]"
-          />
-          <img
-            src={imageUrl3 || placeholderUrl3}
-            alt={alt_imagen_inferior_derecha || "Familia en Topgolf"}
-            class="w-2/6 object-cover shadow-lg h-[400px]"
-          />
         </div>
       </div>
     </div>
   </div>
 </section>
-
 <style>
   .text-shadow-md {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
