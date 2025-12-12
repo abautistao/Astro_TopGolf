@@ -1,6 +1,11 @@
 ---
 // src/components/Component_42.astro
 
+// ----------------------------------------
+// UPDATED PROPS & INTERFACES
+// ----------------------------------------
+import type { Boton } from "./elements/Button.astro";
+
 interface FormField {
     id: number;
     label: string;
@@ -23,9 +28,11 @@ interface Props {
     title?: string;
     description?: string;
     fields?: FormField[];
+    submitUrl?: string;
+    submitButton?: Boton;
 }
 
-const { title, description, fields } = Astro.props;
+const { title, description, fields, submitUrl, submitButton } = Astro.props;
 
 // Mock Data for development/fallback
 const mockFields: FormField[] = [
@@ -85,9 +92,19 @@ const mockFields: FormField[] = [
     },
 ];
 
+// Mock Button Data
+const mockButton: Boton = {
+    id: 0,
+    texto: "ENVIAR SOLICITUD",
+    url: "",
+    tipo: "version_6", // Matching the clean style
+};
+
 const data = {
     title: title || "DETALLES DEL EVENTO",
     fields: fields || mockFields,
+    submitUrl: submitUrl || "",
+    button: submitButton || mockButton,
 };
 
 // Helper to parse options
@@ -168,6 +185,39 @@ const getOptions = (optionsStr?: string) => {
                     )}
                 </div>
             ))
+        }
+
+        {/* Submit Button Section */}
+        {
+            data.button && (
+                <div class="col-span-1 md:col-span-2 mt-4 flex justify-end">
+                    <button
+                        type="submit"
+                        class:list={[
+                            "transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)",
+                            "w-full sm:w-auto",
+                            "px-8 py-3",
+                            "text-center flex justify-center items-center text-base",
+                            {
+                                "bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg":
+                                    data.button.tipo === "version_1",
+                                "border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)]":
+                                    data.button.tipo === "version_2",
+                                "bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)]":
+                                    data.button.tipo === "version_3",
+                                "bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)]":
+                                    data.button.tipo === "version_4",
+                                "border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)]":
+                                    data.button.tipo === "version_5",
+                                "border-2 border-[#5b67c7] text-[#5b67c7] hover:bg-[#5b67c7] hover:text-white":
+                                    data.button.tipo === "version_6",
+                            },
+                        ]}
+                    >
+                        {data.button.texto}
+                    </button>
+                </div>
+            )
         }
     </form>
 </section>
