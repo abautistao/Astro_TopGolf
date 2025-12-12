@@ -93,18 +93,45 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
         tipo: "version_1", // Usamos version_1 como el estilo de botón principal
     },
 ];
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(heroBackgroundUrl);
 ---
 
 <section
     class="relative w-full text-[var(--neutral-text-inverted)] min-h-[550px] md:min-h-[650px] bg-[var(--neutral-text-inverted)]"
 >
-    <img
-        src={heroBackgroundUrl}
-        alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
-        class="absolute inset-0 object-cover w-full h-full"
-        loading="lazy"
-        decoding="async"
-    />
+    {
+        showVideo ? (
+            <video
+                src={heroBackgroundUrl}
+                autoplay
+                loop
+                muted
+                playsinline
+                class="absolute inset-0 w-full h-full object-cover"
+            />
+        ) : (
+            <img
+                src={heroBackgroundUrl}
+                alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
+                class="absolute inset-0 object-cover w-full h-full"
+                loading="lazy"
+                decoding="async"
+            />
+        )
+    }
+    
     <div class="absolute inset-0 bg-black/30"></div>
 
     <div
