@@ -121,70 +121,105 @@ const getOptions = (optionsStr?: string) => {
 
     <form class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
         {
-            data.fields.map((field) => (
-                <div
-                    class={`${field.gridWidth === "full" ? "col-span-1 md:col-span-2" : "col-span-1"}`}
-                >
-                    <label
-                        for={field.name}
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        {field.label}
-                    </label>
+            data.fields.map((field) => {
+                // RENDER SECTION TITLE
+                if (field.inputType === "section_title") {
+                    return (
+                        <div class="col-span-1 md:col-span-2 mt-8 mb-4">
+                            <h2 class="text-2xl font-bold uppercase mb-2 text-black tracking-tight border-b pb-2 border-gray-200">
+                                {field.label}
+                            </h2>
+                        </div>
+                    );
+                }
 
-                    {field.inputType === "select" ? (
-                        <div class="relative">
-                            <select
+                // RENDER CHECKBOX
+                if (field.inputType === "checkbox") {
+                    return (
+                        <div class="col-span-1 md:col-span-2 flex items-start gap-3 mt-4">
+                            <input
                                 id={field.name}
                                 name={field.name}
+                                type="checkbox"
                                 required={field.required}
-                                class="appearance-none w-full bg-white border border-[#5b67c7] text-gray-500 rounded-md py-3 px-4 leading-tight focus:outline-none focus:ring-1 focus:ring-[#5b67c7] focus:border-[#5b67c7]"
+                                class="mt-1 h-4 w-4 rounded border-gray-300 text-[#5b67c7] focus:ring-[#5b67c7]"
+                            />
+                            <label
+                                for={field.name}
+                                class="text-sm text-gray-600 leading-snug"
                             >
-                                <option value="" disabled selected>
-                                    {field.placeholder ||
-                                        "Selecciona una opción"}
-                                </option>
-                                {getOptions(field.options).map((opt) => (
-                                    <option value={opt}>{opt}</option>
-                                ))}
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#5b67c7]">
-                                <svg
-                                    class="fill-current h-4 w-4"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                </svg>
-                            </div>
+                                {field.label}
+                            </label>
                         </div>
-                    ) : field.inputType === "textarea" ? (
-                        <textarea
-                            id={field.name}
-                            name={field.name}
-                            placeholder={field.placeholder}
-                            required={field.required}
-                            rows="4"
-                            class="w-full bg-white border border-[#5b67c7] text-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-[#5b67c7]"
-                        />
-                    ) : (
-                        <div class="relative">
-                            <input
-                                type={field.inputType}
+                    );
+                }
+
+                // RENDER STANDARD INPUTS
+                return (
+                    <div
+                        class={`${field.gridWidth === "full" ? "col-span-1 md:col-span-2" : "col-span-1"}`}
+                    >
+                        <label
+                            for={field.name}
+                            class="block text-sm font-medium text-gray-700 mb-2"
+                        >
+                            {field.label}
+                        </label>
+
+                        {field.inputType === "select" ? (
+                            <div class="relative">
+                                <select
+                                    id={field.name}
+                                    name={field.name}
+                                    required={field.required}
+                                    class="appearance-none w-full bg-white border border-[#5b67c7] text-gray-500 rounded-md py-3 px-4 leading-tight focus:outline-none focus:ring-1 focus:ring-[#5b67c7] focus:border-[#5b67c7]"
+                                >
+                                    <option value="" disabled selected>
+                                        {field.placeholder ||
+                                            "Selecciona una opción"}
+                                    </option>
+                                    {getOptions(field.options).map((opt) => (
+                                        <option value={opt}>{opt}</option>
+                                    ))}
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#5b67c7]">
+                                    <svg
+                                        class="fill-current h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        ) : field.inputType === "textarea" ? (
+                            <textarea
                                 id={field.name}
                                 name={field.name}
                                 placeholder={field.placeholder}
                                 required={field.required}
-                                class="w-full bg-white border border-[#5b67c7] text-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-[#5b67c7] placeholder-gray-400"
+                                rows="4"
+                                class="w-full bg-white border border-[#5b67c7] text-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-[#5b67c7]"
                             />
-                            {/* Icons specifically for layout matching if needed, though browser default date/time/number have their own controls. 
+                        ) : (
+                            <div class="relative">
+                                <input
+                                    type={field.inputType}
+                                    id={field.name}
+                                    name={field.name}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                    class="w-full bg-white border border-[#5b67c7] text-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-[#5b67c7] placeholder-gray-400"
+                                />
+                                {/* Icons specifically for layout matching if needed, though browser default date/time/number have their own controls. 
                 For stricter visual match we might force custom icons but native inputs are better for a11y. 
                 We can style the calendar/time icon color via CSS if browsers support it, or rely on browser defaults.
             */}
-                        </div>
-                    )}
-                </div>
-            ))
+                            </div>
+                        )}
+                    </div>
+                );
+            })
         }
 
         {/* Submit Button Section */}
