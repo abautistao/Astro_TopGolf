@@ -47,7 +47,7 @@ const data = {
 };
 ---
 
-<div class="relative max-w-[1200px] w-full mx-auto my-12 px-4 md:px-8">
+<div class="relative w-[90%] mx-auto my-12 px-4 md:px-8">
     <!-- DECORACIÓN: Patrón de puntos (Dots) - Esquina superior derecha -->
     <div
         class="absolute -top-10 -right-4 w-48 h-32 hidden lg:grid grid-cols-8 gap-3 z-0 opacity-80 pointer-events-none"
@@ -61,11 +61,11 @@ const data = {
 
     <!-- TARJETA PRINCIPAL -->
     <div
-        class="flex flex-col lg:flex-row relative z-10 overflow-hidden text-left w-full"
+        class="flex flex-col lg:flex-row relative z-10 overflow-hidden text-left w-full min-h-[600px]"
     >
         <!-- 1. COLUMNA IZQUIERDA: Información (Texto) -->
         <div
-            class="w-full lg:w-5/12 p-8 lg:p-12 flex flex-col justify-center bg-white z-20"
+            class="w-full lg:w-5/12 p-8 lg:p-12 flex flex-col justify-center bg-white z-20 order-2 lg:order-1"
         >
             <!-- Título Principal -->
             <div
@@ -89,10 +89,10 @@ const data = {
 
             <!-- Caja Azul Promocional -->
             <div
-                class="bg-blue-50 py-4 px-5 rounded-sm flex items-center gap-4 border-l-4 border-blue-700 mt-2"
+                class="bg-[var(--neutral-background-subtle)] py-4 px-5 rounded-sm flex justify-center items-center gap-4 mt-2"
             >
                 <div
-                    class="text-blue-900 text-sm lg:text-base font-bold"
+                    class="text-[var(--surface-brand-primary)] text-sm text-center lg:text-base font-(family-name:--font-shields-sans-regular) strapi-rich-text-2"
                     set:html={promo_textoHtml}
                 />
             </div>
@@ -100,7 +100,7 @@ const data = {
 
         <!-- 2. COLUMNA DERECHA: Video / Thumbnail Completo -->
         <div
-            class="w-full lg:w-7/12 relative group cursor-pointer bg-black min-h-[300px] lg:min-h-auto"
+            class="w-full lg:w-7/12 relative group cursor-pointer bg-black min-h-[300px] lg:min-h-auto order-1 lg:order-2"
             id="video-container"
         >
             <!-- CONTENEDOR DE IMAGEN (Thumbnail) -->
@@ -199,6 +199,9 @@ const data = {
         color: var(--neutral-background-strong);
         font-family: var(--font-tee-line-bold-italic);
         font-weight: bold;
+    }
+    .strapi-rich-text-2 :global(strong) {
+        font-family: var(--font-shields-sans-black);
     }
 
     .strapi-rich-text :global(u) {
