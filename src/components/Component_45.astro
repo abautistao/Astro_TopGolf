@@ -1,0 +1,114 @@
+---
+// src/components/Component_45.astro
+import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
+
+interface Props {
+    titulo_principal?: string;
+    titulo_secundario?: string;
+    descripcion?: any;
+    texto_resaltado?: string;
+    imagen?: any;
+}
+
+const {
+    titulo_principal,
+    titulo_secundario,
+    descripcion,
+    texto_resaltado,
+    imagen,
+} = Astro.props;
+
+const imagen_url = getStrapiUrl(imagen);
+const descripcionHtml = stringifyRichText(descripcion);
+
+// Fallback data
+const data = {
+    titulo_principal: titulo_principal || "DJ EN VIVO",
+    titulo_secundario: titulo_secundario || "Y por si fuera poco",
+    descripcion:
+        descripcionHtml ||
+        "Y lo mejor... ¡disfruta de DJ en vivo todos los viernes y sábados desde las 8 PM!",
+    texto_resaltado: texto_resaltado || "Tráete ropa blanca para tu foto neón",
+    imagen:
+        imagen_url ||
+        "https://images.unsplash.com/photo-1514525253440-b39345208668?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+};
+---
+
+<div class="w-full bg-[#0000EE] overflow-hidden relative font-sans text-white">
+    <!-- ELEMENTO DECORATIVO: PUNTOS / DOTS PATTERN -->
+    <div
+        class="absolute z-10 top-0 right-0 md:left-0 md:right-auto m-4 md:m-8 dot-pattern opacity-80"
+    >
+    </div>
+
+    <!-- Contenido Flexible -->
+    <div
+        class="flex flex-col md:flex-row w-full mx-auto items-center relative z-20"
+    >
+        <!-- SECCIÓN IMAGEN (Izquierda en Desktop / Arriba en Mobile) -->
+        <div class="w-full md:w-3/5 relative">
+            <div class="pt-12 md:pt-12 md:pl-16 md:pb-12 pr-0">
+                <div
+                    class="relative w-full h-64 md:h-[500px] overflow-hidden bg-gray-900 shadow-2xl"
+                >
+                    <img
+                        src={data.imagen}
+                        alt="foto"
+                        class="w-full h-full object-cover object-center opacity-90 hover:scale-105 transition-transform duration-700"
+                    />
+                    <!-- Degradado sutil -->
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-[#0000EE]/30 to-transparent mix-blend-multiply"
+                    >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN TEXTO (Derecha en Desktop / Abajo en Mobile) -->
+        <div
+            class="w-full md:w-2/5 p-8 md:p-12 text-left flex flex-col justify-center"
+        >
+            <!-- Título Secundario -->
+            <h3
+                class="text-5xl md:text-6xl lg:text-7xl font-medium tracking-wider uppercase mb-1 font-(family-name:--font-shields-sans-regular)"
+            >
+                {data.titulo_secundario}
+            </h3>
+
+            <!-- Título Principal -->
+            <h2
+                class="text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-none mb-6 font-(family-name:--font-shields-sans-black)"
+            >
+                {data.titulo_principal}
+            </h2>
+
+            <!-- Párrafo Descriptivo -->
+            <div
+                class="text-base md:text-lg font-light leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular)"
+            >
+                <div class="strapi-rich-text" set:html={data.descripcion} />
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Patrón de puntos personalizado */
+    .dot-pattern {
+        background-image: radial-gradient(#00ffff 2px, transparent 2px);
+        background-size: 20px 20px; /* Espaciado entre puntos */
+        width: 160px; /* Ancho del área de puntos */
+        height: 160px; /* Alto del área de puntos */
+    }
+
+    /* Estilos para Rich Text */
+    .strapi-rich-text :global(p) {
+        margin-bottom: 1rem;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: 700;
+        font-family: var(--font-tee-line-bold);
+    }
+</style>
