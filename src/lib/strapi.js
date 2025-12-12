@@ -183,6 +183,8 @@ export const formatUrl = (url) => {
   if (!url) return '#';
   if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/')) {
     return url;
+  }else if(url.startsWith('#')) {
+    return `${url}`;
   }
   return `/${url}`;
 };
