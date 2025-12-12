@@ -34,7 +34,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
             <div class="grid grid-cols-2 gap-4 md:gap-10">
                 <div>
                     <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_1}</h3>
-                    <ul class="mt-4 space-y-3 text-xs md:text-base">
+                    <ul class="mt-4 space-y-3 text-sm md:text-base">
                         {links_1.map(link => (
                             <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
                         ))}
@@ -42,7 +42,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                 </div>
                 <div>
                     <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_2}</h3>
-                    <ul class="mt-4 space-y-3 text-xs md:text-base">
+                    <ul class="mt-4 space-y-3 text-sm md:text-base">
                         {links_2.map(link => (
                             <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
                         ))}
