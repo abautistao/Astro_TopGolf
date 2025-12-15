@@ -139,7 +139,7 @@ const showVideo = isVideo(heroBackgroundUrl);
     >
     </div>
 
-    <div class="relative bg-[var(--neutral-text-inverted)] pb-10">
+    <div class="relative bg-[var(--neutral-text-inverted)] pb-0 md:pb-10">
         <div
             class="font-(family-name:--font-shields-sans-regular) relative -top-28 sm:-top-20 -mt-28 sm:-mt-20 z-20 mx-4 md:mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] px-6 py-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white"
         >
@@ -181,7 +181,7 @@ const showVideo = isVideo(heroBackgroundUrl);
             src={decorativeMobileUrl}
             alt={alt_imagen_decorativa_mobile ||
                 placeholder.alt_imagen_decorativa_mobile}
-            class="absolute bottom-0 right-0 -translate-y-2/3 z-10 block lg:hidden"
+            class="absolute -bottom-[100px] right-0 -translate-y-2/3 z-10 block lg:hidden"
             aria-hidden="true"
             loading="lazy"
             decoding="async"
