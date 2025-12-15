@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from "../lib/strapi.js";
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
+import BookingBox from "./elements/BookingBox.astro";
 // Definimos la interfaz de las props que el componente recibirá desde Strapi.
 export interface Props {
     imagen_fondo: any;
@@ -16,6 +17,8 @@ export interface Props {
     url_boton: string;
     texto_ayuda: any;
     Boton: Boton[]; // Puede ser un string o un arreglo de Strapi
+    url_submit_booking: string;
+    showBookingBox: boolean
 }
 
 const {
@@ -27,6 +30,8 @@ const {
     texto_banner,
     Boton,
     texto_ayuda,
+    showBookingBox,
+    url_submit_booking
 } = Astro.props;
 
 const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
@@ -100,27 +105,39 @@ const showVideo = isVideo(heroBackgroundUrl);
     </div>
 
     <!-- Franja blanca dentro del section -->
-    <div class="relative bg-[var(--neutral-text-inverted)] h-40">
+    <div class:list={[
+        'relative bg-[var(--neutral-text-inverted)] h-55 md:h-40',
+    ]}>
         <div
-            class="absolute -top-28 sm:-top-20 left-0 right-0 z-20 mx-4 md:mx-[150px] min-h-[180px] rounded-2xl bg-[var(--surface-brand-secondary)] px-4 sm:px-6 py-6 text-center shadow-lg flex flex-col items-center justify-center"
+            class:list={[
+                'absolute z-20 rounded-2xl bg-[var(--surface-brand-secondary)] px-6 sm:px-10 py-6 text-center shadow-lg mx-4',
+                {
+                    'min-h-[180px] left-0 right-0 flex flex-col items-center justify-center md:mx-[150px] -top-28  sm:-top-20 ': !showBookingBox,
+                    'block -top-30 md:-top-18 md:left-[50%] md:translate-x-[-50%]': showBookingBox
+                }
+            ]}
         >
-            <div
-                class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6"
-            >
-                <p
-                    class="tracking-normal text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-tee-line-bold-italic)"
+            {showBookingBox ? (
+                <BookingBox url_submit={url_submit_booking}/>
+            ) : (
+                <div
+                    class="flex flex-col items-center justify-center gap-3 px-2 py-2 text-center sm:flex-row sm:gap-4 sm:px-6"
                 >
-                    {texto_banner || "Descubre la mejor manera de jugar"}
-                </p>
-                <ButtonGroup botones={buttonBanner} />
-            </div>
-
-            <div
-                id="texto_ayuda"
-                class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text font-(family-name:--font-shields-sans-regular)"
-            >
-                <p set:html={helpTextHtml} />
-            </div>
+                    <p
+                        class="tracking-normal text-lg sm:text-2xl font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-tee-line-bold-italic)"
+                    >
+                        {texto_banner || "Descubre la mejor manera de jugar"}
+                    </p>
+                    <ButtonGroup botones={buttonBanner} />
+                </div>
+    
+            )}
+                <div
+                    id="texto_ayuda"
+                    class="py-2 text-normal font-sm text-center text-[var(--neutral-text-inverted)] strapi-rich-text font-(family-name:--font-shields-sans-regular)"
+                >
+                    <p set:html={helpTextHtml} />
+                </div>
         </div>
     </div>
 </section>

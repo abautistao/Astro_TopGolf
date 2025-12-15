@@ -1,0 +1,93 @@
+---
+import { formatUrl } from '../../lib/strapi';
+
+interface Props {
+  url_submit: string;
+}
+
+const { url_submit } = Astro.props;
+---
+
+<form class="pav-widget w-full flex flex-wrap md:justify-center gap-2 sm:gap-y-4 mt-1 mb-3" method="get" action={formatUrl(url_submit)}>
+    <div class="basis-full h-0 sm:hidden"></div>
+    <div class="flex-1 md:flex-none rounded md:rounded-full border border-[var(--accent-highlight-secondary)] border-opacity-50 hover:border-white hover:border-opacity-70 relative">
+    <label>
+        <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Fecha</div>
+        <div role="application" class="datecalendar">
+            <div role="button" aria-label="Spacer" tabindex="0" class="hidden">
+                <input tabindex="-1"/></div>
+                <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
+                    <input class="flatpickr-input !appearance-none min-w-[110px] sm:min-w-40 md:min-w-0 !w-full !h-12 md:!h-10 lg:!h-12 !px-2.5 !py-2 md:!pl-5 !mb-0 !rounded md:!rounded-full cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-white leading-none md:!text-sm" name="reservacion_fecha" id="date" readonly="" tabindex="-1" value="12/15/2025"/>
+                </div> 
+            </div>
+        </label>
+    </div>
+    <div class="flex-1 md:flex-none rounded md:rounded-full border border-[var(--accent-highlight-secondary)] border-opacity-50 hover:border-white hover:border-opacity-70 relative">
+        <label>
+            <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) lg:font-shield-black text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Jugadores</div>
+            <span class="select-container">
+                <select name="pax_min" class="!appearance-none pl-2.5 md:pl-5 py-2 pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] h-12 md:h-10 lg:h-12 bg-transparent text-white border-0 neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-sm leading-none">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4" selected="">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </span>
+        </label>
+    </div>
+
+    <button class:list={[
+        'transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold) cursor-pointer',
+        'w-[100%] sm:w-auto',
+        'px-4 py-3 sm:px-8 sm:py-3 mt-5 md:mt-0',
+        'text-center flex justify-center items-center text-sm sm:text-base ',
+        'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg'
+    ]} type="submit">Reservar</button>
+    
+</form>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<script>
+  // 2. ZONA DE CLIENTE (Navegador)
+  import flatpickr from "flatpickr";
+  import { Spanish } from "flatpickr/dist/l10n/es.js"; // Importar idioma español
+
+  // Función de inicialización para soportar View Transitions de Astro 5
+  function initDatePickers() {
+    const inputs = document.querySelectorAll('.flatpickr-input');
+
+    inputs.forEach((input) => {
+      // Leemos los datos que Astro inyectó en el HTML
+      const disabledDatesRaw = input.getAttribute('data-disabled');
+
+      flatpickr(input as HTMLInputElement, {
+        locale: Spanish,
+        dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
+        altFormat: "Y-m-d", // Ej: Octubre 25, 2024
+        minDate: "today",    // Opcional: no permitir fechas pasadas
+        defaultDate: 'today',
+      });
+    });
+  }
+
+  // Ejecutar al cargar
+  initDatePickers();
+</script>
+
+<style>
+  /* Puedes personalizar los colores de flatpickr aquí para que coincidan con tu marca */
+  :global(.flatpickr-calendar) {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  .datepicker-input.neon, .flatpickr-input.neon, .select-container select.neon {
+    background: url(https://s3.topgolf.com/uploads/icons/down-arrow-circle-neon.svg) no-repeat right 10px center;
+    background-color: transparent;
+    background-size: 16px 16px;
+    background-position: right 12px center;
+}
+</style>

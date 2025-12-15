@@ -25,8 +25,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     try {
         const { data: emailData, error } = await resend.emails.send({
-            from: "Acme <pagina@topgolf.com.mx>", // TODO: Update with your verified domain
-            to: ["efrenpech@gmail.com"], // TODO: Update with the recipient email
+            from: "Contacto Topgolf <contacto@topgolf.com.mx>", // TODO: Update with your verified domain
+            to: ["efrenpech@gmail.com","abautista@venturae.com.mx"], // TODO: Update with the recipient email
             subject: "Nuevo registro de newsletter",
             html: `
         <h1>Nuevo registro</h1>
