@@ -55,19 +55,19 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
     inferSize={true}
   />
   <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/30"></div>
-  <div class="relative w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="relative w-full mx-auto max-w-7xl !px-4 sm:!px-6 lg:!px-8">
     <div
       class="grid grid-cols-1 items-center gap-y-12 lg:grid-cols-2 lg:gap-x-16"
     >
       <div class="text-left">
         <h3
-          class="font-(family-name:--font-shields-sans-bold) mt-5 lg:mt-0 py-1 px-2 text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)]"
+          class="font-(family-name:--font-shields-sans-bold) !mt-5 lg:!mt-0 !py-1 !px-2 text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)] mb-0"
         >
           {titulo_pequeno || "Título Pequeño"}
         </h3>
 
         <h2
-          class="font-(family-name:--font-shields-sans-black) mt-4 text-[44px] font-extrabold text-[var(--neutral-text-inverted)] sm:text-5xl lg:text-[83px]"
+          class="font-(family-name:--font-shields-sans-black) !mt-4 text-[44px] font-extrabold text-[var(--neutral-text-inverted)] sm:text-5xl lg:text-[83px] mb-0"
         >
           {titulo_principal || "Título Principal de la Sección"}
         </h2>
@@ -91,5 +91,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
   .prose :global(a) {
     color: var(--accent-highlight-primary);
     text-decoration: underline;
+  }
+  .prose :global(p) {
+    margin-bottom: 0;
   }
 </style>

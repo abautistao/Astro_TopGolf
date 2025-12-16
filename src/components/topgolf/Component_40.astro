@@ -87,21 +87,21 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
   >
     <!-- Columna Izquierda: Contenido -->
     <div
-      class="w-full lg:w-3/5 p-8 md:p-12 flex flex-col justify-center relative bg-[var(--neutral-background-subtle)] order-2 md:order-1"
+      class="w-full lg:w-3/5 !p-8 md:!p-12 flex flex-col justify-center relative bg-[var(--neutral-background-subtle)] !order-2 md:!order-1"
     >
       <!-- Subtítulo Superior -->
       <h3
-        class="text-[var(--brand-interactive-base)] font-bold tracking-tight text-sm md:text-base uppercase mb-2 font-(family-name:--font-shields-sans-bold)"
+        class="text-[var(--brand-interactive-base)] font-bold tracking-tight text-sm md:text-base uppercase !mb-2 font-(family-name:--font-shields-sans-bold)"
       >
         {subtitulo_superior || subtitlePlaceholder}
       </h3>
 
       <!-- Título Principal con fondo azul oscuro -->
       <div
-        class="self-start bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-primary)] px-4 py-2 mb-6 shadow-sm"
+        class="self-start bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-primary)] !px-4 !py-2 !mb-6 shadow-sm"
       >
         <h1
-          class="text-3xl md:text-4xl font-black uppercase tracking-wider font-(family-name:--font-shields-sans-semibold-condensed)"
+          class="text-3xl md:text-4xl font-black uppercase tracking-wider font-(family-name:--font-shields-sans-semibold-condensed) mb-0"
         >
           {titulo_principal || titlePlaceholder}
         </h1>
@@ -109,18 +109,18 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
 
       <!-- Texto descriptivo -->
       <div
-        class="text-gray-600 mb-8 leading-relaxed text-sm md:text-base prose prose-sm max-w-none prose-p:my-2"
+        class="text-gray-600 !mb-8 leading-relaxed text-sm md:text-base prose prose-sm max-w-none prose-p:!my-2"
       >
         <div set:html={descriptionHtml} />
       </div>
 
       <!-- Lista de Beneficios (Grid de 2 columnas) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 mb-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 !mb-10">
         {
           beneficios.map((item) => (
             <div class="flex items-start gap-2">
               <svg
-                class="w-5 h-5 text-[#00aa55] flex-shrink-0 mt-0.5"
+                class="w-5 h-5 text-[#00aa55] flex-shrink-0 !mt-0.5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -139,12 +139,12 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
       </div>
 
       <!-- Botones de Acción -->
-      <div class="flex flex-col sm:flex-row gap-4 items-center mb-6">
+      <div class="flex flex-col sm:flex-row gap-4 items-center !mb-6">
         <ButtonGroup botones={componentButtons} />
       </div>
 
       <!-- Nota al pie -->
-      <div class="text-xs text-gray-400">
+      <div class="text-xs text-gray-400 prose">
         <div
           set:html={texto_finalHtml ||
             "Precio incluye IVA y cargo por servicio."}
@@ -154,7 +154,7 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
 
     <!-- Columna Derecha: Imagen -->
     <div
-      class="w-full lg:w-2/5 bg-[#00bfff] relative h-64 lg:h-auto overflow-hidden order-1 md:order-2"
+      class="w-full lg:w-2/5 bg-[#00bfff] relative h-64 lg:h-auto overflow-hidden !order-1 md:!order-2"
     >
       <!-- Imagen -->
       <Image
@@ -174,4 +174,7 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
 
 <style>
   /* Estilos específicos si son necesarios, pero estamos usando Tailwind directo como se solicitó */
+  .prose :global(p) {
+    margin-bottom: 0 !important;
+  }
 </style>

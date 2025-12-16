@@ -19,153 +19,64 @@ export interface Props extends HTMLAttributes<'div'> {
     reservacion_fecha?: string | null; // Se usa string para fechas para simplificar el paso
 }
 
-const { 
-    plugin_id: strapiPluginId = null, 
-    user_language: strapiUserLanguage = null,
-    producto_id: strapiProductoId = null,
-    set_producto_id: strapiSetProductoId = null,
-    promocode: strapiPromocode = null,
-    set_promocode: strapiSetPromocode = null,
-    pax_min: strapiPaxMin = null,
-    pax_max: strapiPaxMax = null,
-    reservacion_fecha: strapiReservacionFecha = null,
-    ...rest 
-} = Astro.props;
+const defaults = {
+    plugin_id: null, 
+    user_language: null,
+    producto_id: null,
+    promocode: null,
+    pax_min: null,
+    pax_max: null,
+    reservacion_fecha: null
+};
 
+// 2. Fusionamos con las props que llegan
+const rawParams = {...Astro.props };
 const vmgPluginUrl = import.meta.env.VMG_PLUGIN_URL;
+const paramsLimpios: { [key: string]: any } = {};
+
+for (const [key, value] of Object.entries(rawParams)) {
+    // Esto es EXÁCTAMENTE tu: if($valor) { ... }
+    if (value) { 
+        paramsLimpios[key] = value;
+    }
+}
 ---
 
-<div id="booking-container" {...rest}>
+<div id="booking-container" class="font-(family-name:--font-shields-sans-bold)">
     <!-- El contenido se generará dinámicamente por el script -->
-</div>
+    <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
+    <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
+    
+    <div  id="pluginContainer" class="container"></div>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+    <script is:inline src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script is:inline define:vars={{ paramsLimpios, vmgPluginUrl }}>
+	jQuery(document).ready(function($){
+		var vmg_plugin_id = $('#vmg_plugin_id').val();
+		var vmg_plugin_url = $('#vmg_plugin_url').val();
+        var paramsVMG = paramsLimpios;
 
-<script define:vars={{ 
-    vmgPluginUrl, 
-    strapiPluginId, 
-    strapiUserLanguage,
-    strapiProductoId,
-    strapiSetProductoId,
-    strapiPromocode,
-    strapiSetPromocode,
-    strapiPaxMin,
-    strapiPaxMax,
-    strapiReservacionFecha
-}}>
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('booking-container');
-        if (!container) return;
+		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
+			"use strict";
+			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2.php`;
+			var params = {
+                ...paramsVMG,
+				'plugin_id': vmg_plugin_id
+			};
+			
+			const urlParams = new URLSearchParams(window.location.search);
+			urlParams.forEach((value, key) => {
 
-        // 1. Leer parámetros desde la URL (prioridad alta).
-        const searchParams = new URLSearchParams(window.location.search);
-        
-        // Función auxiliar para obtener el valor: URL > Strapi > null
-        const getParam = (paramName, strapiValue) => {
-            const urlValue = searchParams.get(paramName);
-            return urlValue !== null ? urlValue : strapiValue;
-        };
+			  params[key] = value;
+			});
+            
+            $.post($.pluginUrl,params,function(data, status){
+				jQuery( "#pluginContainer" ).html(data);
+			});
 
-        const plugin_id = getParam('plugin_id', strapiPluginId);
-        const user_language = getParam('user_language', strapiUserLanguage);
-        const producto_id = getParam('producto_id', strapiProductoId);
-        const set_producto_id = getParam('set_producto_id', strapiSetProductoId);
-        const promocode = getParam('promocode', strapiPromocode);
-        const set_promocode = getParam('set_promocode', strapiSetPromocode);
-        const pax_min = getParam('pax_min', strapiPaxMin);
-        const pax_max = getParam('pax_max', strapiPaxMax);
-        const reservacion_fecha = getParam('reservacion_fecha', strapiReservacionFecha);
+		});
 
-        // 2. Validar que los parámetros requeridos existan.
-        if (!plugin_id || !user_language) {
-            container.innerHTML = `
-                <div class="container text-center mx-auto px-4">
-                    <h1 class="text-2xl font-bold" style="font-family: var(--font-shields-sans-bold);">Faltan parámetros requeridos</h1>
-                    <p class="mt-4" style="font-family: var(--font-shields-sans-regular);">
-                        Asegúrate de que la URL incluya <strong>plugin_id</strong> y <strong>user_language</strong>, o que el componente esté configurado en el CMS.
-                    </p>
-                </div>
-            `;
-            return;
-        }
-
-        // 3. Crear y configurar el iframe si los parámetros son válidos.
-        const iframe = document.createElement('iframe');
-        iframe.id = 'booking-iframe';
-        iframe.style.width = '100%';
-        iframe.style.border = 'none';
-        iframe.style.minHeight = '500px';
-        iframe.scrolling = 'no';
-        iframe.title = 'Formulario de Reservación';
-        container.appendChild(iframe);
-
-        // 4. Construir el objeto de parámetros para el script del plugin,
-        //    incluyendo solo los que tienen un valor.
-        const scriptParams = {
-            plugin_id,
-            user_language,
-        };
-        if (producto_id) scriptParams.producto_id = producto_id;
-        if (set_producto_id) scriptParams.set_producto_id = set_producto_id;
-        if (promocode) scriptParams.promocode = promocode;
-        if (set_promocode) scriptParams.set_promocode = set_promocode;
-        if (pax_min) scriptParams.pax_min = pax_min;
-        if (pax_max) scriptParams.pax_max = pax_max;
-        if (reservacion_fecha) scriptParams.reservacion_fecha = reservacion_fecha;
-        
-        const scriptParamsJSON = JSON.stringify(scriptParams);
-
-        const iframeContent = `
-            <!DOCTYPE html>
-            <html lang="${user_language}">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Booking Plugin</title>
-                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
-                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
-                <style>body { visibility: hidden; min-height: 400px; }</style>
-            </head>
-            <body>
-                <div id="pluginContainer" class="container"></div>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"><\/script>
-                <script>
-                    jQuery(document).ready(function($) {
-                        if (!'${vmgPluginUrl}') {
-                            console.error('VMG_PLUGIN_URL no está configurada.');
-                            return;
-                        }
-                        const pluginBaseUrl = 'https://${vmgPluginUrl}';
-                        const scriptUrl = pluginBaseUrl + '/js/pluginscripts.js';
-
-                        $.getScript(scriptUrl, function() {
-                            "use strict";
-                            $.pluginUrl = pluginBaseUrl + '/requesterv2.php';
-                            $.post($.pluginUrl, ${scriptParamsJSON}, function(data, status) {
-                                jQuery("#pluginContainer").html(data);
-                                document.body.style.visibility = 'visible';
-                            });
-                        });
-
-                        let lastHeight = 0;
-                        const observer = new MutationObserver(() => {
-                            const newHeight = document.body.scrollHeight;
-                            if (newHeight !== lastHeight) {
-                                lastHeight = newHeight;
-                                window.parent.postMessage({ type: 'resize-iframe', height: newHeight }, '*');
-                            }
-                        });
-                        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-                    });
-                <\/script>
-            </body>
-            </html>
-        `;
-
-        iframe.srcdoc = iframeContent;
-
-        window.addEventListener('message', function(event) {
-            if (event.source === iframe.contentWindow && event.data.type === 'resize-iframe') {
-                iframe.style.height = event.data.height + 'px';
-            }
-        });
-    });
+	});
 </script>
+</div>

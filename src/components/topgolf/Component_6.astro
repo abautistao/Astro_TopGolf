@@ -62,19 +62,19 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
     </div>
     </div>
 
-    <div class="relative pt-10 lg:py-10 flex items-center lg:min-h-[500px]">
+    <div class="relative !pt-10 lg:!py-10 flex items-center lg:min-h-[500px]">
         <div class="lg:w-1/2 relative w-full flex justify-center lg:block">
             <div
                 class="relative z-10 w-full max-w-2xl mx-auto text-center bg-[var(--neutral-background-subtle)] p-8 md:p-20 text-[var(--surface-brand-primary)]  lg:text-left lg:mx-0 lg:ml-auto lg:mr-8"
             >
                <h2
-                    class="text-left text-[var(--neutral-background-strong)] text-4xl lg:text-5xl font-semibold tracking-tight uppercase font-(family-name:--font-shields-sans-semibold-condensed)"
+                    class="text-left text-[var(--neutral-background-strong)] text-4xl lg:text-5xl font-semibold tracking-tight uppercase font-(family-name:--font-shields-sans-semibold-condensed) mb-0"
                 >
                     {titulo || "PLANEA TU VISITA"}
                 </h2>
 
                 <div
-                    class="text-base font-(family-name:--font-shields-sans-regular) text-justify mt-4 text-[var(--neutral-background-strong)] strapi-rich-text"
+                    class="text-base font-(family-name:--font-shields-sans-regular) text-justify !mt-4 text-[var(--neutral-background-strong)] strapi-rich-text"
                     set:html={descriptionHtml ||
                         `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`}
                 />
