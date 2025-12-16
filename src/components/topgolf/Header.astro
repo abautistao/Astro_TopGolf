@@ -1,0 +1,431 @@
+---
+// src/components/Header.astro
+import { getHeaderData, getStrapiUrl, stringifyRichText, formatUrl } from '../../lib/strapi';
+import ButtonGroup from './elements/ButtonHeader.astro';
+import type { Boton } from './elements/ButtonHeader.astro';
+
+import MobileLocationBar from './elements/MobileLocationBar.astro';
+const headerData = await getHeaderData();
+
+const logoUrl       = getStrapiUrl(headerData?.logo) || '/default-logo.svg';
+const logoUrlMobile = getStrapiUrl(headerData?.logo_mobile) || '/default-logo.svg';;
+
+const links = headerData?.links || [];
+const ubicacion = headerData?.ubicacion || 'UBICACION';
+const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
+const direccion = stringifyRichText(headerData?.direccion || {});
+
+const buttonBanner: Boton[] = (headerData.Boton && !Array.isArray(headerData.Boton) ? [headerData.Boton] : headerData.Boton) || [
+    {
+        id: 1,
+        texto: "Reserva Ahora",
+        url: "#",
+        tipo: "version_1"
+    }
+];
+
+const buttons: Boton[] = (headerData.Botones2 && !Array.isArray(headerData.Botones2) ? [headerData.Botones2] : headerData.Botones2) || [
+    {
+        id: 1,
+        texto: "Reserva Ahora",
+        url: "#",
+        tipo: "version_1"
+    }
+];
+
+// Filtra los links que tienen dropdowns para crear los overlays
+const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
+---
+
+<header class="relative z-40 flex flex-col text-[var(--neutral-text-inverted)] shadow-md">
+    <div class="flex items-center justify-between w-full h-20 px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
+
+        <div class="flex items-center justify-between w-full lg:hidden">
+            <div class="flex items-center">
+                <button id="mobile-menu-toggle" class="w-12 h-12 flex items-center justify-center text-[var(--accent-feedback-strong)]">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+                <a href="/" class="block">
+                    <img src={logoUrlMobile} alt="Logo de TopGolf Monterrey" class="w-9 h-auto" />
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <ButtonGroup botones={buttons} />
+            </div>
+        </div>
+
+        <div class="hidden lg:flex items-center h-full w-[280px] bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] shrink-0 px-10 relative">
+            <a href="/">
+                <img src={logoUrl} alt="Logo" class="h-auto" />
+            </a>
+        </div>
+
+        <div class="hidden lg:flex items-center justify-between h-full w-full lg:px-6">
+            <nav class="hidden lg:flex">
+                <ul class="flex items-center space-x-10 text-md font-semibold">
+                    {links.map(link => (
+                        <li>
+                            {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
+                                <button class="font-(family-name:--font-shields-sans-condensed) text-xl flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger" data-dropdown-id={`desktop-${link.id}`}>
+                                    {link.texto}
+                                    <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
+                                </button>
+                            ) : (
+                                <a href={formatUrl(link.url)} class="font-(family-name:--font-shields-sans-condensed) text-xl tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)]">{link.texto}</a>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+
+            <div class="flex items-center space-x-2 lg:space-x-6">
+                <div class="hidden lg:flex items-center space-x-2 relative">
+                    <i class="fa-solid fa-location-dot fa-xl text-[var(--accent-highlight-secondary)]"></i>
+                    <button id="location-toggle-desktop" class="text-left text-xs">
+                        <p class="text-lg font-bold font-(family-name:--font-shields-sans-black)">{ubicacion}</p>
+                        <div class="flex items-center opacity-80">
+                            <span class="uppercase text-xs">{horario}</span>
+                            <i id="location-arrow-desktop" class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
+                        </div>
+                    </button>
+                    <div id="location-details-desktop" class="font-(family-name:--font-shields-sans-regular) absolute hidden top-full right-0 mt-2 p-4 w-72 bg-[var(--brand-interactive-base)] rounded-md shadow-lg text-[var(--neutral-text-inverted)] z-50">
+                        <div class="my-2 text-sm" set:html={direccion}></div>
+                        <ButtonGroup botones={buttonBanner} />
+                    </div>
+                </div>
+                <ButtonGroup botones={buttons} />
+            </div>
+        </div>
+    </div>
+</header>
+<div class="lg:hidden absolute w-full z-50 shadow-xl px-4">
+    <MobileLocationBar
+        ubicacion={ubicacion}
+        horario={horario}
+        direccion={direccion}
+        botones={buttonBanner}
+        idSuffix="bar"
+    />
+</div>
+<div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] lg:hidden hidden">
+</div>
+
+
+<div id="mobile-menu-overlay" class="fixed inset-0 z-50 hidden bg-[var(--surface-brand-secondary)] text-[var(--neutral-text-inverted)] flex flex-col">
+
+    <div class="relative flex items-center justify-between h-20 px-4 shrink-0">
+        <div class="flex items-center">
+            <button id="mobile-menu-close" class="w-12 h-12 flex items-center justify-center text-[var(--accent-feedback-strong)]">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+            <a href="/" class="block">
+                <img src={logoUrlMobile} alt="Logo de TopGolf Monterrey" class="w-9 h-auto" />
+            </a>
+        </div>
+        <div class="flex items-center space-x-2">
+            <ButtonGroup botones={buttons} />
+        </div>
+    </div>
+
+    <div class="px-4">
+        <MobileLocationBar
+            ubicacion={ubicacion}
+            horario={horario}
+            direccion={direccion}
+            botones={buttonBanner}
+            idSuffix="menu"
+        />
+    </div>
+
+    <div class="p-4 flex-1 overflow-y-auto flex flex-col">
+
+        <nav>
+            <ul class="flex flex-col text-xl font-bold">
+                {links.map(link => (
+                    <li class="py-4">
+                        {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
+                            <>
+                                <button class="flex items-center justify-between w-full mobile-dropdown-trigger" data-dropdown-id={`mobile-${link.id}`}>
+                                    <span class="font-(family-name:--font-shields-sans-condensed) block w-full text-center mobile-dropdown-text font-semibold text-3xl">{link.texto}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--accent-feedback-strong)] transition-transform dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <div id={`mobile-${link.id}-submenu`} class="hidden mt-4 mobile-submenu">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        {link.dropdown_items.map(item => (
+                                            <a href={formatUrl(item.url)} class="font-(family-name:--font-shields-sans-condensed) relative block overflow-hidden rounded-lg group h-36">
+                                                <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full"/>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                                <h3 class="text-xs absolute font-semibold bottom-2 left-2 right-2 truncate font-(family-name:--font-shields-sans-condensed)">{item.titulo}</h3>
+                                                <div class="absolute rounded-full bottom-2 right-2 border-2 border-[var(--accent-feedback-strong)] w-6 h-6 flex items-center justify-center">
+                                                    <i class="fa-solid fa-chevron-right text-sm text-[var(--neutral-text-inverted)]"></i>
+                                                </div>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <a href={formatUrl(link.url)} class="block w-full text-center font-semibold text-3xl font-(family-name:--font-shields-sans-condensed)">{link.texto}</a>
+                        )}
+                    </li>
+                ))}
+            </ul>
+        </nav>
+
+        <div class="mt-auto pt-8">
+            <div id="mobile-links-footer" class="flex justify-evenly items-center text-sm font-bold" style="font-size: 13px;">
+                <a href="/tarjetaderegalo" class="flex items-center gap-x-2 hidden">
+                    <i class="fa-solid fa-credit-card text-2xl text-[var(--accent-feedback-strong)]"></i>
+                    <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4">
+                        Tarjetas de regalo
+                    </span>
+                </a>
+
+                <a href="/preguntas-frecuentes" class="flex items-center gap-x-2">
+                    <i class="fa-solid fa-circle-question text-2xl text-[var(--accent-feedback-strong)]"></i>
+                    <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4">
+                        Preguntas frecuentes
+                    </span>
+                </a>
+            </div>
+
+            <div class="flex items-center justify-center gap-x-8 py-6 mt-8">
+                <a href="#" aria-label="Facebook" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-facebook-f text-2xl"></i>
+                </a>
+                <a href="#" aria-label="Instagram" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+                <a href="#" aria-label="TikTok" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-tiktok text-2xl"></i>
+                </a>
+                <a href="#" aria-label="YouTube" class="transition-opacity hover:opacity-70">
+                    <i class="fa-brands fa-youtube text-2xl"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{linksWithDropdowns.map(link => (
+    <div id={`desktop-${link.id}-overlay`} class="fixed top-[96px] inset-x-0 bottom-0 hidden z-50 dropdown-overlay">
+        <div class="absolute inset-0 bg-[var(--neutral-background-strong)] bg-opacity-20 dropdown-backdrop"></div>
+        <div class="relative w-full h-auto flex items-start justify-center py-4">
+            <div class="bg-[var(--surface-brand-primary)] p-6 text-[var(--neutral-text-inverted)] rounded-lg w-full mx-12 relative shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {link.dropdown_items.map((item, index) => {
+
+                        if (index < 2) {
+                            return (
+                                <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-96">
+                                    <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+
+                                    <div class="relative flex flex-col justify-end h-full p-4">
+                                        <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed) leading-tight">{item.titulo}</h3>
+                                        <p class="opacity-90 text-xs w-full pr-14 font-(family-name:--font-shields-sans-regular) mt-1">
+                                            {item.subtitulo}
+                                        </p>
+                                    </div>
+
+                                    <div class="absolute rounded-full bottom-4 right-4 border-2 border-[var(--accent-feedback-strong)] w-9 h-9 flex items-center justify-center">
+                                        <i class="fa-solid fa-chevron-right text-sm text-[var(--accent-feedback-strong)]"></i>
+                                    </div>
+                                </a>
+                            );
+                        } else {
+                            return null;
+                        }
+                    })}
+
+                    <div class="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-4 h-96">
+                        {link.dropdown_items.slice(2).map(item => (
+                            <a href={formatUrl(item.url)} class="relative block overflow-hidden rounded-lg group h-full">
+                                <img src={getStrapiUrl(item.imagen)} alt={item.titulo} class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h3 class="font-semibold text-xl font-(family-name:--font-shields-sans-condensed) leading-tight">{item.titulo}</h3>
+                                    <p class="opacity-90 text-xs w-full font-(family-name:--font-shields-sans-regular) mt-1 pr-14">{item.subtitulo}</p>
+                                </div>
+                                <div class="absolute rounded-full bottom-4 right-4 border-2 border-[var(--accent-feedback-strong)] w-9 h-9 flex items-center justify-center">
+                                    <i class="fa-solid fa-chevron-right text-sm text-[var(--accent-feedback-strong)]"></i>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-center items-center gap-x-12 font-bold py-2">
+                    <a href="/tarjetaderegalo" class="flex items-center gap-x-2 transition-opacity hover:opacity-80 hidden">
+                        <i class="fa-solid fa-credit-card text-[var(--accent-feedback-strong)] text-sm"></i>
+                        <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4 text-sm">
+                            Tarjetas de regalo
+                        </span>
+                    </a>
+                    <a href="/preguntas-frecuentes" class="flex items-center gap-x-2 transition-opacity hover:opacity-80">
+                        <i class="fa-solid fa-circle-question text-[var(--accent-feedback-strong)] text-sm"></i>
+                        <span class="underline decoration-[var(--accent-highlight-secondary)] underline-offset-4 text-sm">
+                            Preguntas frecuentes
+                        </span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+))}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', () => {
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.classList.remove('hidden');
+            }
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    if (mobileMenuClose) {
+        mobileMenuClose.addEventListener('click', () => {
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.classList.add('hidden');
+            }
+            document.body.style.overflow = '';
+        });
+    }
+
+    const mobileDropdownTriggers = document.querySelectorAll('.mobile-dropdown-trigger');
+    const allMobileSubmenus = document.querySelectorAll('.mobile-submenu');
+
+    mobileDropdownTriggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            const dropdownId = trigger.getAttribute('data-dropdown-id');
+            const submenu = document.getElementById(`${dropdownId}-submenu`);
+            const arrow = trigger.querySelector('.dropdown-arrow');
+            const span = trigger.querySelector('.mobile-dropdown-text');
+
+            if (submenu) {
+                submenu.classList.toggle('hidden');
+            }
+            if (arrow) {
+                arrow.classList.toggle('rotate-180');
+            }
+
+            if (span) {
+                if (submenu && !submenu.classList.contains('hidden')) {
+                    span.style.color = 'var(--accent-feedback-strong)';
+                } else {
+                    span.style.color = '';
+                }
+            }
+        });
+    });
+
+    const desktopDropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+    const dropdownOverlays = document.querySelectorAll('.dropdown-overlay');
+
+    desktopDropdownTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdownId = trigger.getAttribute('data-dropdown-id');
+            const overlay = document.getElementById(`${dropdownId}-overlay`);
+            const icon = trigger.querySelector('i.fa-chevron-down');
+
+            const isAlreadyOpen = overlay && !overlay.classList.contains('hidden');
+            closeAllDropdowns();
+
+            if (!isAlreadyOpen) {
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+                if (icon) {
+                    icon.classList.add('rotate-180');
+                }
+            }
+        });
+    });
+
+    function closeAllDropdowns() {
+        dropdownOverlays.forEach(overlay => {
+            overlay.classList.add('hidden');
+        });
+        desktopDropdownTriggers.forEach(trigger => {
+            const icon = trigger.querySelector('i.fa-chevron-down');
+            if (icon) {
+                icon.classList.remove('rotate-180');
+            }
+        });
+        document.body.style.overflow = '';
+    }
+
+    dropdownOverlays.forEach(overlay => {
+        const backdrop = overlay.querySelector('.dropdown-backdrop');
+        const contentWrapper = overlay.querySelector('.relative.w-full.h-full.flex');
+
+        if (backdrop) {
+            backdrop.addEventListener('click', closeAllDropdowns);
+        }
+
+        if (contentWrapper) {
+            contentWrapper.addEventListener('click', (event) => {
+                if (event.target === contentWrapper) {
+                    closeAllDropdowns();
+                }
+            });
+        }
+    });
+
+    // --- LÓGICA PARA EL DESPLEGABLE DE UBICACIÓN (ESCRITORIO) ---
+    const locationToggleDesktop     = document.getElementById('location-toggle-desktop');
+    const locationDetailsDesktop    = document.getElementById('location-details-desktop');
+    const locationArrowDesktop      = document.getElementById('location-arrow-desktop');
+
+    if (locationToggleDesktop) {
+        locationToggleDesktop.addEventListener('click', (event) => {
+            event.stopPropagation();
+
+            if (locationDetailsDesktop) {
+                locationDetailsDesktop.classList.toggle('hidden');
+            }
+            if (locationArrowDesktop) {
+                locationArrowDesktop.classList.toggle('rotate-180');
+            }
+        });
+    }
+
+    document.addEventListener('click', (event) => {
+        if (
+            locationToggleDesktop &&
+            !locationToggleDesktop.contains(event.target as Node) &&
+            locationDetailsDesktop &&
+            !locationDetailsDesktop.contains(event.target as Node)
+        ) {
+            locationDetailsDesktop.classList.add('hidden');
+            if (locationArrowDesktop) {
+                locationArrowDesktop.classList.remove('rotate-180');
+            }
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+            if (locationDetailsDesktop && !locationDetailsDesktop.classList.contains('hidden')) {
+                locationDetailsDesktop.classList.add('hidden');
+                if (locationArrowDesktop) {
+                    locationArrowDesktop.classList.remove('rotate-180');
+                }
+            }
+        }
+    });
+});
+</script>

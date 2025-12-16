@@ -1,0 +1,53 @@
+---
+// src/components/Component_38.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+
+interface Props {
+    data?: {
+        title?: string;
+        content?: any;
+    };
+    title?: string;
+    class?: string;
+}
+
+const {
+    data,
+    title: titleProp,
+    class: className
+} = Astro.props;
+
+const finalTitle = titleProp || data?.title || "Información importante";
+
+const richTextContent = data?.content ? stringifyRichText(data.content) : null;
+---
+
+<div class:list={[
+    "text-left p-2 rounded-xl flex gap-2 border border-[var(--feedback-info-background)]",
+    "bg-[var(--feedback-info-background)]/86",
+    className
+]}>
+    <div class="shrink-0 pt-1">
+        <i class="fa-regular fa-circle-info text-2xl lg:text-4xl text-[var(--surface-brand-primary)]"></i>
+    </div>
+
+    <div class="text-[var(--surface-brand-primary)]">
+        <h3 class="whitespace-nowrap font-bold text-[15px] lg:text-2xl mb-2 font-(family-name:--font-shields-sans-bold)">
+            {finalTitle}
+        </h3>
+
+        <div
+            class="text-[8px] lg:text-lg leading-none font-(family-name:--font-shields-sans-regular) [&>p]:mb-2 strapi-rich-text"
+        >
+            {
+                richTextContent ? (
+                    <Fragment set:html={richTextContent} />
+                ) : (
+                    <slot>
+                        Nuestras zonas tienen capacidad para 6 personas, con un máximo de 6 jugando, pero se permite un máximo de 8 personas por zona. Debe ser mayor de 18 años para reservar. Los menores de 16 años (o menores de 18 años después de las 21:00) deben estar supervisados ​​por invitados mayores de 21 años en todo momento.
+                    </slot>
+                )
+            }
+        </div>
+    </div>
+</div>

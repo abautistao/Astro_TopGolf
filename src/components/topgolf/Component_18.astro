@@ -1,0 +1,141 @@
+---
+// src/components/Component_18.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+// 1. Definimos las interfaces para las props de Strapi
+export interface Boton {
+    id: number;
+    texto: string;
+    url: string;
+    tipo: "primario" | "secundario";
+    botones: Boton[];
+}
+
+export interface Props {
+    tag: string;
+    titulo: string;
+    contenido: any; // Rich Text
+    botones: Boton[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { tag, titulo, contenido, botones } = Astro.props;
+
+const placeholderData: Props = {
+    tag: "TOPGOLF MONTERREY",
+    titulo: "Espacios que se adaptan a tu evento",
+    contenido: [
+        {
+            type: "paragraph",
+            children: [
+                {
+                    type: "text",
+                    text: "Somos un gran recinto con una amplia opción de espacios que se adaptan a prácticamente cualquier tipo de evento, por ejemplo, para algo social puedes reservar nuestro Sky Bar en la terraza, o bien para una reunión privada tenemos nuestros salones de conferencia, o si lo que ocupas es algo más grande ¿por qué no pensar en todo un piso?",
+                },
+            ],
+        },
+        {
+            type: "paragraph",
+            children: [
+                {
+                    type: "text",
+                    text: "Los espacios para eventos, así como su configuración, mobiliario, decoración y amenidades, pueden variar. Las capacidades de cada espacio para eventos variarán según la configuración de la sala. Pueden aplicarse restricciones.",
+                    small: true,
+                },
+            ],
+        },
+    ],
+    botones: [
+        {
+            id: 1,
+            texto: "Guía de espacios para eventos",
+            url: "#",
+            tipo: "version_3",
+        },
+        { id: 2, texto: "Solicitar Información", url: "#", tipo: "version_5" },
+    ] as Boton[],
+};
+
+const tagToRender = tag || placeholderData.tag;
+const tituloToRender = titulo || placeholderData.titulo;
+const contentHtml = stringifyRichText(contenido || placeholderData.contenido);
+const botonesToRender =
+    botones && botones.length > 0 ? botones : placeholderData.botones;
+---
+
+<section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
+    <div
+        class="container mx-auto flex flex-col items-center gap-6 px-4 text-center"
+    >
+        <p
+            class="font-(family-name:--font-shields-sans-bold) text-md font-bold uppercase text-[var(--brand-interactive-base)]"
+        >
+            {tagToRender}
+        </p>
+
+        <h2
+            class="font-(family-name:--font-shields-sans-condensed) text-3xl font-semibold uppercase text-[var(--neutral-background-strong)] sm:text-5xl md:text-5xl"
+        >
+            {tituloToRender}
+        </h2>
+
+        <div
+            class="font-(family-name:--font-shields-sans-regular) max-w-3xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose strapi-rich-text"
+            set:html={contentHtml}
+        />
+
+        <div class="w-full flex flex-row flex-wrap justify-center gap-4">
+            <ButtonGroup botones={botonesToRender} />
+        </div>
+    </div>
+</section>
+
+<style>
+    .prose :global(p) {
+        margin: 0;
+    }
+    .prose :global(p + p) {
+        margin-top: 0.5rem;
+    }
+    .prose :global(small) {
+        font-size: 0.875em;
+    }
+
+    .strapi-rich-text :global(strong) {
+        color: var(--neutral-background-strong);
+        font-family: var(--font-tee-line-bold-italic);
+        font-weight: bold;
+    }
+
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: var(--brand-interactive-base);
+    }
+
+    .strapi-rich-text :global(em) {
+        font-family: var(--font);
+        color: var(--shielfontds-sans-regular);
+        font-size: 12px;
+        font-style: normal !important;
+    }
+
+    /* --- Agrega esto aquí --- */
+    .strapi-rich-text :global(li::marker) {
+        /* Usa la variable de color que desees para el punto/número */
+        color: var(--neutral-background-strong);
+
+        /* Opcional: Si quieres que el bullet sea más grande o negrita */
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+</style>

@@ -1,0 +1,142 @@
+---
+// src/components/Component_6.astro
+
+// 1. Importa utilidades y las imágenes decorativas estáticas
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import dotsPattern from '../../assets/Artwork_bg.png';
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+// 2. Define la interfaz de las props desde Strapi
+export interface Props {
+    titulo: string;
+    descripcion: any;
+    texto_ubicacion: string;
+    Boton: Boton[];
+    texto_ayuda: any;
+    imagen_principal: any;
+    alt_imagen_principal: string;
+}
+
+// 3. Recibe las props
+const {
+    titulo,
+    descripcion,
+    texto_ubicacion,
+    Boton,
+    texto_ayuda,
+    imagen_principal,
+    alt_imagen_principal,
+} = Astro.props;
+
+// 4. Procesa los datos de Strapi
+const mainImageUrl = getStrapiUrl(imagen_principal);
+const descriptionHtml = stringifyRichText(descripcion);
+const helpTextHtml = stringifyRichText(texto_ayuda);
+
+// Placeholder por si no viene la imagen de Strapi
+const placeholderImageUrl =
+    "https://placehold.co/800x1000/4a5568/ffffff?text=Topgolf";
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
+    ? [Boton]
+    : Boton) || [
+    {
+        id: 1,
+        texto: "RESERVA AQUÍ TU BAHÍA",
+        url: "#",
+        tipo: "version_3",
+    },
+];
+---
+
+<section class="relative overflow-hidden">
+    <div class="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5">
+        <img
+            class="w-full h-full object-cover"
+            src={mainImageUrl || placeholderImageUrl}
+            alt={alt_imagen_principal || "Jugador de Topgolf en acción"}
+            loading="lazy"
+            decoding="async"
+            width="760"
+            height="500"
+        />
+    </div>
+
+    <div class="relative pt-10 lg:py-10 flex items-center lg:min-h-[500px]">
+        <div class="lg:w-1/2 relative w-full flex justify-center lg:block">
+            <div
+                class="relative z-10 w-full max-w-2xl mx-auto text-center bg-[var(--neutral-background-subtle)] p-8 md:p-20 text-[var(--surface-brand-primary)]  lg:text-left lg:mx-0 lg:ml-auto lg:mr-8"
+            >
+               <h2
+                    class="text-left text-[var(--neutral-background-strong)] text-4xl lg:text-5xl font-semibold tracking-tight uppercase font-(family-name:--font-shields-sans-semibold-condensed)"
+                >
+                    {titulo || "PLANEA TU VISITA"}
+                </h2>
+
+                <div
+                    class="text-base font-(family-name:--font-shields-sans-regular) text-justify mt-4 text-[var(--neutral-background-strong)] strapi-rich-text"
+                    set:html={descriptionHtml ||
+                        `<p>Ya sea para reservar una bahía, una fiesta o simplemente visitarnos, te facilitamos la reunión con tu equipo. ¿No encuentras lo que necesitas? <a href="#">¡Contáctanos!</a></p>`}
+                />
+
+                <div
+                    class="flex items-center justify-start lg:justify-start gap-2 mt-8 mb-8"
+                >
+                    <i
+                        class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)]"
+                    ></i>
+                    <span
+                        class="text-sm font-bold text-[var(--brand-interactive-base)] uppercase tracking-wider font-(family-name:--font-shields-sans-semibold-condensed)"
+                    >
+                        {texto_ubicacion || "TOPGOLF PLAYA DEL CARMEN"}
+                    </span>
+                </div>
+
+                <div class="hidden lg:flex mt-6 justify-center w-full">
+                    <ButtonGroup
+                        botones={componentButtons}
+                        clase="flex flex-col items-center"
+                    />
+                </div>
+
+                <div
+                    class="flex justify-center lg:justify-center mt-6 text-sm font-(family-name:--font-shields-sans-regular) text-[var(--neutral-background-strong)] prose-sm prose-a:text-[var(--accent-highlight-secondary)] hover:prose-a:underline strapi-rich-text"
+                    set:html={helpTextHtml ||
+                        `<p>¿Necesitas ayuda? <a href="#">Consulta nuestras preguntas frecuentes</a></p>`}
+                />
+            </div>
+
+            <img
+                src={dotsPattern.src}
+                alt="Patrón de puntos decorativo"
+                class="absolute bottom-0 left-0 transform -translate-x-1/4 translate-y-1/4 w-1/2 h-auto z-0 hidden lg:block"
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+    </div>
+</section>
+
+<style>
+    .text-shadow-md {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--neutral-background-strong);
+        font-family: var(--font-tee-line-bold-italic);
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-tertiary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: var(--brand-interactive-base);
+    }
+</style>

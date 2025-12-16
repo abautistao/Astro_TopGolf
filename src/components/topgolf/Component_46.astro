@@ -1,0 +1,64 @@
+---
+// src/components/Component_23.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+export interface GaleriaItem {
+    image: string
+    title: string;
+}
+
+export interface Props {
+    titulo_seccion: string;
+    descripcion_seccion: any; // Rich Text
+    imagenes: GaleriaItem[];
+    texto_boton_cargar_mas: string;
+    texto_boton_regresar: string;
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo_seccion, descripcion_seccion, imagenes } = Astro.props;
+
+const placeholderData: Props = {
+    titulo_seccion: "GALERÍA",
+    descripcion_seccion: [{ type: 'paragraph', children: [{ type: 'text', text: "Explora nuestra galería y conoce toda la experiencia de Topgolf." }] }],
+    texto_boton_cargar_mas: "CARGAR MÁS JUEGOS",
+    texto_boton_regresar: "REGRESAR",
+    imagenes: [
+        { title: 'Imagen 1',  image: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png'},
+    ]
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+    titulo_seccion: titulo_seccion || placeholderData.titulo_seccion,
+    descripcion_seccion: stringifyRichText(descripcion_seccion || placeholderData.descripcion_seccion),
+    imagenes: imagenes && imagenes.length > 0 ? imagenes : placeholderData.imagenes,
+};
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-(family-name:--font-shields-sans-regular)">
+        <div class="text-center">
+            <h2 class="font-(family-name:--font-shields-sans-semibold-condensed) text-[28px] sm:text-[38px] font-semibold text-[var(--neutral-background-strong)] leading-none
+                tracking-[0]">
+                {dataToRender.titulo_seccion}
+            </h2>
+            <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>
+        </div>
+
+        <div id="gallery-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-3">
+            {dataToRender.imagenes.map((gallery) => (
+                <a href={getStrapiUrl(gallery.image)} data-fancybox="gallery" data-caption={gallery.title}>
+                    <img src={getStrapiUrl(gallery.image)}/>
+                </a>
+            ))}
+            
+        </div>
+    </div>
+</section>
+
+<script >
+    import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
+    Fancybox.bind("[data-fancybox]", {});
+</script>
