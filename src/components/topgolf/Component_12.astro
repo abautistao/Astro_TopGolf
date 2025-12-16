@@ -1,0 +1,84 @@
+---
+// src/components/Component_12.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface InfoCard {
+  id: number;
+  titulo: string;
+  contenido: any; // Rich Text
+  simbolo_fondo: string;
+}
+
+export interface Props {
+  tarjetas: InfoCard[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { tarjetas } = Astro.props;
+
+const placeholderCards: InfoCard[] = [
+  {
+    id: 1,
+    titulo: "¿Pregunta de Ejemplo 1?",
+    contenido: [{ type: 'paragraph', children: [{ type: 'text', text: 'Esta es una respuesta de ejemplo. Puedes usar ' }, { type: 'text', text: 'negritas', bold: true }, { type: 'text', text: ' y más formatos.' }] }],
+    simbolo_fondo: "?",
+  },
+  {
+    id: 2,
+    titulo: "¿Pregunta de Ejemplo 2?",
+    contenido: [{ type: 'paragraph', children: [{ type: 'text', text: 'Cada tarjeta se gestiona fácilmente desde Strapi.' }] }],
+    simbolo_fondo: "!",
+  },
+  {
+    id: 3,
+    titulo: "¿Pregunta de Ejemplo 3?",
+    contenido: [{ type: 'paragraph', children: [{ type: 'text', text: 'Añade, edita o elimina tarjetas sin tocar el código.' }] }],
+    simbolo_fondo: "#",
+  },
+];
+
+const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCards;
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)]">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {cardsToRender.map((card) => {
+        const contentHtml = stringifyRichText(card.contenido);
+        return (
+          <div class="relative rounded-lg bg-[var(--neutral-background-subtle)] px-6 py-8 text-[var(--neutral-background-strong)] shadow-md sm:py-10 overflow-hidden">
+
+            <span class="absolute right-0 top-0 pr-4 -mt-2 text-[8rem] leading-none font-bold text-[var(--brand-interactive-base)] opacity-20 select-none pointer-events-none">
+              {card.simbolo_fondo || '?'}
+            </span>
+
+            <h3 class="relative mb-3 text-base font-bold font-(family-name:--font-tee-line-bold-italic)">{card.titulo}</h3>
+            <div class="font-(family-name:--font-shields-sans-regular) relative text-xs sm:text-base prose max-w-none strapi-rich-text" set:html={contentHtml} />
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .prose :global(strong) {
+    color: var(--brand-interactive-base);
+  }
+  .strapi-rich-text :global(strong) {
+      color: var(--brand-interactive-base);
+  }
+  .strapi-rich-text :global(u) {
+      text-decoration-color: var(--accent-highlight-secondary);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+  }
+  .strapi-rich-text :global(a) {
+      text-decoration: underline;
+      text-decoration-color: var(--accent-highlight-secondary);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      color: inherit;
+  }
+</style>

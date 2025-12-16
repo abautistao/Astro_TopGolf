@@ -1,0 +1,99 @@
+---
+// src/components/Component_14.astro
+import { getStrapiUrl, stringifyRichText, formatUrl } from '../../lib/strapi.js';
+
+// 1. Definimos la interfaz para las props con la estructura aplanada
+export interface Props {
+    titulo_izquierda?: string;
+    descripcion_izquierda?: any;
+    texto_link_izquierda?: string;
+    url_link_izquierda?: string;
+    imagen_izquierda?: any;
+    titulo_derecha?: string;
+    descripcion_derecha?: any; // Rich Text
+    icono_derecha?: string; // Font Awesome icon classes
+}
+
+// 2. Recibimos las props de Strapi, con valores por defecto
+const {
+    titulo_izquierda = 'COMIDA Y BEBIDA',
+    descripcion_izquierda = 'Amamos la diversión, pero también sabemos cómo lucirnos en la cocina.',
+    texto_link_izquierda = 'Ver el menú de Topgolf',
+    url_link_izquierda = '#',
+    imagen_izquierda = null,
+    titulo_derecha = 'CÓDIGO DE CONDUCTA',
+    descripcion_derecha = 'Nos comprometemos a brindar una experiencia excelente en un ambiente acogedor e inclusivo para que podamos divertirnos juntos. Por lo tanto, para todas las partes involucradas (y nos referimos a las partes), les rogamos que sigan nuestro [código de conducta](#).',
+    icono_derecha = 'fa-solid fa-shield-halved' // Default icon
+} = Astro.props;
+
+// 3. Procesamos los datos para el renderizado
+const leftCardImageUrl = getStrapiUrl(imagen_izquierda);
+const placeholderImageUrl = `https://placehold.co/150x150/e0e0e0/333?text=Imagen`;
+
+const rightCardDescriptionHtml = stringifyRichText(descripcion_derecha);
+const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
+
+---
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+    <div class="container mx-auto flex flex-col justify-center gap-20 px-5 md:flex-row md:items-stretch md:max-w-7xl">
+        {/* Tarjeta Izquierda */}
+        <div class="flex-1 rounded-xl bg-[var(--neutral-background-subtle)] p-6 shadow-sm md:w-[48%] content-center">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div class="min-w-[150px] overflow-hidden rounded-lg sm:h-[150px] sm:w-[150px]">
+                    <img
+                        src={leftCardImageUrl || placeholderImageUrl}
+                        alt={imagen_izquierda?.data?.attributes?.alternativeText || 'Imagen para ' + titulo_izquierda}
+                        class="h-full w-full object-cover"
+                        width="150"
+                        height="150"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-sm md:text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold)">{titulo_izquierda}</h2>
+                    <div class="text-xs md:text-base font-(family-name:--font-shields-sans-regular) mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
+
+                    <a href={formatUrl(url_link_izquierda)}
+                        class="font-(family-name:--font-shields-sans-bold) mt-4 inline-flex items-center gap-2 font-bold text-[var(--brand-interactive-base)] link-underline"
+                        set:html={texto_link_izquierda}
+                    >
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {/* Tarjeta Derecha */}
+        <div class="flex-1 rounded-xl bg-[var(--surface-brand-primary)] p-6 shadow-sm md:w-[48%] flex flex-col items-center">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full text-[var(--neutral-text-inverted)] text-2xl" set:html={icono_derecha} >
+            </div>
+            <div class="flex h-full flex-col items-center justify-center text-center">
+                <h2 class="text-lg font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-bold)">{titulo_derecha}</h2>
+                <div class="text-sm font-(family-name:--font-shields-sans-regular) mt-4 text-[var(--neutral-text-inverted)] mx-6 strapi-rich-text" set:html={rightCardDescriptionHtml} />
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    .strapi-rich-text :global(strong) {
+        color: var(--neutral-text-inverted);
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+    .link-underline {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-underline-offset: 4px;
+    }
+</style>

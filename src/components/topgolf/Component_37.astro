@@ -1,0 +1,111 @@
+---
+// src/components/Component_37.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+
+// INTERFACES
+export interface FaqItem {
+    id: number;
+    pregunta: string;
+    respuesta: any; // Rich Text
+}
+
+// Nueva interfaz para soportar N secciones
+export interface FaqSection {
+    id: number;
+    titulo_seccion: string;
+    faq_items: FaqItem[];
+}
+
+export interface Props {
+    titulo_normal: string;
+    titulo_resaltado: string;
+    // Reemplazamos la prop plana 'preguntas' por 'secciones'
+    secciones: FaqSection[];
+    nota_aclaratoria: any; // Rich Text
+}
+
+const {
+
+
+    titulo_normal,
+    titulo_resaltado,
+    secciones = [],
+    nota_aclaratoria,
+} = Astro.props;
+
+const sectionsToRender = secciones || [];
+const leftColumnSections = sectionsToRender.filter((_, index) => index % 2 === 0);
+const rightColumnSections = sectionsToRender.filter((_, index) => index % 2 !== 0);
+
+const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
+---
+<section class="w-full bg-[var(--neutral-text-inverted)] pb-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+
+            <div class="flex flex-col gap-10">
+                {leftColumnSections.map((seccion) => (
+                    <div class="w-full">
+                        <h3 class="font-bold text-xl mb-5 text-[var(--neutral-background-strong)] uppercase tracking-wide" style="font-family: var(--font-shields-sans-bold);">
+                            {seccion.titulo_seccion}
+                        </h3>
+
+                        <div class="space-y-3">
+                            {seccion.faq_items.map((item) => (
+                                <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-sm border border-[var(--surface-brand-primary)] rounded-md overflow-hidden">
+                                    <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
+                                        <h4 class="text-sm md:text-base text-[var(--neutral-background-strong)] pr-4 leading-snug" style="font-family: var(--font-shields-sans-semibold);">
+                                            {item.pregunta}
+                                        </h4>
+                                        <i class="fa-solid fa-chevron-down text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0 text-lg" :class="{'rotate-180': open}"></i>
+                                    </div>
+                                    <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4 bg-[var(--neutral-background-subtle)]">
+                                        <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-sm text-[var(--neutral-background-strong)] max-w-none pt-2" set:html={getAnswerHtml(item)} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div class="flex flex-col gap-10">
+                {rightColumnSections.map((seccion) => (
+                    <div class="w-full">
+                        <h3 class="font-bold text-xl mb-5 text-[var(--neutral-background-strong)] uppercase tracking-wide" style="font-family: var(--font-shields-sans-bold);">
+                            {seccion.titulo_seccion}
+                        </h3>
+
+                        <div class="space-y-3">
+                            {seccion.faq_items.map((item) => (
+                                <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-sm border border-[var(--surface-brand-primary)] rounded-md overflow-hidden">
+                                    <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
+                                        <h4 class="text-sm md:text-base text-[var(--neutral-background-strong)] pr-4 leading-snug" style="font-family: var(--font-shields-sans-semibold);">
+                                            {item.pregunta}
+                                        </h4>
+                                        <i class="fa-solid fa-chevron-down text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0 text-lg" :class="{'rotate-180': open}"></i>
+                                    </div>
+                                    <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4 bg-[var(--neutral-background-subtle)]">
+                                        <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-sm text-[var(--neutral-background-strong)] max-w-none pt-2" set:html={getAnswerHtml(item)} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+  .prose :global(p) {
+    margin-bottom: 0.5em;
+  }
+  .prose :global(ul) {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+</style>

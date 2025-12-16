@@ -1,0 +1,74 @@
+---
+// src/components/Component_31.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+import dotsPattern from '../../assets/Artwork_bg.png';
+import dotsPatternMobile from '../../assets/Artwork_1.png';
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
+// 1. Definimos las interfaces para las props de Strapi
+export interface Props {
+    titulo: string;
+    contenido: any; // Rich Text
+    texto_boton: string;
+    url_boton: string;
+    Boton: Boton[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo, contenido, texto_boton, url_boton, Boton } = Astro.props;
+
+const placeholderData: Props = {
+    titulo: "MEMBRESÍA PLATINUM",
+    contenido: [
+        { type: 'paragraph', children: [{ type: 'text', text: "Si tu plan es traer a amigos o familia, o simplemente venir a jugar y practicar tu swing varias veces por semana, entonces esta membresía es para ti." }] },
+        { type: 'paragraph', children: [{ type: 'text', text: "Conoce aquí los beneficios que tenemos:" }] }
+    ],
+    texto_boton: "CONOCE MÁS",
+    url_boton: "#",
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+    titulo: titulo || placeholderData.titulo,
+    contenido: stringifyRichText(contenido || placeholderData.contenido),
+    texto_boton: texto_boton || placeholderData.texto_boton,
+    url_boton: url_boton || placeholderData.url_boton,
+};
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: texto_boton || dataToRender.texto_boton,
+        url: url_boton || dataToRender.url_boton,
+        tipo: "version_1"
+    }
+];
+---
+
+<section class="relative bg-[var(--neutral-text-inverted)] sm:py-24 sm:pt-0">
+    <div class="mx-auto">
+        <div class="relative z-10 mx-4 overflow-hidden bg-[var(--surface-brand-primary)] px-6 py-20 shadow-xl sm:mx-0 sm:px-16 sm:py-12">
+            <div class="mx-auto flex max-w-2xl flex-col items-center text-center">
+                <h2 style="font-family: var(--font-shields-sans-semibold);" class="text-2xl font-bold uppercase tracking-tight text-[var(--accent-highlight-secondary)] sm:text-4xl">
+                    {dataToRender.titulo}
+                </h2>
+                <div style="font-family: var(--font-shields-sans-regular);" class="mt-6 text-md leading-8 text-[var(--neutral-text-inverted)] prose max-w-none" set:html={dataToRender.contenido}>
+                </div>
+                <div class="w-full mt-10">
+                    <ButtonGroup botones={componentButtons} clase="flex flex-col items-center" />
+                </div>
+            </div>
+        </div>
+        <img src={dotsPattern.src} width={dotsPattern.width} height={dotsPattern.height} alt="Patrón de puntos decorativo" class="absolute bottom-8 right-0 z-0 hidden h-auto w-auto sm:block" aria-hidden="true" loading="lazy" decoding="async" />
+        <img src={dotsPatternMobile.src} width={dotsPatternMobile.width} height={dotsPatternMobile.height} alt="Patrón de puntos decorativo" class="absolute bottom-33 right-0 z-0 block translate-y-1/2 sm:hidden" aria-hidden="true" loading="lazy" decoding="async" />
+    </div>
+</section>
+
+<style>
+    .prose :global(p) {
+        color: var(--neutral-text-inverted);
+        margin: 0;
+    }
+    .prose :global(p + p) {
+        margin-top: 0.5rem;
+    }
+</style>
