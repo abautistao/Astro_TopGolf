@@ -1,5 +1,7 @@
 ---
 // src/components/Component_20.astro
+// src/components/Component_20.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl } from '../../lib/strapi.js';
 import dotsPattern from '../../assets/Artwork_bg.png';
 import dotsPatternSquare from '../../assets/Artwork_square.png';
@@ -70,9 +72,9 @@ const dataToRender = {
       : placeholderData.caracteristicas,
 };
 
-const imageUrl = imagen_principal
+const imageUrl = (imagen_principal
   ? getStrapiUrl(imagen_principal)
-  : FALLBACK_IMAGE_URL;
+  : null) || FALLBACK_IMAGE_URL;
 const imageAlt =
   imagen_principal?.alternativeText || "Imagen principal de la sección";
 ---
@@ -82,38 +84,31 @@ const imageAlt =
     class="grid grid-cols-1 lg:grid-cols-2 min-h-screen font-sans p-4 lg:p-16 lg:pl-20 relative"
   >
     <div class="lg:order-last">
-      <img
+      <Image
         src={imageUrl}
         alt={imageAlt}
         class="w-full h-full object-cover min-h-[400px] lg:min-h-screen"
-        loading="lazy"
-        decoding="async"
+        inferSize={true}
       />
     </div>
 
-    <img
-      src={dotsPattern.src}
+    <Image
+      src={dotsPattern}
       alt="Patrón decorativo de puntos"
       class="absolute z-0 bottom-0 left-0 w-125 hidden lg:block"
       aria-hidden="true"
-      loading="lazy"
-      decoding="async"
     />
-    <img
-      src={dotsPatternSquare.src}
+    <Image
+      src={dotsPatternSquare}
       alt="Patrón decorativo de puntos"
       class="absolute bottom-0 left-0 z-0 w-40 lg:hidden"
       aria-hidden="true"
-      loading="lazy"
-      decoding="async"
     />
-    <img
-      src={dotsPatternSquare.src}
+    <Image
+      src={dotsPatternSquare}
       alt="Patrón decorativo de puntos"
       class="absolute bottom-32 left-0 z-0 w-40 lg:hidden"
       aria-hidden="true"
-      loading="lazy"
-      decoding="async"
     />
 
     <div

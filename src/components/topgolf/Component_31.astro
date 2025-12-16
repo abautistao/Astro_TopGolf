@@ -1,5 +1,6 @@
 ---
 // src/components/Component_31.astro
+import { Image } from "astro:assets";
 import { stringifyRichText } from '../../lib/strapi.js';
 import dotsPattern from '../../assets/Artwork_bg.png';
 import dotsPatternMobile from '../../assets/Artwork_1.png';
@@ -25,6 +26,7 @@ const placeholderData: Props = {
     ],
     texto_boton: "CONOCE MÁS",
     url_boton: "#",
+    Boton: []
 };
 
 // 3. Preparamos los datos para renderizar
@@ -58,8 +60,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 </div>
             </div>
         </div>
-        <img src={dotsPattern.src} width={dotsPattern.width} height={dotsPattern.height} alt="Patrón de puntos decorativo" class="absolute bottom-8 right-0 z-0 hidden h-auto w-auto sm:block" aria-hidden="true" loading="lazy" decoding="async" />
-        <img src={dotsPatternMobile.src} width={dotsPatternMobile.width} height={dotsPatternMobile.height} alt="Patrón de puntos decorativo" class="absolute bottom-33 right-0 z-0 block translate-y-1/2 sm:hidden" aria-hidden="true" loading="lazy" decoding="async" />
+        <Image src={dotsPattern} alt="Patrón de puntos decorativo" class="absolute bottom-8 right-0 z-0 hidden h-auto w-auto sm:block" aria-hidden="true" />
+        <Image src={dotsPatternMobile} alt="Patrón de puntos decorativo" class="absolute bottom-33 right-0 z-0 block translate-y-1/2 sm:hidden" aria-hidden="true" />
     </div>
 </section>
 

@@ -1,5 +1,6 @@
 ---
 // src/components/Component_40.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
@@ -27,8 +28,6 @@ const {
   imagen,
 } = Astro.props;
 
-const imagenUrl = getStrapiUrl(imagen);
-
 // Placeholders
 const subtitlePlaceholder = "Topgolf Monterrey (7-24 Personas)";
 const titlePlaceholder = "¿Que Incluye?";
@@ -47,6 +46,8 @@ const benefitsPlaceholder = [
 ];
 const imagePlaceholder =
   "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
+
+const imagenUrl = getStrapiUrl(imagen) || imagePlaceholder;
 
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
   ? [Boton]
@@ -156,10 +157,11 @@ const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
       class="w-full lg:w-2/5 bg-[#00bfff] relative h-64 lg:h-auto overflow-hidden order-1 md:order-2"
     >
       <!-- Imagen -->
-      <img
+      <Image
         src={imagenUrl}
         alt="Promo Image"
         class="absolute inset-0 w-full h-full object-cover object-center"
+        inferSize={true}
       />
       <!-- Overlay opcional -->
       <div

@@ -1,5 +1,6 @@
 ---
 // src/components/Component_44.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 console.log(Astro.props);
 interface Props {
@@ -41,7 +42,7 @@ const data = {
         "Y además te incluye <span class='font-black uppercase'>nachos regios</span>",
     video_thumbnail:
         video_thumbnail_url ||
-        "https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=1200&auto=format&fit=crop",
+        "https://dummyimage.com/600x400/000/fff",
     video_url:
         video_url || "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // Example video
 };
@@ -109,10 +110,11 @@ const data = {
                 class="absolute inset-0 w-full h-full transition-opacity duration-500"
             >
                 <!-- Imagen Thumbnail -->
-                <img
+                <Image
                     src={data.video_thumbnail}
                     alt="Video Promocional"
                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-60"
+                    inferSize={true}
                 />
 
                 <!-- Overlay Gradiente -->

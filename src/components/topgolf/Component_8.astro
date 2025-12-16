@@ -1,5 +1,6 @@
 ---
 // src/components/Component_8.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText, formatUrl } from '../../lib/strapi.js';
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
@@ -90,10 +91,11 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 
         return (
           <a href={formatUrl(card.url_tarjeta)} class="relative block overflow-hidden rounded-lg group">
-            <img
+            <Image
               src={imageUrl || placeholderUrl(card.etiqueta)}
               alt={altText}
               class="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              inferSize={true}
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
               <div class="absolute bottom-0 w-full bg-[#0D111791] p-4">

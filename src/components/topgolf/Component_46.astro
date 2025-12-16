@@ -1,5 +1,6 @@
 ---
-// src/components/Component_23.astro
+// src/components/Component_46.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
@@ -35,6 +36,7 @@ const dataToRender = {
     descripcion_seccion: stringifyRichText(descripcion_seccion || placeholderData.descripcion_seccion),
     imagenes: imagenes && imagenes.length > 0 ? imagenes : placeholderData.imagenes,
 };
+const placeholderImage = "https://placehold.co/600x400?text=No+Image";
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
@@ -49,8 +51,8 @@ const dataToRender = {
 
         <div id="gallery-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-3">
             {dataToRender.imagenes.map((gallery) => (
-                <a href={getStrapiUrl(gallery.image)} data-fancybox="gallery" data-caption={gallery.title}>
-                    <img src={getStrapiUrl(gallery.image)}/>
+                <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
+                    <Image src={getStrapiUrl(gallery.image) || placeholderImage} alt={gallery.title} inferSize={true} />
                 </a>
             ))}
             

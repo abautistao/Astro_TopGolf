@@ -5,6 +5,7 @@ import {
   stringifyRichText,
   formatUrl,
 } from '../../../lib/strapi.js';
+import { Image } from "astro:assets";
 import ButtonGroup from "./Button.astro";
 import type { Boton } from "./Button.astro";
 
@@ -114,26 +115,26 @@ const stepLabelPositionClasses = isLeftOrientation
   {/* Patrón de Escritorio: Usa desktopPatternClasses para la posición */}
   {
     desktopPatternUrl && (
-      <img
+      <Image
         src={desktopPatternUrl}
         alt="Patrón de puntos decorativo"
         class={`absolute ${desktopPatternClasses}`}
         aria-hidden="true"
-        loading="lazy"
-        decoding="async"
+        width={500}
+        height={500}
       />
     )
   }
   {/* Patrón Móvil: Usa left-0 o right-0 dependiendo de la orientación */}
   {
     mobilePatternUrl && (
-      <img
+      <Image
         src={mobilePatternUrl}
         alt="Patrón de puntos decorativo"
         class={`absolute top-10 ${isLeftOrientation ? "left-0" : "right-0"} z-0 lg:hidden`}
         aria-hidden="true"
-        loading="lazy"
-        decoding="async"
+        width={300}
+        height={300}
       />
     )
   }
@@ -142,10 +143,11 @@ const stepLabelPositionClasses = isLeftOrientation
     <div class={mainContainerClasses}>
       {/* --- Imagen Principal --- */}
       <div class="w-full lg:w-2/4 flex-shrink-0 lg:ml-15 relative">
-        <img
+        <Image
           src={mainImageUrl || placeholderImage}
           alt={imagen_principal?.data?.attributes?.alternativeText || titulo}
           class="w-full h-full object-cover rounded-lg shadow-lg"
+          inferSize={true}
         />
         {/* Etiqueta de Paso (Móvil) - text-3xl */}
         <div

@@ -1,5 +1,6 @@
 ---
 // src/components/Component_21.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, formatUrl } from '../../lib/strapi.js';
 import { stringifyRichText } from '../../lib/strapi.js';
 
@@ -85,9 +86,9 @@ const promotionsToRender =
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             {
                 promotionsToRender.map((promo) => {
-                    const imageUrl = promo.imagen
+                    const imageUrl = (promo.imagen
                         ? getStrapiUrl(promo.imagen)
-                        : FALLBACK_IMAGE_URL;
+                        : null) || FALLBACK_IMAGE_URL;
                     const imageAlt =
                         promo.imagen?.alternativeText || promo.titulo;
 
@@ -97,10 +98,11 @@ const promotionsToRender =
                             class="group flex flex-col bg-[var(--neutral-background-subtle)] shadow-md hover:shadow-xl transition-all duration-300 ease-in-out overflow-hidden"
                         >
                             <div class="relative mb-4">
-                                <img
+                                <Image
                                     src={imageUrl}
                                     alt={imageAlt}
                                     class="w-full h-52 object-cover object-center group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                                    inferSize={true}
                                 />
 
                                 {promo.etiqueta && (

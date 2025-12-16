@@ -2,6 +2,7 @@
 // src/components/Component_6.astro
 
 // 1. Importa utilidades y las imágenes decorativas estáticas
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import dotsPattern from '../../assets/Artwork_bg.png';
 import ButtonGroup from "./elements/Button.astro";
@@ -51,15 +52,14 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
 
 <section class="relative overflow-hidden">
     <div class="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5">
-        <img
+    <div class="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5">
+        <Image
             class="w-full h-full object-cover"
             src={mainImageUrl || placeholderImageUrl}
             alt={alt_imagen_principal || "Jugador de Topgolf en acción"}
-            loading="lazy"
-            decoding="async"
-            width="760"
-            height="500"
+            inferSize={true}
         />
+    </div>
     </div>
 
     <div class="relative pt-10 lg:py-10 flex items-center lg:min-h-[500px]">
@@ -106,13 +106,11 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
                 />
             </div>
 
-            <img
-                src={dotsPattern.src}
+            <Image
+                src={dotsPattern}
                 alt="Patrón de puntos decorativo"
                 class="absolute bottom-0 left-0 transform -translate-x-1/4 translate-y-1/4 w-1/2 h-auto z-0 hidden lg:block"
                 aria-hidden="true"
-                loading="lazy"
-                decoding="async"
             />
         </div>
     </div>

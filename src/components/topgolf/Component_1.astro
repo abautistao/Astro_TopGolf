@@ -79,10 +79,11 @@ const showVideo = isVideo(heroBackgroundUrl);
                 class="absolute inset-0 w-full h-full object-cover"
             />
         ) : (
-            <img
+            <Image
                 src={heroBackgroundUrl || placeholderBgUrl}
                 alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
                 class="absolute inset-0 object-cover w-full h-full"
+                inferSize={true}
             />
         )
     }
@@ -92,10 +93,11 @@ const showVideo = isVideo(heroBackgroundUrl);
     <div
         class="relative z-10 flex flex-col items-center justify-center h-[550px] md:h-[500px] text-center"
     >
-        <img
+        <Image
             src={topgolfLogoUrl || placeholderLogoUrl}
             alt={alt_logo || "Logo de placeholder"}
             class="transform w-50 md:w-80 z-20"
+            inferSize={true}
         />
         <h1
             class="leading-none font-(family-name:--font-shields-sans-semibold-condensed) mt-2 md:-mt-10 tracking-normal uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]"

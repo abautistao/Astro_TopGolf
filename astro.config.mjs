@@ -13,6 +13,11 @@ export default defineConfig({
   adapter: cloudflare(),
   site: 'http://localhost:4321', // URL para pruebas locales.
 
+  image: {
+    domains: ['localhost', '127.0.0.1'],
+    remotePatterns: [{ protocol: "https" }],
+  },
+
   vite: {
     plugins: [tailwindcss()]
   },

@@ -1,5 +1,6 @@
 ---
 // src/components/Component_25.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
@@ -37,6 +38,7 @@ const placeholderData: Props = {
     texto_boton: "COMPRA TU TARJETA DE REGALO",
     url_boton: "#",
     imagen: null,
+    Boton: []
 };
 
 // 3. Preparamos los datos para renderizar
@@ -49,9 +51,9 @@ const dataToRender = {
     url_boton: url_boton || placeholderData.url_boton,
 };
 
-const imageUrl = imagen
+const imageUrl = (imagen
     ? getStrapiUrl(imagen)
-    : FALLBACK_IMAGE_URL;
+    : null) || FALLBACK_IMAGE_URL;
 const imageAlt = imagen?.alternativeText || "Imagen descriptiva";
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
     {
@@ -83,7 +85,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 </div>
             </div>
             <div class="flex justify-center items-center h-full order-first lg:order-last">
-                <img src={imageUrl} alt={imageAlt} class="w-full h-auto max-w-xl" loading="lazy" decoding="async" />
+                <Image src={imageUrl} alt={imageAlt} class="w-full h-auto max-w-xl" inferSize={true} />
             </div>
         </div>
     </div>
