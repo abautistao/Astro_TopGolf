@@ -1,5 +1,6 @@
 ---
 // src/components/Component_45.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 
 interface Props {
@@ -52,10 +53,11 @@ const data = {
                 <div
                     class="relative w-full h-64 md:h-[500px] overflow-hidden bg-gray-900 shadow-2xl"
                 >
-                    <img
+                    <Image
                         src={data.imagen}
                         alt="foto"
                         class="w-full h-full object-cover object-center opacity-90 hover:scale-105 transition-transform duration-700"
+                        inferSize={true}
                     />
                     <!-- Degradado sutil -->
                     <div

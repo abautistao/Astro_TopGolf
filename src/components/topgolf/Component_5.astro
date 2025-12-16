@@ -2,6 +2,7 @@
 // src/components/Component_5.astro
 
 // 1. Importa utilidades y las imágenes decorativas estáticas
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import dotsPattern from '../../assets/Artwork.png';
 import dotsPatternMobile from '../../assets/Artwork_1.png';
@@ -47,26 +48,23 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 
 <section class="relative overflow-x-hidden py-16 sm:py-24">
     <div class="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <img
-            src={dotsPattern.src}
+        <Image
+            src={dotsPattern}
             alt="Patrón de puntos decorativo"
             class="absolute top-0 right-0 transform -translate-y-1/4 translate-x-1/4 z-0 hidden lg:block"
             aria-hidden="true"
-            loading="lazy"
-            decoding="async"
         />
 
         <div class="relative lg:flex lg:items-center lg:justify-end lg:min-h-[500px]">
             <div class="lg:absolute lg:top-0 lg:left-0 lg:w-3/5 lg:h-full">
-                <img
+            <div class="lg:absolute lg:top-0 lg:left-0 lg:w-3/5 lg:h-full">
+                <Image
                 src={mainImageUrl || placeholderImageUrl}
                 alt={alt_imagen_principal || "Grupo de amigos disfrutando de un evento"}
                 class="w-full h-full object-cover rounded-lg shadow-xl"
-                loading="lazy"
-                decoding="async"
-                width="760"
-                height="500"
+                inferSize={true}
                 />
+            </div>
             </div>
 
         <div class="relative w-[90%] mx-auto -mt-[49px] lg:w-3/5 lg:mx-0 lg:mt-0 lg:-mr-[55px]">
@@ -82,8 +80,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 </div>
             </div>
 
-            <img
-                src={dotsPatternMobile.src}
+            <Image
+                src={dotsPatternMobile}
                 alt="Patrón decorativo móvil"
                 class="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 w-24 h-24 z-0 lg:hidden"
                 aria-hidden="true"

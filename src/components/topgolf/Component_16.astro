@@ -1,5 +1,6 @@
 ---
 // src/components/Component_16.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
@@ -75,9 +76,9 @@ const packagesToRender =
 
                     // --- LÓGICA CORREGIDA ---
                     // Ahora pasamos el objeto de imagen COMPLETO a getStrapiUrl
-                    const imageUrl = pkg.imagen
+                    const imageUrl = (pkg.imagen
                         ? getStrapiUrl(pkg.imagen)
-                        : FALLBACK_IMAGE_URL;
+                        : null) || FALLBACK_IMAGE_URL;
                     const imageAlt = pkg.imagen?.alternativeText || pkg.titulo;
 
                     const componentButtons: Boton[] = (pkg.Boton &&
@@ -95,10 +96,11 @@ const packagesToRender =
                     return (
                         <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                             <div class="relative">
-                                <img
+                                <Image
                                     src={imageUrl}
                                     alt={imageAlt}
                                     class="w-full h-60 object-cover"
+                                    inferSize={true}
                                 />
                                 <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
                                     <span class="whitespace-nowrap font-(family-name:--font-shields-sans-bold) bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] font-semibold tracking-wider px-4 py-2 uppercase text-[13px]">

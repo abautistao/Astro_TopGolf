@@ -1,5 +1,6 @@
 ---
 // src/components/Component_2.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
@@ -65,10 +66,11 @@ const cardsToRender =
 
             return (
               <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
-                <img
+                <Image
                   src={imageUrl || placeholderImageUrl}
                   alt={card.alt_imagen || "Imagen de la tarjeta"}
                   class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  inferSize={true}
                 />
                 <div class="absolute inset-0 bg-linear-to-b from-transparent via-black/60 to-black/90" />
                 <div

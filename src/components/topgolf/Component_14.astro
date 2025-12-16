@@ -1,5 +1,6 @@
 ---
 // src/components/Component_14.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText, formatUrl } from '../../lib/strapi.js';
 
 // 1. Definimos la interfaz para las props con la estructura aplanada
@@ -40,14 +41,11 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
         <div class="flex-1 rounded-xl bg-[var(--neutral-background-subtle)] p-6 shadow-sm md:w-[48%] content-center">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div class="min-w-[150px] overflow-hidden rounded-lg sm:h-[150px] sm:w-[150px]">
-                    <img
+                    <Image
                         src={leftCardImageUrl || placeholderImageUrl}
                         alt={imagen_izquierda?.data?.attributes?.alternativeText || 'Imagen para ' + titulo_izquierda}
                         class="h-full w-full object-cover"
-                        width="150"
-                        height="150"
-                        loading="lazy"
-                        decoding="async"
+                        inferSize={true}
                     />
                 </div>
                 <div class="flex flex-col">

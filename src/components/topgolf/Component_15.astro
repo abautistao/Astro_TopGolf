@@ -1,5 +1,6 @@
 ---
 // src/components/Component_15.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import defaultDotsPattern from '../../assets/Artwork_bg.png';
 import defaultDotsPatternMobile from '../../assets/Artwork_1.png';
@@ -64,10 +65,10 @@ const placeholder = {
     ],
     texto_boton: "SOLICITAR INFORMACIÓN",
     url_boton: "#",
-    imagen_decorativa_desktop_url: defaultDotsPattern.src,
+    imagen_decorativa_desktop_url: "https://placehold.co/200x200?text=Pattern",
     alt_imagen_decorativa_desktop:
         "Patrón de puntos decorativo para escritorio",
-    imagen_decorativa_mobile_url: defaultDotsPatternMobile.src,
+    imagen_decorativa_mobile_url: "https://placehold.co/100x100?text=Pattern",
     alt_imagen_decorativa_mobile: "Patrón de puntos decorativo para móvil",
 };
 
@@ -122,12 +123,11 @@ const showVideo = isVideo(heroBackgroundUrl);
                 class="absolute inset-0 w-full h-full object-cover"
             />
         ) : (
-            <img
+            <Image
                 src={heroBackgroundUrl}
                 alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
                 class="absolute inset-0 object-cover w-full h-full"
-                loading="lazy"
-                decoding="async"
+                inferSize={true}
             />
         )
     }
@@ -168,23 +168,21 @@ const showVideo = isVideo(heroBackgroundUrl);
                 <ButtonGroup botones={componentButtons} />
             </div>
         </div>
-        <img
+        <Image
             src={decorativeDesktopUrl}
             alt={alt_imagen_decorativa_desktop ||
                 placeholder.alt_imagen_decorativa_desktop}
             class="absolute bottom-8 right-4 z-10 hidden lg:block"
             aria-hidden="true"
-            loading="lazy"
-            decoding="async"
+            inferSize={true}
         />
-        <img
+        <Image
             src={decorativeMobileUrl}
             alt={alt_imagen_decorativa_mobile ||
                 placeholder.alt_imagen_decorativa_mobile}
             class="absolute -bottom-[100px] right-0 -translate-y-2/3 z-10 block lg:hidden"
             aria-hidden="true"
-            loading="lazy"
-            decoding="async"
+            inferSize={true}
         />
     </div>
 </section>

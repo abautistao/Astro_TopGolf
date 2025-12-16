@@ -1,5 +1,6 @@
 ---
 // src/components/Component_7.astro
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
@@ -43,10 +44,11 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 ---
 
 <section class="relative flex items-center w-full text-[var(--neutral-text-inverted)] py-12 lg:py-20">
-  <img
+  <Image
     src={heroBackgroundUrl || placeholderBgUrl}
     alt={alt_imagen_fondo || "Imagen de fondo de la sección"}
     class="absolute inset-0 object-cover w-full h-full object-top"
+    inferSize={true}
   />
   <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/30"></div>
   <div class="relative w-full mx-auto max-w-7xl">

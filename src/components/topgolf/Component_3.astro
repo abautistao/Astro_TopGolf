@@ -1,6 +1,7 @@
 ---
 // src/components/Component_3.astro
 
+import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
@@ -60,24 +61,27 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
       <div class="-mx-4 md:m-0 md:row-start-1 md:col-span-7 relative z-0 md:col-start-6">
         <div class="size-full grid grid-rows-5 md:grid-rows-6 grid-cols-5 gap-4 md:gap-6">
           <div class="col-span-2 row-span-2 col-start-2 md:col-start-2">
-            <img
+            <Image
               src={imageUrl1 || placeholderUrl1}
               alt={alt_imagen_superior || "Imagen de mujer comiendo"}
               class="size-full object-cover object-center"
+              inferSize={true}
             />
           </div>
           <div class="col-span-3 row-start-3 row-span-3 md:row-span-4 col-start-1">
-            <img
+            <Image
             src={imageUrl2 || placeholderUrl2}
             alt={alt_imagen_inferior_izquierda || "Personas celebrando"}
             class="size-full object-cover object-center"
+            inferSize={true}
           />
           </div>
           <div class="mb-4 md:mb-0 col-span-2 row-span-4 row-start-2 col-start-4">
-            <img
+            <Image
             src={imageUrl3 || placeholderUrl3}
             alt={alt_imagen_inferior_derecha || "Familia en Topgolf"}
             class="size-full object-cover object-center"
+            inferSize={true}
           />
           </div>
         </div>
