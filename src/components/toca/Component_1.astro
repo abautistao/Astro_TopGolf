@@ -1,0 +1,94 @@
+---
+// src/components/toca/Component_1.astro
+import { getStrapiUrl } from '../../lib/strapi';
+import { Image } from 'astro:assets';
+
+// Tipado básico para las props
+interface Props {
+    data?: any;
+}
+
+const { data } = Astro.props;
+
+// --- 1. DATOS POR DEFECTO (Fallback para desarrollo o si falla Strapi) ---
+// Usamos los textos exactos de tu imagen
+const defaultData = {
+    title_line_1: "EAT, DRINK",
+    title_line_2: "+ SCORE",
+    description: "TOCA Social is the world's first interactive football and dining experience, combining immersive gaming and world class food and drink.",
+    image: "https://placehold.co/1200x800/1a1a1a/white?text=Venue+Image", // Reemplazar con url real si no hay strapi
+    socials: [
+        { name: 'facebook', url: '#' },
+        { name: 'instagram', url: '#' },
+        { name: 'twitter', url: '#' },
+        { name: 'tiktok', url: '#' },
+    ]
+};
+
+// --- 2. PROCESAMIENTO DE DATOS ---
+const title1 = data?.title_line_1 || defaultData.title_line_1;
+const title2 = data?.title_line_2 || defaultData.title_line_2;
+const description = data?.description || defaultData.description;
+
+// Obtener imagen de Strapi o usar fallback
+const imageUrl = data?.image?.data
+    ? getStrapiUrl(data.image)
+    : defaultData.image;
+
+// Si viene de Strapi, asumimos que tienes un campo repetible para redes sociales,
+// sino usamos las default
+const socialLinks = (data?.social_links && data.social_links.length > 0)
+    ? data.social_links
+    : defaultData.socials;
+
+---
+
+<section class="w-full bg-[#0f0b29] text-white overflow-hidden">
+    <div class="flex flex-col lg:flex-row h-full min-h-[600px] lg:h-[80vh]">
+
+        <div class="w-full lg:w-5/12 p-8 lg:p-16 flex flex-col justify-between relative z-10">
+
+            <div class="mt-8 lg:mt-16">
+                <h1 class="font-black uppercase leading-[0.9] tracking-tighter mb-8">
+                    <span class="block text-5xl md:text-7xl lg:text-8xl xl:text-9xl">{title1}</span>
+                    <span class="block text-5xl md:text-7xl lg:text-8xl xl:text-9xl pl-2 md:pl-4">{title2}</span>
+                </h1>
+
+                <p class="text-base md:text-lg lg:text-xl font-medium max-w-md leading-relaxed text-gray-200">
+                    {description}
+                </p>
+            </div>
+
+            <div class="flex items-center gap-6 mt-12 lg:mt-0">
+                {socialLinks.map((social: any) => (
+                    <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[#7FFFD4] hover:text-white transition-colors duration-200 group">
+                        {social.name.toLowerCase().includes('facebook') && (
+                            <svg class="w-6 h-6 md:w-8 md:h-8 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        )}
+                        {social.name.toLowerCase().includes('instagram') && (
+                            <svg class="w-6 h-6 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        )}
+                        {social.name.toLowerCase().includes('twitter') || social.name.toLowerCase().includes('x') && (
+                            <svg class="w-6 h-6 md:w-8 md:h-8 fill-current" viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-12.7 12.5S.2 13 .3 12c-1.8 1.1-2.9 2.9-2.2 4.1C7.3 22.8 17.5 13.5 19 6.8c1.3-5.7 3-2.8 3-2.8z"></path></svg>
+                            )}
+                         {social.name.toLowerCase().includes('tiktok') && (
+                            <svg class="w-6 h-6 md:w-8 md:h-8 fill-current" viewBox="0 0 24 24"><path d="M9 0h1.98c.144.715.54 1.617 1.093 2.512C12.842 3.871 14.282 4.8 15.6 4.965V9a5.725 5.725 0 0 1-2.345-.487V13a5 5 0 1 1-5-5v3.682a1.318 1.318 0 1 0 .28 2.617 1.318 1.318 0 0 0 1.258-1.574h3.766a5.07 5.07 0 0 1-1.396 2.528 5.07 5.07 0 0 1-2.26.837V9.75c0-.67.108-1.315.308-1.928A4.954 4.954 0 0 1 9 5.818V0z"></path></svg>
+                        )}
+                    </a>
+                ))}
+            </div>
+        </div>
+
+        <div class="w-full lg:w-7/12 h-[400px] lg:h-auto relative">
+            <div class="absolute inset-0 bg-black/10 z-10"></div>
+
+            <img
+                src={imageUrl}
+                alt="Toca Social Venue"
+                class="w-full h-full object-cover object-center"
+                loading="lazy"
+            />
+        </div>
+
+    </div>
+</section>

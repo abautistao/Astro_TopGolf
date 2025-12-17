@@ -1,9 +1,175 @@
 ---
+// src/components/toca/Footer.astro
+import { getStrapiUrl } from '../../lib/strapi';
+
+const defaultData = {
+    title: "ARE YOU GAME?",
+    locations_title: "LOCATIONS",
+    newsletter_title: "STAY TUNED",
+    socials: [
+        { name: "facebook", url: "#", iconClass: "fa-brands fa-facebook-f" },
+        { name: "instagram", url: "#", iconClass: "fa-brands fa-instagram" },
+        { name: "twitter", url: "#", iconClass: "fa-brands fa-twitter" },
+        { name: "youtube", url: "#", iconClass: "fa-brands fa-youtube" },
+        { name: "tiktok", url: "#", iconClass: "fa-brands fa-tiktok" }
+    ],
+    locations: [
+        { name: "The O2, London", url: "#", status: "" },
+        { name: "Birmingham - Bullring", url: "#", status: "(Coming Soon)" },
+        { name: "Westfield - London", url: "#", status: "(Coming Soon)" }
+    ],
+    bottom_links_left: [
+        { text: "Contact Us", url: "#" },
+        { text: "TOCA Social Store", url: "#" },
+        { text: "TOCA in the community", url: "#" }
+    ],
+    bottom_links_right: [
+        { text: "Privacy Policy", url: "#" },
+        { text: "Terms of Service", url: "#" }
+    ]
+};
+
 const { data } = Astro.props;
-const copyright = data?.copyright || "© 2024 Toca Football";
+
+
+const footerData = data || defaultData;
+
+const title = footerData.title || defaultData.title;
+const locationsTitle = footerData.locations_title || defaultData.locations_title;
+const newsletterTitle = footerData.newsletter_title || defaultData.newsletter_title;
+
+// Arrays seguros
+const socials = footerData.socials?.length ? footerData.socials : defaultData.socials;
+const locations = footerData.locations?.length ? footerData.locations : defaultData.locations;
+const linksLeft = footerData.bottom_links_left?.length ? footerData.bottom_links_left : defaultData.bottom_links_left;
+const linksRight = footerData.bottom_links_right?.length ? footerData.bottom_links_right : defaultData.bottom_links_right;
+
+
+const allLinksMobile = [...linksLeft, ...linksRight];
 ---
-<footer class="bg-blue-900 text-white p-8 mt-8">
-  <div class="container mx-auto text-center">
-      <p>{copyright}</p>
-  </div>
+
+<footer class="w-full font-sans text-black mt-auto flex flex-col">
+
+    <div class="bg-[#EA80FC] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center">
+        <div class="max-w-[1920px] mx-auto w-full flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-12 items-start lg:items-center">
+
+            <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
+                <div class="flex-grow flex items-center">
+                    <h2 class="font-black uppercase text-5xl md:text-6xl xl:text-7xl leading-[0.9] tracking-tighter break-words">
+                        {title}
+                    </h2>
+                </div>
+
+                <div class="flex items-center gap-6 mt-4">
+                    {socials.map((social: any) => {
+                        const strapiIconUrl = social.icon?.data?.attributes?.url;
+                        return (
+                            <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-black hover:scale-110 transition-transform block">
+                                {strapiIconUrl ? (
+                                    <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current" />
+                                ) : (
+                                    <i class={`${social.iconClass || 'fa-solid fa-link'} text-2xl md:text-3xl`}></i>
+                                )}
+                            </a>
+                        );
+                    })}
+                </div>
+            </div>
+
+            <div class="flex flex-col w-full order-1 lg:order-2 self-start lg:self-center">
+                <h3 class="font-black uppercase text-3xl md:text-4xl tracking-tighter mb-4 text-center lg:text-left w-full">
+                    {locationsTitle}
+                </h3>
+                <ul class="flex flex-col w-full space-y-3">
+                    {locations.map((loc: any) => (
+                        <li>
+                            <a href={loc.url} class="group flex items-end justify-between pb-1 border-b-2 border-black transition-all">
+                                <div class="flex flex-col text-left">
+                                    <span class="font-bold text-lg leading-tight">{loc.name}</span>
+                                    {loc.status && <span class="text-xs font-medium opacity-80 mt-0.5">{loc.status}</span>}
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-xl mb-1 transform group-hover:translate-x-2 transition-transform"></i>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div class="flex flex-col w-full order-2 lg:order-3 text-center lg:text-left self-start lg:self-center">
+                <h3 class="font-black uppercase text-3xl md:text-4xl tracking-tighter mb-4 mt-4 lg:mt-0">
+                    {newsletterTitle}
+                </h3>
+
+                <form class="flex w-full mb-3 gap-0">
+                    <input
+                        type="email"
+                        placeholder="Your email"
+                        class="w-full bg-[#F3F4F6] px-3 py-2 border-none focus:outline-none placeholder-gray-500 font-bold text-sm"
+                    />
+                    <button
+                        type="submit"
+                        class="bg-[#0f0b29] text-white font-black uppercase text-lg px-4 py-2 tracking-tighter hover:bg-opacity-90 transition-colors whitespace-nowrap"
+                    >
+                        Sign Up
+                    </button>
+                </form>
+
+                <p class="text-[10px] md:text-xs font-semibold italic mb-6 leading-tight opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none">
+                    By clicking ‘Sign Up’ you accept our Privacy Policy and Terms and conditions.
+                </p>
+
+                <div class="flex items-center justify-center lg:justify-start gap-6 mt-auto">
+                    <a href="#" class="flex items-center gap-2 group hover:opacity-75 transition-opacity">
+                        <div class="text-3xl font-black tracking-tighter leading-none font-sans">???</div>
+                        <span class="font-black uppercase text-xl tracking-tighter border-b-4 border-black">FAQs</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 group hover:opacity-75 transition-opacity">
+                        <i class="fa-solid fa-shirt text-3xl text-black"></i>
+                        <span class="font-black uppercase text-xl tracking-tighter border-b-4 border-black">CAREERS</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-[#7FFFD4] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
+        <div class="max-w-[1920px] mx-auto w-full flex flex-col justify-center items-center gap-4 text-sm font-bold">
+
+            <div class="flex lg:hidden items-center gap-6">
+                {socials.map((social: any) => {
+                    const strapiIconUrl = social.icon?.data?.attributes?.url;
+                    return (
+                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-black hover:scale-110 transition-transform block">
+                            {strapiIconUrl ? (
+                                <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 object-contain fill-current" />
+                            ) : (
+                                <i class={`${social.iconClass || 'fa-solid fa-link'} text-2xl`}></i>
+                            )}
+                        </a>
+                    );
+                })}
+            </div>
+
+            <div class="hidden lg:flex w-full flex-row justify-between items-center h-full">
+                <div class="flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-2">
+                    {linksLeft.map((link: any) => (
+                        <a href={link.url} class="hover:text-gray-700 transition-colors text-xs xl:text-sm">{link.text}</a>
+                    ))}
+                </div>
+                <div class="flex flex-wrap justify-end gap-6 underline decoration-2 underline-offset-2">
+                    {linksRight.map((link: any) => (
+                        <a href={link.url} class="hover:text-gray-700 transition-colors text-xs xl:text-sm">{link.text}</a>
+                    ))}
+                </div>
+            </div>
+
+            <div class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-2 px-2">
+                {allLinksMobile.map((link: any) => (
+                    <a href={link.url} class="hover:text-gray-700 transition-colors whitespace-nowrap text-xs">{link.text}</a>
+                ))}
+            </div>
+
+        </div>
+    </div>
 </footer>

@@ -1,16 +1,112 @@
 ---
+// src/components/toca/Header.astro
+import { getHeaderData, getStrapiUrl } from '../../lib/strapi';
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
+import defaultLogoImg from '../../assets/TOCA_Social_One_Color.png';
+
 const { data } = Astro.props;
-// Use data if available, otherwise defaults
 const title = data?.title || "Toca Header";
+const headerData = data || await getHeaderData();
+
+
+const strapiLogo = getStrapiUrl(headerData?.logo);
+const logoUrl = strapiLogo || defaultLogoImg.src;
+
+const defaultLinks = [
+    { texto: "INFO", url: "/info" },
+    { texto: "EVENTS & PACKAGES", url: "/events" },
+    { texto: "FOOD & DRINK", url: "/food-drink" }
+];
+
+const links = (headerData?.links && headerData.links.length > 0)
+    ? headerData.links
+    : defaultLinks;
+
+
+const rawButton = Array.isArray(headerData?.Botones2)
+    ? headerData.Botones2[0]
+    : (headerData?.Botones2 || { texto: "BOOK NOW", url: "#", tipo: "version_1" });
+
+const ctaButtons: Boton[] = [{
+    id: rawButton.id || 1,
+    texto: rawButton.texto,
+    url: rawButton.url,
+    tipo: rawButton.tipo || 'version_1'
+}];
 ---
-<header class="bg-blue-900 text-white p-4">
-  <div class="container mx-auto flex justify-between items-center">
-      <div class="font-bold text-xl">{title}</div>
-      <nav>
-          <ul class="flex space-x-4">
-              <li><a href="#" class="hover:text-blue-200">Home</a></li>
-              <li><a href="#" class="hover:text-blue-200">About</a></li>
-          </ul>
-      </nav>
-  </div>
+
+<header class="w-full font-sans relative z-50">
+    <div class="relative z-50 bg-[var(--brand-interactive-base)] ">
+        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]">
+            <div class="flex items-center gap-4 md:gap-8">
+                <a href="/" class="flex-shrink-0">
+                    <img src={logoUrl} alt="Toca Social" class="h-8 md:h-10 w-auto object-contain" />
+                </a>
+
+                <div class="hidden md:flex items-center group cursor-pointer">
+                    <button class="flex items-center gap-1 font-black uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter hover:text-gray-800">
+                        LOCATIONS
+                        <i class="fa-solid fa-chevron-down text-xl mt-[-2px] text-[var(--surface-brand-primary)]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 md:gap-8">
+
+                <nav class="hidden lg:block">
+                    <ul class="flex items-center gap-8">
+                        {links.map((link: any) => (
+                            <li>
+                                <a href={link.url || '#'} class="font-black uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter hover:underline decoration-4 decoration-black underline-offset-4">
+                                    {link.texto}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+
+                <ButtonGroup botones={ctaButtons} />
+
+                <button id="mobile-menu-btn" class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50">
+                    <i id="icon-menu" class="fa-solid fa-bars text-[32px] text-[var(--surface-brand-primary)] cursor-pointer"></i>
+                    <i id="icon-close" class="fa-solid fa-xmark text-[32px] hidden text-[var(--surface-brand-primary)] cursor-pointer"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-[var(--brand-interactive-base)] z-40 overflow-y-auto border-t-4 transition-all">
+        <div class="flex flex-col p-6 space-y-4">
+
+            <a href="#" class="block py-3 px-4 text-2xl font-black uppercase tracking-tight text-[var(--surface-brand-primary)] border-b-2 border-black hover:bg-white hover:border-black hover:translate-x-2 transition-all duration-200">
+                LOCATIONS <i class="fa-solid fa-chevron-down text-xl mt-[-2px] text-[var(--surface-brand-primary)]"></i>
+            </a>
+
+            {links.map((link: any) => (
+                <a
+                    href={link.url || '#'}
+                    class="block py-3 px-4 text-3xl font-black uppercase tracking-tight text-[var(--surface-brand-primary)] border-b-2 border-black hover:bg-white hover:pl-8 transition-all duration-200"
+                >
+                    {link.texto}
+                </a>
+            ))}
+        </div>
+    </div>
 </header>
+
+<script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
+
+    if (menuBtn && mobileMenu && iconMenu && iconClose) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+            iconMenu.classList.toggle('hidden');
+            iconClose.classList.toggle('hidden');
+        });
+    }
+</script>
