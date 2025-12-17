@@ -30,7 +30,7 @@ export async function getPageBySlug(slug) {
 }
 
 export async function getAllPages() {
-  return await fetchAPI("/paginas");
+  return await fetchAPI("/paginas?pagination[pageSize]=100");
 }
 
 export async function getBlogBySlug(slug) {
