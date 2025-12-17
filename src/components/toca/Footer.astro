@@ -1,7 +1,7 @@
 ---
 // src/components/toca/Footer.astro
 import { getStrapiUrl } from '../../lib/strapi';
-
+import ButtonGroup from './elements/Button.astro';
 const defaultData = {
     title: "ARE YOU GAME?",
     locations_title: "LOCATIONS",
@@ -46,11 +46,23 @@ const linksRight = footerData.bottom_links_right?.length ? footerData.bottom_lin
 
 
 const allLinksMobile = [...linksLeft, ...linksRight];
+
+
+const rawButton = Array.isArray(footerData?.Botones2)
+    ? footerData.Botones2[0]
+    : (footerData?.Botones2 || { texto: "SIGN UP", url: "#", tipo: "version_2" });
+
+const newsletterButton: Boton[] = [{
+    id: rawButton.id || 1,
+    texto: rawButton.texto,
+    url: rawButton.url,
+    tipo: rawButton.tipo || 'version_2'
+}];
 ---
 
-<footer class="w-full font-sans text-black mt-auto flex flex-col">
+<footer class="w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col">
 
-    <div class="bg-[#EA80FC] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center">
+    <div class="bg-[var(--surface-brand-secondary)] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center">
         <div class="max-w-[1920px] mx-auto w-full flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-12 items-start lg:items-center">
 
             <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
@@ -64,7 +76,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                     {socials.map((social: any) => {
                         const strapiIconUrl = social.icon?.data?.attributes?.url;
                         return (
-                            <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-black hover:scale-110 transition-transform block">
+                            <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
                                 {strapiIconUrl ? (
                                     <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current" />
                                 ) : (
@@ -100,18 +112,15 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                     {newsletterTitle}
                 </h3>
 
-                <form class="flex w-full mb-3 gap-0">
+                <form class="flex w-full mb-3 gap-2">
                     <input
                         type="email"
                         placeholder="Your email"
                         class="w-full bg-[#F3F4F6] px-3 py-2 border-none focus:outline-none placeholder-gray-500 font-bold text-sm"
                     />
-                    <button
-                        type="submit"
-                        class="bg-[#0f0b29] text-white font-black uppercase text-lg px-4 py-2 tracking-tighter hover:bg-opacity-90 transition-colors whitespace-nowrap"
-                    >
-                        Sign Up
-                    </button>
+                    <div class="flex-shrink-0">
+                        <ButtonGroup botones={newsletterButton} />
+                    </div>
                 </form>
 
                 <p class="text-[10px] md:text-xs font-semibold italic mb-6 leading-tight opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none">
@@ -119,28 +128,28 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                 </p>
 
                 <div class="flex items-center justify-center lg:justify-start gap-6 mt-auto">
-                    <a href="#" class="flex items-center gap-2 group hover:opacity-75 transition-opacity">
+                    <a href="#" class="flex items-center gap-2 group">
                         <div class="text-3xl font-black tracking-tighter leading-none font-sans">???</div>
-                        <span class="font-black uppercase text-xl tracking-tighter border-b-4 border-black">FAQs</span>
+                        <span class="font-black uppercase text-xl tracking-tighter underline decoration-solid decoration-black">FAQs</span>
                     </a>
 
-                    <a href="#" class="flex items-center gap-2 group hover:opacity-75 transition-opacity">
-                        <i class="fa-solid fa-shirt text-3xl text-black"></i>
-                        <span class="font-black uppercase text-xl tracking-tighter border-b-4 border-black">CAREERS</span>
+                    <a href="#" class="flex items-center gap-2 group">
+                        <i class="fa-solid fa-shirt text-3xl text-[var(--surface-brand-primary)]"></i>
+                        <span class="font-black uppercase text-xl tracking-tighter underline decoration-solid decoration-black">CAREERS</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-[#7FFFD4] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
+    <div class="bg-[var(--brand-interactive-base)] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
         <div class="max-w-[1920px] mx-auto w-full flex flex-col justify-center items-center gap-4 text-sm font-bold">
 
             <div class="flex lg:hidden items-center gap-6">
                 {socials.map((social: any) => {
                     const strapiIconUrl = social.icon?.data?.attributes?.url;
                     return (
-                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-black hover:scale-110 transition-transform block">
+                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
                             {strapiIconUrl ? (
                                 <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 object-contain fill-current" />
                             ) : (
@@ -152,21 +161,21 @@ const allLinksMobile = [...linksLeft, ...linksRight];
             </div>
 
             <div class="hidden lg:flex w-full flex-row justify-between items-center h-full">
-                <div class="flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-2">
+                <div class="flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3">
                     {linksLeft.map((link: any) => (
-                        <a href={link.url} class="hover:text-gray-700 transition-colors text-xs xl:text-sm">{link.text}</a>
+                        <a href={link.url}>{link.text}</a>
                     ))}
                 </div>
-                <div class="flex flex-wrap justify-end gap-6 underline decoration-2 underline-offset-2">
+                <div class="flex flex-wrap justify-end gap-6 underline decoration-2 underline-offset-3">
                     {linksRight.map((link: any) => (
-                        <a href={link.url} class="hover:text-gray-700 transition-colors text-xs xl:text-sm">{link.text}</a>
+                        <a href={link.url}>{link.text}</a>
                     ))}
                 </div>
             </div>
 
-            <div class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-2 px-2">
+            <div class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-3 px-2">
                 {allLinksMobile.map((link: any) => (
-                    <a href={link.url} class="hover:text-gray-700 transition-colors whitespace-nowrap text-xs">{link.text}</a>
+                    <a href={link.url} class=" whitespace-nowrap text-xs">{link.text}</a>
                 ))}
             </div>
 
