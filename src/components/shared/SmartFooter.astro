@@ -23,7 +23,13 @@ if (footerData?.Variante && Array.isArray(footerData.Variante) && footerData.Var
     }
     
     props = { data: variant };
+} else {
+    console.log("SmartFooter: 'Variante' array not found or empty in footerData.");
+    console.log("Keys available:", Object.keys(footerData || {}));
+    if (footerData) console.log("Full footerData (partial):", JSON.stringify(footerData).substring(0, 200) + "...");
 }
+
+console.log(`SmartFooter rendering: ${Component.name}`);
 ---
 
 <Component {...props} />
