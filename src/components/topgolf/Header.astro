@@ -6,9 +6,13 @@ import ButtonGroup from './elements/ButtonHeader.astro';
 import type { Boton } from './elements/ButtonHeader.astro';
 
 import MobileLocationBar from './elements/MobileLocationBar.astro';
-const headerData = await getHeaderData();
+
+const { data } = Astro.props;
+const headerData = data || await getHeaderData();
+
 const FALLBACK_IMAGE = "https://placehold.co/600x400?text=No+Image";
 const FALLBACK_LOGO = "https://placehold.co/100x50?text=Logo";
+
 
 const logoUrl       = getStrapiUrl(headerData?.logo) || FALLBACK_LOGO;
 const logoUrlMobile = getStrapiUrl(headerData?.logo_mobile) || FALLBACK_LOGO;

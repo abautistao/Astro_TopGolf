@@ -1,0 +1,15 @@
+---
+const { data } = Astro.props;
+const title = data?.title || "Blu Header";
+---
+<header class="bg-cyan-600 text-white p-4">
+  <div class="container mx-auto flex justify-between items-center">
+      <div class="font-bold text-xl">{title}</div>
+      <nav>
+          <ul class="flex space-x-4">
+              <li><a href="#" class="hover:text-cyan-200">Home</a></li>
+              <li><a href="#" class="hover:text-cyan-200">Locations</a></li>
+          </ul>
+      </nav>
+  </div>
+</header>
