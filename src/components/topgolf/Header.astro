@@ -5,6 +5,11 @@ import { getHeaderData, getStrapiUrl, stringifyRichText, formatUrl } from '../..
 import ButtonGroup from './elements/ButtonHeader.astro';
 import type { Boton } from './elements/ButtonHeader.astro';
 
+interface Promo {
+    id: number
+    titulo: string
+    descripcion: object
+}
 import MobileLocationBar from './elements/MobileLocationBar.astro';
 const headerData = await getHeaderData();
 const FALLBACK_IMAGE = "https://placehold.co/600x400?text=No+Image";
@@ -17,7 +22,9 @@ const links = headerData?.links || [];
 const ubicacion = headerData?.ubicacion || 'UBICACION';
 const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
 const direccion = stringifyRichText(headerData?.direccion || {});
+const promos: Promo[] = headerData?.Slider_promos || [];
 
+console.log(promos[0].descripcion)
 const buttonBanner: Boton[] = (headerData.Boton && !Array.isArray(headerData.Boton) ? [headerData.Boton] : headerData.Boton) || [
     {
         id: 1,
@@ -39,6 +46,35 @@ const buttons: Boton[] = (headerData.Botones2 && !Array.isArray(headerData.Boton
 // Filtra los links que tienen dropdowns para crear los overlays
 const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0);
 ---
+<section id="slider-promos" class="splide bg-[var(--accent-highlight-secondary)] min-h-[34px] text-sm md:text-base" aria-label="Splide Basic HTML Example">
+    <div class="splide__arrows splide__arrows--ltr">
+        <button
+            class="splide__arrow splide__arrow--prev"
+            type="button"
+            aria-label="Previous slide"
+            aria-controls="splide01-track"
+        >
+            
+            <i class="fa-solid fa-chevron-left fa-md font-bold"></i>
+        </button>
+        <button
+            class="splide__arrow splide__arrow--next"
+            type="button"
+            aria-label="Next slide"
+            aria-controls="splide01-track"
+        >
+            <i class="fa-solid fa-chevron-right fa-md font-bold"></i>
+        </button>
+    </div>
+  <div class="splide__track">
+		<div class="splide__list">
+            {promos.map(promo => (
+                <div class="splide__slide text-center prose" set:html={stringifyRichText(promo.descripcion)}></div>
+            ))}
+
+            </div>
+  </div>
+</section>
 
 <header class="relative z-40 flex flex-col text-[var(--neutral-text-inverted)] shadow-md">
     <div class="flex items-center justify-between w-full h-20 !px-4 bg-[var(--surface-brand-secondary)] lg:h-24">
@@ -281,9 +317,45 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         </div>
     </div>
 ))}
+<style>
+    #slider-promos .splide__arrow {
+        background-color: transparent !important;
+        height: 16px !important;
+    }
+
+    #slider-promos {
+        font-family: var(--font-shields-sans-regular) !important;
+        color: var(--surface-brand-secondary);
+        width: 100%;
+        padding: 6px 12px;
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    #slider-promos .prose :global(p > strong)  {
+        font-family: var(--font-shields-sans-bold) !important;
+    }
+    #slider-promos .prose :global(p > a)  {
+        text-decoration: underline;
+        text-decoration-color: var(--surface-brand-secondary);
+        text-decoration-thickness: 3px;
+    }
+</style>
 
 <script>
+    import '@splidejs/splide/css';
+    import Splide from '@splidejs/splide';
+
+    
 document.addEventListener('DOMContentLoaded', () => {
+    new Splide( '.splide', {
+        pagination: false,
+        autoplay: true
+    } ).mount();
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenuClose = document.getElementById('mobile-menu-close');
     const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
