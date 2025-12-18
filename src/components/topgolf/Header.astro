@@ -251,7 +251,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 </div>
 
 {linksWithDropdowns.map(link => (
-    <div id={`desktop-${link.id}-overlay`} class="fixed top-[96px] inset-x-0 bottom-0 hidden z-50 dropdown-overlay">
+    <div id={`desktop-${link.id}-overlay`} class="fixed top-[132px] inset-x-0 bottom-0 hidden z-50 dropdown-overlay">
         <div class="absolute inset-0 bg-[var(--neutral-background-strong)] bg-opacity-20 dropdown-backdrop"></div>
         <div class="relative w-full h-auto flex items-start justify-center py-4">
             <div class="bg-[var(--surface-brand-primary)] p-6 text-[var(--neutral-text-inverted)] rounded-lg w-full mx-12 relative shadow-2xl">
@@ -325,24 +325,33 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
     #slider-promos {
         font-family: var(--font-shields-sans-regular) !important;
-        color: var(--surface-brand-secondary);
+        color: var(--surface-brand-secondary) !important;
         width: 100%;
-        padding: 6px 12px;
+        padding: 6px 12px !important;
         display: flex;
         justify-content: center;
         gap: 4px;
         flex-wrap: wrap;
-        margin: 0 auto;
-        text-align: center;
+        margin: 0 auto !important;
+        text-align: center !important; 
     }
 
     #slider-promos .prose :global(p > strong)  {
         font-family: var(--font-shields-sans-bold) !important;
     }
     #slider-promos .prose :global(p > a)  {
-        text-decoration: underline;
-        text-decoration-color: var(--surface-brand-secondary);
-        text-decoration-thickness: 3px;
+        text-decoration: underline !important;
+        text-decoration-color: var(--surface-brand-secondary) !important;
+        color: var(--surface-brand-secondary) !important;
+        text-decoration-thickness: 3px !important;
+    }
+    #slider-promos .prose :global(p > a)  {
+        text-decoration: underline !important;
+        text-decoration-color: var(--surface-brand-secondary) !important;
+        text-decoration-thickness: 3px !important;
+    }
+    #slider-promos .prose :global(p)  {
+        margin-bottom: 0 !important;
     }
 </style>
 
