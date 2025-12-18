@@ -5,13 +5,15 @@ import { Image } from 'astro:assets';
 
 interface Props {
     titulo: string;
+    titulo_2: string;
     descripcion: string;
     imagen: any;
-    social:any 
+    social:any
 }
 
-const { 
-    titulo = "Titulo de Ejemplo",
+const {
+    titulo = "TEAT, DRINK",
+    titulo_2 = "+ SCORE",
     descripcion = "Descripcion de Ejemplo",
     imagen ,
     social = [
@@ -21,48 +23,80 @@ const {
         icon: "version_1",
     },
 ]
- } = Astro.props;
+    } = Astro.props;
 
 
- const imagenUrl = getStrapiUrl(imagen);
- const descripcionHtml = stringifyRichText(descripcion);
+    const strapiImageUrl = getStrapiUrl(imagen);
+    const descripcionHtml = stringifyRichText(descripcion);
 ---
 
-<section class="w-full bg-[#0f0b29] text-white overflow-hidden">
-    <div class="flex flex-col lg:flex-row h-full min-h-[600px] lg:h-[80vh]">
-
-        <div class="w-full lg:w-5/12 p-8 lg:p-16 flex flex-col justify-between relative z-10">
-
-            <div class="mt-8 lg:mt-16">
-                <h1 class="font-black uppercase leading-[0.9] tracking-tighter mb-8">
-                    <span class="block text-5xl md:text-7xl lg:text-8xl xl:text-9xl">{titulo}</span>
+<section class="w-full bg-[var(--surface-brand-primary)] min-h-[600px] lg:h-[85vh] flex items-center overflow-hidden">
+    <div class="flex flex-col lg:flex-row w-full h-full items-stretch">
+        <div class="w-full lg:w-[30%] px-8 md:px-12 lg:px-10 pb-10 lg:pb-12 pt-10 flex flex-col justify-between z-10 bg-[var(--surface-brand-primary)]">
+            <div class="mt-0 lg:mt-4">
+                <h1 class="font-black uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)] ">
+                    <span class="title-extended text-4xl lg:text-[64px]">{titulo}</span>
+                    <span class="title-extended text-4xl lg:text-[64px]">{titulo_2}</span>
                 </h1>
 
-                <div class="text-base md:text-lg lg:text-xl font-medium max-w-md leading-relaxed text-gray-200" set:html={descripcionHtml}>
-                    
+                <div class="text-[var(--surface-brand-secondary)] text-sm md:text-base lg:text-lg font-medium leading-relaxed strapi-rich-text">
+                    <Fragment set:html={descripcionHtml} />
                 </div>
             </div>
-
-            <div class="flex items-center gap-6 mt-12 lg:mt-0">
+            <div class="flex items-center gap-5 mt-8 lg:mt-0">
                 {social.map((social_item: any) => (
-                   <a href={social_item.url} target="_blank" rel="noopener noreferrer" class="text-[#7FFFD4] hover:text-white transition-colors duration-200 group">
-                   {social_item.name}  {social_item.icon}
-                   </a>
+                    <a href={social_item.url} target="_blank" class="text-[var(--brand-interactive-base)] text-lg md:text-xl hover:text-[var(brand-interactive-base)] transition-colors">
+                        <Fragment set:html={social_item.icon} />
+                    </a>
                 ))}
             </div>
         </div>
 
-        <div class="w-full lg:w-7/12 h-[400px] lg:h-auto relative">
-            <div class="absolute inset-0 bg-black/10 z-10"></div>
-
-            <Image
-                src={imagenUrl || "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
-                alt={titulo}
-                class="w-full h-full object-cover object-center"
-                inferSize={true}
-            />
-
+        <div class="w-full lg:w-[70%] h-[400px] lg:h-full relative flex items-center justify-center p-6 lg:py-12 lg:pr-12">
+            <div class="w-full h-full overflow-hidden shadow-xl z-0 relative">
+                <Image
+                    src={strapiImageUrl || "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
+                    alt={titulo}
+                    class="w-full h-full object-cover object-center"
+                    inferSize={true}
+                />
+            </div>
         </div>
-
     </div>
 </section>
+
+<style>
+    .title-extended {
+        display: block;
+        transform: scaleX(1.25);
+        transform-origin: left;
+        font-family: 'Arial Black', sans-serif;
+        white-space: nowrap;
+    }
+
+    h1 {
+        margin-right: -30%;
+    }
+
+    @media (max-width: 1024px) {
+        .title-extended {
+            transform: scaleX(1.1);
+            white-space: normal;
+        }
+        h1 {
+            margin-right: 0;
+        }
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+</style>
