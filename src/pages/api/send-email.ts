@@ -3,9 +3,19 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { Resend } from "resend";
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
+    // 1. Obtener la variable de entorno según el entorno (Cloudflare o Local)
+    // En Cloudflare production, las variables viven en locals.runtime.env
+    const runtime = locals.runtime;
+    const RESEND_KEY = runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
+
+    if (!RESEND_KEY) {
+        return new Response(JSON.stringify({ message: "Error de configuración: Falta API Key" }), { status: 500 });
+    }
+
+    const resend = new Resend(RESEND_KEY);
+    
     const data = await request.formData();
     const nombre = data.get("nombre");
     const apellido = data.get("apellido");
