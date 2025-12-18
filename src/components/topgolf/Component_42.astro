@@ -119,7 +119,7 @@ const getOptions = (optionsStr?: string) => {
         {data.title}
     </h2>
 
-    <form class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+    <form class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6" id="events-form">
         {
             data.fields.map((field) => {
                 // RENDER SECTION TITLE
@@ -254,6 +254,11 @@ const getOptions = (optionsStr?: string) => {
                 </div>
             )
         }
+        <div
+            id="form-message"
+            class="col-span-1 md:col-span-2 text-xl mt-4 text-center text-sm font-semibold hidden"
+        >
+        </div>
     </form>
 </section>
 
@@ -265,3 +270,63 @@ const getOptions = (optionsStr?: string) => {
         cursor: pointer;
     }
 </style>
+<script define:vars={{ submitUrl }} >
+    const form = document.getElementById("events-form");
+    const messageDiv = document.getElementById("form-message");
+
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const submitButton = form.querySelector(
+                'button[type="submit"]',
+            );
+
+            if (submitButton) submitButton.disabled = true;
+            if (messageDiv) {
+                messageDiv.classList.add("hidden");
+                messageDiv.textContent = "";
+                messageDiv.className =
+                    "mt-4 text-center text-sm font-semibold hidden";
+            }
+
+            try {
+                const response = await fetch("/api/events-email", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (messageDiv) {
+                        messageDiv.textContent =
+                            "¡Gracias por contactarse! Hemos recibido tus datos.";
+                        messageDiv.classList.remove("hidden");
+                        messageDiv.classList.add("text-green-400");
+                    }
+                    form.reset();
+
+                    setTimeout(() => {
+                        messageDiv.classList.add("hidden");
+                    }, 3000);
+                } else {
+                    throw new Error(
+                        data.message || "Error al enviar el formulario",
+                    );
+                }
+            } catch (error) {
+                if (messageDiv) {
+                    messageDiv.textContent =
+                        error instanceof Error
+                            ? error.message
+                            : "Ocurrió un error inesperado. Por favor, intenta de nuevo.";
+                    messageDiv.classList.remove("hidden");
+                    messageDiv.classList.add("text-red-400");
+                }
+            } finally {
+                if (submitButton) submitButton.disabled = false;
+            }
+        });
+    }
+</script>
