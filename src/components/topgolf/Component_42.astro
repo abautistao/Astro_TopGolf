@@ -256,7 +256,7 @@ const getOptions = (optionsStr?: string) => {
         }
         <div
             id="form-message"
-            class="col-span-1 md:col-span-2 text-xl mt-4 text-center text-sm font-semibold hidden"
+            class="col-span-1 md:col-span-2 text-xl mt-4 text-center text-sm font-semibold hidden "
         >
         </div>
     </form>
@@ -309,7 +309,7 @@ const getOptions = (optionsStr?: string) => {
 
                     setTimeout(() => {
                         messageDiv.classList.add("hidden");
-                    }, 3000);
+                    }, 5000);
                 } else {
                     throw new Error(
                         data.message || "Error al enviar el formulario",
