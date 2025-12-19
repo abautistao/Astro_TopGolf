@@ -1,0 +1,82 @@
+---
+// src/components/toca/Component_4.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import Button from './elements/Button.astro';
+
+interface Props {
+    titulo_header: string;
+    precio: string;
+    descripcion: string;
+    boton_texto: string;
+    boton_url: string;
+}
+
+const {
+    titulo_header = "PRICING",
+    precio = "FROM £25",
+    descripcion = "The price is per box, each box can fit 12 people playing at a time.",
+    boton_texto = "BOOK NOW",
+    boton_url = "#"
+} = Astro.props;
+
+const descripcionHtml = stringifyRichText(descripcion);
+
+const boton_pricing = [
+    {
+        id: 1,
+        texto: boton_texto,
+        url: boton_url,
+        tipo: 'version_1' as const
+    }
+];
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex justify-center">
+        <div class="w-full max-w-[682px] border-2 border-[var(--brand-interactive-base)] flex flex-col shadow-lg">
+            <div class="w-full bg-[var(--brand-interactive-base)] py-1 text-center">
+                <h2 class="font-bold text-[var(--surface-brand-primary)] text-xl uppercase tracking-tighter title-extended">
+                    {titulo_header}
+                </h2>
+            </div>
+            <div class="bg-[var(--surface-brand-primary)] p-6 lg:p-8 text-center flex flex-col items-center justify-center">
+
+                <h3 class="font-medium text-[var(--accent-feedback-strong)] lg:text-7xl uppercase leading-none mb-3 tracking-tight font-heading">
+                    {precio}
+                </h3>
+
+                <div class="text-[var(--brand-interactive-base)] text-base font-bold mb-6 w-full px-2 leading-tight strapi-rich-text">
+                    <Fragment set:html={descripcionHtml} />
+                </div>
+
+                <div class="scale-90 lg:scale-100">
+                    <Button
+                        botones={boton_pricing}
+                        clase="flex justify-center"
+                    />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .title-extended {
+        transform: scaleX(1.15);
+        display: inline-block;
+    }
+
+    .font-heading {
+        transform: scaleY(1.1);
+    }
+
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0;
+        color: inherit;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: bold;
+        color: inherit;
+    }
+</style>
