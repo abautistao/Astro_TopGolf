@@ -50,7 +50,7 @@ const {
                     'bg-black text-white hover:bg-gray-900 hover:text-[#EA80FC]': boton.tipo === 'version_2',
 
                     // Version 3: Solo borde (Fondo blanco/transparente)
-                    'bg-white text-black hover:bg-gray-50': boton.tipo === 'version_3',
+                    'bg-[var(--brand-interactive-base)] text-black hover:bg-[var(--brand-interactive-base)]': boton.tipo === 'version_3',
                 }
             ]}
             set:html={boton.texto}

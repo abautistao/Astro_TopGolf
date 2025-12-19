@@ -1,0 +1,149 @@
+---
+// src/components/toca/Component_2.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { Image } from 'astro:assets';
+
+interface Props {
+    descripcion_principal: string;
+    descripcion_secundaria: string;
+    imagen_izquierda: any;
+    imagen_derecha: any;
+    botones: {
+        texto: string;
+        url: string;
+        tipo: 'play' | 'dine'; // Para diferenciar estilos si quisieras
+    }[];
+}
+
+const {
+    descripcion_principal = "Book a private box or two for 30, 60 or 90 minutes to play all our games. Each box accommodates 12 players. Or just walk-in to enjoy our fantastic food and drinks, as well as foosball tables, arcades, selfie booths and more.",
+    descripcion_secundaria = "If you need to move dates or cancel for a full refund, this is easily done ahead of time with a quick call or email.",
+    imagen_izquierda,
+    imagen_derecha,
+    botones = [
+        { texto: "BOOK TO PLAY", url: "#", tipo: 'play' },
+        { texto: "BOOK TO DINE", url: "#", tipo: 'dine' }
+    ]
+} = Astro.props;
+
+// Procesar imágenes de Strapi o usar placehold
+const imgLeftUrl = getStrapiUrl(imagen_izquierda);
+const imgRightUrl = getStrapiUrl(imagen_derecha);
+
+// Procesar texto enriquecido si viene de Strapi (si son strings simples, esto no rompe nada)
+const mainTextHtml = stringifyRichText(descripcion_principal);
+const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
+---
+
+<section class="w-full bg-[#EE82EE] py-16 lg:py-24 overflow-hidden relative">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+
+            {/* --- IMAGEN IZQUIERDA (Chica pateando) --- */}
+            <div class="w-full lg:w-1/4 flex justify-center lg:justify-end order-2 lg:order-1">
+                <div class="photo-card rotate-card-left transform transition-transform duration-500 hover:rotate-0 hover:scale-105 z-10">
+                    <div class="bg-black p-1 pb-4 shadow-xl">
+                        <div class="overflow-hidden aspect-[3/4] relative w-[280px] sm:w-[320px]">
+                            <Image
+                                src={imgLeftUrl || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=1000&auto=format&fit=crop"}
+                                alt="Playing"
+                                class="w-full h-full object-cover"
+                                width={400}
+                                height={600}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- CONTENIDO CENTRAL (Texto y Botones) --- */}
+            <div class="w-full lg:w-2/4 text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20">
+
+                {/* Texto Principal (Negrita) */}
+                <div class="font-bold text-[#0a0520] text-lg md:text-xl lg:text-2xl leading-tight mb-6 max-w-2xl strapi-content-bold">
+                    <Fragment set:html={mainTextHtml} />
+                </div>
+
+                {/* Texto Secundario (Itálica / Pequeño) */}
+                <div class="font-medium italic text-[#0a0520] text-sm md:text-base mb-10 max-w-xl strapi-content-italic">
+                   <Fragment set:html={secondaryTextHtml} />
+                </div>
+
+                {/* Botones */}
+                <div class="flex flex-col sm:flex-row gap-6 w-full justify-center">
+                    {botones.map((btn) => (
+                        <a href={btn.url} class="neo-button">
+                            {btn.texto}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
+            {/* --- IMAGEN DERECHA (Comiendo) --- */}
+            <div class="w-full lg:w-1/4 flex justify-center lg:justify-start order-3">
+                <div class="photo-card rotate-card-right transform transition-transform duration-500 hover:rotate-0 hover:scale-105 z-10">
+                    <div class="bg-black p-1 pb-4 shadow-xl">
+                         <div class="overflow-hidden aspect-[3/4] relative w-[280px] sm:w-[320px]">
+                            <Image
+                                src={imgRightUrl || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1000&auto=format&fit=crop"}
+                                alt="Dining"
+                                class="w-full h-full object-cover"
+                                width={400}
+                                height={600}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Rotaciones estilo Polaroid */
+    .rotate-card-left {
+        transform: rotate(-6deg);
+    }
+    .rotate-card-right {
+        transform: rotate(6deg);
+    }
+
+    /* Estilo de Botón Neo-Brutalista */
+    .neo-button {
+        display: inline-block;
+        background-color: #5ce1e6; /* Cyan similar a la imagen */
+        color: black;
+        font-family: 'Arial Black', sans-serif; /* O la fuente de títulos que uses */
+        font-weight: 900;
+        font-size: 1.25rem;
+        padding: 1rem 2rem;
+        text-transform: uppercase;
+        border: 2px solid black;
+        /* La sombra sólida negra desplazada */
+        box-shadow: 6px 6px 0px 0px #000000;
+        transition: all 0.2s ease;
+        text-align: center;
+        min-width: 200px;
+    }
+
+    .neo-button:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0px 0px #000000;
+    }
+
+    .neo-button:active {
+        transform: translate(6px, 6px);
+        box-shadow: none;
+    }
+
+    /* Ajustes para el texto enriquecido de Strapi para asegurar el estilo de la imagen */
+    .strapi-content-bold :global(p) {
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    .strapi-content-italic :global(p) {
+        font-style: italic;
+        margin-bottom: 0;
+    }
+</style>
