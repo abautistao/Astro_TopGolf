@@ -2,6 +2,7 @@
 // src/components/toca/Component_2.astro
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
+import Button from './elements/Button.astro';
 
 interface Props {
     descripcion_principal: string;
@@ -9,9 +10,10 @@ interface Props {
     imagen_izquierda: any;
     imagen_derecha: any;
     botones: {
+        id: number;
         texto: string;
         url: string;
-        tipo: 'play' | 'dine'; // Para diferenciar estilos si quisieras
+        tipo: 'version_1' | 'version_2' | 'version_3';
     }[];
 }
 
@@ -21,31 +23,27 @@ const {
     imagen_izquierda,
     imagen_derecha,
     botones = [
-        { texto: "BOOK TO PLAY", url: "#", tipo: 'play' },
-        { texto: "BOOK TO DINE", url: "#", tipo: 'dine' }
+        { id: 1, texto: "BOOK TO PLAY", url: "#", tipo: 'version_3' },
+        { id: 2, texto: "BOOK TO DINE", url: "#", tipo: 'version_3' }
     ]
 } = Astro.props;
 
-// Procesar imágenes de Strapi o usar placehold
 const imgLeftUrl = getStrapiUrl(imagen_izquierda);
 const imgRightUrl = getStrapiUrl(imagen_derecha);
-
-// Procesar texto enriquecido si viene de Strapi (si son strings simples, esto no rompe nada)
 const mainTextHtml = stringifyRichText(descripcion_principal);
 const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 ---
 
-<section class="w-full bg-[#EE82EE] py-16 lg:py-24 overflow-hidden relative">
+<section class="w-full bg-split pt-12 pb-12 lg:pt-5 lg:pb-28 overflow-visible relative">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+        <div class="flex flex-col lg:flex-row items-end justify-between gap-8 lg:gap-4">
 
-            {/* --- IMAGEN IZQUIERDA (Chica pateando) --- */}
-            <div class="w-full lg:w-1/4 flex justify-center lg:justify-end order-2 lg:order-1">
-                <div class="photo-card rotate-card-left transform transition-transform duration-500 hover:rotate-0 hover:scale-105 z-10">
-                    <div class="bg-black p-1 pb-4 shadow-xl">
-                        <div class="overflow-hidden aspect-[3/4] relative w-[280px] sm:w-[320px]">
+            <div class="hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-end order-2 lg:order-1 -mb-12 lg:-mb-24 z-30 relative">
+                <div class="photo-card rotate-card-left">
+                    <div class="bg-[var(--surface-brand-primary)] border-2 border-[var(--surface-brand-primary)] shadow-xl">
+                        <div class="overflow-hidden aspect-[3/4] relative w-[260px] sm:w-[300px]">
                             <Image
-                                src={imgLeftUrl || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=1000&auto=format&fit=crop"}
+                                src={imgLeftUrl || "https://placehold.co/100x720/2d3748/ffffff?text=Imagen+Fondo"}
                                 alt="Playing"
                                 class="w-full h-full object-cover"
                                 width={400}
@@ -56,36 +54,28 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
                 </div>
             </div>
 
-            {/* --- CONTENIDO CENTRAL (Texto y Botones) --- */}
-            <div class="w-full lg:w-2/4 text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20">
+            <div class="w-full lg:w-2/4 text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20 mb-0 lg:mb-0 pb-0 lg:pb-0">
 
-                {/* Texto Principal (Negrita) */}
-                <div class="font-bold text-[#0a0520] text-lg md:text-xl lg:text-2xl leading-tight mb-6 max-w-2xl strapi-content-bold">
+                <div class="font-bold text-[var(--surface-brand-primary)] text-base md:text-base lg:text-xl leading-tight mb-4 max-w-2xl mx-auto px-4 text-center">
                     <Fragment set:html={mainTextHtml} />
                 </div>
 
-                {/* Texto Secundario (Itálica / Pequeño) */}
-                <div class="font-medium italic text-[#0a0520] text-sm md:text-base mb-10 max-w-xl strapi-content-italic">
-                   <Fragment set:html={secondaryTextHtml} />
+                <div class="font-normal text-[var(--surface-brand-primary)] text-sm md:text-base mb-8 max-w-xl mx-auto px-4 text-center">
+                    <Fragment set:html={secondaryTextHtml} />
                 </div>
 
-                {/* Botones */}
-                <div class="flex flex-col sm:flex-row gap-6 w-full justify-center">
-                    {botones.map((btn) => (
-                        <a href={btn.url} class="neo-button">
-                            {btn.texto}
-                        </a>
-                    ))}
-                </div>
+                <Button
+                    botones={botones}
+                    clase="flex flex-row gap-4 sm:gap-6 w-full justify-center items-center flex-wrap sm:flex-nowrap"
+                />
             </div>
 
-            {/* --- IMAGEN DERECHA (Comiendo) --- */}
-            <div class="w-full lg:w-1/4 flex justify-center lg:justify-start order-3">
-                <div class="photo-card rotate-card-right transform transition-transform duration-500 hover:rotate-0 hover:scale-105 z-10">
-                    <div class="bg-black p-1 pb-4 shadow-xl">
-                         <div class="overflow-hidden aspect-[3/4] relative w-[280px] sm:w-[320px]">
+            <div class="hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-start order-3 -mb-12 lg:-mb-24 z-30 relative">
+                <div class="photo-card rotate-card-right">
+                    <div class="bg-[var(--surface-brand-primary)] border-2 border-[var(--surface-brand-primary)] shadow-xl">
+                        <div class="overflow-hidden aspect-[3/4] relative w-[260px] sm:w-[300px]">
                             <Image
-                                src={imgRightUrl || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1000&auto=format&fit=crop"}
+                                src={imgRightUrl || "https://placehold.co/100x720/2d3748/ffffff?text=Imagen+Fondo"}
                                 alt="Dining"
                                 class="w-full h-full object-cover"
                                 width={400}
@@ -101,49 +91,17 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 </section>
 
 <style>
-    /* Rotaciones estilo Polaroid */
-    .rotate-card-left {
-        transform: rotate(-6deg);
-    }
-    .rotate-card-right {
-        transform: rotate(6deg);
+    .bg-split {
+        background-color: var(--surface-brand-secondary);
     }
 
-    /* Estilo de Botón Neo-Brutalista */
-    .neo-button {
-        display: inline-block;
-        background-color: #5ce1e6; /* Cyan similar a la imagen */
-        color: black;
-        font-family: 'Arial Black', sans-serif; /* O la fuente de títulos que uses */
-        font-weight: 900;
-        font-size: 1.25rem;
-        padding: 1rem 2rem;
-        text-transform: uppercase;
-        border: 2px solid black;
-        /* La sombra sólida negra desplazada */
-        box-shadow: 6px 6px 0px 0px #000000;
-        transition: all 0.2s ease;
-        text-align: center;
-        min-width: 200px;
+    @media (min-width: 1024px) {
+        .bg-split {
+            background: linear-gradient(to bottom, var(--surface-brand-secondary) 85%, var(--surface-brand-primary) 85%);
+        }
     }
 
-    .neo-button:hover {
-        transform: translate(2px, 2px);
-        box-shadow: 2px 2px 0px 0px #000000;
-    }
+    .rotate-card-left { transform: rotate(-6deg); }
+    .rotate-card-right { transform: rotate(6deg); }
 
-    .neo-button:active {
-        transform: translate(6px, 6px);
-        box-shadow: none;
-    }
-
-    /* Ajustes para el texto enriquecido de Strapi para asegurar el estilo de la imagen */
-    .strapi-content-bold :global(p) {
-        margin-bottom: 1rem;
-        font-weight: 700;
-    }
-    .strapi-content-italic :global(p) {
-        font-style: italic;
-        margin-bottom: 0;
-    }
 </style>
