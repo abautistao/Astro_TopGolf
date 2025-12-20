@@ -1,0 +1,222 @@
+---
+// src/components/toca/Component_5.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { Image } from 'astro:assets';
+
+interface EventoProps {
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    link: string;
+}
+
+interface Props {
+    titulo_seccion: string;
+    eventos: EventoProps[];
+}
+
+const {
+    titulo_seccion = "WHAT'S ON?",
+    eventos = [
+        {
+            titulo: "CHRISTMAS MENU",
+            descripcion: "Feast your eyes on our brand new Christmas menu! The perfect food for refuelling at half-time.",
+            imagen: null,
+            link: "#"
+        },
+        {
+            titulo: "NEW YEAR'S EVE",
+            descripcion: "Kick off 2024 with extra time! All box bookings that end at 11:50pm on 31st December will have their...",
+            imagen: null,
+            link: "#"
+        },
+        {
+            titulo: "SUPER BOWL LVIII",
+            descripcion: "Come and watch the Super Bowl at TOCA Social this February! You can opt to get a table right in the...",
+            imagen: null,
+            link: "#"
+        },
+        {
+            titulo: "WE'VE SIGNED LEAH WILLIAMSON",
+            descripcion: "We are beyond excited to welcome Lioness and England Captain, Leah Williamson to our TOCA Social...",
+            imagen: null,
+            link: "#"
+        },
+        {
+            titulo: "TOCA SOCIAL BIRMINGHAM",
+            descripcion: "Birmingham, we're coming for you! Introducing our brand new venue in the Birmingham Bullring. Sign up...",
+            imagen: null,
+            link: "#"
+        }
+    ]
+} = Astro.props;
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 overflow-hidden relative">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+
+        {/* HEADER */}
+        <div class="flex justify-end lg:justify-between items-end mb-4 lg:mb-12 relative">
+            <h2 class="hidden lg:block font-black text-[var(--accent-feedback-strong)] text-xl uppercase tracking-tighter title-extended">
+                {titulo_seccion}
+            </h2>
+
+            <div class="flex gap-4 z-10">
+                <button id="slider-prev" class="text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none" aria-label="Previous">
+                    <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
+                </button>
+                <button id="slider-next" class="text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none" aria-label="Next">
+                    <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
+                </button>
+            </div>
+        </div>
+
+        {/* SLIDER CONTAINER */}
+        <div id="whats-on-slider" class="flex gap-0 lg:gap-6 overflow-hidden scroll-smooth pb-4 items-start">
+            {eventos.map((evento) => {
+                const descHtml = stringifyRichText(evento.descripcion);
+                const imgUrl = getStrapiUrl(evento.imagen);
+
+                return (
+                    // CARD CONTAINER (Agregué la clase 'card-group' para identificarla en JS)
+                    <div class="card-group shrink-0 min-w-full lg:min-w-0 lg:w-[calc(25%-1.125rem)] flex flex-col group h-auto">
+
+                        {/* IMAGEN */}
+                        <div class="w-full aspect-[16/9] lg:aspect-[3/4] mb-4 lg:mb-6 overflow-hidden relative bg-gray-300">
+                            <Image
+                                src={imgUrl || "https://placehold.co/800x650/cccccc/555555?text=Image"}
+                                alt={evento.titulo}
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                width={600}
+                                height={800}
+                            />
+                        </div>
+
+                        {/* CONTENIDO DE TEXTO */}
+                        <div class="flex flex-col grow pr-6">
+
+                            <h3 class="font-bold text-[var(--brand-interactive-base)] lg:text-[var(--surface-brand-secondary)] text-[15px] uppercase leading-none mb-3 font-heading break-words title-extended">
+                                {evento.titulo}
+                            </h3>
+
+                            {/* CAMBIO IMPORTANTE:
+                                1. Quitamos clases de Tailwind conflictivas.
+                                2. Usamos la clase personalizada `clamped-text` definida abajo en <style>.
+                                3. `desc-text` sirve para encontrar este div con JS.
+                            */}
+                            <div class="text-white text-sm lg:text-sm leading-snug mb-2 strapi-rich-text desc-text clamped-text">
+                                <Fragment set:html={descHtml} />
+                            </div>
+
+                            <button
+                                type="button"
+                                class="read-more-trigger text-[var(--surface-brand-secondary)] text-sm lg:text-sm font-bold transition-colors mt-auto inline-block text-left hover:text-white focus:outline-none cursor-pointer pt-2"
+                            >
+                                Read more...
+                            </button>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+
+    </div>
+</section>
+
+<script>
+    document.addEventListener('astro:page-load', initComponent);
+    document.addEventListener('DOMContentLoaded', initComponent);
+
+    function initComponent() {
+        initSlider();
+        initReadMore();
+    }
+
+    function initReadMore() {
+        // Seleccionamos todos los botones
+        const buttons = document.querySelectorAll('.read-more-trigger');
+
+        buttons.forEach(btn => {
+            // Clonamos el botón para eliminar eventos anteriores (evita duplicados al navegar)
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+
+            newBtn.addEventListener('click', (e) => {
+                const button = e.currentTarget as HTMLElement;
+
+                // 1. Buscamos la tarjeta padre más cercana
+                const card = button.closest('.card-group');
+
+                // 2. Dentro de esa tarjeta, buscamos el texto
+                const textContainer = card.querySelector('.desc-text');
+
+                if (textContainer) {
+                    // 3. Alternamos la clase CSS
+                    if (textContainer.classList.contains('clamped-text')) {
+                        // ABRIR: Quitamos el límite
+                        textContainer.classList.remove('clamped-text');
+                        button.textContent = 'Read less';
+                    } else {
+                        // CERRAR: Ponemos el límite
+                        textContainer.classList.add('clamped-text');
+                        button.textContent = 'Read more...';
+                    }
+                } else {
+                    console.error("No se encontró el contenedor de texto");
+                }
+            });
+        });
+    }
+
+    function initSlider() {
+        const slider = document.getElementById('whats-on-slider');
+        const prevBtn = document.getElementById('slider-prev');
+        const nextBtn = document.getElementById('slider-next');
+
+        if (!slider || !prevBtn || !nextBtn) return;
+
+        const getScrollAmount = () => {
+            const isMobile = window.innerWidth < 1024;
+            const card = slider.firstElementChild as HTMLElement;
+            if (!card) return 0;
+            return isMobile ? card.clientWidth : card.clientWidth + 24;
+        };
+
+        const newNextBtn = nextBtn.cloneNode(true);
+        const newPrevBtn = prevBtn.cloneNode(true);
+
+        if (nextBtn.parentNode) nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+        if (prevBtn.parentNode) prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+
+        newNextBtn.addEventListener('click', () => {
+            slider.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        });
+
+        newPrevBtn.addEventListener('click', () => {
+            slider.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        });
+    }
+</script>
+
+<style>
+    .title-extended {
+        transform: scaleX(1.05);
+        transform-origin: left;
+    }
+
+    /* ESTILO PARA LOS PÁRRAFOS DEL CMS */
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0.5rem;
+        color: inherit;
+    }
+
+    /* CLASE PERSONALIZADA PARA CORTAR EL TEXTO
+       Esto asegura que funcione aunque Tailwind falle.
+    */
+    .clamped-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Número de líneas a mostrar */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
