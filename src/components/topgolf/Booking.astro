@@ -62,7 +62,8 @@ for (const [key, value] of Object.entries(rawParams)) {
 			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2.php`;
 			var params = {
                 ...paramsVMG,
-				'plugin_id': vmg_plugin_id
+				'plugin_id': vmg_plugin_id,
+                'dev_plugin': 1
 			};
 			
 			const urlParams = new URLSearchParams(window.location.search);
