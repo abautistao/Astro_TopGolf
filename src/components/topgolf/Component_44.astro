@@ -48,7 +48,7 @@ const data = {
 };
 ---
 
-<div class="relative w-[90%] mx-auto my-12 px-4 md:px-8">
+<div class="relative w-[90%] mx-auto !my-12 !px-4 md:!px-8">
     <!-- DECORACIÓN: Patrón de puntos (Dots) - Esquina superior derecha -->
     <div
         class="absolute -top-10 -right-4 w-48 h-32 hidden lg:grid grid-cols-8 gap-3 z-0 pointer-events-none"
@@ -84,13 +84,13 @@ const data = {
 
             <!-- Descripción -->
             <div
-                class="text-[var(--neutral-background-strong)] strapi-rich-text py-4 text-sm lg:text-base mb-3 leading-relaxed font-(family-name:--font-shields-sans-regular)"
+                class="text-[var(--neutral-background-strong)] strapi-rich-text !py-4 text-sm lg:text-base mb-3 leading-relaxed font-(family-name:--font-shields-sans-regular)"
                 set:html={descriptionHtml}
             />
 
             <!-- Caja Azul Promocional -->
             <div
-                class="bg-[var(--neutral-background-subtle)] py-4 px-5 rounded-sm flex justify-center items-center gap-4 mt-2"
+                class="bg-[var(--neutral-background-subtle)] !py-4 !px-5 rounded-sm flex justify-center items-center gap-4 !mt-2"
             >
                 <div
                     class="text-[var(--surface-brand-primary)] text-sm text-center lg:text-base font-(family-name:--font-shields-sans-regular) strapi-rich-text-2"
@@ -126,10 +126,10 @@ const data = {
                 <!-- BOTÓN DE PLAY -->
                 <button
                     id="play-btn"
-                    class="absolute inset-0 m-auto bg-white text-purple-600 rounded-full w-20 h-20 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 group-active:scale-95 z-30"
+                    class="absolute inset-0 !m-auto bg-white text-purple-600 rounded-full w-20 h-20 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 group-active:scale-95 z-30"
                 >
                     <svg
-                        class="w-8 h-8 ml-1"
+                        class="w-8 h-8 !ml-1"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >
@@ -221,6 +221,9 @@ const data = {
     }
     .strapi-rich-text2 :global(a) {
         color: var(--brand-interactive-base);
+    }
+    .strapi-rich-text-2 :global(p) {
+        margin-bottom: 0 !important;
     }
 
     /* --- Agrega esto aquí --- */
