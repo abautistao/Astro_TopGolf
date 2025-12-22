@@ -5,8 +5,6 @@
 
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
 
-export const prerender = false;
-
 const reservacion_id = Astro.url.searchParams.get("reservacion_id");
 const status = Astro.url.searchParams.get("status");
 
