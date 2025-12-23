@@ -65,7 +65,7 @@ const isVideo = (url: string | undefined | null) => {
 
         <div id="gallery-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-3">
             {dataToRender.imagenes.map((gallery) => {
-                if(isVideo(gallery.image)) {
+                if(isVideo(getStrapiUrl(gallery.image))) {
                     return (
                         <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
                         
