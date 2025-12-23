@@ -7,6 +7,8 @@ import "@fancyapps/ui/dist/fancybox/fancybox.css";
 export interface GaleriaItem {
     image: string
     title: string;
+    is_video: boolean
+    cover: string
 }
 
 export interface Props {
@@ -26,7 +28,7 @@ const placeholderData: Props = {
     texto_boton_cargar_mas: "CARGAR MÁS JUEGOS",
     texto_boton_regresar: "REGRESAR",
     imagenes: [
-        { title: 'Imagen 1',  image: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png'},
+        { title: 'Imagen 1',  image: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png', is_video: false, cover: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png'},
     ]
 };
 
@@ -37,20 +39,6 @@ const dataToRender = {
     imagenes: imagenes && imagenes.length > 0 ? imagenes : placeholderData.imagenes,
 };
 const placeholderImage = "https://placehold.co/600x400?text=No+Image";
-
-const isVideo = (url: string | undefined | null) => {
-    if (!url) return false;
-    const cleanUrl = url.split("?")[0].toLowerCase();
-    return (
-        cleanUrl.endsWith(".mp4") ||
-        cleanUrl.endsWith(".webm") ||
-        cleanUrl.endsWith(".ogg") ||
-        cleanUrl.endsWith(".mov") || 
-        cleanUrl.includes('youtube')
-    );
-};
-
-
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
@@ -65,22 +53,40 @@ const isVideo = (url: string | undefined | null) => {
 
         <div id="gallery-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-3">
             {dataToRender.imagenes.map((gallery) => {
-                if(isVideo(getStrapiUrl(gallery.image))) {
+                if(gallery.is_video) {
                     return (
-                        <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
-                        
+                        <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title} class="relative">
                             <img
-                                src="http://i3.ytimg.com/vi/PUdyuKaGQd4/hqdefault.jpg"
-                                alt="Video poster"
-                                width="240"
-                                height="180"
+                                src={getStrapiUrl(gallery.cover)}
+                                alt={gallery.title}
                             />
+                            <!-- BOTÓN DE PLAY -->
+                            <button
+                                id="play-btn"
+                                class="absolute inset-0 !m-auto bg-white text-purple-600 rounded-full w-12 h-12 flex items-center justify-center shadow-2xl hover:cursor-pointer"
+                            >
+                                <svg
+                                    class="w-8 h-8"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M8 5v14l11-7z"></path>
+                                </svg>
+                            
+                            </button>
                         </a>
                     )
                 } else {
+                    return (
+
                     <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
-                        <Image src={getStrapiUrl(gallery.image) || placeholderImage} alt={gallery.title} inferSize={true} />
+                        <Image 
+                            src={getStrapiUrl(gallery.image) || placeholderImage} 
+                            alt={gallery.title} 
+                            inferSize={true} 
+                        />
                     </a>
+                    )
                 }
             })}
             

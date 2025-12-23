@@ -106,12 +106,12 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
                     {links.map(link => (
                         <li>
                             {link.tiene_dropdown && link.dropdown_items && link.dropdown_items.length > 0 ? (
-                                <button class="font-(family-name:--font-shields-sans-condensed) text-xl flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger focus:outline-0" data-dropdown-id={`desktop-${link.id}`}>
+                                <button class="font-(family-name:--font-shields-sans-condensed) text-lg flex items-center tracking-wide transition-colors hover:text-[var(--accent-feedback-strong)] dropdown-trigger focus:outline-0" data-dropdown-id={`desktop-${link.id}`}>
                                     {link.texto}
                                     <i class="fa-xl fa-solid fa-chevron-down text-[var(--accent-highlight-secondary)] font-bold ml-2 transition-transform duration-300"></i>
                                 </button>
                             ) : (
-                                <a href={formatUrl(link.url)} class="font-(family-name:--font-shields-sans-condensed) text-xl tracking-wide transition-colors text-white hover:!text-[var(--accent-feedback-strong)] hover:no-underline">{link.texto}</a>
+                                <a href={formatUrl(link.url)} class="font-(family-name:--font-shields-sans-condensed) text-lg tracking-wide transition-colors text-white hover:!text-[var(--accent-feedback-strong)] hover:no-underline">{link.texto}</a>
                             )}
                         </li>
                     ))}
