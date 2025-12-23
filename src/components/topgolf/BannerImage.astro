@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { getStrapiUrl } from '../../lib/strapi.js';
+import { formatUrl } from '../../lib/strapi';
 
 const FALLBACK_IMAGE_URL =
   "https://s3-intl.topgolf.com/mexico/FAVS-INCLUYE-NOV25-DESK.png";
@@ -24,6 +25,7 @@ export interface Props {
   link?: string;
   background: string;
   is_boxed: boolean
+  title?: string
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -32,7 +34,8 @@ const {
   imagen_mobile,
   link,
   background,
-  is_boxed
+  is_boxed,
+  title
 } = Astro.props;
 
 const placeholderData: Props = {
@@ -40,7 +43,8 @@ const placeholderData: Props = {
   imagen_mobile,
   link,
   background,
-  is_boxed
+  is_boxed,
+  title
 };
 
 // 3. Preparamos los datos para renderizar
@@ -78,19 +82,25 @@ const imageAltMobile =
     }
   ]}>
 
-    <Image
-        src={imageUrlDesktop}
-        alt={imageAlt}
-        class="w-full hidden md:block"
-        inferSize={true}
-    />
-
-    <Image
-        src={imageUrlMobile}
-        alt={imageAltMobile}
-        class="w-full block md:hidden"
-        inferSize={true}
-    />
+    {title && (
+      <h2 class="text-center text-3xl md:text-4xl uppercase font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed)">{title}</h2>
+    )}
+    
+    <a href={formatUrl(link)}>
+      <Image
+          src={imageUrlDesktop}
+          alt={imageAlt}
+          class="w-full hidden md:block"
+          inferSize={true}
+      />
+  
+      <Image
+          src={imageUrlMobile}
+          alt={imageAltMobile}
+          class="w-full block md:hidden"
+          inferSize={true}
+      />
+    </a>
   </div>
 </section>
 
