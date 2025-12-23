@@ -37,6 +37,20 @@ const dataToRender = {
     imagenes: imagenes && imagenes.length > 0 ? imagenes : placeholderData.imagenes,
 };
 const placeholderImage = "https://placehold.co/600x400?text=No+Image";
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov") || 
+        cleanUrl.includes('youtube')
+    );
+};
+
+
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
@@ -50,11 +64,25 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
         </div>
 
         <div id="gallery-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-3">
-            {dataToRender.imagenes.map((gallery) => (
-                <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
-                    <Image src={getStrapiUrl(gallery.image) || placeholderImage} alt={gallery.title} inferSize={true} />
-                </a>
-            ))}
+            {dataToRender.imagenes.map((gallery) => {
+                if(isVideo(gallery.image)) {
+                    return (
+                        <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
+                        
+                            <img
+                                src="http://i3.ytimg.com/vi/PUdyuKaGQd4/hqdefault.jpg"
+                                alt="Video poster"
+                                width="240"
+                                height="180"
+                            />
+                        </a>
+                    )
+                } else {
+                    <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
+                        <Image src={getStrapiUrl(gallery.image) || placeholderImage} alt={gallery.title} inferSize={true} />
+                    </a>
+                }
+            })}
             
         </div>
     </div>
