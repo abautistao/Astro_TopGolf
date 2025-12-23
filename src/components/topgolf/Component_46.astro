@@ -9,6 +9,8 @@ export interface GaleriaItem {
     title: string;
     is_video: boolean
     cover: string
+    is_youtube: boolean
+    youtube_url: string
 }
 
 export interface Props {
@@ -28,7 +30,7 @@ const placeholderData: Props = {
     texto_boton_cargar_mas: "CARGAR MÁS JUEGOS",
     texto_boton_regresar: "REGRESAR",
     imagenes: [
-        { title: 'Imagen 1',  image: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png', is_video: false, cover: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png'},
+        { title: 'Imagen 1',  image: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png', is_video: false, cover: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png', is_youtube: true, youtube_url: 'https://www.youtube.com/watch?v=-ElC3HcyUWo'},
     ]
 };
 
@@ -55,7 +57,7 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
             {dataToRender.imagenes.map((gallery) => {
                 if(gallery.is_video) {
                     return (
-                        <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title} class="relative">
+                        <a href={gallery.is_youtube ? gallery.youtube_url : getStrapiUrl(gallery.image)} data-fancybox="gallery" data-caption={gallery.title} class="relative">
                             <img
                                 src={getStrapiUrl(gallery.cover)}
                                 alt={gallery.title}
@@ -81,7 +83,7 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
 
                     <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
                         <Image 
-                            src={getStrapiUrl(gallery.image) || placeholderImage} 
+                            src={getStrapiUrl(gallery.cover) || placeholderImage} 
                             alt={gallery.title} 
                             inferSize={true} 
                         />
