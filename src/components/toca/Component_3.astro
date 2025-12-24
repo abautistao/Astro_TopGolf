@@ -2,65 +2,55 @@
 // src/components/toca/Component_3.astro
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
-
-interface CardProps {
+interface TarjetaData {
+    id: number;
     titulo: string;
-    descripcion: string;
+    descripcion: any;
     imagen: any;
 }
-
 interface Props {
-    card_1: CardProps;
-    card_2: CardProps;
-    card_3: CardProps;
+    Tarjetas: TarjetaData[];
 }
 
-const {
-    card_1 = {
-        titulo: "FUN GAMES",
-        descripcion: "Designed for both football lovers and haters alike, whether you can kick a ball or not.",
-        imagen: null
-    },
-    card_2 = {
-        titulo: "BANGING MENU",
-        descripcion: "A modern Americana-inspired menu that will leave you wanting more.",
-        imagen: null
-    },
-    card_3 = {
-        titulo: "EVENT SPACES",
-        descripcion: "TOCA Social caters for events of all shape and sizes, from corporate nights to hen dos.",
-        imagen: null
-    }
-} = Astro.props;
+const { Tarjetas = [] } = Astro.props;
 
-const cards = [
+const defaultCards = [
     {
-        title: card_1.titulo,
-        desc: stringifyRichText(card_1.descripcion),
-        img: getStrapiUrl(card_1.imagen),
-        alt: "Fun Games"
+        titulo: "FUN GAMES",
+        descripcion: "Designed for both football lovers and haters alike...",
+        imagen: null
     },
     {
-        title: card_2.titulo,
-        desc: stringifyRichText(card_2.descripcion),
-        img: getStrapiUrl(card_2.imagen),
-        alt: "Banging Menu"
+        titulo: "BANGING MENU",
+        descripcion: "A modern Americana-inspired menu...",
+        imagen: null
     },
     {
-        title: card_3.titulo,
-        desc: stringifyRichText(card_3.descripcion),
-        img: getStrapiUrl(card_3.imagen),
-        alt: "Event Spaces"
+        titulo: "EVENT SPACES",
+        descripcion: "TOCA Social caters for events of all shape and sizes...",
+        imagen: null
     }
 ];
+
+const rawData = Tarjetas.length > 0 ? Tarjetas : defaultCards;
+
+const ProcessedTarjetas = rawData.map((card) => ({
+    title: card.titulo,
+    desc: typeof card.descripcion === 'string'
+        ? card.descripcion
+        : stringifyRichText(card.descripcion),
+    img: getStrapiUrl(card.imagen),
+    alt: card.titulo || "Toca Social Image"
+}));
+
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden relative">
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-10 relative">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full">
 
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
-            {cards.map((item, index) => (
+            {ProcessedTarjetas.map((item, index) => (
                 <div
                     class={`carousel-item flex-col h-full group
                     ${index === 0 ? 'flex' : 'hidden'} lg:flex`}
@@ -68,7 +58,7 @@ const cards = [
                 >
                     <div class="mb-6">
                         <div class="flex justify-between items-start gap-4 mb-3">
-                            <h3 class="flex-1 min-w-0 w-min font-bold text-[var(--accent-feedback-strong)] text-5xl sm:text-6xl lg:text-xl uppercase leading-[0.9] tracking-tighter title-extended break-words">
+                            <h3 class="flex-1 min-w-0 w-min font-bold text-[var(--accent-feedback-strong)] text-6xl lg:text-xl uppercase leading-[0.9] tracking-tighter title-extended break-words">
                                 {item.title}
                             </h3>
                             <div class="flex gap-4 lg:hidden shrink-0 pt-2">
@@ -81,10 +71,10 @@ const cards = [
                                 </button>
                             </div>
                         </div>
+
                         <div class="text-[var(--brand-interactive-base)] text-base lg:text-base font-bold leading-tight w-full strapi-rich-text">
                             <Fragment set:html={item.desc} />
                         </div>
-
                     </div>
 
                     <div class="w-full aspect-[430/560] lg:aspect-square relative overflow-hidden shadow-lg border-2 border-transparent mt-auto">
@@ -123,6 +113,8 @@ const cards = [
 
         function showItem(index) {
             items.forEach((item, i) => {
+                // Solo afecta móvil donde usamos flex/hidden para el carrusel
+                // En escritorio (lg:flex) esto se sobrescribe por CSS
                 item.classList.remove('flex');
                 item.classList.add('hidden');
 

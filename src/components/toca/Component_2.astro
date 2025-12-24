@@ -18,8 +18,8 @@ interface Props {
 }
 
 const {
-    descripcion_principal = "Book a private box or two for 30, 60 or 90 minutes to play all our games. Each box accommodates 12 players. Or just walk-in to enjoy our fantastic food and drinks, as well as foosball tables, arcades, selfie booths and more.",
-    descripcion_secundaria = "If you need to move dates or cancel for a full refund, this is easily done ahead of time with a quick call or email.",
+    descripcion_principal = "Descripcion de Ejemplo.",
+    descripcion_secundaria = "Descripcion Secundaria de Ejemplo.",
     imagen_izquierda,
     imagen_derecha,
     botones = [
@@ -27,7 +27,6 @@ const {
         { id: 2, texto: "BOOK TO DINE", url: "#", tipo: 'version_3' }
     ]
 } = Astro.props;
-
 const imgLeftUrl = getStrapiUrl(imagen_izquierda);
 const imgRightUrl = getStrapiUrl(imagen_derecha);
 const mainTextHtml = stringifyRichText(descripcion_principal);
@@ -56,7 +55,7 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 
             <div class="w-full lg:w-2/4 text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20 mb-0 lg:mb-0 pb-0 lg:pb-0">
 
-                <div class="font-bold text-[var(--surface-brand-primary)] text-base md:text-base lg:text-xl leading-tight mb-4 max-w-2xl mx-auto px-4 text-center">
+                <div class="font-bold text-[var(--surface-brand-primary)] text-base lg:text-xl leading-tight mb-4 max-w-2xl mx-auto px-4 text-center">
                     <Fragment set:html={mainTextHtml} />
                 </div>
 

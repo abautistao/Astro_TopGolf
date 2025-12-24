@@ -1,222 +1,232 @@
 ---
 // src/components/toca/Component_5.astro
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
-import { Image } from 'astro:assets';
 
-interface EventoProps {
+interface CardData {
+    id: number;
     titulo: string;
-    descripcion: string;
+    descripcion: any;
     imagen: any;
-    link: string;
+    link?: string;
 }
 
 interface Props {
     titulo_seccion: string;
-    eventos: EventoProps[];
+    Cards: CardData[];
 }
 
 const {
     titulo_seccion = "WHAT'S ON?",
-    eventos = [
-        {
-            titulo: "CHRISTMAS MENU",
-            descripcion: "Feast your eyes on our brand new Christmas menu! The perfect food for refuelling at half-time.",
-            imagen: null,
-            link: "#"
-        },
-        {
-            titulo: "NEW YEAR'S EVE",
-            descripcion: "Kick off 2024 with extra time! All box bookings that end at 11:50pm on 31st December will have their...",
-            imagen: null,
-            link: "#"
-        },
-        {
-            titulo: "SUPER BOWL LVIII",
-            descripcion: "Come and watch the Super Bowl at TOCA Social this February! You can opt to get a table right in the...",
-            imagen: null,
-            link: "#"
-        },
-        {
-            titulo: "WE'VE SIGNED LEAH WILLIAMSON",
-            descripcion: "We are beyond excited to welcome Lioness and England Captain, Leah Williamson to our TOCA Social...",
-            imagen: null,
-            link: "#"
-        },
-        {
-            titulo: "TOCA SOCIAL BIRMINGHAM",
-            descripcion: "Birmingham, we're coming for you! Introducing our brand new venue in the Birmingham Bullring. Sign up...",
-            imagen: null,
-            link: "#"
-        }
-    ]
+    Cards = []
 } = Astro.props;
+
+const PLACEHOLDER_IMG = "https://placehold.co/600x750/2d3748/ffffff?text=TOCA+Social+Event";
+
+const defaultEvents = [
+    {
+        id: 101,
+        titulo: "CHRISTMAS MENU",
+        descripcion: "Feast your eyes on our brand new Christmas menu! The perfect food for refuelling at half-time. We have turkey, pudding and much more waiting for you.",
+        imagen: null
+    },
+    {
+        id: 102,
+        titulo: "NEW YEAR'S EVE",
+        descripcion: "Kick off 2024 with extra time! All box bookings that end at 11:50pm on 31st December will have their time extended. Celebrate with us!",
+        imagen: null
+    },
+    {
+        id: 103,
+        titulo: "SUPER BOWL LVIII",
+        descripcion: "Come and watch the Super Bowl at TOCA Social this February! You can opt to get a table right in the action. Wings, beer and American Football.",
+        imagen: null
+    }
+];
+
+const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 overflow-hidden relative">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+<section class="bg-[var(--surface-brand-primary)] py-10 px-4 md:px-12 w-full overflow-hidden relative">
 
-        {/* HEADER */}
-        <div class="flex justify-end lg:justify-between items-end mb-4 lg:mb-12 relative">
-            <h2 class="hidden lg:block font-black text-[var(--accent-feedback-strong)] text-xl uppercase tracking-tighter title-extended">
-                {titulo_seccion}
-            </h2>
+    <div class="flex justify-end md:justify-between items-end mb-6 max-w-[1600px] mx-auto">
+        <h2 class="hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]">
+            {titulo_seccion}
+        </h2>
 
-            <div class="flex gap-4 z-10">
-                <button id="slider-prev" class="text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none" aria-label="Previous">
-                    <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
-                </button>
-                <button id="slider-next" class="text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none" aria-label="Next">
-                    <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
-                </button>
-            </div>
+        <div class="flex gap-4 mb-1">
+            <button id="prevBtn" class="text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] transition-colors focus:outline-none p-1 cursor-pointer">
+                <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
+            </button>
+
+            <button id="nextBtn" class="text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] transition-colors focus:outline-none p-1 cursor-pointer">
+                <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
+            </button>
         </div>
+    </div>
 
-        {/* SLIDER CONTAINER */}
-        <div id="whats-on-slider" class="flex gap-0 lg:gap-6 overflow-hidden scroll-smooth pb-4 items-start">
-            {eventos.map((evento) => {
-                const descHtml = stringifyRichText(evento.descripcion);
-                const imgUrl = getStrapiUrl(evento.imagen);
+    <div
+        id="sliderContainer"
+        class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6
+            md:grid md:grid-cols-5 md:gap-4 md:overflow-visible
+            max-w-[1600px] mx-auto scrollbar-hide"
+    >
+        {dataToRender.map((evento) => {
+            const descHtml = typeof evento.descripcion === 'string'
+                ? evento.descripcion
+                : stringifyRichText(evento.descripcion);
 
-                return (
-                    // CARD CONTAINER (Agregué la clase 'card-group' para identificarla en JS)
-                    <div class="card-group shrink-0 min-w-full lg:min-w-0 lg:w-[calc(25%-1.125rem)] flex flex-col group h-auto">
+            const rawStrapiUrl  = getStrapiUrl(evento.imagen);
+            const finalImgUrl   = rawStrapiUrl || PLACEHOLDER_IMG;
 
-                        {/* IMAGEN */}
-                        <div class="w-full aspect-[16/9] lg:aspect-[3/4] mb-4 lg:mb-6 overflow-hidden relative bg-gray-300">
-                            <Image
-                                src={imgUrl || "https://placehold.co/800x650/cccccc/555555?text=Image"}
-                                alt={evento.titulo}
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                width={600}
-                                height={800}
-                            />
+            return (
+                <article class="min-w-[85vw] sm:min-w-[45vw] md:min-w-0 snap-center flex flex-col h-full group">
+
+                    <div class="aspect-[4/5] w-full bg-[var(--surface-brand-primary)] relative overflow-hidden mb-4">
+                        <img
+                            src={finalImgUrl}
+                            alt={evento.titulo}
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            onerror={`this.onerror=null; this.src='${PLACEHOLDER_IMG}';`}
+                        />
+                    </div>
+
+                    <div class="flex flex-col flex-grow">
+                        <h3 class="text-[var(--surface-brand-secondary)] text-[15px] font-bold uppercase mb-2 leading-none font-montserrat">
+                            {evento.titulo}
+                        </h3>
+
+                        <div class="text-[var(--accent-feedback-strong)] text-sm font-medium mb-4 line-clamp-3 leading-relaxed">
+                            <span set:html={descHtml} />
                         </div>
 
-                        {/* CONTENIDO DE TEXTO */}
-                        <div class="flex flex-col grow pr-6">
+                        <button
+                            class="read-more-btn text-[var(--surface-brand-secondary)] text-sm font-medium self-start text-left"
+                            data-title={evento.titulo}
+                            data-image={finalImgUrl}
+                            data-description={descHtml}
+                        >
+                            Read more...
+                        </button>
+                    </div>
+                </article>
+            );
+        })}
+    </div>
 
-                            <h3 class="font-bold text-[var(--brand-interactive-base)] lg:text-[var(--surface-brand-secondary)] text-[15px] uppercase leading-none mb-3 font-heading break-words title-extended">
-                                {evento.titulo}
-                            </h3>
+    <div id="infoModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div id="modalOverlay" class="fixed inset-0 bg-[var(--surface-brand-primary)]/40 backdrop-blur-sm transition-opacity opacity-0"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
 
-                            {/* CAMBIO IMPORTANTE:
-                                1. Quitamos clases de Tailwind conflictivas.
-                                2. Usamos la clase personalizada `clamped-text` definida abajo en <style>.
-                                3. `desc-text` sirve para encontrar este div con JS.
-                            */}
-                            <div class="text-white text-sm lg:text-sm leading-snug mb-2 strapi-rich-text desc-text clamped-text">
-                                <Fragment set:html={descHtml} />
+                <div id="modalPanel" class="relative transform overflow-hidden bg-[var(--surface-brand-primary)] text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-[#d87dfc]/30 rounded-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+
+                    <button id="closeModalBtn" class="absolute top-4 right-4 text-[var(--accent-feedback-strong) hover:text-[var(--surface-brand-secondary)] z-20 focus:outline-none">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+
+                    <div id="modalImageContainer" class="w-full h-48 bg-[var(--surface-brand-primary)] hidden">
+                        <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
+                    </div>
+
+                    <div class="px-6 py-6 sm:p-8">
+                        <h3 id="modalTitle" class="text-2xl font-medium leading-6 text-[var(--surface-brand-secondary)] uppercase mb-4"></h3>
+                        <div class="mt-2">
+                            <div id="modalDescription" class="text-sm text-[var(--accent-feedback-strong)] prose prose-invert max-w-none">
                             </div>
-
-                            <button
-                                type="button"
-                                class="read-more-trigger text-[var(--surface-brand-secondary)] text-sm lg:text-sm font-bold transition-colors mt-auto inline-block text-left hover:text-white focus:outline-none cursor-pointer pt-2"
-                            >
-                                Read more...
-                            </button>
                         </div>
                     </div>
-                );
-            })}
-        </div>
 
+                </div>
+            </div>
+        </div>
     </div>
+
 </section>
 
 <script>
-    document.addEventListener('astro:page-load', initComponent);
-    document.addEventListener('DOMContentLoaded', initComponent);
+    const container = document.getElementById('sliderContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-    function initComponent() {
-        initSlider();
-        initReadMore();
-    }
-
-    function initReadMore() {
-        // Seleccionamos todos los botones
-        const buttons = document.querySelectorAll('.read-more-trigger');
-
-        buttons.forEach(btn => {
-            // Clonamos el botón para eliminar eventos anteriores (evita duplicados al navegar)
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-
-            newBtn.addEventListener('click', (e) => {
-                const button = e.currentTarget as HTMLElement;
-
-                // 1. Buscamos la tarjeta padre más cercana
-                const card = button.closest('.card-group');
-
-                // 2. Dentro de esa tarjeta, buscamos el texto
-                const textContainer = card.querySelector('.desc-text');
-
-                if (textContainer) {
-                    // 3. Alternamos la clase CSS
-                    if (textContainer.classList.contains('clamped-text')) {
-                        // ABRIR: Quitamos el límite
-                        textContainer.classList.remove('clamped-text');
-                        button.textContent = 'Read less';
-                    } else {
-                        // CERRAR: Ponemos el límite
-                        textContainer.classList.add('clamped-text');
-                        button.textContent = 'Read more...';
-                    }
-                } else {
-                    console.error("No se encontró el contenedor de texto");
-                }
-            });
+    if (container && prevBtn && nextBtn) {
+        nextBtn.addEventListener('click', () => {
+        const scrollAmount = container.clientWidth * 0.85;
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+        prevBtn.addEventListener('click', () => {
+        const scrollAmount = container.clientWidth * 0.85;
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
         });
     }
 
-    function initSlider() {
-        const slider = document.getElementById('whats-on-slider');
-        const prevBtn = document.getElementById('slider-prev');
-        const nextBtn = document.getElementById('slider-next');
+    const modal = document.getElementById('infoModal');
+    const overlay = document.getElementById('modalOverlay');
+    const panel = document.getElementById('modalPanel');
+    const closeBtn = document.getElementById('closeModalBtn');
 
-        if (!slider || !prevBtn || !nextBtn) return;
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDescription');
+    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
+    const modalImgContainer = document.getElementById('modalImageContainer');
 
-        const getScrollAmount = () => {
-            const isMobile = window.innerWidth < 1024;
-            const card = slider.firstElementChild as HTMLElement;
-            if (!card) return 0;
-            return isMobile ? card.clientWidth : card.clientWidth + 24;
-        };
+    const readMoreBtns = document.querySelectorAll('.read-more-btn');
 
-        const newNextBtn = nextBtn.cloneNode(true);
-        const newPrevBtn = prevBtn.cloneNode(true);
+    function openModal(title: string, desc: string, img: string) {
+        if(!modal || !modalTitle || !modalDesc || !overlay || !panel) return;
 
-        if (nextBtn.parentNode) nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
-        if (prevBtn.parentNode) prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+        modalTitle.textContent = title;
+        modalDesc.innerHTML = desc;
 
-        newNextBtn.addEventListener('click', () => {
-            slider.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-        });
+        if (img && modalImg && modalImgContainer) {
+            modalImg.src = img;
+            modalImgContainer.classList.remove('hidden');
+        } else if (modalImgContainer) {
+            modalImgContainer.classList.add('hidden');
+        }
 
-        newPrevBtn.addEventListener('click', () => {
-            slider.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
-        });
+        modal.classList.remove('hidden');
+
+        setTimeout(() => {
+            overlay.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+            panel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+        }, 10);
     }
+
+    function closeModal() {
+        if(!modal || !overlay || !panel) return;
+
+        overlay.classList.add('opacity-0');
+        panel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+        panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    readMoreBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const target = e.currentTarget as HTMLElement;
+            const title = target.dataset.title || '';
+            const desc = target.dataset.description || '';
+            const img = target.dataset.image || '';
+
+            openModal(title, desc, img);
+        });
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    overlay?.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+            closeModal();
+        }
+    });
 </script>
 
 <style>
-    .title-extended {
-        transform: scaleX(1.05);
-        transform-origin: left;
-    }
-
-    /* ESTILO PARA LOS PÁRRAFOS DEL CMS */
-    .strapi-rich-text :global(p) {
-        margin-bottom: 0.5rem;
-        color: inherit;
-    }
-
-    /* CLASE PERSONALIZADA PARA CORTAR EL TEXTO
-       Esto asegura que funcione aunque Tailwind falle.
-    */
-    .clamped-text {
-        display: -webkit-box;
-        -webkit-line-clamp: 3; /* Número de líneas a mostrar */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
