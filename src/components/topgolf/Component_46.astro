@@ -81,7 +81,7 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
                 } else {
                     return (
 
-                    <a href={getStrapiUrl(gallery.image) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
+                    <a href={getStrapiUrl(gallery.cover) || placeholderImage} data-fancybox="gallery" data-caption={gallery.title}>
                         <Image 
                             src={getStrapiUrl(gallery.cover) || placeholderImage} 
                             alt={gallery.title} 
