@@ -63,7 +63,6 @@ const dataToRender = cards && cards.length > 0 ? cards : defaultGames;
             {dataToRender.map((juego: any, index: number) => {
 
                 const imgUrl = getStrapiUrl(juego.imagen);
-
                 const decoUrl = getStrapiUrl(juego.imagen_decoracion);
 
                 const descHtml = typeof juego.descripcion === 'string'
@@ -77,7 +76,6 @@ const dataToRender = cards && cards.length > 0 ? cards : defaultGames;
                 return (
                     <div class="w-full min-w-full shrink-0 snap-center relative flex justify-center" data-index={index}>
                         <div class="w-full grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-y-2 lg:gap-x-16 items-start">
-
 
                             <div class="order-1 relative group flex flex-col">
                                 <h3 class="font-bold text-2xl lg:text-4xl mb-2 uppercase text-[var(--accent-feedback-strong)] leading-none  text-left w-min lg:w-auto lg:whitespace-nowrap">
@@ -125,8 +123,11 @@ const dataToRender = cards && cards.length > 0 ? cards : defaultGames;
         <div class="hidden lg:flex justify-between items-end mt-2 lg:-mt-16 relative z-20 px-1">
             <div class="flex gap-3 pagination-dots desktop-dots items-center h-12">
                 {dataToRender.map((_, index) => (
-                    <button class="dot-trigger p-2 focus:outline-none group" data-target={index} aria-label={`Go to slide ${index + 1}`}>
-                        <div class={`w-2.5 h-2.5 rounded-full transition-all duration-300 group-hover:scale-125 ${index === 0 ? 'bg-[var(--brand-interactive-base)] scale-110' : 'bg-[var(--brand-interactive-base)]'}`}></div>
+                    <button
+                        class={`dot-trigger w-3 h-3 rounded-full transition-all duration-300 border border-transparent focus:outline-none ${index === 0 ? 'bg-[var(--brand-interactive-base)] scale-125' : 'bg-gray-600 hover:bg-gray-400'}`}
+                        data-target={index}
+                        aria-label={`Go to slide ${index + 1}`}
+                    >
                     </button>
                 ))}
             </div>
@@ -160,6 +161,7 @@ const dataToRender = cards && cards.length > 0 ? cards : defaultGames;
         const totalSlides = slider.children.length;
 
         const updateDotsState = (index: number) => {
+            // Mobile Update
             const mobileContainer = document.querySelector('.mobile-dots');
             if (mobileContainer) {
                 Array.from(mobileContainer.children).forEach((dot, i) => {
@@ -167,12 +169,19 @@ const dataToRender = cards && cards.length > 0 ? cards : defaultGames;
                 });
             }
 
+            // Desktop Update (NUEVA LÓGICA)
             const desktopContainer = document.querySelector('.desktop-dots');
             if (desktopContainer) {
                 Array.from(desktopContainer.children).forEach((btn, i) => {
-                    const dotDiv = btn.firstElementChild;
-                    if (dotDiv) {
-                        dotDiv.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 group-hover:scale-125 ${i === index ? 'bg-[var(--brand-interactive-base)] scale-110' : 'bg-gray-700'}`;
+                    // Clases base para mantener estructura
+                    const baseClasses = "dot-trigger w-3 h-3 rounded-full transition-all duration-300 border border-transparent focus:outline-none";
+
+                    if (i === index) {
+                        // Estado Activo
+                        btn.className = `${baseClasses} bg-[var(--brand-interactive-base)] scale-125`;
+                    } else {
+                        // Estado Inactivo
+                        btn.className = `${baseClasses} bg-gray-600 hover:bg-gray-400`;
                     }
                 });
             }
@@ -206,6 +215,7 @@ const dataToRender = cards && cards.length > 0 ? cards : defaultGames;
 
         dotTriggers.forEach((trigger) => {
              trigger.addEventListener('click', (e) => {
+                // Como ahora el trigger es el botón mismo, usamos currentTarget o nos aseguramos de tomar el botón
                 const button = (e.target as HTMLElement).closest('button');
                 if(!button) return;
                 const targetIndex = parseInt(button.dataset.target || '0');

@@ -7,7 +7,6 @@ interface CardData {
     titulo: string;
     descripcion: any;
     imagen: any;
-    link?: string;
 }
 
 interface Props {
@@ -16,64 +15,35 @@ interface Props {
 }
 
 const {
-    titulo_seccion = "WHAT'S ON?",
+    titulo_seccion = "WHAT'S ON",
     Cards = []
 } = Astro.props;
 
-// Datos por defecto (si no llegan datos de Strapi)
-const defaultEvents = [
-    {
-        id: 101,
-        titulo: "CHRISTMAS MENU",
-        descripcion: "Feast your eyes on our brand new Christmas menu! The perfect food for refuelling at half-time. We have turkey, pudding and much more waiting for you.",
-        imagen: null
-    },
-    {
-        id: 102,
-        titulo: "NEW YEAR'S EVE",
-        descripcion: "Kick off 2024 with extra time! All box bookings that end at 11:50pm on 31st December will have their time extended. Celebrate with us!",
-        imagen: null
-    },
-    {
-        id: 103,
-        titulo: "SUPER BOWL LVIII",
-        descripcion: "Come and watch the Super Bowl at TOCA Social this February! You can opt to get a table right in the action. Wings, beer and American Football.",
-        imagen: null
-    }
-];
+// Datos de prueba para recrear el diseño de la imagen (9 tarjetas)
+const zombieData = Array(9).fill({
+    id: 1,
+    titulo: "ZOMBIE ATTACK",
+    descripcion: "Designed for both football lovers and haters alike, whether you can kick a ball or not.",
+    // Usamos null para que cargue el placeholder gris, como en tu diseño
+    imagen: null
+});
 
-const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
+const dataToRender = Cards.length > 0 ? Cards : zombieData;
 ---
 
-<section class="bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full overflow-hidden relative">
+<section class="bg-[var(--surface-brand-primary)] py-12 px-4 md:px-12 w-full relative">
 
-    <div class="flex justify-end md:justify-between items-end mb-6 max-w-[1600px] mx-auto">
-        <h2 class="hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]">
-            {titulo_seccion}
-        </h2>
+    <h2 class="text-center text-3xl md:text-5xl font-bold uppercase tracking-tighter text-white mb-12 font-montserrat">
+        {titulo_seccion}
+    </h2>
 
-        <div class="flex gap-4 mb-1">
-            <button id="prevBtn" class="text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] transition-colors focus:outline-none p-1 cursor-pointer">
-                <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
-            </button>
-
-            <button id="nextBtn" class="text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] transition-colors focus:outline-none p-1 cursor-pointer">
-                <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
-            </button>
-        </div>
-    </div>
-
-    <div
-        id="sliderContainer"
-        class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6
-            md:grid md:grid-cols-5 md:gap-4 md:overflow-visible
-            max-w-[1600px] mx-auto scrollbar-hide"
-    >
-        {dataToRender.map((evento) => (
-            /* IMPLEMENTACIÓN DEL EVENTCARD */
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
+        {dataToRender.map((evento, index) => (
+            // Usamos la nueva versión 'version_3_zombie'
             <EventCard
-                evento={evento}
+                evento={{...evento, id: index}}
                 tipo="version_1"
+                client:visible
             />
         ))}
     </div>
@@ -109,23 +79,7 @@ const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
 </section>
 
 <script>
-    // --- Lógica del Slider ---
-    const container = document.getElementById('sliderContainer');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    if (container && prevBtn && nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            const scrollAmount = container.clientWidth * 0.85;
-            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        });
-        prevBtn.addEventListener('click', () => {
-            const scrollAmount = container.clientWidth * 0.85;
-            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-        });
-    }
-
-    // --- Lógica del Modal ---
+    // --- Lógica del Modal (Solo esto es necesario ahora) ---
     const modal = document.getElementById('infoModal');
     const overlay = document.getElementById('modalOverlay');
     const panel = document.getElementById('modalPanel');
@@ -194,8 +148,3 @@ const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
         }
     });
 </script>
-
-<style>
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
