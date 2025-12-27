@@ -1,5 +1,5 @@
 ---
-// src/components/common/EventCard.astro
+// src/components/toca/elements/EventCard.astro
 import { getStrapiUrl, stringifyRichText } from '../../../lib/strapi.js';
 
 export interface Props {
@@ -7,33 +7,24 @@ export interface Props {
     tipo?: 'version_1' | 'version_2';
 }
 
-const {
-    evento,
-    tipo = 'version_1'
-} = Astro.props;
-
-const PLACEHOLDER_IMG = "https://placehold.co/600x750/2d3748/ffffff?text=TOCA+Social+Event";
+const { evento, tipo = 'version_1' } = Astro.props;
+const PLACEHOLDER_IMG = "https://placehold.co/600x750/2d3748/ffffff?text=Event";
 
 const descHtml = typeof evento.descripcion === 'string'
     ? evento.descripcion
     : stringifyRichText(evento.descripcion);
 
-const rawStrapiUrl  = getStrapiUrl(evento.imagen);
-const finalImgUrl   = rawStrapiUrl || PLACEHOLDER_IMG;
+const finalImgUrl = getStrapiUrl(evento.imagen) || PLACEHOLDER_IMG;
+
+const theme = {
+    v1: { text: 'text-[var(--surface-brand-secondary)]', bg: 'bg-[var(--surface-brand-primary)]' },
+    v2: { text: 'text-[var(--brand-interactive-base)]', bg: 'bg-[var(--surface-brand-secondary)]' }
+};
+const currentTheme = tipo === 'version_1' ? theme.v1 : theme.v2;
 ---
 
-<article class="min-w-[60vw] sm:min-w-[30vw] md:min-w-0 md:w-[240px] snap-center flex flex-col h-full group">
-
-    <div
-        class:list={[
-            // Cambio: mb-4 -> mb-2 (Menos espacio debajo de la imagen)
-            "aspect-[4/5] w-full relative overflow-hidden mb-2",
-            {
-                'bg-[var(--surface-brand-primary)]': tipo === 'version_1',
-                'bg-gray-200': tipo === 'version_2',
-            }
-        ]}
-    >
+<article class="snap-center flex flex-col h-full group w-full">
+    <div class:list={["w-full relative overflow-hidden mb-2", currentTheme.bg, tipo === 'version_1' ? 'aspect-[4/5]' : 'aspect-[3/2]']}>
         <img
             src={finalImgUrl}
             alt={evento.titulo}
@@ -43,43 +34,15 @@ const finalImgUrl   = rawStrapiUrl || PLACEHOLDER_IMG;
     </div>
 
     <div class="flex flex-col flex-grow">
-
-        <h3
-            class:list={[
-                // Cambio: text-[15px] -> text-sm (14px) para que ajuste mejor
-                "text-sm font-bold uppercase mb-1 leading-tight font-montserrat",
-                {
-                    'text-[var(--surface-brand-secondary)]': tipo === 'version_1',
-                    'text-black': tipo === 'version_2',
-                }
-            ]}
-        >
+        <h3 class:list={["text-sm font-bold uppercase mb-1 leading-tight", currentTheme.text]}>
             {evento.titulo}
         </h3>
-
-        <div
-            class:list={[
-                // Cambio: text-sm -> text-xs (Texto un poco más pequeño)
-                // Cambio: mb-4 -> mb-2 (Menos separación)
-                "text-xs font-medium mb-2 line-clamp-3 leading-relaxed",
-                {
-                    'text-[var(--accent-feedback-strong)]': tipo === 'version_1',
-                    'text-gray-700': tipo === 'version_2',
-                }
-            ]}
-        >
+        <div class="text-sm font-bold mb-2 line-clamp-3 leading-relaxed text-[var(--accent-feedback-strong)]">
             <span set:html={descHtml} />
         </div>
 
         <button
-            class:list={[
-                // Cambio: text-sm -> text-xs (Botón más pequeño)
-                "read-more-btn text-xs font-medium self-start text-left transition-colors",
-                {
-                    'text-[var(--surface-brand-secondary)] hover:text-white': tipo === 'version_1',
-                    'text-[var(--brand-interactive-base)] hover:text-black': tipo === 'version_2',
-                }
-            ]}
+            class:list={["js-trigger-modal text-sm font-medium self-start text-left transition-colors", currentTheme.text]}
             data-title={evento.titulo}
             data-image={finalImgUrl}
             data-description={descHtml}

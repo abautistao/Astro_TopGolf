@@ -1,16 +1,9 @@
 ---
 // src/components/toca/Component_8.astro
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
-import Button from './elements/Button.astro';
-import { Image } from 'astro:assets';
+import SplitSection from './elements/SplitSection.astro';
 
-interface BotonStrapi {
-  id?: number;
-  texto: string;
-  url: string | null;
-  tipo?: string;
-}
-
+interface BotonStrapi { id?: number; texto: string; url: string | null; tipo?: string; }
 
 interface Props {
   id?: number;
@@ -18,68 +11,36 @@ interface Props {
   descripcion?: any[];
   boton?: BotonStrapi | null;
   imagen: any;
+  tipo?: string;
 }
 
 const {
-  titulo = "LARGER EVENTS",
+  titulo = "SINGPOD KARAOKE",
   descripcion = [],
   boton = null,
   imagen,
+  tipo = "version_1",
 } = Astro.props;
 
-
-const descHtml = stringifyRichText(descripcion) || "<p>Work jollies, birthday parties or any excuse to have a good time; we've got you covered at TOCA Social.</p>";
-const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
-// Asegúrate que tu función getStrapiUrl maneje correctamente el objeto imagen
+const descHtml = stringifyRichText(descripcion) || "<p>Descripción por defecto...</p>";
 const strapiImageUrl = getStrapiUrl(imagen);
-const altText = imagen?.data?.attributes?.alternativeText || tituloMostrar || "Imagen destacada";
+const altText = imagen?.data?.attributes?.alternativeText || titulo;
 
-const botonData = [{
-  id: boton?.id || 0,
-  texto: boton?.texto || "BOOK EVENT",
-  url: boton?.url || "#",
-  tipo: (boton?.tipo as any) || 'version_3'
-}];
+const botonData = boton ? [{
+  id: boton.id || 0,
+  texto: boton.texto || "BOOK NOW",
+  url: boton.url || "#",
+  tipo: (boton.tipo as any) || 'version_3'
+}] : null;
 
+const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
 ---
 
-<section class="flex flex-col md:flex-row w-full bg-[var(--surface-brand-secondary)] overflow-hidden">
-
-  <div class="w-full md:w-1/2 flex flex-col justify-center items-start py-12 px-8 md:pl-20 md:pr-10 z-10">
-
-    <h2 class="text-[var(--surface-brand-primary)] font-bold uppercase text-4xl md:text-5xl leading-none mb-5 tracking-wide">
-      {titulo}
-    </h2>
-
-    <div class="text-[var(--surface-brand-primary)] text-base font-medium leading-relaxed mb-8 max-w-lg [&>p]:mb-4 [&>p:last-child]:mb-0">
-      <Fragment set:html={descHtml} />
-    </div>
-
-    <Button
-      botones={botonData}
-      clase="flex items-center"
-    />
-
-  </div>
-
-  <div class="w-full md:w-1/2 flex justify-center items-center p-8 md:p-12 relative">
-
-    <div class="relative w-full max-w-md">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 flex items-center justify-center pointer-events-none">
-         <img
-            src="https://media.graphassets.com/D9j8kF5sRny1q7gXwZ0A"
-            alt="Decoration"
-            class="w-[140%] max-w-none h-auto animate-[spin_10s_linear_infinite] opacity-80 mix-blend-screen"
-         />
-         </div>
-
-      <Image
-          src={strapiImageUrl || "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
-          alt={altText}
-          class="w-full aspect-[3/2] object-cover relative z-10 shadow-lg"
-          inferSize={true}
-      />
-    </div>
-  </div>
-
-</section>
+<SplitSection
+  titulo={titulo}
+  htmlContent={descHtml}
+  imgUrl={strapiImageUrl}
+  imgAlt={altText}
+  botonData={botonData}
+  tipo={versionFinal}
+/>

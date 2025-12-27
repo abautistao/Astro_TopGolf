@@ -1,6 +1,7 @@
 ---
-// src/components/toca/Component_5.astro
-import EventCard from './elements/EventCard.astro';
+// src/components/toca/Component_10.astro
+import EventCard from '../toca/elements/EventCard.astro';
+import EventModal from '../toca/elements/EventModal.astro';
 
 interface CardData {
     id: number;
@@ -10,141 +11,42 @@ interface CardData {
 }
 
 interface Props {
-    titulo_seccion: string;
-    Cards: CardData[];
+    titulo_seccion?: string;
+    tarjetas: CardData[];
 }
 
 const {
-    titulo_seccion = "WHAT'S ON",
-    Cards = []
+    titulo_seccion = "ALL EVENTS",
+    tarjetas = []
 } = Astro.props;
-
-// Datos de prueba para recrear el diseño de la imagen (9 tarjetas)
-const zombieData = Array(9).fill({
-    id: 1,
-    titulo: "ZOMBIE ATTACK",
-    descripcion: "Designed for both football lovers and haters alike, whether you can kick a ball or not.",
-    // Usamos null para que cargue el placeholder gris, como en tu diseño
+console.log(Astro.props);
+const defaultEvents = Array(6).fill({
+    id: 999,
+    titulo: "EVENTO EJEMPLO",
+    descripcion: "Descripción de ejemplo para visualizar el diseño.",
     imagen: null
 });
 
-const dataToRender = Cards.length > 0 ? Cards : zombieData;
+const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
 ---
 
 <section class="bg-[var(--surface-brand-primary)] py-12 px-4 md:px-12 w-full relative">
 
-    <h2 class="text-center text-3xl md:text-5xl font-bold uppercase tracking-tighter text-white mb-12 font-montserrat">
+    <h2 class="text-center text-3xl md:text-5xl font-bold uppercase tracking-tighter text-[var(--accent-feedback-strong)] mb-12">
         {titulo_seccion}
     </h2>
 
-    <div class="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
-        {dataToRender.map((evento, index) => (
-            // Usamos la nueva versión 'version_3_zombie'
-            <EventCard
-                evento={{...evento, id: index}}
-                tipo="version_1"
-                client:visible
-            />
+    <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12 justify-items-center">
+        {dataToRender.map((evento) => (
+            <div class="w-full md:w-[380px]">
+                <EventCard
+                    evento={evento}
+                    tipo="version_2"
+                />
+            </div>
         ))}
     </div>
 
-    <div id="infoModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div id="modalOverlay" class="fixed inset-0 bg-[var(--surface-brand-primary)]/40 backdrop-blur-sm transition-opacity opacity-0"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-
-                <div id="modalPanel" class="relative transform overflow-hidden bg-[var(--surface-brand-primary)] text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-[#d87dfc]/30 rounded-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-
-                    <button id="closeModalBtn" class="absolute top-4 right-4 text-[var(--accent-feedback-strong) hover:text-[var(--surface-brand-secondary)] z-20 focus:outline-none">
-                        <i class="fa-solid fa-xmark text-2xl"></i>
-                    </button>
-
-                    <div id="modalImageContainer" class="w-full h-48 bg-[var(--surface-brand-primary)] hidden">
-                        <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="px-6 py-6 sm:p-8">
-                        <h3 id="modalTitle" class="text-2xl font-medium leading-6 text-[var(--surface-brand-secondary)] uppercase mb-4"></h3>
-                        <div class="mt-2">
-                            <div id="modalDescription" class="text-sm text-[var(--accent-feedback-strong)] prose prose-invert max-w-none">
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    <EventModal />
 
 </section>
-
-<script>
-    // --- Lógica del Modal (Solo esto es necesario ahora) ---
-    const modal = document.getElementById('infoModal');
-    const overlay = document.getElementById('modalOverlay');
-    const panel = document.getElementById('modalPanel');
-    const closeBtn = document.getElementById('closeModalBtn');
-
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDescription');
-    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
-    const modalImgContainer = document.getElementById('modalImageContainer');
-
-    // Seleccionamos los botones generados dentro del componente EventCard
-    const readMoreBtns = document.querySelectorAll('.read-more-btn');
-
-    function openModal(title: string, desc: string, img: string) {
-        if(!modal || !modalTitle || !modalDesc || !overlay || !panel) return;
-
-        modalTitle.textContent = title;
-        modalDesc.innerHTML = desc;
-
-        if (img && modalImg && modalImgContainer) {
-            modalImg.src = img;
-            modalImgContainer.classList.remove('hidden');
-        } else if (modalImgContainer) {
-            modalImgContainer.classList.add('hidden');
-        }
-
-        modal.classList.remove('hidden');
-
-        setTimeout(() => {
-            overlay.classList.remove('opacity-0');
-            panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            panel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
-        }, 10);
-    }
-
-    function closeModal() {
-        if(!modal || !overlay || !panel) return;
-
-        overlay.classList.add('opacity-0');
-        panel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
-        panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
-    }
-
-    // Asignar eventos a los botones de las tarjetas
-    readMoreBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = e.currentTarget as HTMLElement;
-            const title = target.dataset.title || '';
-            const desc = target.dataset.description || '';
-            const img = target.dataset.image || '';
-
-            openModal(title, desc, img);
-        });
-    });
-
-    closeBtn?.addEventListener('click', closeModal);
-    overlay?.addEventListener('click', closeModal);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
-</script>

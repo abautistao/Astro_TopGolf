@@ -1,51 +1,36 @@
 ---
 // src/components/toca/Component_5.astro
-import EventCard from './elements/EventCard.astro';
+import EventCard from '../toca/elements/EventCard.astro';
+import EventModal from '../toca/elements/EventModal.astro';
 
 interface CardData {
     id: number;
     titulo: string;
     descripcion: any;
     imagen: any;
-    link?: string;
 }
 
 interface Props {
-    titulo_seccion: string;
-    Cards: CardData[];
+    titulo_seccion?: string;
+    tarjetas: CardData[];
 }
 
 const {
     titulo_seccion = "WHAT'S ON?",
-    Cards = []
+    tarjetas = []
 } = Astro.props;
+console.log(Astro.props);
 
-// Datos por defecto (si no llegan datos de Strapi)
 const defaultEvents = [
-    {
-        id: 101,
-        titulo: "CHRISTMAS MENU",
-        descripcion: "Feast your eyes on our brand new Christmas menu! The perfect food for refuelling at half-time. We have turkey, pudding and much more waiting for you.",
-        imagen: null
-    },
-    {
-        id: 102,
-        titulo: "NEW YEAR'S EVE",
-        descripcion: "Kick off 2024 with extra time! All box bookings that end at 11:50pm on 31st December will have their time extended. Celebrate with us!",
-        imagen: null
-    },
-    {
-        id: 103,
-        titulo: "SUPER BOWL LVIII",
-        descripcion: "Come and watch the Super Bowl at TOCA Social this February! You can opt to get a table right in the action. Wings, beer and American Football.",
-        imagen: null
-    }
+    { id: 101, titulo: "CHRISTMAS MENU", descripcion: "Feast your eyes on our brand new Christmas menu!", imagen: null },
+    { id: 102, titulo: "NEW YEAR'S EVE", descripcion: "Kick off 2024 with extra time!", imagen: null },
+    { id: 103, titulo: "SUPER BOWL LVIII", descripcion: "Come and watch the Super Bowl at TOCA Social!", imagen: null }
 ];
 
-const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
+const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
 ---
 
-<section class="bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full overflow-hidden relative">
+<section class="bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full relative">
 
     <div class="flex justify-end md:justify-between items-end mb-6 max-w-[1600px] mx-auto">
         <h2 class="hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]">
@@ -53,11 +38,11 @@ const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
         </h2>
 
         <div class="flex gap-4 mb-1">
-            <button id="prevBtn" class="text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] transition-colors focus:outline-none p-1 cursor-pointer">
+            <button id="prevBtn" class="text-[var(--brand-interactive-base)] hover:opacity-75 transition-colors focus:outline-none p-1 cursor-pointer">
                 <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
             </button>
 
-            <button id="nextBtn" class="text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] transition-colors focus:outline-none p-1 cursor-pointer">
+            <button id="nextBtn" class="text-[var(--brand-interactive-base)] hover:opacity-75 transition-colors focus:outline-none p-1 cursor-pointer">
                 <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
             </button>
         </div>
@@ -70,129 +55,36 @@ const dataToRender = Cards.length > 0 ? Cards : defaultEvents;
             max-w-[1600px] mx-auto scrollbar-hide"
     >
         {dataToRender.map((evento) => (
-            /* IMPLEMENTACIÓN DEL EVENTCARD */
-            <EventCard
-                evento={evento}
-                tipo="version_1"
-            />
+            <div class="min-w-full md:min-w-0 h-full snap-center">
+                <EventCard
+                    evento={evento}
+                    tipo="version_1"
+                />
+            </div>
         ))}
     </div>
 
-    <div id="infoModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div id="modalOverlay" class="fixed inset-0 bg-[var(--surface-brand-primary)]/40 backdrop-blur-sm transition-opacity opacity-0"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-
-                <div id="modalPanel" class="relative transform overflow-hidden bg-[var(--surface-brand-primary)] text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-[#d87dfc]/30 rounded-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-
-                    <button id="closeModalBtn" class="absolute top-4 right-4 text-[var(--accent-feedback-strong) hover:text-[var(--surface-brand-secondary)] z-20 focus:outline-none">
-                        <i class="fa-solid fa-xmark text-2xl"></i>
-                    </button>
-
-                    <div id="modalImageContainer" class="w-full h-48 bg-[var(--surface-brand-primary)] hidden">
-                        <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="px-6 py-6 sm:p-8">
-                        <h3 id="modalTitle" class="text-2xl font-medium leading-6 text-[var(--surface-brand-secondary)] uppercase mb-4"></h3>
-                        <div class="mt-2">
-                            <div id="modalDescription" class="text-sm text-[var(--accent-feedback-strong)] prose prose-invert max-w-none">
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    <EventModal />
 
 </section>
 
 <script>
-    // --- Lógica del Slider ---
     const container = document.getElementById('sliderContainer');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
     if (container && prevBtn && nextBtn) {
+
         nextBtn.addEventListener('click', () => {
-            const scrollAmount = container.clientWidth * 0.85;
+            const scrollAmount = container.clientWidth;
             container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         });
+
         prevBtn.addEventListener('click', () => {
-            const scrollAmount = container.clientWidth * 0.85;
+            const scrollAmount = container.clientWidth;
             container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
         });
     }
-
-    // --- Lógica del Modal ---
-    const modal = document.getElementById('infoModal');
-    const overlay = document.getElementById('modalOverlay');
-    const panel = document.getElementById('modalPanel');
-    const closeBtn = document.getElementById('closeModalBtn');
-
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDescription');
-    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
-    const modalImgContainer = document.getElementById('modalImageContainer');
-
-    // Seleccionamos los botones generados dentro del componente EventCard
-    const readMoreBtns = document.querySelectorAll('.read-more-btn');
-
-    function openModal(title: string, desc: string, img: string) {
-        if(!modal || !modalTitle || !modalDesc || !overlay || !panel) return;
-
-        modalTitle.textContent = title;
-        modalDesc.innerHTML = desc;
-
-        if (img && modalImg && modalImgContainer) {
-            modalImg.src = img;
-            modalImgContainer.classList.remove('hidden');
-        } else if (modalImgContainer) {
-            modalImgContainer.classList.add('hidden');
-        }
-
-        modal.classList.remove('hidden');
-
-        setTimeout(() => {
-            overlay.classList.remove('opacity-0');
-            panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            panel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
-        }, 10);
-    }
-
-    function closeModal() {
-        if(!modal || !overlay || !panel) return;
-
-        overlay.classList.add('opacity-0');
-        panel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
-        panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
-    }
-
-    // Asignar eventos a los botones de las tarjetas
-    readMoreBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = e.currentTarget as HTMLElement;
-            const title = target.dataset.title || '';
-            const desc = target.dataset.description || '';
-            const img = target.dataset.image || '';
-
-            openModal(title, desc, img);
-        });
-    });
-
-    closeBtn?.addEventListener('click', closeModal);
-    overlay?.addEventListener('click', closeModal);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
 </script>
 
 <style>
