@@ -24,7 +24,7 @@ const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
 const direccion = stringifyRichText(headerData?.direccion || {});
 const promos: Promo[] = headerData?.Slider_promos || [];
 
-console.log(promos[0].descripcion)
+
 const buttonBanner: Boton[] = (headerData.Boton && !Array.isArray(headerData.Boton) ? [headerData.Boton] : headerData.Boton) || [
     {
         id: 1,
