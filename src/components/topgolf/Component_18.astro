@@ -3,15 +3,8 @@
 import { stringifyRichText } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
-// 1. Definimos las interfaces para las props de Strapi
-export interface Boton {
-    id: number;
-    texto: string;
-    url: string;
-    tipo: "primario" | "secundario";
-    botones: Boton[];
-}
 
+// 1. Definimos las interfaces para las props de Strapi
 export interface Props {
     tag: string;
     titulo: string;

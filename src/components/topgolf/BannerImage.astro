@@ -26,6 +26,8 @@ export interface Props {
   background: string;
   is_boxed: boolean
   title?: string
+  title_color?: string
+  title_bottom?: string
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -35,7 +37,9 @@ const {
   link,
   background,
   is_boxed,
-  title
+  title,
+  title_color,
+  title_bottom
 } = Astro.props;
 
 const placeholderData: Props = {
@@ -44,7 +48,9 @@ const placeholderData: Props = {
   link,
   background,
   is_boxed,
-  title
+  title,
+  title_color,
+  title_bottom
 };
 
 // 3. Preparamos los datos para renderizar
@@ -83,7 +89,7 @@ const imageAltMobile =
   ]}>
 
     {title && (
-      <h2 class="text-center text-3xl md:text-4xl uppercase font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed) px-4">{title}</h2>
+      <h2 id="banner-title" class="text-center text-3xl md:text-4xl uppercase font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed) px-4">{title}</h2>
     )}
     
     <a href={formatUrl(link)}>
@@ -101,11 +107,19 @@ const imageAltMobile =
           inferSize={true}
       />
     </a>
+
+    {title_bottom && (
+      <h3 id="banner-title-bottom" class="text-center text-1xl md:text-2xl uppercase font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed) px-4">{title_bottom}</h3>
+    )}
   </div>
 </section>
 
-<style define:vars={{ background }}>
+<style define:vars={{ background, title_color }}>
   #banner_image {
     background-color: var(--background);
+  }
+
+  #banner-title, #banner-title-bottom {
+    color: var(--title_color);
   }
 </style>
