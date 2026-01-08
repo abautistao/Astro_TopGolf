@@ -91,14 +91,14 @@ const specialColor = "#FFFF00"; // Color del fondo de Horarios Especiales
 ---
 
 <section
-    class="w-full bg-[var(--neutral-text-inverted)] py-12 px-4 sm:px-6 lg:px-8"
+    class="w-full bg-[var(--neutral-text-inverted)] !py-12 !px-4 sm:!px-6 lg:!px-8"
 >
-    <div class="container mx-auto max-w-7xl">
+    <div class="container !mx-auto !max-w-7xl">
         <div
             class="grid grid-cols-1 lg:grid-cols-7 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-blue-700"
         >
             {/* --- COLUMNA 1: ACERCA DE TOPGOLF MONTERREY --- */}
-            <div class="md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-3">
+            <div class="md:!p-8 lg:!p-8 lg:!pl-4 lg:!pm-4 lg:col-span-3">
                 <h3
                     style="font-family: var(--font-shields-sans-semibold-condensed);"
                     class="text-2xl font-bold uppercase tracking-wider text-[var(--neutral-background-strong)] mb-6"
@@ -117,7 +117,7 @@ const specialColor = "#FFFF00"; // Color del fondo de Horarios Especiales
             </div>
 
             {/* --- COLUMNA 2: DIRECCIÓN Y CONTACTO --- */}
-            <div class="p-6 md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-2">
+            <div class="!p-6 md:!p-8 lg:!p-8 lg:!pl-4 lg:!pm-4 lg:col-span-2">
                 <div
                     style="font-family: var(--font-shields-sans-semibold-condensed);"
                     class="bg-[var(--accent-highlight-secondary)] inline-block px-2 py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]"
@@ -139,11 +139,11 @@ const specialColor = "#FFFF00"; // Color del fondo de Horarios Especiales
             {/* --- COLUMNA 3: HORARIOS --- */}
             <div
                 style="font-family: var(--font-shields-sans-regular);"
-                class="p-6 md:p-8 lg:p-8 lg:pl-4 lg:pm-4 lg:col-span-2"
+                class="!p-6 md:!p-8 lg:!p-8 lg:!pl-4 lg:!pm-4 lg:col-span-2"
             >
                 <div
                     style="font-family: var(--font-shields-sans-semibold-condensed) !important;"
-                    class="bg-[var(--accent-highlight-secondary)] inline-block px-2 py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]"
+                    class="bg-[var(--accent-highlight-secondary)] inline-block !px-2 !py-1 mb-6 font-semibold uppercase text-[var(--surface-brand-primary)]"
                 >
                     {subtitulo_2 || "HORARIOS"}
                 </div>
@@ -161,7 +161,7 @@ const specialColor = "#FFFF00"; // Color del fondo de Horarios Especiales
                 {/* Horarios Especiales */}
                 <div
                     style="font-family: var(--font-shields-sans-semibold-condensed);"
-                    class="inline-block px-2 py-1 mt-4 mb-3 font-semibold uppercase text-[var(--surface-brand-primary)] bg-[var(--accent-highlight-primary)]"
+                    class="inline-block !px-2 !py-1 !mt-4 !mb-3 font-semibold uppercase text-[var(--surface-brand-primary)] bg-[var(--accent-highlight-primary)]"
                 >
                     {subtitulo_3 || "HORARIOS ESPECIALES"}
                 </div>
@@ -191,6 +191,10 @@ const specialColor = "#FFFF00"; // Color del fondo de Horarios Especiales
         color: v-bind("accentColor");
         text-decoration: underline;
         text-underline-offset: 2px;
+    }
+    .prose :global(p), .strapi-rich-text :global(p) {
+        /* Imitar el estilo de enlace de la columna 1 */
+        margin-bottom: 0 !important;
     }
 
     /* Ajuste para evitar doble línea divisora en móvil */

@@ -46,7 +46,6 @@ const overlayImageUrl = imagen_superpuesta
 
 <section class="relative w-full text-[var(--neutral-text-inverted)] bg-cover bg-center md:bg-top bg-no-repeat" style={`background-image: url(${backgroundImageUrl})`}>
     {overlayImageUrl && <div class="absolute inset-0 bg-cover bg-center opacity-60" style={`background-image: url(${overlayImageUrl})`}></div>}
-    {!overlayImageUrl && <div class="absolute inset-0 bg-blue-900/80"></div>} {/* Fallback si no hay overlay */}
 
     <div class="relative max-w-7xl mx-auto flex items-center min-h-[500px] px-4 sm:px-6 lg:px-8">
         <div class="text-left max-w-3xl lg:mr-auto">

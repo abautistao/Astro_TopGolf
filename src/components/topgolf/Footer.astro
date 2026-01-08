@@ -32,22 +32,22 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 ---
 
 <footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) ">
-    <div class="px-6 py-12 lg:px-20 overflow-hidden">
+    <div class="!px-6 !py-12 lg:!px-20 overflow-hidden">
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-8">
             <div class="grid grid-cols-2 gap-4 md:gap-10">
                 <div>
-                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_1}</h3>
-                    <ul class="mt-4 space-y-3 text-sm md:text-base">
+                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl mb-0">{titulo_1}</h3>
+                    <ul class="mt-4 space-y-3 text-sm md:text-base mb-0">
                         {links_1.map(link => (
-                            <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
+                            <li><a href={formatUrl(link.url)} class="hover:underline text-white">{link.texto}</a></li>
                         ))}
                     </ul>
                 </div>
                 <div>
                     <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_2}</h3>
-                    <ul class="mt-4 space-y-3 text-sm md:text-base">
+                    <ul class="mt-4 space-y-3 text-sm md:text-base mb-0">
                         {links_2.map(link => (
-                            <li><a href={formatUrl(link.url)} class="hover:underline">{link.texto}</a></li>
+                            <li><a href={formatUrl(link.url)} class="hover:underline text-white">{link.texto}</a></li>
                         ))}
                     </ul>
                 </div>
@@ -55,7 +55,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 
             <div class="flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-20">
                 <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_3}</h3>
-                <div class="mt-4 my-2 text-sm md:text-base" set:html={descripcion_columna_3}></div>
+                <div class="mt-4 my-2 text-sm md:text-base text-left" set:html={descripcion_columna_3}></div>
 
                 <ButtonGroup botones={buttonBanner} />
 
@@ -96,6 +96,7 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
                 </a>
             </div>
             <div
+                id="terms-conditions"
                 class="order-2 sm:order-2 text-[10px] sm:text-sm whitespace-nowrap text-center sm:text-left"
                 set:html={terminos_and_conditions}
             ></div>

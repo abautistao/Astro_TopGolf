@@ -20,7 +20,7 @@ const arrowId = `location-arrow-${idSuffix}`;
 ---
 
 <div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)]">
-    <button id={toggleId} class="flex items-center justify-between w-full px-4 py-2 text-sm font-bold bg-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-black) cursor-pointer">
+    <button id={toggleId} class="flex items-center justify-between w-full !px-4 !py-2 text-sm font-bold bg-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-black) cursor-pointer">
         <span>{ubicacion}</span>
         <div class="flex items-center">
             <span>{horario}</span>
@@ -29,7 +29,7 @@ const arrowId = `location-arrow-${idSuffix}`;
             </svg>
         </div>
     </button>
-    <div id={detailsId} class="font-(family-name:--font-shields-sans-regular) hidden px-4 py-5 bg-[var(--brand-interactive-base)] border-t border-white/10">
+    <div id={detailsId} class="font-(family-name:--font-shields-sans-regular) hidden !px-4 !py-5 bg-[var(--brand-interactive-base)] border-t border-white/10">
         <div class="text-sm" set:html={direccion}></div>
         <div class="mt-4">
             <ButtonGroup botones={botones} />

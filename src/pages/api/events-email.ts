@@ -17,35 +17,33 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const resend = new Resend(RESEND_KEY);
     
     const data = await request.formData();
-    const nombre = data.get("nombre");
-    const apellido = data.get("apellido");
-    const correo = data.get("correo");
-    const telefono = data.get("telefono");
-    const estado = data.get("estado");
-    const aceptacion = data.get("aceptacion");
+    const entries = [...data.entries()];
+    
 
-    if (!nombre || !apellido || !correo || !telefono || !estado || !aceptacion) {
-        return new Response(
-            JSON.stringify({
-                message: "Faltan campos requeridos",
-            }),
-            { status: 400 }
-        );
-    }
+    const userEmailEntry = entries.find(([key]) => key.toLowerCase().includes('correo') || key.toLowerCase().includes('email'));
+    const userEmail = userEmailEntry ? userEmailEntry[1].toString() : null;
+
+    const formFields = entries.map(([key, value]) => {
+        // Opcional: Omitir campos técnicos como tokens de captcha o el checkbox de aceptación si no aporta valor visual
+        if (key === 'cf-turnstile-response') return ''; 
+        let fieldValue = value
+        if(key === 'Acepto solicitud') {
+            fieldValue = value ? "Sí" : "No"
+        }
+        
+        return `
+            <p><strong>${key}:</strong> ${fieldValue}</p>
+        `;
+    }).join('');
 
     try {
         const { data: emailData, error } = await resend.emails.send({
             from: "Contacto Topgolf <contacto@topgolf.com.mx>", // TODO: Update with your verified domain
             to: ["efrenpech@gmail.com","abautista@venturae.com.mx"], // TODO: Update with the recipient email
-            subject: "Nuevo registro de newsletter",
+            subject: `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`,
             html: `
         <h1>Nuevo registro</h1>
-        <p><strong>Nombre:</strong> ${nombre}</p>
-        <p><strong>Apellido:</strong> ${apellido}</p>
-        <p><strong>Correo:</strong> ${correo}</p>
-        <p><strong>Teléfono:</strong> ${telefono}</p>
-        <p><strong>Estado:</strong> ${estado}</p>
-        <p><strong>Aceptó términos:</strong> ${aceptacion ? "Sí" : "No"}</p>
+        ${formFields}
       `,
         });
 

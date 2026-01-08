@@ -32,14 +32,14 @@ const texto_finalHtml = stringifyRichText(texto_final);
 const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a Topgolf,</strong> tu principal destino de entretenimiento. Y por destino de entretenimiento nos referimos a un lugar donde puedes venir para festejar un cumpleaños, despedidas de soltero o soltera, eventos corporativos, citas nocturnas o simplemente para divertirte con tus amigos y pasarla en grande.</p>`;
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+<section class="w-full bg-[var(--neutral-text-inverted)] !py-12 sm:!py-16">
   <div
-    class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row"
+    class="!mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row"
   >
     <div class="flex flex-col items-center justify-center">
-      <div class="relative flex items-center justify-center mb-8">
+      <div class="relative flex items-center justify-center !mb-8">
         <h2
-          class="font-(family-name:--font-shields-sans-semibold-condensed) text-[var(--surface-brand-primary)] text-center text-4xl font-semibold uppercase sm:text-5xl md:text-6xl lg:text-7xl px-4 py-2"
+          class="font-(family-name:--font-shields-sans-semibold-condensed) text-[var(--surface-brand-primary)] text-center text-4xl font-semibold uppercase sm:text-5xl md:text-6xl lg:text-7xl !px-4 !py-2 !mb-0"
           style={`transform: rotate(-1.66deg); background-color: ${color_etiqueta};`}
         >
           {titulo_principal || "La Experiencia"}
@@ -96,5 +96,9 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
     /* Opcional: Si quieres que el bullet sea más grande o negrita */
     font-weight: bold;
     font-size: 1.2em;
+  }
+
+  .prose :global(p) {
+    margin-bottom: 0;
   }
 </style>
