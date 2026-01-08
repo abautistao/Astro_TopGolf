@@ -1,0 +1,103 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi";
+import { Image } from "astro:assets";
+
+interface Props {
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    imagen_decorativa: any;
+}
+
+const { titulo, descripcion, imagen, imagen_decorativa } = Astro.props;
+
+const tituloMostrar = titulo || "TITULO DE EJEMPLO";
+const descripcionHtml = stringifyRichText(
+    descripcion || "Descripción de ejemplo...",
+);
+const strapiImageUrl = getStrapiUrl(imagen);
+const strapiDecorativoUrl = getStrapiUrl(imagen_decorativa);
+
+const altText = imagen?.data?.attributes?.alternativeText || tituloMostrar;
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] overflow-hidden">
+    <div class="flex flex-col lg:flex-row w-full max-w-[1440px] mx-auto">
+        <!-- Mobile Order: Text First -->
+        <!-- Desktop Order: Image First -->
+
+        <!-- Image Section -->
+        <div
+            class="w-full lg:w-1/2 relative order-2 lg:order-1 px-4 lg:px-12 py-8 lg:py-16 flex items-center justify-center"
+        >
+            <div class="relative w-full max-w-[600px]">
+                {
+                    /* Decorative Image - Desktop Only mostly or positioned absolute */
+                }
+                {
+                    strapiDecorativoUrl && (
+                        <div class="absolute -top-12 -left-12 z-10 w-32 h-32 hidden lg:block animate-spin-slow">
+                            <Image
+                                src={strapiDecorativoUrl}
+                                alt="Decorative element"
+                                width={150}
+                                height={150}
+                                class="w-full h-full object-contain"
+                            />
+                        </div>
+                    )
+                }
+
+                <div
+                    class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-2xl"
+                >
+                    <Image
+                        src={strapiImageUrl ||
+                            "https://placehold.co/800x600?text=Foosball"}
+                        alt={altText}
+                        inferSize={true}
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Section -->
+        <div
+            class="w-full lg:w-1/2 flex flex-col justify-center px-6 md:px-12 lg:pr-24 py-12 order-1 lg:order-2"
+        >
+            <h2
+                class="text-[var(--accent-feedback-strong)] text-4xl lg:text-7xl font-bold uppercase mb-6 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-[0.9]"
+            >
+                {tituloMostrar}
+            </h2>
+
+            <div
+                class="text-[var(--accent-feedback-strong)] text-base lg:text-lg leading-relaxed font-(family-name:--font-sharp-sans-medium) strapi-rich-text opacity-90 max-w-xl"
+            >
+                <Fragment set:html={descripcionHtml} />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Custom animation for the rolling text effect if it is circular */
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    .animate-spin-slow {
+        animation: spin 20s linear infinite;
+    }
+
+    /* Rich text styling overrides */
+    div :global(strong) {
+        color: white;
+        font-weight: 700;
+    }
+</style>

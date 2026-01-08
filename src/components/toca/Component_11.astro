@@ -33,7 +33,7 @@ const imagesList = imagenes || [];
                               return (
                                   <div class="swiper-slide relative w-full h-full bg-gray-900">
                                       <Image
-                                          src={imgUrl}
+                                          src={imgUrl || ""}
                                           alt={alt}
                                           inferSize={true}
                                           class="w-full h-full object-cover"
