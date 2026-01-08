@@ -6,10 +6,14 @@ import { stringifyRichText } from '../../lib/strapi.js';
 export interface Props {
   titulo: string;
   terminos: any; // Rich Text
+  subtitulo: string
+  descripcion: string
+  color_texto_titulo: string
+  color_fondo_titulo: string
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo, terminos } = Astro.props;
+const { titulo, terminos, subtitulo, descripcion, color_texto_titulo, color_fondo_titulo } = Astro.props;
 
 const placeholderData: Props = {
   titulo: "Términos y condiciones",
@@ -103,22 +107,40 @@ const placeholderData: Props = {
       ],
     },
   ],
+  subtitulo: '¿Visitaste Topgolf Monterrey?',
+  descripcion: '¿Visitaste Topgolf Monterrey?',
+  color_texto_titulo: '#050786',
+  color_fondo_titulo: 'aqua',
 };
 
 // 3. Preparamos los datos para renderizar
 const tituloToRender = titulo || placeholderData.titulo;
+const subtituloToRender = subtitulo || placeholderData.subtitulo;
+const descripcionToRender = stringifyRichText(descripcion || placeholderData.descripcion);
 const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
 ---
 
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-(family-name:--font-tee-line-bold-italic) text-center text-2xl lg:text-[32px] font-bold text-[var(--neutral-background-strong)]">
-            {tituloToRender}
-        </h2>
+        { titulo && (
+          <h2 id="title-component28" class="max-w-[55%] !mx-auto font-(family-name:--font-shields-sans-semibold-condensed) text-center text-2xl lg:text-5xl font-bold text-[var(--neutral-background-strong)] py-2">
+              {tituloToRender}
+          </h2>
+        )}
+
+        {descripcion && (
+          <div class="text-xl font-(family-name:--font-tee-line-bold-italic) text-center" set:html={descripcionToRender}></div>
+        )}
+
+        {subtitulo && (
+          <h3 class="font-(family-name:--font-shields-sans-black) text-center text-2xl lg:text-3xl font-bold text-[var(--neutral-background-strong)]">
+              {subtituloToRender}
+          </h3>
+        )}
         <div class="font-(family-name:--font-shields-sans-regular) mt-8 text-[var(--neutral-background-strong)] prose max-w-none text-base md:text-lg strapi-rich-text" set:html={terminosHtml}></div>
     </div>
 </section>
-<style>
+<style define:vars={{ color_texto_titulo, color_fondo_titulo }}>
   .prose :global(ul) {
     list-style-type: disc;
     padding-left: 1.25rem;
@@ -153,5 +175,10 @@ const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
     color: var(--neutral-background-strong);
     font-weight: bold;
     font-size: 1.2em;
+  }
+
+  #title-component28 {
+    color: var(--color_texto_titulo);
+    background-color: var(--color_fondo_titulo);
   }
 </style>
