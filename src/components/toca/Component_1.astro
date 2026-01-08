@@ -1,7 +1,7 @@
 ---
 // src/components/toca/Component_1.astro
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
-import { Image } from 'astro:assets';
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
 
 interface Props {
     titulo: string;
@@ -20,43 +20,67 @@ const {
             url: "#",
             icon: "version_1",
         },
-    ]
+    ],
 } = Astro.props;
 const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
 
 const strapiImageUrl = getStrapiUrl(imagen);
 const descripcionHtml = stringifyRichText(descripcion);
 
-const altText = imagen?.data?.attributes?.alternativeText || tituloMostrar || "Imagen destacada";
+const altText =
+    imagen?.data?.attributes?.alternativeText ||
+    tituloMostrar ||
+    "Imagen destacada";
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] min-h-[600px] lg:h-[85vh] flex items-center overflow-hidden">
+<section
+    class="w-full bg-[var(--surface-brand-primary)] min-h-[600px] lg:h-[85vh] flex items-center overflow-hidden"
+>
     <div class="flex flex-col lg:flex-row w-full h-full items-stretch">
-        <div class="w-full lg:w-[30%] px-8 md:px-12 lg:px-10 pb-10 lg:pb-12 pt-10 flex flex-col justify-between z-10 bg-[var(--surface-brand-primary)]">
+        <div
+            class="w-full lg:w-[30%] px-8 md:px-12 lg:px-10 pb-10 lg:pb-12 pt-10 flex flex-col justify-between z-10 bg-[var(--surface-brand-primary)]"
+        >
             <div class="mt-0 lg:mt-4">
-                <h1 class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)] ">
+                <h1
+                    class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)]"
+                >
                     {/* Aquí usamos la nueva variable tituloMostrar */}
-                    <span class="title-extended text-4xl lg:text-[64px]">{tituloMostrar}</span>
+                    <span
+                        class="title-extended text-4xl lg:text-[64px] font-(family-name:--font-titling-gothic-fb-extended-bold)"
+                        >{tituloMostrar}</span
+                    >
                 </h1>
 
-                <div class="text-[var(--surface-brand-secondary)] text-sm lg:text-base font-bold leading-relaxed strapi-rich-text">
+                <div
+                    class="text-[var(--surface-brand-secondary)] text-sm lg:text-base font-bold leading-relaxed strapi-rich-text font-(family-name:--font-sharp-sans-bold)"
+                >
                     <Fragment set:html={descripcionHtml} />
                 </div>
             </div>
 
             <div class="flex items-center gap-5 mt-8 lg:mt-0">
-                {social && social.map((social_item: any) => (
-                    <a href={social_item.url} target="_blank" class="text-[var(--brand-interactive-base)] text-lg md:text-xl hover:text-[var(brand-interactive-base)] transition-colors">
-                        <Fragment set:html={social_item.icon} />
-                    </a>
-                ))}
+                {
+                    social &&
+                        social.map((social_item: any) => (
+                            <a
+                                href={social_item.url}
+                                target="_blank"
+                                class="text-[var(--brand-interactive-base)] text-lg md:text-xl hover:text-[var(brand-interactive-base)] transition-colors"
+                            >
+                                <Fragment set:html={social_item.icon} />
+                            </a>
+                        ))
+                }
             </div>
         </div>
 
-        <div class="w-full lg:w-[70%] h-[400px] lg:h-full relative flex items-center justify-center p-6 lg:py-12 lg:pr-12">
+        <div
+            class="w-full lg:w-[70%] h-[400px] lg:h-full relative flex items-center justify-center p-6 lg:py-12 lg:pr-12"
+        >
             <div class="w-full h-full overflow-hidden shadow-xl z-0 relative">
                 <Image
-                    src={strapiImageUrl || "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
+                    src={strapiImageUrl ||
+                        "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
                     alt={altText}
                     class="w-full h-full object-cover object-center"
                     inferSize={true}

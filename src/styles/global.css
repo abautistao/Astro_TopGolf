@@ -82,6 +82,46 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Titling Gothic FB Extended Bold';
+    src: url('/fonts/Titling-Gothic-FB/TitlingGothicFBExtendedBold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SharpSans-Bold';
+    src: url('/fonts/Sharp-Sans/SharpSans-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SharpSans-BoldItalic';
+    src: url('/fonts/Sharp-Sans/SharpSans-BoldItalic.woff2') format('woff2');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SharpSans-Medium';
+    src: url('/fonts/Sharp-Sans/SharpSans-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SharpSans-MediumItalic';
+    src: url('/fonts/Sharp-Sans/SharpSans-MediumItalic.woff2') format('woff2');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
 :root {
     --font-shields-sans-regular: 'ShieldSans-Regular', sans-serif;
     --font-shields-sans-condensed: 'ShieldSans-Condensed', sans-serif;
@@ -92,6 +132,11 @@
     --font-tee-line-bold: 'Tee Line', sans-serif;
     --font-tee-line-regular: 'Tee Line', sans-serif;
     --font-shields-sans-black: 'ShieldSans-Black', sans-serif;
+    --font-titling-gothic-fb-extended-bold: 'Titling Gothic FB Extended Bold', sans-serif;
+    --font-sharp-sans-bold: 'SharpSans-Bold', sans-serif;
+    --font-sharp-sans-bold-italic: 'SharpSans-BoldItalic', sans-serif;
+    --font-sharp-sans-medium: 'SharpSans-Medium', sans-serif;
+    --font-sharp-sans-medium-italic: 'SharpSans-MediumItalic', sans-serif;
 }
 
 @import "tailwindcss";
