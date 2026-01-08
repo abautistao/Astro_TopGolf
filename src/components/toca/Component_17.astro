@@ -1,0 +1,43 @@
+---
+import { stringifyRichText } from "../../lib/strapi";
+
+interface Props {
+    titulo?: string;
+    descripcion?: any;
+}
+
+const {
+    titulo = "UP TO 24 PLAYERS, IN 3 EASY STEPS",
+    descripcion = "We love a party at TOCA Social and we would be thrilled for you to choose us as the venue for your special day. Follow the steps below to unlock the ultimate birthday party experience at TOCA Social.\n\nPlease note: Groups of 13-24 guests will be booked in a double box (two adjacent boxes). To guarantee your group is placed together, both boxes must be booked in a single booking. We regret that we cannot adjust separately booked boxes to be next to each other.",
+} = Astro.props;
+
+const descripcionHtml = stringifyRichText(descripcion);
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-24 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+        <!-- Title -->
+        <h2
+            class="text-white text-3xl lg:text-6xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight tracking-wide"
+        >
+            {titulo}
+        </h2>
+
+        <!-- Description -->
+        <div
+            class="text-white text-base lg:text-lg font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 space-y-6 strapi-rich-text"
+        >
+            <Fragment set:html={descripcionHtml} />
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Rich text styling adjustments if needed */
+    .strapi-rich-text p {
+        margin-bottom: 1.5rem;
+    }
+    .strapi-rich-text p:last-child {
+        margin-bottom: 0;
+    }
+</style>

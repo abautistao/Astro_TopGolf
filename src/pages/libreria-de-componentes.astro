@@ -68,6 +68,8 @@ import Component_13_Toca from "../components/toca/Component_13.astro";
 import Component_14_Toca from "../components/toca/Component_14.astro";
 import Component_15_Toca from "../components/toca/Component_15.astro";
 import Component_16_Toca from "../components/toca/Component_16.astro";
+import Component_17_Toca from "../components/toca/Component_17.astro";
+import Component_18_Toca from "../components/toca/Component_18.astro";
 
 // Sample data for components that need props
 const sampleButtons = [
@@ -124,6 +126,43 @@ const components = [
             data: { attributes: { url: "https://placehold.co/600x600" } },
           },
           Boton: [{ id: 3, texto: "MOCK KIDS", url: "#", tipo: "version_1" }],
+        },
+      ],
+    },
+  },
+  {
+    name: "Component_17_Toca",
+    Comp: Component_17_Toca,
+    props: {},
+  },
+  {
+    name: "Component_18_Toca",
+    Comp: Component_18_Toca,
+    props: {
+      items: [
+        {
+          titulo: "1. BOOK YOUR BOX",
+          descripcion: "Mock description for booking.",
+          imagen: {
+            data: { attributes: { url: "https://placehold.co/600x600" } },
+          },
+          Boton: [{ id: 1, texto: "BOOK NOW", url: "#", tipo: "version_1" }],
+        },
+        {
+          titulo: "2. ADD YOUR PACKAGE",
+          descripcion: "Mock description for package.",
+          imagen: {
+            data: { attributes: { url: "https://placehold.co/600x600" } },
+          },
+          Boton: [{ id: 2, texto: "KIDS MENU", url: "#", tipo: "version_1" }],
+        },
+        {
+          titulo: "3. PERSONAL TOUCHES",
+          descripcion: "Mock description for personal touches.",
+          imagen: {
+            data: { attributes: { url: "https://placehold.co/600x600" } },
+          },
+          Boton: [],
         },
       ],
     },
@@ -189,6 +228,8 @@ const components = [
   { name: "Component_14_Toca", Comp: Component_14_Toca, props: {} },
   { name: "Component_15_Toca", Comp: Component_15_Toca, props: {} },
   { name: "Component_16_Toca", Comp: Component_16_Toca, props: {} },
+  { name: "Component_17_Toca", Comp: Component_17_Toca, props: {} },
+  { name: "Component_18_Toca", Comp: Component_18_Toca, props: {} },
 
   { name: "Icono", Comp: Icono, props: { name: "star" } },
   {
