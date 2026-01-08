@@ -98,7 +98,34 @@ const components = [
     name: "Component_16_Toca",
     Comp: Component_16_Toca,
     props: {
-      items: [], // Will use fallback data inside component
+      items: [
+        {
+          titulo: "MOCK SQUAD PACKAGES",
+          descripcion: "Mock description for the squad packages.",
+          imagen: {
+            data: { attributes: { url: "https://placehold.co/600x600" } },
+          },
+          Boton: [{ id: 1, texto: "MOCK BUTTON", url: "#", tipo: "version_1" }],
+        },
+        {
+          titulo: "MOCK HYDRATION",
+          descripcion: "Mock description for hydration menu.",
+          imagen: {
+            data: { attributes: { url: "https://placehold.co/600x600" } },
+          },
+          Boton: [
+            { id: 2, texto: "MOCK HYDRATION", url: "#", tipo: "version_1" },
+          ],
+        },
+        {
+          titulo: "MOCK KIDS",
+          descripcion: "Mock description for kids menu.",
+          imagen: {
+            data: { attributes: { url: "https://placehold.co/600x600" } },
+          },
+          Boton: [{ id: 3, texto: "MOCK KIDS", url: "#", tipo: "version_1" }],
+        },
+      ],
     },
   },
   { name: "Component_1", Comp: Component_1, props: {} },

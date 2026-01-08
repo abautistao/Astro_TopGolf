@@ -1,6 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText } from "../../lib/strapi";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -10,22 +12,34 @@ const fallbackItems = [
         titulo: "PACKAGES FOR THE SQUAD",
         descripcion: "Fuel your game with our pre-ordered food & drink packages. The perfect way to kick things off, and make sure you stay 'hydrated'.",
         imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
-        boton_texto: "PACKAGES MENU",
-        boton_url: "#"
+        Boton: [{
+            id: 1,
+            texto: "PACKAGES MENU",
+            url: "#",
+            tipo: "version_1"
+        }]
     },
     {
         titulo: "HYDRATION MENU",
         descripcion: "Our menu includes iced teas, coffees, Matchas, and milkshakes – the perfect mix for catching up, cooling down, and keeping the vibes high.",
         imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
-        boton_texto: "HYDRATION MENU",
-        boton_url: "#"
+        Boton: [{
+             id: 2,
+             texto: "HYDRATION MENU",
+             url: "#",
+             tipo: "version_1"
+         }]
     },
     {
         titulo: "HAPPIEST MEALS",
         descripcion: "Our Little Ballers food and drink menu is the perfect way to fuel, delight, and keep our younger players energised, crafted exclusively with them in mind.",
         imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
-        boton_texto: "KID'S MENU",
-        boton_url: "#"
+        Boton: [{
+             id: 3,
+             texto: "KID'S MENU",
+             url: "#",
+             tipo: "version_1"
+         }]
     }
 ];
 
@@ -46,40 +60,41 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                 {dataToShow.map((item, index) => {
                      const imageUrl = getStrapiUrl(item.imagen);
                      const descripcionHtml = stringifyRichText(item.descripcion);
+                     const botones = item.Boton ? (Array.isArray(item.Boton) ? item.Boton : [item.Boton]) : [];
 
                      return (
-                        <div class="swiper-slide h-auto flex flex-col">
+                        <div class="swiper-slide h-auto lg:h-full flex flex-col">
                             <!-- Helper container for alignment -->
-                            <div class="flex flex-col h-full w-full">
+                            <div class="flex flex-col h-full w-full justify-between">
                                 
-                                <!-- Header (Title & Desc) -->
-                                <div class="text-center mb-6 lg:mb-8 flex-grow-0">
-                                    <h3 class="text-white text-2xl lg:text-3xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight min-h-[3rem] flex items-center justify-center">
-                                        {item.titulo}
-                                    </h3>
-                                    <div class="text-[var(--brand-interactive-base)] text-sm lg:text-base font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 min-h-[5rem]">
-                                         <Fragment set:html={descripcionHtml} />
+                                <div>
+                                    <!-- Header (Title & Desc) -->
+                                    <div class="text-center mb-6 lg:mb-8 flex-grow-0">
+                                        <h3 class="text-white text-2xl lg:text-3xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c16-title">
+                                            {item.titulo}
+                                        </h3>
+                                        <div class="text-[var(--brand-interactive-base)] text-sm lg:text-base font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 flex items-start justify-center js-c16-desc">
+                                             <Fragment set:html={descripcionHtml} />
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Image -->
+                                    <div class="w-full aspect-square relative rounded-xl overflow-hidden mb-6 lg:mb-8 shrink-0">
+                                        <Image 
+                                            src={imageUrl || "https://placehold.co/600x600"} 
+                                            alt={item.titulo} 
+                                            inferSize={true}
+                                            class="w-full h-full object-cover"
+                                        />
                                     </div>
                                 </div>
-
-                                <!-- Image -->
-                                <div class="w-full aspect-square relative rounded-xl overflow-hidden mb-6 lg:mb-8 shrink-0">
-                                    <Image 
-                                        src={imageUrl || "https://placehold.co/600x600"} 
-                                        alt={item.titulo} 
-                                        inferSize={true}
-                                        class="w-full h-full object-cover"
-                                    />
-                                    
-                                    <!-- Mobile Overlay Icon or Decor could go here if needed -->
-                                </div>
-
+                                
                                 <!-- Button -->
-                                <div class="mt-auto">
-                                    <a href={item.boton_url || "#"} class="block w-full text-center bg-[var(--brand-interactive-base)] text-black font-bold uppercase py-3 text-lg lg:text-xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity">
-                                        {item.boton_texto}
-                                        <!-- Download Icon can be added via CSS or SVG if needed -->
-                                    </a>
+                                <div class="mt-auto w-full flex justify-center">
+                                    <Button
+                                        botones={botones}
+                                        clase="block w-full text-center  text-black font-bold uppercase py-3 text-lg lg:text-xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity"
+                                    />
                                 </div>
 
                             </div>
@@ -109,29 +124,31 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 
     document.addEventListener("astro:page-load", () => {
         initSwiper();
+        initEqualHeights();
     });
 
     // Fallback for non-view-transitions
     if (!document.startViewTransition) {
         initSwiper();
-        document.addEventListener("DOMContentLoaded", initSwiper);
+        initEqualHeights();
+        document.addEventListener("DOMContentLoaded", () => {
+            initSwiper();
+            initEqualHeights();
+        });
     }
 
+    // Recalculate on resize
+    window.addEventListener('resize', () => {
+        initEqualHeights();
+    });
+
     function initSwiper() {
-        // Destroy existing instance if any (to prevent duplicates on navigation)
         const existingSwiper = document.querySelector('.swiper-component-16')?.swiper;
         if (existingSwiper) existingSwiper.destroy();
 
         const swiperEl = document.querySelector(".swiper-component-16");
         if (!swiperEl) return;
 
-        /**
-         * Logic: 
-         * Mobile (< 1024px): Initialize Swiper.
-         * Desktop (>= 1024px): "Unset" swiper or ensure grid layout works.
-         * Actually, we can just init swiper but with 'enabled' breakpoint.
-         */
-        
         new Swiper(swiperEl, {
             modules: [Navigation],
             slidesPerView: 1,
@@ -143,12 +160,37 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
             },
             breakpoints: {
                 1024: {
-                    enabled: false, // Disable swiper on desktop to let CSS Grid take over
+                    enabled: false,
                     slidesPerView: 3,
                     spaceBetween: 0
                 }
             }
         });
+    }
+
+    function initEqualHeights() {
+        const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+        
+        const titles = document.querySelectorAll('.js-c16-title');
+        const descs = document.querySelectorAll('.js-c16-desc');
+
+        // Reset heights first
+        titles.forEach(el => (el as HTMLElement).style.height = 'auto');
+        descs.forEach(el => (el as HTMLElement).style.height = 'auto');
+
+        if (!isDesktop) return; // Only apply on desktop
+
+        equalize(titles);
+        equalize(descs);
+    }
+
+    function equalize(elements: NodeListOf<Element>) {
+        let maxH = 0;
+        elements.forEach(el => {
+            const h = (el as HTMLElement).offsetHeight;
+            if (h > maxH) maxH = h;
+        });
+        elements.forEach(el => (el as HTMLElement).style.height = `${maxH}px`);
     }
 </script>
 
