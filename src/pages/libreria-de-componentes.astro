@@ -66,6 +66,8 @@ import Component_11_Toca from "../components/toca/Component_11.astro";
 import Component_12_Toca from "../components/toca/Component_12.astro";
 import Component_13_Toca from "../components/toca/Component_13.astro";
 import Component_14_Toca from "../components/toca/Component_14.astro";
+import Component_15_Toca from "../components/toca/Component_15.astro";
+import Component_16_Toca from "../components/toca/Component_16.astro";
 // Sample data for components that need props
 const sampleButtons = [
   { id: 1, texto: "Botón Primario", url: "#", tipo: "primario" },
@@ -80,6 +82,15 @@ const components = [
       titulo: "Bloque de Texto",
       texto:
         "Este es un bloque de texto de ejemplo con contenido lorem ipsum para rellenar espacio.",
+    },
+  },
+  {
+    name: "Component_15_Toca",
+    Comp: Component_15_Toca,
+    props: {
+      titulo: "FOOD & DRINK MENU",
+      descripcion: "Our menu has something for every moment...",
+      Boton: null,
     },
   },
   { name: "Component_1", Comp: Component_1, props: {} },
@@ -141,6 +152,7 @@ const components = [
   { name: "Component_12_Toca", Comp: Component_12_Toca, props: {} },
   { name: "Component_13_Toca", Comp: Component_13_Toca, props: {} },
   { name: "Component_14_Toca", Comp: Component_14_Toca, props: {} },
+  { name: "Component_15_Toca", Comp: Component_15_Toca, props: {} },
 
   { name: "Icono", Comp: Icono, props: { name: "star" } },
   {
