@@ -123,17 +123,17 @@ const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
 <section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         { titulo && (
-          <h2 id="title-component28" class="max-w-[55%] !mx-auto font-(family-name:--font-shields-sans-semibold-condensed) text-center text-2xl lg:text-5xl font-bold text-[var(--neutral-background-strong)] py-2">
+          <h2 id="title-component28" class="mb-4 max-w-[76%] md:max-w-[55%] !mx-auto font-(family-name:--font-shields-sans-semibold-condensed) text-center text-2xl lg:text-5xl font-bold text-[var(--neutral-background-strong)] py-2">
               {tituloToRender}
           </h2>
         )}
 
         {descripcion && (
-          <div class="text-xl font-(family-name:--font-tee-line-bold-italic) text-center" set:html={descripcionToRender}></div>
+          <div class="text-md mb-2 md:text-xl font-(family-name:--font-tee-line-bold-italic) text-center" set:html={descripcionToRender}></div>
         )}
 
         {subtitulo && (
-          <h3 class="font-(family-name:--font-shields-sans-black) text-center text-2xl lg:text-3xl font-bold text-[var(--neutral-background-strong)]">
+          <h3 class="font-(family-name:--font-shields-sans-black) text-center text-xl lg:text-3xl font-bold text-[var(--neutral-background-strong)]">
               {subtituloToRender}
           </h3>
         )}
