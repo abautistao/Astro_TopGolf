@@ -9,12 +9,19 @@ interface Props {
     descripcion_secundaria: string;
     imagen_izquierda: any;
     imagen_derecha: any;
-    botones: {
+    // Recibimos los objetos directos, tal cual vienen de Strapi
+    boton_primario: {
         id: number;
         texto: string;
-        url: string;
-        tipo: 'version_1' | 'version_2' | 'version_3';
-    }[];
+        url: string | null;
+        tipo: string;
+    };
+    boton_secundario: {
+        id: number;
+        texto: string;
+        url: string | null;
+        tipo: string;
+    };
 }
 
 const {
@@ -22,14 +29,15 @@ const {
     descripcion_secundaria = "Descripcion Secundaria de Ejemplo.",
     imagen_izquierda,
     imagen_derecha,
-    botones = [
-        { id: 1, texto: "BOOK TO PLAY", url: "#", tipo: 'version_3' },
-        { id: 2, texto: "BOOK TO DINE", url: "#", tipo: 'version_3' }
-    ]
+    boton_primario,
+    boton_secundario
 } = Astro.props;
-const imgLeftUrl = getStrapiUrl(imagen_izquierda);
-const imgRightUrl = getStrapiUrl(imagen_derecha);
-const mainTextHtml = stringifyRichText(descripcion_principal);
+
+// YA NO HACEMOS EL ARRAY AQUÍ. CÓDIGO LIMPIO.
+
+const imgLeftUrl    = getStrapiUrl(imagen_izquierda);
+const imgRightUrl   = getStrapiUrl(imagen_derecha);
+const mainTextHtml  = stringifyRichText(descripcion_principal);
 const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 ---
 
@@ -55,20 +63,19 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 
             <div class="w-full lg:w-2/4 text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20 mb-0 lg:mb-0 pb-0 lg:pb-0">
 
-                <div class="font-bold text-[var(--surface-brand-primary)] text-base lg:text-xl leading-tight mb-4 max-w-2xl mx-auto px-4 text-center">
+                <div class="font-(family-name:--font-sharp-sans-bold) font-bold text-[var(--surface-brand-primary)] text-base lg:text-xl leading-tight mb-4 max-w-2xl mx-auto px-8 lg:px-20 text-center">
                     <Fragment set:html={mainTextHtml} />
                 </div>
 
-                <div class="font-normal text-[var(--surface-brand-primary)] text-sm md:text-base mb-8 max-w-xl mx-auto px-4 text-center">
+                <div class="font-(family-name:--font-sharp-sans-medium-italic) font-normal text-[var(--surface-brand-primary)] text-sm md:text-base mb-8 max-w-xl mx-auto px-8 lg:px-20 text-center">
                     <Fragment set:html={secondaryTextHtml} />
                 </div>
 
                 <Button
-                    botones={botones}
+                    botones={[boton_primario, boton_secundario].filter(Boolean)}
                     clase="flex flex-row gap-4 sm:gap-6 w-full justify-center items-center flex-wrap sm:flex-nowrap"
                 />
             </div>
-
             <div class="hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-start order-3 -mb-12 lg:-mb-24 z-30 relative">
                 <div class="photo-card rotate-card-right">
                     <div class="bg-[var(--surface-brand-primary)] border-2 border-[var(--surface-brand-primary)] shadow-xl">
@@ -102,5 +109,4 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 
     .rotate-card-left { transform: rotate(-6deg); }
     .rotate-card-right { transform: rotate(6deg); }
-
 </style>

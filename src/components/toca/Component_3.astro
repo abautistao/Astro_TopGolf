@@ -51,14 +51,18 @@ const ProcessedTarjetas = rawData.map((card) => ({
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
             {ProcessedTarjetas.map((item, index) => (
-                <div
-                    class={`carousel-item flex-col h-full group
-                    ${index === 0 ? 'flex' : 'hidden'} lg:flex`}
-                    data-index={index}
-                >
+                    <div
+                        class={`carousel-item flex-col h-full group
+                        ${index === 0 ? 'flex' : 'hidden'} lg:flex
+                        /* --- CLASES NUEVAS AQUI --- */
+                        transition-all duration-300 ease-out
+                        hover:-translate-y-3 hover:scale-[1.01]
+                        cursor-pointer`}
+                        data-index={index}
+                    >
                     <div class="mb-6">
                         <div class="flex justify-between items-start gap-4 mb-3">
-                            <h3 class="flex-1 min-w-0 w-min font-bold text-[var(--accent-feedback-strong)] text-6xl lg:text-xl uppercase leading-[0.9] tracking-tighter title-extended break-words">
+                            <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) flex-1 min-w-0 w-min font-bold text-[var(--accent-feedback-strong)] text-6xl lg:text-xl uppercase leading-[0.9] tracking-tighter title-extended break-words">
                                 {item.title}
                             </h3>
                             <div class="flex gap-4 lg:hidden shrink-0 pt-2">
@@ -72,7 +76,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
                             </div>
                         </div>
 
-                        <div class="text-[var(--brand-interactive-base)] text-base lg:text-base font-bold leading-tight w-full strapi-rich-text">
+                        <div class="font-(family-name:--font-sharp-sans-bold) text-[var(--brand-interactive-base)] text-base lg:text-base font-bold leading-tight w-full strapi-rich-text">
                             <Fragment set:html={item.desc} />
                         </div>
                     </div>

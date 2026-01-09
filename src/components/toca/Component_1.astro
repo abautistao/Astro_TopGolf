@@ -22,6 +22,9 @@ const {
         },
     ],
 } = Astro.props;
+
+// Para el salto de línea en el código, simplemente usa \n en el string que pases
+// Ejemplo al usar el componente: titulo="Hola Mundo\nSegunda Linea"
 const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
 
 const strapiImageUrl = getStrapiUrl(imagen);
@@ -34,21 +37,22 @@ const altText =
 ---
 
 <section
-    class="w-full bg-[var(--surface-brand-primary)] min-h-[600px] lg:h-[85vh] flex items-center overflow-hidden"
+    class="w-full bg-[var(--surface-brand-primary)] min-h-[600px] lg:h-[85vh] flex items-center overflow-hidden pl-4"
 >
     <div class="flex flex-col lg:flex-row w-full h-full items-stretch">
+
         <div
-            class="w-full lg:w-[30%] px-8 md:px-12 lg:px-10 pb-10 lg:pb-12 pt-10 flex flex-col justify-between z-10 bg-[var(--surface-brand-primary)]"
+            class="w-full lg:w-[20%] px-8 md:px-12 lg:px-10 pb-10 lg:pb-12 pt-10 flex flex-col justify-between z-10 bg-[var(--surface-brand-primary)]"
         >
             <div class="mt-0 lg:mt-4">
                 <h1
-                    class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)]"
+                    class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)] relative z-20 lg:w-[60vw] min-w-[300px]"
                 >
-                    {/* Aquí usamos la nueva variable tituloMostrar */}
                     <span
-                        class="title-extended text-4xl lg:text-[64px] font-(family-name:--font-titling-gothic-fb-extended-bold)"
-                        >{tituloMostrar}</span
+                        class="whitespace-pre-line text-3xl lg:text-[64px] font-(family-name:--font-titling-gothic-fb-extended-bold)"
                     >
+                        {tituloMostrar}
+                    </span>
                 </h1>
 
                 <div
@@ -75,9 +79,9 @@ const altText =
         </div>
 
         <div
-            class="w-full lg:w-[70%] h-[400px] lg:h-full relative flex items-center justify-center p-6 lg:py-12 lg:pr-12"
+            class="w-full lg:w-[80%] h-[500px] lg:h-full relative flex items-center justify-center p-0 lg:p-15"
         >
-            <div class="w-full h-full overflow-hidden shadow-xl z-0 relative">
+            <div class="w-full h-full z-0 relative">
                 <Image
                     src={strapiImageUrl ||
                         "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
@@ -91,22 +95,12 @@ const altText =
 </section>
 
 <style>
-    .title-extended {
-        display: block;
-        transform: scaleX(1.25);
-        transform-origin: left;
-        white-space: nowrap;
-    }
-
+    /* Ajusté el margen negativo del H1 para que no se encime tanto ahora que cambiamos los anchos */
     h1 {
-        margin-right: -30%;
+        margin-right: -10%;
     }
 
     @media (max-width: 1024px) {
-        .title-extended {
-            transform: scaleX(1.1);
-            white-space: normal;
-        }
         h1 {
             margin-right: 0;
         }
