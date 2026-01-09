@@ -1,0 +1,62 @@
+---
+// src/components/toca/Component_21.astro
+import { stringifyRichText } from "../../lib/strapi";
+
+interface Props {
+    titulo?: string;
+    descripcion?: any;
+}
+
+const {
+    titulo = "DATA CONTROLLER IDENTITY AND CONTACT DETAILS",
+    descripcion = "The data controller responsible in accordance with the purposes of the UK General Data Protection Regulation (UK GDPR) and other data protection regulations is:\n\nTOCA Social UK Limited\n\nThird Floor, 240 High Holborn, WC1V 7DN, United Kingdom\n\n+44 (0)330 331 4800\ninfo@toca.social\nhttps://toca.social\n\n**DATA PROTECTION OFFICER CONTACT DETAILS**\nThe designated data protection officer is:\n\nDataCo International UK Limited\n\nc/o One Peak Partners, 41 Great Pulteney Street, 2nd floor\nLondon, W1F 9NZ\nUnited Kingdom\n\n+44 (0)20 3318 1718\nwww.dataguard.co.uk",
+} = Astro.props;
+
+const descripcionHtml = stringifyRichText(descripcion);
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20">
+    <div class="max-w-[1200px] mx-auto px-4 md:px-8">
+        <div class="max-w-4xl">
+            <!-- Title -->
+            <h2
+                class="text-[var(--brand-interactive-base)] text-4xl lg:text-7xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight tracking-wide"
+            >
+                {titulo}
+            </h2>
+
+            <!-- Rich Text Description -->
+            <div
+                class="text-white text-base lg:text-lg font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text space-y-4"
+            >
+                <Fragment set:html={descripcionHtml} />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style is:global>
+    /* Local overrides for the rich text in this component */
+    .strapi-rich-text strong {
+        font-weight: 700;
+        color: white;
+    }
+
+    .strapi-rich-text a {
+        color: var(--accent-feedback-strong);
+        text-decoration: underline;
+        transition: opacity 0.3s ease;
+    }
+
+    .strapi-rich-text a:hover {
+        opacity: 0.8;
+    }
+
+    .strapi-rich-text p {
+        margin-bottom: 1rem;
+    }
+
+    .strapi-rich-text p:last-child {
+        margin-bottom: 0;
+    }
+</style>

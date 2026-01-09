@@ -1,0 +1,452 @@
+---
+// src/components/toca/Component_20.astro
+import { stringifyRichText } from "../../lib/strapi";
+import type { Boton } from "./elements/Button.astro";
+
+interface FormField {
+    id: number;
+    label: string;
+    placeholder?: string;
+    name: string;
+    inputType:
+        | "text"
+        | "select"
+        | "date"
+        | "time"
+        | "number"
+        | "email"
+        | "textarea"
+        | "radio"
+        | "checkbox"
+        | "section_title";
+    gridWidth: "full" | "half";
+    options?: string; // Comma separated for select/radio
+    required?: boolean;
+}
+
+interface Props {
+    subtitulo?: string;
+    titulo?: string;
+    fields?: FormField[];
+    submitUrl?: string;
+    submitButton?: Boton;
+}
+
+const { subtitulo, titulo, fields, submitUrl, submitButton } = Astro.props;
+
+// Mock Data / Fallback based on screenshot
+const mockFields: FormField[] = [
+    {
+        id: 1,
+        label: "Your Contact Information",
+        name: "contact_section",
+        inputType: "section_title",
+        gridWidth: "full",
+    },
+    {
+        id: 2,
+        label: "First Name",
+        name: "firstName",
+        inputType: "text",
+        gridWidth: "half",
+        required: true,
+    },
+    {
+        id: 3,
+        label: "Last Name",
+        name: "lastName",
+        inputType: "text",
+        gridWidth: "half",
+        required: true,
+    },
+    {
+        id: 4,
+        label: "Email Address",
+        name: "email",
+        inputType: "email",
+        gridWidth: "full",
+        required: true,
+    },
+    {
+        id: 5,
+        label: "Phone Number",
+        name: "phone",
+        inputType: "text",
+        gridWidth: "full",
+        required: true,
+    },
+    {
+        id: 6,
+        label: "Company",
+        name: "company",
+        inputType: "text",
+        gridWidth: "full",
+    },
+
+    {
+        id: 7,
+        label: "Your Event Details",
+        name: "event_section",
+        inputType: "section_title",
+        gridWidth: "full",
+    },
+    {
+        id: 8,
+        label: "Nature of this Event (e.g., Birthday Party / Corporate Party)",
+        name: "eventNature",
+        inputType: "select",
+        gridWidth: "full",
+        options: "Birthday Party, Corporate Party, Hen/Stag Party, Other",
+        placeholder: "(select an option)",
+        required: true,
+    },
+    {
+        id: 9,
+        label: "Location (Please Select One):",
+        name: "location",
+        inputType: "radio",
+        gridWidth: "full",
+        options:
+            "TOCA Social - London - O2 - The O2 Peninsula Square London, TOCA Social - Birmingham - MSU 15 Level 9 Bullring Birmingham, TOCA Social - Westfield White City - WESTFIELD WHITE CITY LONDON",
+        required: true,
+    },
+    {
+        id: 10,
+        label: "Event date",
+        name: "eventDate",
+        inputType: "date",
+        gridWidth: "full",
+        placeholder: "dd/mm/aaaa",
+        required: true,
+    },
+    {
+        id: 11,
+        label: "Start time",
+        name: "startTime",
+        inputType: "time",
+        gridWidth: "half",
+        required: true,
+    },
+    {
+        id: 12,
+        label: "Event duration",
+        name: "duration",
+        inputType: "select",
+        gridWidth: "half",
+        options: "1 hour, 1.5 hours, 2 hours, 2.5 hours, 3+ hours",
+        placeholder: "(select an option)",
+        required: true,
+    },
+    {
+        id: 13,
+        label: "Number of people (Minimum of 25)",
+        name: "guestCount",
+        inputType: "number",
+        gridWidth: "full",
+        required: true,
+    },
+    {
+        id: 14,
+        label: "Is there any additional information you would like to add? Is there a budget you are working with for the event?",
+        name: "additionalInfo",
+        inputType: "textarea",
+        gridWidth: "full",
+    },
+    {
+        id: 15,
+        label: "How did you hear about us?",
+        name: "referral",
+        inputType: "select",
+        gridWidth: "full",
+        options: "Social Media, Friend, Search Engine, Other",
+        placeholder: "(select an option)",
+        required: true,
+    },
+];
+
+const mockButton: Boton = {
+    id: 0,
+    texto: "SUBMIT",
+    url: "",
+    tipo: "version_3", // We'll style version_3 as the pink button in Component_20
+};
+
+const data = {
+    subtitulo: subtitulo || "LARGE BOOKINGS AT TOCA SOCIAL",
+    titulo: titulo || "ENQUIRE NOW",
+    fields: fields || mockFields,
+    submitUrl: submitUrl || "/api/events-email",
+    button: submitButton || mockButton,
+};
+
+const getOptions = (optionsStr?: string) => {
+    if (!optionsStr) return [];
+    return optionsStr.split(",").map((o) => o.trim());
+};
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-16 lg:py-24">
+    <div class="max-w-[700px] mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-12 lg:mb-16">
+            <h3
+                class="text-white text-sm lg:text-base font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-medium) mb-4 uppercase"
+            >
+                {data.subtitulo}
+            </h3>
+            <h2
+                class="text-white text-5xl lg:text-8xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) leading-[0.8] mb-8"
+            >
+                {data.titulo}
+            </h2>
+        </div>
+
+        <!-- Form -->
+        <form
+            class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6"
+            id="toca-enquire-form"
+        >
+            {
+                data.fields.map((field) => {
+                    // SECTION TITLE
+                    if (field.inputType === "section_title") {
+                        return (
+                            <div class="col-span-1 md:col-span-2 mt-8 mb-2">
+                                <h4 class="text-white text-3xl lg:text-5xl font-bold uppercase text-center font-(family-name:--font-titling-gothic-fb-extended-bold)">
+                                    {field.label}
+                                </h4>
+                            </div>
+                        );
+                    }
+
+                    // CHECKBOX
+                    if (field.inputType === "checkbox") {
+                        return (
+                            <div class="col-span-1 md:col-span-2 flex items-start gap-3 py-2">
+                                <input
+                                    id={field.name}
+                                    name={field.name}
+                                    type="checkbox"
+                                    required={field.required}
+                                    class="mt-1 h-5 w-5 rounded border-transparent bg-white text-[var(--accent-feedback-strong)] focus:ring-[var(--accent-feedback-strong)]"
+                                />
+                                <label
+                                    for={field.name}
+                                    class="text-xs lg:text-sm text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
+                                >
+                                    {field.label}
+                                </label>
+                            </div>
+                        );
+                    }
+
+                    // RADIO (Locations)
+                    if (field.inputType === "radio") {
+                        return (
+                            <div class="col-span-1 md:col-span-2 space-y-4 py-2">
+                                <label class="block text-sm lg:text-base font-bold text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)">
+                                    {field.label}
+                                </label>
+                                <div class="space-y-3">
+                                    {getOptions(field.options).map(
+                                        (opt, idx) => (
+                                            <label class="flex items-center gap-3 cursor-pointer group">
+                                                <input
+                                                    type="radio"
+                                                    name={field.name}
+                                                    value={opt}
+                                                    required={field.required}
+                                                    class="h-5 w-5 border-transparent bg-white text-[var(--accent-feedback-strong)] focus:ring-[var(--accent-feedback-strong)]"
+                                                />
+                                                <span class="text-xs lg:text-sm text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium) group-hover:text-white transition-colors">
+                                                    {opt}
+                                                </span>
+                                            </label>
+                                        ),
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    // WRAPPER FOR STANDARD INPUTS
+                    return (
+                        <div
+                            class={`${field.gridWidth === "full" ? "col-span-1 md:col-span-2" : "col-span-1"}`}
+                        >
+                            <label
+                                for={field.name}
+                                class="block text-sm lg:text-base font-bold text-[var(--brand-interactive-base)] mb-2 font-(family-name:--font-sharp-sans-medium)"
+                            >
+                                {field.label}{" "}
+                                {field.required && (
+                                    <span class="text-red-500">*</span>
+                                )}
+                            </label>
+
+                            {field.inputType === "select" ? (
+                                <div class="relative">
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        required={field.required}
+                                        class="appearance-none w-full bg-white border-none text-black rounded-sm py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
+                                    >
+                                        <option value="" disabled selected>
+                                            {field.placeholder ||
+                                                "(select an option)"}
+                                        </option>
+                                        {getOptions(field.options).map(
+                                            (opt) => (
+                                                <option value={opt}>
+                                                    {opt}
+                                                </option>
+                                            ),
+                                        )}
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                                        <svg
+                                            class="fill-current h-4 w-4"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            ) : field.inputType === "textarea" ? (
+                                <textarea
+                                    id={field.name}
+                                    name={field.name}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                    rows="5"
+                                    class="w-full bg-white border-none text-black rounded-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
+                                />
+                            ) : (
+                                <input
+                                    type={field.inputType}
+                                    id={field.name}
+                                    name={field.name}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                    class="w-full bg-white border-none text-black rounded-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium) placeholder-gray-400"
+                                />
+                            )}
+                        </div>
+                    );
+                })
+            }
+
+            <!-- Submit Button -->
+            <div class="col-span-1 md:col-span-2 mt-8">
+                <button
+                    type="submit"
+                    class="w-full bg-[var(--accent-feedback-strong)] text-black font-bold uppercase py-4 px-8 text-xl lg:text-2xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:bg-white hover:text-black transition-all transform active:scale-95"
+                >
+                    {data.button.texto}
+                </button>
+            </div>
+
+            <!-- Messages -->
+            <div
+                id="form-feedback"
+                class="col-span-1 md:col-span-2 text-center text-lg font-bold p-4 rounded-sm hidden font-(family-name:--font-sharp-sans-bold)"
+            >
+            </div>
+        </form>
+    </div>
+</section>
+
+<script define:vars={{ submitUrl: data.submitUrl }}>
+    document.addEventListener("astro:page-load", () => {
+        const form = document.getElementById("toca-enquire-form");
+        const feedback = document.getElementById("form-feedback");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "SENDING...";
+            }
+
+            feedback.classList.add("hidden");
+            feedback.className =
+                "col-span-1 md:col-span-2 text-center text-lg font-bold p-4 rounded-sm hidden font-(family-name:--font-sharp-sans-bold)";
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(submitUrl, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    feedback.textContent =
+                        "THANK YOU! YOUR ENQUIRY HAS BEEN RECEIVED.";
+                    feedback.classList.remove("hidden");
+                    feedback.classList.add("bg-green-100", "text-green-800");
+                    form.reset();
+                } else {
+                    const error = await response.json();
+                    throw new Error(
+                        error.message ||
+                            "SOMETHING WENT WRONG. PLEASE TRY AGAIN.",
+                    );
+                }
+            } catch (err) {
+                feedback.textContent = err.message.toUpperCase();
+                feedback.classList.remove("hidden");
+                feedback.classList.add("bg-red-100", "text-red-800");
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "SUBMIT";
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Styling for the radio inputs to look premium */
+    input[type="radio"],
+    input[type="checkbox"] {
+        appearance: none;
+        border: 2px solid white;
+        background-color: transparent;
+        cursor: pointer;
+        position: relative;
+    }
+    input[type="radio"] {
+        border-radius: 9999px;
+    }
+    input[type="radio"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        bottom: 2px;
+        background-color: var(--accent-feedback-strong);
+        border-radius: 9999px;
+    }
+    input[type="checkbox"]:checked::after {
+        content: "✓";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        font-weight: bold;
+    }
+</style>
