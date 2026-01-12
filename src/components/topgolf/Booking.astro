@@ -17,16 +17,20 @@ export interface Props extends HTMLAttributes<'div'> {
     pax_min?: number | null;
     pax_max?: number | null;
     reservacion_fecha?: string | null; // Se usa string para fechas para simplificar el paso
+    vendedor_id?: string | null;
 }
 
 const defaults = {
     plugin_id: null, 
     user_language: null,
     producto_id: null,
+    set_producto_id: null,
     promocode: null,
+    set_promocode: null,
     pax_min: null,
     pax_max: null,
-    reservacion_fecha: null
+    reservacion_fecha: null,
+    vendedor_id: null,
 };
 
 // 2. Fusionamos con las props que llegan
