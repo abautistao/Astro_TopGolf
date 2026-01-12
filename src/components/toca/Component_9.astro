@@ -1,192 +1,184 @@
 ---
 // src/components/toca/Component_9.astro
-import { getStrapiUrl } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { Image } from 'astro:assets';
 
-// --- INTERFACES ---
-interface SlideData {
+interface TarjetaItem {
     id: number;
     titulo: string;
+    descripcion: any;
     imagen: any;
+    url?: string;
+}
+
+interface TarjetaWrapper {
+    id: number;
+    titulo_seccion: string | null;
+    tarjetas: TarjetaItem[];
 }
 
 interface Props {
-    carrusel_imagen: SlideData[];
+    tarjetas: TarjetaWrapper;
 }
 
-const { carrusel_imagen = [] } = Astro.props;
+const { tarjetas } = Astro.props;
 
-const defaultSlides = [
+const tarjetasArray = tarjetas?.tarjetas || [];
+
+const defaultCards = [
     {
-        titulo: "FUN NIGHTS OUT",
-        imagen: { url: "https://placehold.co/1920x1080/050220/5dfbc4?text=Fun+Nights" }
+        titulo: "Ejemplo 1",
+        descripcion: "Description for example card 1 goes here. ",
+        imagen: null,
+        url: "#"
     },
     {
-        titulo: "WITH FRIENDS",
-        imagen: { url: "https://placehold.co/1920x1080/1a0b40/5dfbc4?text=With+Friends" }
+        titulo: "Ejemplo 2",
+        descripcion: "Description for example card 2 goes here. ",
+        imagen: null,
+        url: "#"
+    },
+    {
+        titulo: "Ejemplo 3",
+        descripcion: "Description for example card 3 goes here. ",
+        imagen: null,
+        url: "#"
     }
 ];
 
-const rawData = carrusel_imagen.length > 0 ? carrusel_imagen : defaultSlides;
+const rawData = tarjetasArray.length > 0 ? tarjetasArray : defaultCards;
 
-// --- PROCESAMIENTO ---
-const ProcessedSlides = rawData.map((item) => {
-    let imgRaw = item.imagen;
-    if (Array.isArray(imgRaw) && imgRaw.length > 0) imgRaw = imgRaw[0];
+const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
+    title: card.titulo,
+    desc: typeof card.descripcion === 'string'
+        ? card.descripcion
+        : stringifyRichText(card.descripcion),
+    img: getStrapiUrl(card.imagen),
+    alt: card.titulo || "Toca Social",
+    link: card.url || "#"
+}));
 
-    const finalUrl = getStrapiUrl(imgRaw) || "";
-
-    return {
-        id: item.id,
-        title: item.titulo || "",
-        img: finalUrl,
-        alt: item.titulo || "Slider Image"
-    };
-}).filter(slide => slide.img !== "");
-
-const componentId = `slider-${Math.random().toString(36).substring(2, 9)}`;
 ---
 
-<section
-    class="w-full bg-[var(--surface-brand-primary)] py-6 px-4 md:px-10 relative group"
-    data-id={componentId}
-    data-slides={JSON.stringify(ProcessedSlides)}
->
-    <div class="max-w-[1400px] mx-auto">
+<section class="w-full bg-[var(--surface-brand-primary)] py-10 lg:py-16 relative">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full">
 
-        <div class="flex flex-col md:flex-row justify-between items-end mb-4 gap-4 min-h-[3rem]">
+        <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
-            <h2
-                id={`title-${componentId}`}
-                class="text-white font-bold uppercase text-3xl md:text-5xl tracking-widest leading-none transition-opacity duration-300 w-full md:w-auto text-left"
-            >
-                {ProcessedSlides[0]?.title}
-            </h2>
-
-            <div class="flex gap-4 shrink-0">
-                <button id={`prev-${componentId}`} class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
-                    <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
-                </button>
-
-                <button id={`next-${componentId}`} class="next-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
-                    <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="relative w-full aspect-[2/1] md:aspect-[21/8] overflow-hidden bg-black">
-
-            <div
-                id={`track-${componentId}`}
-                class="flex h-full transition-transform duration-500 ease-out will-change-transform"
-            >
-                {ProcessedSlides.map((slide) => (
-                    <div class="w-full h-full flex-shrink-0 relative">
-                        <img
-                            src={slide.img}
-                            alt={slide.alt}
-                            class="w-full h-full object-cover"
+            {ProcessedTarjetas.map((item, index) => (
+                <div
+                    class={`carousel-item flex flex-col h-full group
+                    ${index === 0 ? 'flex' : 'hidden'} lg:flex
+                    transition-all duration-300 ease-out
+                    cursor-pointer`}
+                    data-index={index}
+                >
+                    <div class="w-full aspect-square relative overflow-hidden mb-6 border-2 border-transparent">
+                        <Image
+                            src={item.img || "https://placehold.co/600x600/2d3748/ffffff?text=Image"}
+                            alt={item.alt}
+                            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                            width={600}
+                            height={600}
+                            inferSize={true}
                         />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050220]/50 to-transparent pointer-events-none"></div>
                     </div>
-                ))}
-            </div>
 
-            <div class="absolute bottom-6 left-0 w-full flex justify-center gap-3 z-20">
-                {ProcessedSlides.map((_, index) => (
-                    <button
-                        data-index={index}
-                        class={`dot-btn w-3 h-3 rounded-full transition-all duration-300 border border-transparent ${index === 0 ? 'bg-[#5DFBC4] scale-125' : 'bg-gray-600 hover:bg-gray-400'}`}
-                    ></button>
-                ))}
-            </div>
+                    <div class="flex flex-col grow px-1">
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--brand-interactive-base)] text-2xl lg:text-2xl uppercase leading-none tracking-tighter">
+                                {item.title}
+                            </h3>
+
+                            <div class="flex gap-4 lg:hidden shrink-0">
+                                <button class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none">
+                                    <i class="fa-solid fa-caret-left text-3xl"></i>
+                                </button>
+                                <button class="next-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none">
+                                    <i class="fa-solid fa-caret-right text-3xl"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="font-(family-name:--font-sharp-sans-medium) text-[var(--accent-feedback-strong)]  text-base leading-relaxed w-full strapi-rich-text mb-6">
+                            <Fragment set:html={item.desc} />
+                        </div>
+
+                        <a
+                            href={item.link}
+                            class="font-(family-name:--font-sharp-sans-medium) mt-auto text-[var(--surface-brand-secondary)] hover:text-[var(--accent-feedback-strong)] font-bold text-base transition-colors inline-block"
+                        >
+                            Learn More...
+                        </a>
+                    </div>
+                </div>
+            ))}
 
         </div>
     </div>
-
 </section>
 
-<script define:vars={{ componentId }}>
-    function initSlider() {
-        const section = document.querySelector(`section[data-id="${componentId}"]`);
-        if (!section) return;
+<script>
+    document.addEventListener('astro:page-load', () => {
+        initCarousel();
+    });
 
-        // Elementos DOM
-        const track = document.getElementById(`track-${componentId}`);
-        const titleEl = document.getElementById(`title-${componentId}`);
-        const prevBtn = document.getElementById(`prev-${componentId}`);
-        const nextBtn = document.getElementById(`next-${componentId}`);
-        const dots = section.querySelectorAll('.dot-btn');
+    document.addEventListener('DOMContentLoaded', () => {
+        initCarousel();
+    });
 
-        let slidesData = [];
-        try {
-            slidesData = JSON.parse(section.dataset.slides);
-        } catch (error) {
-            console.error("Error al leer datos del slider:", error);
-            return;
-        }
-
+    function initCarousel() {
+        const items = document.querySelectorAll('.carousel-item');
+        const prevBtns = document.querySelectorAll('.prev-btn');
+        const nextBtns = document.querySelectorAll('.next-btn');
         let currentIndex = 0;
-        const totalItems = slidesData.length;
+        const totalItems = items.length;
 
-        if (totalItems === 0) return;
+        if(totalItems === 0) return;
 
-        function showSlide(index) {
-            if (track) {
-                track.style.transform = `translateX(-${index * 100}%)`;
-            }
+        function showItem(index) {
+            items.forEach((item, i) => {
+                item.classList.remove('flex');
+                item.classList.add('hidden');
 
-            if (titleEl) {
-                titleEl.style.opacity = '0';
-                setTimeout(() => {
-                    titleEl.textContent = slidesData[index].title;
-                    titleEl.style.opacity = '1';
-                }, 200);
-            }
-
-            dots.forEach((dot, i) => {
                 if (i === index) {
-                    dot.classList.remove('bg-gray-600', 'hover:bg-gray-400');
-                    dot.classList.add('bg-[#5DFBC4]', 'scale-125');
-                } else {
-                    dot.classList.add('bg-gray-600', 'hover:bg-gray-400');
-                    dot.classList.remove('bg-[#5DFBC4]', 'scale-125');
+                    item.classList.remove('hidden');
+                    item.classList.add('flex');
                 }
             });
         }
 
         function nextSlide() {
             currentIndex = (currentIndex + 1) % totalItems;
-            showSlide(currentIndex);
+            showItem(currentIndex);
         }
 
         function prevSlide() {
             currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-            showSlide(currentIndex);
+            showItem(currentIndex);
         }
 
-        if (nextBtn) {
-            nextBtn.onclick = (e) => {
+        nextBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 nextSlide();
-            };
-        }
+            });
+        });
 
-        if (prevBtn) {
-            prevBtn.onclick = (e) => {
+        prevBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 prevSlide();
-            };
-        }
-
-        dots.forEach((dot, i) => {
-            dot.onclick = (e) => {
-                e.preventDefault();
-                currentIndex = i;
-                showSlide(currentIndex);
-            };
+            });
         });
     }
-
-    initSlider();
-    document.addEventListener('astro:after-swap', initSlider);
 </script>
+
+<style>
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0;
+        color: inherit;
+    }
+</style>

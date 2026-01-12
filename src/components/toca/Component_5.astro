@@ -16,13 +16,13 @@ interface Props {
 }
 
 const {
-    titulo_seccion = "WHAT'S ON?",
+    titulo_seccion = "Titulo Sección",
     tarjetas = []
 } = Astro.props;
 const defaultEvents = [
-    { id: 101, titulo: "CHRISTMAS MENU", descripcion: "Feast your eyes on our brand new Christmas menu!", imagen: null },
-    { id: 102, titulo: "NEW YEAR'S EVE", descripcion: "Kick off 2024 with extra time!", imagen: null },
-    { id: 103, titulo: "SUPER BOWL LVIII", descripcion: "Come and watch the Super Bowl at TOCA Social!", imagen: null }
+    { id: 101, titulo: "Titulo Ejemplo 1", descripcion: "Descripción Ejemplo 1", imagen: null },
+    { id: 102, titulo: "Titulo Ejemplo 2", descripcion: "Descripción Ejemplo 2", imagen: null },
+    { id: 103, titulo: "Titulo Ejemplo 3", descripcion: "Descripción Ejemplo 3", imagen: null }
 ];
 
 const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
@@ -31,7 +31,7 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
 <section class="bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full relative">
 
     <div class="flex justify-end md:justify-between items-end mb-6 max-w-[1600px] mx-auto">
-        <h2 class="hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]">
+        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]">
             {titulo_seccion}
         </h2>
 

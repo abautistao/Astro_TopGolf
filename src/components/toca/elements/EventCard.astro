@@ -16,6 +16,9 @@ const descHtml = typeof evento.descripcion === 'string'
 
 const finalImgUrl = getStrapiUrl(evento.imagen) || PLACEHOLDER_IMG;
 
+// Definir la URL de destino.
+const eventLink = evento.slug ? `/eventos/${evento.slug}` : '#';
+
 const theme = {
     v1: { text: 'text-[var(--surface-brand-secondary)]', bg: 'bg-[var(--surface-brand-primary)]' },
     v2: { text: 'text-[var(--brand-interactive-base)]', bg: 'bg-[var(--surface-brand-secondary)]' }
@@ -24,30 +27,34 @@ const currentTheme = tipo === 'version_1' ? theme.v1 : theme.v2;
 ---
 
 <article class="snap-center flex flex-col h-full group w-full">
-    <div class:list={["w-full relative overflow-hidden mb-2", currentTheme.bg, tipo === 'version_1' ? 'aspect-[4/5]' : 'aspect-[3/2]']}>
+    <a href={eventLink} class:list={[
+        "block w-full relative overflow-hidden mb-2",
+        currentTheme.bg,
+        tipo === 'version_1' ? 'aspect-[4/5]' : 'aspect-[3/2]',
+        "transition-all duration-300 ease-out cursor-pointer group-hover:-translate-y-3 group-hover:scale-[1.01]"
+    ]}>
         <img
             src={finalImgUrl}
             alt={evento.titulo}
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            class="w-full h-full object-cover"
             onerror={`this.onerror=null; this.src='${PLACEHOLDER_IMG}';`}
         />
-    </div>
+    </a>
 
     <div class="flex flex-col flex-grow">
-        <h3 class:list={["text-sm font-bold uppercase mb-1 leading-tight", currentTheme.text]}>
-            {evento.titulo}
+        <h3 class:list={["text-sm font-bold uppercase mb-1 leading-tight font-(family-name:--font-titling-gothic-fb-extended-bold)", currentTheme.text]}>
+            <a href={eventLink} class="hover:underline">
+                {evento.titulo}
+            </a>
         </h3>
-        <div class="text-sm font-bold mb-2 line-clamp-3 leading-relaxed text-[var(--accent-feedback-strong)]">
+        <div class="font-(family-name:--font-sharp-sans-medium) text-sm font-medium mb-2 line-clamp-3 leading-relaxed text-[var(--accent-feedback-strong)]">
             <span set:html={descHtml} />
         </div>
-
-        <button
-            class:list={["js-trigger-modal text-sm font-medium self-start text-left transition-colors", currentTheme.text]}
-            data-title={evento.titulo}
-            data-image={finalImgUrl}
-            data-description={descHtml}
+        <a
+            href={eventLink}
+            class:list={["text-sm font-medium self-start text-left transition-colors font-(family-name:--font-sharp-sans-medium) hover:underline", currentTheme.text]}
         >
             Read more...
-        </button>
+        </a>
     </div>
 </article>

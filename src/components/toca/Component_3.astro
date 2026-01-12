@@ -16,18 +16,18 @@ const { Tarjetas = [] } = Astro.props;
 
 const defaultCards = [
     {
-        titulo: "FUN GAMES",
-        descripcion: "Designed for both football lovers and haters alike...",
+        titulo: "Titulo Ejemplo 1",
+        descripcion: "Descripción de ejemplo para el titulo 1...",
         imagen: null
     },
     {
-        titulo: "BANGING MENU",
-        descripcion: "A modern Americana-inspired menu...",
+        titulo: "Titulo Ejemplo 2",
+        descripcion: "Descripción de ejemplo para el titulo 2...",
         imagen: null
     },
     {
-        titulo: "EVENT SPACES",
-        descripcion: "TOCA Social caters for events of all shape and sizes...",
+        titulo: "Titulo Ejemplo 3",
+        descripcion: "Descripción de ejemplo para el titulo 3...",
         imagen: null
     }
 ];
@@ -54,17 +54,17 @@ const ProcessedTarjetas = rawData.map((card) => ({
                     <div
                         class={`carousel-item flex-col h-full group
                         ${index === 0 ? 'flex' : 'hidden'} lg:flex
-                        /* --- CLASES NUEVAS AQUI --- */
                         transition-all duration-300 ease-out
                         hover:-translate-y-3 hover:scale-[1.01]
                         cursor-pointer`}
                         data-index={index}
                     >
                     <div class="mb-6">
-                        <div class="flex justify-between items-start gap-4 mb-3">
-                            <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) flex-1 min-w-0 w-min font-bold text-[var(--accent-feedback-strong)] text-6xl lg:text-xl uppercase leading-[0.9] tracking-tighter title-extended break-words">
+                        <div class="flex justify-between items-start gap-2 mb-1">
+                            <h3 class="w-full lg:w-[40%] min-w-0 font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--accent-feedback-strong)] text-2xl lg:text-xl uppercase leading-[0.9] tracking-tighter break-words line-clamp-2 text-ellipsis overflow-hidden">
                                 {item.title}
                             </h3>
+
                             <div class="flex gap-4 lg:hidden shrink-0 pt-2">
                                 <button class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
                                     <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
@@ -159,10 +159,5 @@ const ProcessedTarjetas = rawData.map((card) => ({
     .strapi-rich-text :global(p) {
         margin-bottom: 0;
         color: inherit;
-    }
-
-    .title-extended {
-        transform: scaleX(1.05);
-        transform-origin: left;
     }
 </style>

@@ -40,7 +40,7 @@ const mapaUrl = getStrapiUrl(mapa);
     <div class="max-w-[1440px] mx-auto px-4 md:px-8">
         <!-- Main Title (Mobile/Desktop) -->
         <h2
-            class="text-white text-5xl lg:text-8xl font-bold uppercase text-center mb-12 lg:mb-20 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-none"
+            class="text-white text-5xl lg:text-7xl font-bold uppercase text-center mb-12 lg:mb-20 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-none"
         >
             {titulo}
         </h2>
@@ -73,7 +73,7 @@ const mapaUrl = getStrapiUrl(mapa);
                 <!-- Address & Link -->
                 <div>
                     <p
-                        class="text-[var(--brand-interactive-base)] text-xl lg:text-2xl font-bold uppercase mb-4 font-(family-name:--font-sharp-sans-bold) leading-tight max-w-md"
+                        class="text-[var(--brand-interactive-base)] text-base lg:text-base font-bold uppercase mb-4 font-(family-name:--font-sharp-sans-bold) leading-tight max-w-md"
                     >
                         {direccion}
                     </p>
@@ -81,7 +81,7 @@ const mapaUrl = getStrapiUrl(mapa);
                         href={google_maps_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="text-white text-base lg:text-lg font-bold underline hover:opacity-80 transition-opacity font-(family-name:--font-sharp-sans-medium)"
+                        class="text-white text-sm lg:text-sm font-bold underline hover:opacity-80 transition-opacity font-(family-name:--font-sharp-sans-medium)"
                     >
                         Open directions in Google Maps
                     </a>
@@ -90,7 +90,7 @@ const mapaUrl = getStrapiUrl(mapa);
                 <!-- Opening Times -->
                 <div>
                     <h3
-                        class="text-white text-3xl lg:text-5xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold)"
+                        class="text-white text-xl lg:text-xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold)"
                     >
                         {titulo_horarios}
                     </h3>
@@ -99,10 +99,10 @@ const mapaUrl = getStrapiUrl(mapa);
                         {
                             horarios.map((item) => (
                                 <div class="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-4">
-                                    <span class="text-[var(--surface-brand-secondary)] text-lg lg:text-xl font-bold uppercase font-(family-name:--font-sharp-sans-bold) min-w-[150px]">
+                                    <span class="text-[var(--surface-brand-secondary)] text-sm lg:text-sm font-bold uppercase font-(family-name:--font-sharp-sans-bold) min-w-[150px]">
                                         {item.dia}
                                     </span>
-                                    <span class="text-[var(--brand-interactive-base)] text-lg lg:text-xl font-bold uppercase font-(family-name:--font-sharp-sans-bold)">
+                                    <span class="text-[var(--brand-interactive-base)] text-sm lg:text-sm font-bold uppercase font-(family-name:--font-sharp-sans-bold)">
                                         {item.rango}
                                     </span>
                                 </div>

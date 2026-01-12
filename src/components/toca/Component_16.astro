@@ -53,7 +53,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 
 <section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
     <div class="max-w-[1440px] mx-auto px-4 md:px-8">
-        
+
         <!-- Swiper Container -->
         <div class="swiper swiper-component-16 relative">
             <div class="swiper-wrapper lg:grid lg:grid-cols-3 lg:gap-8">
@@ -66,7 +66,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                         <div class="swiper-slide h-auto lg:h-full flex flex-col">
                             <!-- Helper container for alignment -->
                             <div class="flex flex-col h-full w-full justify-between">
-                                
+
                                 <div>
                                     <!-- Header (Title & Desc) -->
                                     <div class="text-center mb-6 lg:mb-8 flex-grow-0">
@@ -77,18 +77,18 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                                              <Fragment set:html={descripcionHtml} />
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Image -->
-                                    <div class="w-full aspect-square relative rounded-xl overflow-hidden mb-6 lg:mb-8 shrink-0">
-                                        <Image 
-                                            src={imageUrl || "https://placehold.co/600x600"} 
-                                            alt={item.titulo} 
+                                    <div class="w-full aspect-square relative overflow-hidden mb-6 lg:mb-8 shrink-0">
+                                        <Image
+                                            src={imageUrl || "https://placehold.co/600x600"}
+                                            alt={item.titulo}
                                             inferSize={true}
                                             class="w-full h-full object-cover"
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <!-- Button -->
                                 <div class="mt-auto w-full flex justify-center">
                                     <Button
@@ -170,7 +170,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 
     function initEqualHeights() {
         const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
-        
+
         const titles = document.querySelectorAll('.js-c16-title');
         const descs = document.querySelectorAll('.js-c16-desc');
 
@@ -195,14 +195,14 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 </script>
 
 <style>
-    /* 
-       When Swiper is disabled (Desktop), we need to ensure the wrapper 
-       behaves like a normal Grid container. 
+    /*
+       When Swiper is disabled (Desktop), we need to ensure the wrapper
+       behaves like a normal Grid container.
        Swiper adds 'display: flex' to wrapper by default.
     */
     @media (min-width: 1024px) {
         .swiper-wrapper {
-            display: grid !important; 
+            display: grid !important;
             /* grid-template-columns: repeat(3, 1fr);  <-- handled by Tailwind classes lg:grid lg:grid-cols-3 */
             transform: none !important; /* Remove swiper translate */
             width: 100% !important;

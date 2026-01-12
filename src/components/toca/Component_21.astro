@@ -20,14 +20,14 @@ const descripcionHtml = stringifyRichText(descripcion);
         <div class="max-w-4xl">
             <!-- Title -->
             <h2
-                class="text-[var(--brand-interactive-base)] text-4xl lg:text-7xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight tracking-wide"
+                class="text-[var(--brand-interactive-base)] text-4xl lg:text-6xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight tracking-wide"
             >
                 {titulo}
             </h2>
 
             <!-- Rich Text Description -->
             <div
-                class="text-white text-base lg:text-lg font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text space-y-4"
+                class="text-[var(--accent-feedback-strong)] text-base lg:text-lg font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text space-y-4"
             >
                 <Fragment set:html={descripcionHtml} />
             </div>
@@ -39,12 +39,13 @@ const descripcionHtml = stringifyRichText(descripcion);
     /* Local overrides for the rich text in this component */
     .strapi-rich-text strong {
         font-weight: 700;
-        color: white;
+        color: var(--surface-brand-secondary) !important;
     }
 
     .strapi-rich-text a {
-        color: var(--accent-feedback-strong);
         text-decoration: underline;
+        color: var(--accent-feedback-strong) !important;
+        text-decoration-color: var(--surface-brand-secondary) !important;
         transition: opacity 0.3s ease;
     }
 

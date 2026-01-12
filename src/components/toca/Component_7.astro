@@ -10,7 +10,7 @@ interface Props {
 }
 
 const {
-    titulo = "HOW TO PLAY",
+    titulo = "Ejemplo de título",
     video,
     poster
 } = Astro.props;
@@ -38,9 +38,9 @@ const altText = titulo || "How to play video thumbnail";
 
 <section class="w-full bg-[var(--surface-brand-primary)] py-6 px-4 md:px-8 md:py-8">
 
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-7xl mx-auto">
 
-        <h2 class="text-[var(--accent-feedback-strong)] text-3xl md:text-[75px] font-medium uppercase text-center mb-6">
+        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-3xl md:text-[75px] font-medium uppercase text-center mb-6">
             {titulo}
         </h2>
 
@@ -54,7 +54,7 @@ const altText = titulo || "How to play video thumbnail";
                         playsinline
                     >
                         <source src={mediaUrl} type="video/mp4" />
-                        <p class="sr-only">Video explicativo: {titulo}</p>
+                        <p class="sr-only">{titulo}</p>
                     </video>
 
                     <div

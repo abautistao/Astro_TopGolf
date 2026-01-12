@@ -18,86 +18,101 @@ const {
     imgUrl,
     imgAlt,
     botonData,
-    tipo = 'version_2' // Por defecto
+    tipo = 'version_2'
 } = Astro.props;
 
-// --- LÓGICA DE IMAGEN DEFAULT ---
-// Usamos la URL que proporcionaste como imagen de respaldo
 const DEFAULT_IMAGE = "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo";
 
-// Si imgUrl es nulo, indefinido o vacío, se usa DEFAULT_IMAGE
 const finalImgUrl = imgUrl || DEFAULT_IMAGE;
 const finalImgAlt = imgAlt || "Imagen por defecto";
 
-// --- DICCIONARIO DE ESTILOS ---
 const configs = {
     version_1: {
     // (Rosa)
-    bg: 'bg-[var(--surface-brand-secondary)]',
-    textTitle: 'text-[var(--surface-brand-primary)]',
-    textContent: 'text-[var(--surface-brand-primary)]',
-    direction: 'md:flex-row',         // Img a la derecha
-    textPadding: 'md:pl-20 md:pr-10', // Padding normal
+    bg:         'bg-[var(--surface-brand-secondary)]',
+    textTitle:  'text-[var(--surface-brand-primary)]',
+    textContent:'text-[var(--surface-brand-primary)]',
+    direction:  'md:flex-row',
+    textPadding:'md:pl-16 md:pr-8',
     showDecoration: true
     },
     version_2: {
-        // (Azul Oscuro)
-        bg: 'bg-[var(--surface-brand-primary)]',
-        textTitle: 'text-[var(--accent-feedback-strong)]',
-        textContent: 'text-[var(--accent-feedback-strong)]',
-        direction: 'md:flex-row-reverse', // Img a la izquierda
-        textPadding: 'md:pr-20 md:pl-10', // Padding invertido
+        // (Azul)
+        bg:         'bg-[var(--surface-brand-primary)]',
+        textTitle:  'text-[var(--accent-feedback-strong)]',
+        textContent:'text-[var(--accent-feedback-strong)]',
+        direction:  'md:flex-row-reverse',
+        textPadding:'md:pr-16 md:pl-8',
         showDecoration: false
     }
 };
 
-// Safety check: si el tipo no existe, usa version_1
 const currentStyle = configs[tipo] || configs.version_1;
 ---
 
-<section class={`flex flex-col w-full overflow-hidden ${currentStyle.direction} ${currentStyle.bg}`}>
+<section class={`flex flex-col w-full min-h-[450px] md:min-h-[550px] overflow-hidden ${currentStyle.direction} ${currentStyle.bg}`}>
 
   {/* LADO DE TEXTO */}
-    <div class={`w-full md:w-1/2 flex flex-col justify-center items-start py-12 px-8 z-10 ${currentStyle.textPadding}`}>
+    {/* CAMBIO AQUÍ: Se reemplazó py-10 por 'pt-10 pb-0' para quitar espacio abajo en móvil */}
+    <div class={`w-full md:w-1/2 flex flex-col justify-center md:justify-start items-start pt-10 pb-0 md:pt-20 md:pb-10 px-6 z-10 ${currentStyle.textPadding}`}>
 
-        <h2 class={`${currentStyle.textTitle} font-bold uppercase text-4xl md:text-5xl leading-none mb-5 tracking-wide`}>
-        {titulo}
+        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-sharp-sans-bold) font-medium uppercase text-4xl md:text-5xl leading-none mb-5 tracking-wide`}>
+            {titulo}
         </h2>
 
-        <div class={`${currentStyle.textContent} text-base font-medium leading-relaxed mb-8 max-w-lg [&>p]:mb-4 [&>p:last-child]:mb-0`}>
-        <Fragment set:html={htmlContent} />
+        <div class={`${currentStyle.textContent} strapi-rich-text font-(family-name:--font-sharp-sans-bold) w-full text-base font-medium leading-relaxed mb-8 [&>p]:mb-4 [&>p:last-child]:mb-0`}>
+            <Fragment set:html={htmlContent} />
         </div>
 
         {botonData && (
-        <Button
-            botones={botonData}
-            clase="flex items-center"
-        />
+            <Button
+                botones={botonData}
+                clase="flex items-center"
+            />
         )}
     </div>
 
   {/* LADO DE IMAGEN */}
-    <div class="w-full md:w-1/2 flex justify-center items-center p-8 md:p-12 relative">
-        <div class="relative w-full max-w-md">
+    {/* CAMBIO AQUÍ: Se reemplazó p-6 por 'px-6 pb-6 pt-4' para reducir el espacio superior en móvil */}
+    <div class="w-full md:w-1/2 flex justify-center items-center md:items-start px-6 pb-6 pt-4 md:pt-20 md:px-8 relative">
 
-        {currentStyle.showDecoration && (
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 flex items-center justify-center pointer-events-none">
-            <img
-                src="https://media.graphassets.com/D9j8kF5sRny1q7gXwZ0A"
-                alt="Decoration"
-                class="w-[140%] max-w-none h-auto animate-[spin_10s_linear_infinite] opacity-80 mix-blend-screen"
+        <div class="relative w-full max-w-2xl">
+
+            {currentStyle.showDecoration && (
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 flex items-center justify-center pointer-events-none">
+                <img
+                    src="https://media.graphassets.com/D9j8kF5sRny1q7gXwZ0A"
+                    alt="Decoration"
+                    class="w-[140%] max-w-none h-auto animate-[spin_10s_linear_infinite] opacity-80 mix-blend-screen"
+                />
+                </div>
+            )}
+            <Image
+                src={finalImgUrl}
+                alt={finalImgAlt}
+                class="w-full aspect-[3/2] object-cover relative z-10 shadow-lg"
+                inferSize={true}
             />
-            </div>
-        )}
-
-        {/* Usamos la variable finalImgUrl que calculamos arriba */}
-        <Image
-            src={finalImgUrl}
-            alt={finalImgAlt}
-            class="w-full aspect-[3/2] object-cover relative z-10 shadow-lg"
-            inferSize={true}
-        />
         </div>
     </div>
 
 </section>
+<style>
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0;
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--accent-feedback-strong) !important;
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        color: var(--accent-feedback-strong) !important;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+</style>

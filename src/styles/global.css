@@ -136,7 +136,6 @@
     --font-sharp-sans-bold: 'SharpSans-Bold', sans-serif;
     --font-sharp-sans-bold-italic: 'SharpSans-BoldItalic', sans-serif;
     --font-sharp-sans-medium: 'SharpSans-Medium', sans-serif;
-    --font-sharp-sans-medium-italic: 'SharpSans-MediumItalic', sans-serif;
 }
 
 @import "tailwindcss";

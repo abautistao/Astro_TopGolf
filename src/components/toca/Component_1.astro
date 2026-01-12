@@ -2,29 +2,34 @@
 // src/components/toca/Component_1.astro
 import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 import { Image } from "astro:assets";
+import Button from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
 
 interface Props {
+    subtitulo?: string;
     titulo: string;
     descripcion: string;
     imagen: any;
     social: any;
+    boton: Boton | null;
 }
 
 const {
+    subtitulo = "Subtitulo de Ejemplo",
     titulo,
     descripcion = "Descripcion de Ejemplo",
     imagen,
     social = [
         {
-            name: "Reserva Ahora",
+            name: "Boton",
             url: "#",
             icon: "version_1",
         },
     ],
+    boton = null
 } = Astro.props;
+console.log(Astro.props);
 
-// Para el salto de línea en el código, simplemente usa \n en el string que pases
-// Ejemplo al usar el componente: titulo="Hola Mundo\nSegunda Linea"
 const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
 
 const strapiImageUrl = getStrapiUrl(imagen);
@@ -34,19 +39,26 @@ const altText =
     imagen?.data?.attributes?.alternativeText ||
     tituloMostrar ||
     "Imagen destacada";
+
+const boton_pricing: Boton[] = boton ? [boton] : [];
 ---
 
 <section
-    class="w-full bg-[var(--surface-brand-primary)] min-h-[600px] lg:h-[85vh] flex items-center overflow-hidden pl-4"
+    class="w-full bg-[var(--surface-brand-primary)] min-h-[700px] lg:h-[95vh] flex items-center overflow-hidden p-0 lg:pl-4"
 >
     <div class="flex flex-col lg:flex-row w-full h-full items-stretch">
 
-        <div
-            class="w-full lg:w-[20%] px-8 md:px-12 lg:px-10 pb-10 lg:pb-12 pt-10 flex flex-col justify-between z-10 bg-[var(--surface-brand-primary)]"
+        <div class="w-full lg:w-[20%] px-8 md:px-12 lg:pl-10 lg:pr-0 pb-10 lg:pb-12 pt-10 flex flex-col justify-between relative z-30 bg-[var(--surface-brand-primary)]"
         >
             <div class="mt-0 lg:mt-4">
+                {subtitulo && (
+                    <span class="block font-bold uppercase tracking-wider text-sm lg:text-base -mt-5 mb-2 text-[var(--accent-feedback-strong)] font-(family-name:--font-sharp-sans-bold) whitespace-nowrap w-max max-w-none relative z-50">
+                        {subtitulo}
+                    </span>
+                )}
+
                 <h1
-                    class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)] relative z-20 lg:w-[60vw] min-w-[300px]"
+                    class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)] relative z-40 lg:w-[60vw] min-w-[300px]"
                 >
                     <span
                         class="whitespace-pre-line text-3xl lg:text-[64px] font-(family-name:--font-titling-gothic-fb-extended-bold)"
@@ -56,10 +68,23 @@ const altText =
                 </h1>
 
                 <div
-                    class="text-[var(--surface-brand-secondary)] text-sm lg:text-base font-bold leading-relaxed strapi-rich-text font-(family-name:--font-sharp-sans-bold)"
+                    class="text-[var(--surface-brand-secondary)] text-sm lg:text-sm font-bold leading-relaxed strapi-rich-text font-(family-name:--font-sharp-sans-bold)"
                 >
                     <Fragment set:html={descripcionHtml} />
                 </div>
+
+                {
+                    boton && (
+                        <div class="mt-4 w-full lg:w-auto lg:scale-100">
+                            {/* CAMBIO AQUÍ: justify-start en lugar de justify-center para móvil */}
+                            <Button
+                                botones={boton_pricing}
+                                clase="flex w-full justify-start lg:w-auto lg:justify-start"
+                            />
+                        </div>
+                    )
+                }
+
             </div>
 
             <div class="flex items-center gap-5 mt-8 lg:mt-0">
@@ -79,7 +104,7 @@ const altText =
         </div>
 
         <div
-            class="w-full lg:w-[80%] h-[500px] lg:h-full relative flex items-center justify-center p-0 lg:p-15"
+            class="w-full lg:w-[80%] h-[400px] lg:h-full relative flex items-center justify-center p-0 lg:pt-15 lg:pb-15 lg:pr-15 lg:pl-0 z-10"
         >
             <div class="w-full h-full z-0 relative">
                 <Image
@@ -95,7 +120,6 @@ const altText =
 </section>
 
 <style>
-    /* Ajusté el margen negativo del H1 para que no se encime tanto ahora que cambiamos los anchos */
     h1 {
         margin-right: -10%;
     }
@@ -106,6 +130,7 @@ const altText =
         }
     }
     .strapi-rich-text :global(strong) {
+        color: var(--brand-interactive-base);
         font-weight: bold;
     }
     .strapi-rich-text :global(u) {
@@ -113,6 +138,7 @@ const altText =
         text-underline-offset: 3px;
     }
     .strapi-rich-text :global(a) {
+        color: var(--brand-interactive-base);
         text-decoration: underline;
         text-decoration-thickness: 2px;
         text-underline-offset: 3px;

@@ -6,7 +6,7 @@ export interface Boton {
     id: number;
     texto: string;
     url: string;
-    tipo: 'version_1' | 'version_2' | 'version_3';
+    tipo: 'version_1' | 'version_2' | 'version_3' | 'version_4';
 }
 
 export interface Props {
@@ -26,8 +26,12 @@ const {
             href={formatUrl(boton.url)}
             class:list={[
                 // --- Estilos Base (Tipografía, Bordes, Animación) ---
-                'inline-block border-2 border-[var(--surface-brand-primary)] font-black uppercase tracking-tight leading-none',
-                'transition-all duration-200 whitespace-nowrap',
+                // CAMBIO: 'leading-none' a 'leading-tight' para que no se peguen las líneas si hace salto de línea
+                'inline-block border-2 border-[var(--surface-brand-primary)] font-black uppercase tracking-tight leading-tight',
+
+                // CAMBIO: Quitamos 'whitespace-nowrap' y agregamos 'whitespace-normal text-center max-w-full'
+                // Esto permite que el texto baje y se centre si es muy largo
+                'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
 
                 // --- Tamaños Responsivos (Móvil vs Desktop) ---
                 // Ajustado para que se vea bien en el header (más pequeño en móvil)
@@ -47,10 +51,13 @@ const {
                     'bg-[var(--surface-brand-secondary)] text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-secondary)]': boton.tipo === 'version_1' || !boton.tipo,
 
                     // Version 2: Variante oscura (Fondo negro, texto blanco)
-                    'bg-black text-white hover:bg-gray-900 hover:text-[#EA80FC]': boton.tipo === 'version_2',
+                    'bg-[var(--surface-brand-primary)] text-[var(--accent-feedback-strong)] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--surface-brand-secondary)]': boton.tipo === 'version_2',
 
                     // Version 3: Solo borde (Fondo blanco/transparente)
-                    'bg-[var(--brand-interactive-base)] text-black hover:bg-[var(--brand-interactive-base)]': boton.tipo === 'version_3',
+                    'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:bg-[var(--brand-interactive-base)]': boton.tipo === 'version_3',
+
+                    // Version 4: Estilo "KIDS MENU" (Fondo Blanco Puro, Texto Primary)
+                    'bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] hover:bg-[var(--accent-feedback-strong)] hover:text-[var(--surface-brand-primary)]': boton.tipo === 'version_4',
                 }
             ]}
             set:html={boton.texto}
