@@ -90,7 +90,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         const altText = card.imagen?.data?.attributes?.alternativeText || card.etiqueta;
 
         return (
-          <a href={formatUrl(card.url_tarjeta)} class="relative block overflow-hidden rounded-lg group">
+          <div class="relative block overflow-hidden rounded-lg group">
             <Image
               src={imageUrl || placeholderUrl(card.etiqueta)}
               alt={altText}
@@ -103,7 +103,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                   {card.etiqueta}
                 </h3>
               </div>
-          </a>
+          </div>
         );
       })}
     </div>
