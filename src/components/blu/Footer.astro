@@ -1,9 +1,145 @@
 ---
+// src/components/blu/Footer.astro
+import { getStrapiUrl } from "../../lib/strapi";
+
 const { data } = Astro.props;
-const copyright = data?.copyright || "© 2024 Blu";
+const logoUrl =
+    getStrapiUrl(data?.logo) ||
+    "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_logo_white_b9f2913e77.png";
+
+const year = new Date().getFullYear();
 ---
-<footer class="bg-cyan-800 text-white p-8 mt-8">
-    <div class="container mx-auto text-center">
-        <p>{copyright}</p>
+
+<footer
+    class="w-full bg-[#012b49] pt-20 pb-10 px-6 text-white overflow-hidden relative"
+>
+    <!-- Whale Tail Shadow (Design element) -->
+    <div class="absolute bottom-0 right-[-10%] opacity-10 pointer-events-none">
+        <img src={logoUrl} alt="" class="w-[800px] h-auto grayscale" />
+    </div>
+
+    <div class="max-w-[1440px] mx-auto relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+            <!-- Company Info -->
+            <div class="md:col-span-1">
+                <img
+                    src={logoUrl}
+                    alt="Blu Ocean Club"
+                    class="h-16 w-auto mb-8"
+                />
+                <div class="flex gap-4">
+                    <a
+                        href="#"
+                        class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-[#1d91b4] hover:border-[#1d91b4] transition-all"
+                    >
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a
+                        href="#"
+                        class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-[#1d91b4] hover:border-[#1d91b4] transition-all"
+                    >
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a
+                        href="#"
+                        class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-[#1d91b4] hover:border-[#1d91b4] transition-all"
+                    >
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Links 1 -->
+            <div>
+                <h4
+                    class="text-sm font-bold uppercase tracking-[0.2em] mb-8 text-[#1d91b4]"
+                >
+                    Nosotros
+                </h4>
+                <ul
+                    class="space-y-4 text-sm font-medium tracking-widest opacity-70"
+                >
+                    <li>
+                        <a href="#" class="hover:opacity-100 transition-opacity"
+                            >Inicio</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:opacity-100 transition-opacity"
+                            >Galería</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:opacity-100 transition-opacity"
+                            >Contacto</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Links 2 -->
+            <div>
+                <h4
+                    class="text-sm font-bold uppercase tracking-[0.2em] mb-8 text-[#1d91b4]"
+                >
+                    Nuestros Productos
+                </h4>
+                <ul
+                    class="space-y-4 text-sm font-medium tracking-widest opacity-70"
+                >
+                    <li>
+                        <a href="#" class="hover:opacity-100 transition-opacity"
+                            >Exclusivos</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:opacity-100 transition-opacity"
+                            >Plata de Playa</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="bg-white/5 p-8 rounded-lg border border-white/10">
+                <h4
+                    class="text-sm font-bold uppercase tracking-[0.2em] mb-4 text-center"
+                >
+                    Registrate para recibir ofertas
+                </h4>
+                <p
+                    class="text-[10px] text-center opacity-60 uppercase mb-6 leading-relaxed"
+                >
+                    Se de los primeros en enterarte de las mejores experiencias
+                    y ofertas exclusivas.
+                </p>
+                <div class="flex flex-col gap-3">
+                    <input
+                        type="email"
+                        placeholder="TU CORREO"
+                        class="bg-white/10 border border-white/20 p-3 text-xs tracking-widest uppercase focus:outline-none focus:border-[#1d91b4]"
+                    />
+                    <button
+                        class="bg-white text-[#012b49] font-bold py-3 text-xs tracking-[0.2em] uppercase hover:bg-[#1d91b4] hover:text-white transition-all"
+                    >
+                        SUSCRIBIRME
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div
+            class="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6"
+        >
+            <p
+                class="text-[10px] uppercase font-bold tracking-[0.2em] opacity-40"
+            >
+                © {year} Blu Ocean Club. Todos los derechos reservados.
+            </p>
+            <div
+                class="flex gap-8 text-[10px] uppercase font-bold tracking-[0.2em] opacity-40"
+            >
+                <a href="#" class="hover:opacity-100">Políticas de Privacidad</a
+                >
+                <a href="#" class="hover:opacity-100">Términos y Condiciones</a>
+                <a href="#" class="hover:opacity-100">Cookies</a>
+            </div>
+        </div>
     </div>
 </footer>

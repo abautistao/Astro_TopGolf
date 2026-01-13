@@ -1,0 +1,30 @@
+---
+// src/components/blu/Component_2_Blu.astro
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+}
+
+const {
+    titulo = "La Experiencia que\nFLOTA CON EL CARIBE",
+    descripcion = "Bienvenido al primer club de playa que redefine la diversión en alta mar. Un espacio diseñado para quienes buscan exclusividad, buena música y momentos inolvidables bajo el sol del Caribe. Aquí, cada ola cuenta una historia y cada brindis es una celebración de la vida.",
+} = Astro.props;
+---
+
+<section class="w-full bg-[#eae7e2] py-20 md:py-32 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+        <h2
+            class="text-4xl md:text-6xl font-bold text-[#012b49] leading-[1.1] mb-12 uppercase tracking-tight whitespace-pre-line"
+        >
+            {titulo}
+        </h2>
+
+        <div class="w-20 h-1 bg-[#1d91b4] mx-auto mb-12"></div>
+
+        <p
+            class="text-lg md:text-xl text-[#012b49]/80 font-medium leading-relaxed max-w-2xl mx-auto"
+        >
+            {descripcion}
+        </p>
+    </div>
+</section>

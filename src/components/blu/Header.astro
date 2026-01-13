@@ -1,15 +1,143 @@
 ---
+// src/components/blu/Header.astro
+import { getHeaderData, getStrapiUrl } from "../../lib/strapi";
+
 const { data } = Astro.props;
-const title = data?.title || "Blu Header";
+const headerData = data || (await getHeaderData());
+const logoUrl = getStrapiUrl(headerData?.logo) || "/assets/blu-logo-white.png"; // Placeholder logic
+
+const links = headerData?.links || [
+    { texto: "HOME", url: "/" },
+    { texto: "PRODUCTOS", url: "/productos" },
+    { texto: "GALERÍA", url: "/galeria" },
+    { texto: "CONTACTO", url: "/contacto" },
+];
+
+const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
+    texto: "RESERVAR",
+    url: "/reservar",
+};
 ---
-<header class="bg-cyan-600 text-white p-4">
-  <div class="container mx-auto flex justify-between items-center">
-      <div class="font-bold text-xl">{title}</div>
-      <nav>
-          <ul class="flex space-x-4">
-              <li><a href="#" class="hover:text-cyan-200">Home</a></li>
-              <li><a href="#" class="hover:text-cyan-200">Locations</a></li>
-          </ul>
-      </nav>
-  </div>
+
+<header
+    class="w-full absolute top-0 left-0 z-50 transition-all duration-300"
+    id="blu-header"
+>
+    <div
+        class="max-w-[1440px] mx-auto px-6 h-20 md:h-24 flex items-center justify-between"
+    >
+        <!-- Logo -->
+        <a href="/" class="flex-shrink-0">
+            <img
+                src={logoUrl}
+                alt="Blu Ocean Club"
+                class="h-10 md:h-14 w-auto"
+            />
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-12">
+            {
+                links.map((link: any) => (
+                    <a
+                        href={link.url}
+                        class="text-white font-medium text-xs tracking-[0.2em] hover:text-[#1d91b4] transition-colors uppercase"
+                    >
+                        {link.texto}
+                    </a>
+                ))
+            }
+        </nav>
+
+        <!-- CTA Button & Mobile Toggle -->
+        <div class="flex items-center gap-4">
+            <a
+                href={ctaButton.url}
+                class="hidden md:block px-8 py-2.5 border border-white text-white font-bold text-xs tracking-[0.2em] hover:bg-white hover:text-[#012b49] transition-all uppercase"
+            >
+                {ctaButton.texto}
+            </a>
+
+            <button
+                id="mobile-menu-toggle"
+                class="md:hidden text-white p-2 focus:outline-none"
+            >
+                <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
+                <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden"
+                ></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div
+        id="mobile-menu"
+        class="hidden md:hidden fixed inset-0 bg-[#012b49] z-40 pt-28 px-10"
+    >
+        <nav class="flex flex-col space-y-8">
+            {
+                links.map((link: any) => (
+                    <a
+                        href={link.url}
+                        class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase"
+                    >
+                        {link.texto}
+                    </a>
+                ))
+            }
+            <a
+                href={ctaButton.url}
+                class="w-full py-5 bg-[#1d91b4] text-white text-center font-bold text-xl tracking-widest mt-8 uppercase"
+            >
+                {ctaButton.texto}
+            </a>
+        </nav>
+    </div>
 </header>
+
+<style>
+    /* Transición suave para el encabezado al hacer scroll */
+    .header-scrolled {
+        background-color: #012b49;
+        height: 70px !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        position: fixed;
+    }
+
+    .header-scrolled > div {
+        height: 70px !important;
+    }
+</style>
+
+<script>
+    const header = document.getElementById("blu-header");
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    const menuIcon = document.getElementById("menu-icon");
+    const closeIcon = document.getElementById("close-icon");
+
+    // Manejador de scroll para el header
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 80) {
+            header?.classList.add("header-scrolled");
+        } else {
+            header?.classList.remove("header-scrolled");
+        }
+    });
+
+    // Toggle del menú móvil
+    toggle?.addEventListener("click", () => {
+        const isHidden = menu?.classList.contains("hidden");
+        if (isHidden) {
+            menu?.classList.remove("hidden");
+            menuIcon?.classList.add("hidden");
+            closeIcon?.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        } else {
+            menu?.classList.add("hidden");
+            menuIcon?.classList.remove("hidden");
+            closeIcon?.classList.add("hidden");
+            document.body.style.overflow = "";
+        }
+    });
+</script>
