@@ -13,72 +13,100 @@ interface Props {
     boton: Boton | null;
 }
 
-const {
-    subtitulo = "EL LUJO QUE FLOTA",
-    titulo = "Blu Ocean Club",
-    descripcion = "The experience that floats in the Caribbean. Momentos diseñados para celebrar la vida bajo el sol.",
-    imagen,
-    boton = null,
-} = Astro.props;
+const { subtitulo, titulo, descripcion, imagen, boton = null } = Astro.props;
 
 const strapiImageUrl =
     getStrapiUrl(imagen) ||
     "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
-const descripcionHtml = stringifyRichText(descripcion);
+const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
 
 const buttons: Boton[] = boton ? [boton] : [];
+
+// Check if we have any content to show
+const hasContent = titulo || subtitulo || descripcion;
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(strapiImageUrl);
 ---
 
 <section
-    class="relative w-full h-screen min-h-[700px] flex items-center justify-center overflow-hidden"
+    class="relative w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end md:items-center justify-center overflow-hidden"
 >
-    <!-- Background Image -->
+    <!-- Background Image or Video -->
     <div class="absolute inset-0 z-0">
-        <Image
-            src={strapiImageUrl}
-            alt={titulo}
-            width={1920}
-            height={1080}
-            class="w-full h-full object-cover"
-        />
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/30"></div>
+        {
+            showVideo ? (
+                <video
+                    src={strapiImageUrl}
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    class="w-full h-full object-cover"
+                />
+            ) : (
+                <Image
+                    src={strapiImageUrl}
+                    alt={titulo || "Blu Ocean Club"}
+                    width={1920}
+                    height={1080}
+                    class="w-full h-full object-cover"
+                />
+            )
+        }
+        <!-- Overlay (Mobile: Gradient from bottom, Desktop: Full dark overlay) -->
+        {
+            hasContent && (
+                <>
+                    <div class="absolute inset-0 bg-black/20 hidden md:block" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
+                </>
+            )
+        }
     </div>
 
     <!-- Content -->
-    <div
-        class="relative z-10 w-full max-w-[1440px] px-6 text-center text-white mt-[-50px]"
-    >
-        {
-            subtitulo && (
-                <span class="block text-sm md:text-base font-medium tracking-[0.3em] uppercase mb-4 animate-fade-in-up font-[family-name:var(--font-blu-body)]">
-                    {subtitulo}
-                </span>
-            )
-        }
-        <h1
-            class="text-5xl md:text-8xl font-bold tracking-tight mb-6 animate-fade-in-up delay-100 font-[family-name:var(--font-blu-title)]"
-        >
-            {titulo}
-        </h1>
-        <div
-            class="text-lg md:text-xl font-light tracking-widest animate-fade-in-up delay-200 opacity-90 font-[family-name:var(--font-blu-body)] max-w-2xl mx-auto"
-        >
-            <Fragment set:html={descripcionHtml} />
-        </div>
+    {
+        hasContent && (
+            <div class="relative z-10 w-full max-w-[1440px] px-6 pb-16 md:pb-0 text-left md:text-center text-white md:mt-[-50px]">
+                {/* Mobile Layout: Bottom Left. Desktop Layout: Center Center */}
+                {subtitulo && (
+                    <span class="block text-lg md:text-base font-normal md:font-medium tracking-normal md:tracking-[0.3em] font-[family-name:var(--font-blu-body)] mb-0 md:mb-4">
+                        {subtitulo}
+                    </span>
+                )}
+                {titulo && (
+                    <h1 class="text-5xl md:text-8xl font-[family-name:var(--font-blu-title)] leading-[0.9] md:leading-tight mb-3 md:mb-6">
+                        {titulo}
+                    </h1>
+                )}
+                {descripcionHtml && (
+                    <div class="text-sm md:text-xl font-medium md:font-light tracking-wide md:tracking-widest opacity-90 font-[family-name:var(--font-blu-body)] max-w-2xl md:mx-auto">
+                        <Fragment set:html={descripcionHtml} />
+                    </div>
+                )}
+                {boton && (
+                    <div class="mt-6 md:mt-8 animate-fade-in-up delay-300">
+                        <Button botones={buttons} />
+                    </div>
+                )}
+            </div>
+        )
+    }
 
-        {
-            boton && (
-                <div class="mt-8 animate-fade-in-up delay-300">
-                    <Button botones={buttons} />
-                </div>
-            )
-        }
-    </div>
-
-    <!-- Scroll Down Icon -->
+    <!-- Scroll Down Icon (Hidden on Mobile) -->
     <div
-        class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce opacity-50"
+        class="hidden md:block absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce opacity-50"
     >
         <i class="fa-solid fa-chevron-down text-xl"></i>
     </div>
@@ -108,12 +136,5 @@ const buttons: Boton[] = boton ? [boton] : [];
     }
     .delay-300 {
         animation-delay: 0.3s;
-    }
-
-    select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m19 9-7 7-7-7'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1em;
     }
 </style>
