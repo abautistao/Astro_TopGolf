@@ -30,11 +30,11 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 ---
 
 <header
-    class="w-full absolute top-0 left-0 z-50 transition-all duration-300"
+    class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out bg-gradient-to-b from-[var(--surface-brand-primary)] to-transparent"
     id="blu-header"
 >
     <div
-        class="max-w-[1440px] mx-auto px-6 h-20 md:h-24 flex items-center justify-between"
+        class="max-w-[1440px] mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500"
     >
         <!-- Logo -->
         <a href="/" class="flex-shrink-0">
@@ -107,14 +107,23 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 <style>
     /* Transición suave para el encabezado al hacer scroll */
     .header-scrolled {
-        background-color: var(--surface-brand-primary);
-        height: 70px !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        position: fixed;
+        background: var(--surface-brand-primary) !important;
+        position: fixed !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: slideInDown 0.5s ease;
     }
 
     .header-scrolled > div {
         height: 70px !important;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+        }
+        to {
+            transform: translateY(0);
+        }
     }
 </style>
 
@@ -127,7 +136,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 
     // Manejador de scroll para el header
     window.addEventListener("scroll", () => {
-        if (window.scrollY > 80) {
+        if (window.scrollY > 100) {
             header?.classList.add("header-scrolled");
         } else {
             header?.classList.remove("header-scrolled");
