@@ -30,7 +30,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 ---
 
 <header
-    class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out bg-gradient-to-b from-[var(--surface-brand-primary)] to-transparent"
+    class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out bg-[var(--surface-brand-primary)] md:bg-gradient-to-b md:from-[var(--surface-brand-primary)] md:to-transparent"
     id="blu-header"
 >
     <div
@@ -71,7 +71,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 
             <button
                 id="mobile-menu-toggle"
-                class="md:hidden text-white p-2 focus:outline-none"
+                class="md:hidden text-white p-2 focus:outline-none z-[60]"
             >
                 <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
                 <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden"
@@ -83,7 +83,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
     <!-- Mobile Menu Overlay -->
     <div
         id="mobile-menu"
-        class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10"
+        class="hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
     >
         <nav class="flex flex-col space-y-8">
             {
@@ -96,10 +96,12 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
                     </a>
                 ))
             }
-            <Button
-                botones={buttons}
-                clase="w-full py-5 bg-[var(--neutral-background-subtle)] text-center text-xl"
-            />
+            <div class="pt-4">
+                <Button
+                    botones={buttons}
+                    clase="w-full py-5 bg-[var(--neutral-background-subtle)] text-center text-xl"
+                />
+            </div>
         </nav>
     </div>
 </header>
@@ -136,7 +138,8 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 
     // Manejador de scroll para el header
     window.addEventListener("scroll", () => {
-        if (window.scrollY > 100) {
+        // En mobile el fondo ya es sólido, pero aplicamos fixed y min-height igual
+        if (window.scrollY > 50) {
             header?.classList.add("header-scrolled");
         } else {
             header?.classList.remove("header-scrolled");
