@@ -1,25 +1,32 @@
 ---
 // src/components/blu/Component_1_Blu.astro
-import { getStrapiUrl } from "../../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 import { Image } from "astro:assets";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 
 interface Props {
     subtitulo?: string;
-    titulo?: string;
-    descripcion?: string;
-    imagen?: any;
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    boton: Boton | null;
 }
 
 const {
-    subtitulo = "Subtitulo",
+    subtitulo = "EL LUJO QUE FLOTA",
     titulo = "Blu Ocean Club",
-    descripcion = "The experience that floats in the Caribbean",
+    descripcion = "The experience that floats in the Caribbean. Momentos diseñados para celebrar la vida bajo el sol.",
     imagen,
+    boton = null,
 } = Astro.props;
 
 const strapiImageUrl =
     getStrapiUrl(imagen) ||
     "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
+const descripcionHtml = stringifyRichText(descripcion);
+
+const buttons: Boton[] = boton ? [boton] : [];
 ---
 
 <section
@@ -27,9 +34,11 @@ const strapiImageUrl =
 >
     <!-- Background Image -->
     <div class="absolute inset-0 z-0">
-        <img
+        <Image
             src={strapiImageUrl}
             alt={titulo}
+            width={1920}
+            height={1080}
             class="w-full h-full object-cover"
         />
         <!-- Overlay -->
@@ -42,80 +51,86 @@ const strapiImageUrl =
     >
         {
             subtitulo && (
-                <span class="block text-sm md:text-base font-medium tracking-[0.3em] uppercase mb-4 animate-fade-in-up">
+                <span class="block text-sm md:text-base font-medium tracking-[0.3em] uppercase mb-4 animate-fade-in-up font-[family-name:var(--font-blu-body)]">
                     {subtitulo}
                 </span>
             )
         }
         <h1
-            class="text-5xl md:text-8xl font-bold tracking-tight mb-6 animate-fade-in-up delay-100"
+            class="text-5xl md:text-8xl font-bold tracking-tight mb-6 animate-fade-in-up delay-100 font-[family-name:var(--font-blu-title)]"
         >
             {titulo}
         </h1>
-        <p
-            class="text-lg md:text-xl font-light tracking-widest animate-fade-in-up delay-200 opacity-90"
-        >
-            {descripcion}
-        </p>
-
-        <!-- Booking Widget -->
         <div
-            class="mt-16 max-w-4xl mx-auto bg-[#012b49]/90 backdrop-blur-md p-6 md:p-8 rounded-lg shadow-2xl animate-fade-in-up delay-300"
+            class="text-lg md:text-xl font-light tracking-widest animate-fade-in-up delay-200 opacity-90 font-[family-name:var(--font-blu-body)] max-w-2xl mx-auto"
         >
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Select Destino -->
-                <div class="flex flex-col text-left">
-                    <label
-                        class="text-[10px] font-bold tracking-widest uppercase mb-2 opacity-70"
-                        >Destino</label
-                    >
-                    <select
-                        class="bg-transparent border border-white/20 text-white p-3 rounded focus:outline-none focus:border-[#1d91b4] appearance-none cursor-pointer"
-                    >
-                        <option class="bg-[#012b49]">Cancún</option>
-                        <option class="bg-[#012b49]">Riviera Maya</option>
-                    </select>
-                </div>
-                <!-- Select Fecha -->
-                <div class="flex flex-col text-left">
-                    <label
-                        class="text-[10px] font-bold tracking-widest uppercase mb-2 opacity-70"
-                        >Fecha / Tipo</label
-                    >
-                    <select
-                        class="bg-transparent border border-white/20 text-white p-3 rounded focus:outline-none focus:border-[#1d91b4] appearance-none cursor-pointer"
-                    >
-                        <option class="bg-[#012b49]">Día de Playa</option>
-                        <option class="bg-[#012b49]">Sunset Party</option>
-                    </select>
-                </div>
-                <!-- Select Pasajeros -->
-                <div class="flex flex-col text-left">
-                    <label
-                        class="text-[10px] font-bold tracking-widest uppercase mb-2 opacity-70"
-                        >Pasajeros</label
-                    >
-                    <select
-                        class="bg-transparent border border-white/20 text-white p-3 rounded focus:outline-none focus:border-[#1d91b4] appearance-none cursor-pointer"
-                    >
-                        <option class="bg-[#012b49]">1 Pasajero</option>
-                        <option class="bg-[#012b49]">2 Pasajeros</option>
-                        <option class="bg-[#012b49]">3+ Pasajeros</option>
-                    </select>
-                </div>
-            </div>
-
-            <button
-                class="w-full mt-8 bg-[#1d91b4] hover:bg-[#1d91b4]/90 text-white font-bold py-4 rounded tracking-[0.2em] uppercase transition-all shadow-lg active:scale-[0.98]"
-            >
-                RESERVAR AHORA
-            </button>
-            <p
-                class="mt-4 text-[10px] font-medium tracking-widest opacity-50 uppercase italic text-center"
-            >
-                *Sujeto a disponibilidad y condiciones climáticas
-            </p>
+            <Fragment set:html={descripcionHtml} />
         </div>
+
+        {
+            boton && (
+                <div class="mt-8 animate-fade-in-up delay-300">
+                    <Button botones={buttons} />
+                </div>
+            )
+        }
+
+        {
+            /* Mantenemos el Booking Widget si es parte esencial del diseño original, pero adaptado */
+        }
+        {
+            !boton && (
+                <div class="mt-16 max-w-4xl mx-auto bg-[var(--surface-brand-primary)]/90 backdrop-blur-md p-6 md:p-8 rounded-lg shadow-2xl animate-fade-in-up delay-300 font-[family-name:var(--font-blu-body)]">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="flex flex-col text-left">
+                            <label class="text-[10px] font-bold tracking-widest uppercase mb-2 opacity-70">
+                                Destino
+                            </label>
+                            <select class="bg-transparent border border-white/20 text-white p-3 rounded focus:outline-none focus:border-[var(--neutral-background-subtle)] appearance-none cursor-pointer">
+                                <option class="bg-[#012b49]">Cancún</option>
+                                <option class="bg-[#012b49]">
+                                    Riviera Maya
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <label class="text-[10px] font-bold tracking-widest uppercase mb-2 opacity-70">
+                                Fecha / Tipo
+                            </label>
+                            <select class="bg-transparent border border-white/20 text-white p-3 rounded focus:outline-none focus:border-[var(--neutral-background-subtle)] appearance-none cursor-pointer">
+                                <option class="bg-[#012b49]">
+                                    Día de Playa
+                                </option>
+                                <option class="bg-[#012b49]">
+                                    Sunset Party
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <label class="text-[10px] font-bold tracking-widest uppercase mb-2 opacity-70">
+                                Pasajeros
+                            </label>
+                            <select class="bg-transparent border border-white/20 text-white p-3 rounded focus:outline-none focus:border-[#1d91b4] appearance-none cursor-pointer">
+                                <option class="bg-[#012b49]">1 Pasajero</option>
+                                <option class="bg-[#012b49]">
+                                    2 Pasajeros
+                                </option>
+                                <option class="bg-[#012b49]">
+                                    3+ Pasajeros
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="w-full mt-8 bg-[var(--neutral-background-subtle)] hover:bg-[var(--neutral-background-subtle)]/90 text-white font-bold py-4 rounded tracking-[0.2em] uppercase transition-all shadow-lg active:scale-[0.98]">
+                        RESERVAR AHORA
+                    </button>
+                    <p class="mt-4 text-[10px] font-medium tracking-widest opacity-50 uppercase italic text-center">
+                        *Sujeto a disponibilidad y condiciones climáticas
+                    </p>
+                </div>
+            )
+        }
     </div>
 
     <!-- Scroll Down Icon -->

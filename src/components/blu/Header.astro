@@ -1,10 +1,17 @@
 ---
 // src/components/blu/Header.astro
-import { getHeaderData, getStrapiUrl } from "../../lib/strapi";
+import { getHeaderData, getStrapiUrl, formatUrl } from "../../lib/strapi";
+import { Image } from "astro:assets";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface Props {
+    data?: any;
+}
 
 const { data } = Astro.props;
 const headerData = data || (await getHeaderData());
-const logoUrl = getStrapiUrl(headerData?.logo) || "/assets/blu-logo-white.png"; // Placeholder logic
+const logoUrl = getStrapiUrl(headerData?.logo) || "/assets/blu-logo-white.png";
 
 const links = headerData?.links || [
     { texto: "HOME", url: "/" },
@@ -13,10 +20,13 @@ const links = headerData?.links || [
     { texto: "CONTACTO", url: "/contacto" },
 ];
 
-const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
+const ctaButtonRaw = headerData?.Boton || {
+    id: 999,
     texto: "RESERVAR",
     url: "/reservar",
 };
+
+const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 ---
 
 <header
@@ -28,11 +38,17 @@ const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
     >
         <!-- Logo -->
         <a href="/" class="flex-shrink-0">
-            <img
-                src={logoUrl}
-                alt="Blu Ocean Club"
-                class="h-10 md:h-14 w-auto"
-            />
+            {
+                logoUrl && (
+                    <Image
+                        src={logoUrl}
+                        alt="Blu Ocean Club"
+                        width={150}
+                        height={60}
+                        class="h-10 md:h-14 w-auto object-contain"
+                    />
+                )
+            }
         </a>
 
         <!-- Desktop Navigation -->
@@ -41,7 +57,7 @@ const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
                 links.map((link: any) => (
                     <a
                         href={link.url}
-                        class="text-white font-medium text-xs tracking-[0.2em] hover:text-[#1d91b4] transition-colors uppercase"
+                        class="text-white font-medium text-xs tracking-[0.2em] hover:text-[var(--neutral-background-subtle)] transition-colors uppercase font-[family-name:var(--font-blu-body)]"
                     >
                         {link.texto}
                     </a>
@@ -51,12 +67,7 @@ const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
 
         <!-- CTA Button & Mobile Toggle -->
         <div class="flex items-center gap-4">
-            <a
-                href={ctaButton.url}
-                class="hidden md:block px-8 py-2.5 border border-white text-white font-bold text-xs tracking-[0.2em] hover:bg-white hover:text-[#012b49] transition-all uppercase"
-            >
-                {ctaButton.texto}
-            </a>
+            <Button botones={buttons} clase="hidden md:block" />
 
             <button
                 id="mobile-menu-toggle"
@@ -72,25 +83,23 @@ const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
     <!-- Mobile Menu Overlay -->
     <div
         id="mobile-menu"
-        class="hidden md:hidden fixed inset-0 bg-[#012b49] z-40 pt-28 px-10"
+        class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10"
     >
         <nav class="flex flex-col space-y-8">
             {
                 links.map((link: any) => (
                     <a
                         href={link.url}
-                        class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase"
+                        class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase font-[family-name:var(--font-blu-title)]"
                     >
                         {link.texto}
                     </a>
                 ))
             }
-            <a
-                href={ctaButton.url}
-                class="w-full py-5 bg-[#1d91b4] text-white text-center font-bold text-xl tracking-widest mt-8 uppercase"
-            >
-                {ctaButton.texto}
-            </a>
+            <Button
+                botones={buttons}
+                clase="w-full py-5 bg-[var(--neutral-background-subtle)] text-center text-xl"
+            />
         </nav>
     </div>
 </header>
@@ -98,7 +107,7 @@ const ctaButton = (headerData?.Botones2 && headerData.Botones2[0]) || {
 <style>
     /* Transición suave para el encabezado al hacer scroll */
     .header-scrolled {
-        background-color: #012b49;
+        background-color: var(--surface-brand-primary);
         height: 70px !important;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         position: fixed;

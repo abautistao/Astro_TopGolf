@@ -1,0 +1,34 @@
+---
+// src/components/blu/elements/Button.astro
+import { formatUrl } from "../../../lib/strapi";
+
+export interface Boton {
+    id: number;
+    texto: string;
+    url: string;
+    tipo?: string;
+}
+
+export interface Props {
+    botones: Boton[];
+    clase?: string;
+}
+
+const { botones, clase = "" } = Astro.props;
+---
+
+<div class={clase}>
+    {
+        botones &&
+            botones.map((boton) => (
+                <a
+                    href={formatUrl(boton.url)}
+                    class:list={[
+                        "inline-block px-8 py-2.5 border border-white text-white font-bold text-xs tracking-[0.2em] transition-all uppercase font-[family-name:var(--font-blu-body)]",
+                        "hover:bg-white hover:text-[var(--surface-brand-primary)]",
+                    ]}
+                    set:html={boton.texto}
+                />
+            ))
+    }
+</div>

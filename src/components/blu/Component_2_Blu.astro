@@ -11,18 +11,23 @@ const {
 } = Astro.props;
 ---
 
-<section class="w-full bg-[#eae7e2] py-20 md:py-32 px-6">
+<section
+    class="w-full bg-[var(--surface-brand-secondary)] py-20 md:py-32 px-6 font-[family-name:var(--font-blu-body)]"
+>
     <div class="max-w-4xl mx-auto text-center">
         <h2
-            class="text-4xl md:text-6xl font-bold text-[#012b49] leading-[1.1] mb-12 uppercase tracking-tight whitespace-pre-line"
+            class="text-4xl md:text-6xl font-bold text-[var(--surface-brand-primary)] leading-[1.1] mb-12 uppercase tracking-tight whitespace-pre-line font-[family-name:var(--font-blu-title)]"
         >
             {titulo}
         </h2>
 
-        <div class="w-20 h-1 bg-[#1d91b4] mx-auto mb-12"></div>
+        <div
+            class="w-20 h-1 bg-[var(--neutral-background-subtle)] mx-auto mb-12"
+        >
+        </div>
 
         <p
-            class="text-lg md:text-xl text-[#012b49]/80 font-medium leading-relaxed max-w-2xl mx-auto"
+            class="text-lg md:text-xl text-[var(--surface-brand-primary)]/80 font-medium leading-relaxed max-w-2xl mx-auto"
         >
             {descripcion}
         </p>

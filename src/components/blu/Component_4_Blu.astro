@@ -1,14 +1,15 @@
 ---
 // src/components/blu/Component_4_Blu.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 import Card from "./Component_5_Blu.astro";
 
 interface Props {
-    titulo?: string;
-    experiencias?: any[];
+    titulo: string;
+    experiencias: any[];
 }
 
 const {
-    titulo = "Experiencias que Fluyen",
+    titulo = "EXPERIENCIAS QUE FLUYEN",
     experiencias = [
         {
             titulo: "VIP de Segundo Nivel",
@@ -36,10 +37,12 @@ const {
 } = Astro.props;
 ---
 
-<section class="w-full bg-[#f9f9f9] py-20 md:py-32 px-6">
+<section
+    class="w-full bg-[var(--brand-interactive-base)] py-20 md:py-32 px-6 font-[family-name:var(--font-blu-body)]"
+>
     <div class="max-w-[1440px] mx-auto">
         <h2
-            class="text-4xl md:text-5xl font-bold text-[#012b49] text-center mb-20 uppercase tracking-tight"
+            class="text-4xl md:text-5xl font-bold text-[var(--surface-brand-primary)] text-center mb-20 uppercase tracking-tight font-[family-name:var(--font-blu-title)]"
         >
             {titulo}
         </h2>

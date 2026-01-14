@@ -1,0 +1,22 @@
+{
+    "collectionName": "components_blu_component_6_blus",
+    "info": {
+        "displayName": "Component 6 Blu",
+        "icon": "quote-right",
+        "description": "Testimonials carousel"
+    },
+    "options": {},
+    "attributes": {
+        "titulo": {
+            "type": "string"
+        },
+        "subtitulo": {
+            "type": "string"
+        },
+        "citas": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.testimonial"
+        }
+    }
+}
