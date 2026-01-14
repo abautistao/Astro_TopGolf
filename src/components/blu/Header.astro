@@ -30,11 +30,11 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 ---
 
 <header
-    class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out bg-[var(--surface-brand-primary)] md:bg-gradient-to-b md:from-[var(--surface-brand-primary)] md:to-transparent"
+    class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out"
     id="blu-header"
 >
     <div
-        class="max-w-[1440px] mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500"
+        class="max-w-[1440px] mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
     >
         <!-- Logo -->
         <a href="/" class="flex-shrink-0">
@@ -71,7 +71,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 
             <button
                 id="mobile-menu-toggle"
-                class="md:hidden text-white p-2 focus:outline-none z-[60]"
+                class="md:hidden text-white p-2 focus:outline-none"
             >
                 <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
                 <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden"
@@ -83,7 +83,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
     <!-- Mobile Menu Overlay -->
     <div
         id="mobile-menu"
-        class="hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
+        class="hidden md:hidden fixed inset-0 bg-[#012b49] z-40 pt-28 px-10 flex flex-col"
     >
         <nav class="flex flex-col space-y-8">
             {
@@ -99,7 +99,7 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
             <div class="pt-4">
                 <Button
                     botones={buttons}
-                    clase="w-full py-5 bg-[var(--neutral-background-subtle)] text-center text-xl"
+                    clase="w-full py-5 text-center text-xl"
                 />
             </div>
         </nav>
@@ -107,12 +107,36 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
 </header>
 
 <style>
+    /* Default Mobile Background: Solid Blue */
+    #blu-header {
+        background-color: var(--surface-brand-primary);
+    }
+
+    /* Desktop Background: Vertical Gradient */
+    @media (min-width: 768px) {
+        #blu-header {
+            background-color: transparent;
+            background-image: linear-gradient(
+                to bottom,
+                var(--surface-brand-primary),
+                transparent
+            );
+        }
+    }
+
     /* Transición suave para el encabezado al hacer scroll */
     .header-scrolled {
-        background: var(--surface-brand-primary) !important;
+        background-color: var(--surface-brand-primary) !important;
+        background-image: none !important; /* Kill gradient */
         position: fixed !important;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         animation: slideInDown 0.5s ease;
+    }
+
+    /* Estado cuando el menú móvil está abierto: Fondo sólido forzado */
+    .is-menu-open {
+        background-color: var(--surface-brand-primary) !important;
+        background-image: none !important;
     }
 
     .header-scrolled > div {
@@ -151,11 +175,13 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
         const isHidden = menu?.classList.contains("hidden");
         if (isHidden) {
             menu?.classList.remove("hidden");
+            header?.classList.add("is-menu-open"); // Force solid background
             menuIcon?.classList.add("hidden");
             closeIcon?.classList.remove("hidden");
             document.body.style.overflow = "hidden";
         } else {
             menu?.classList.add("hidden");
+            header?.classList.remove("is-menu-open"); // Remove solid background force
             menuIcon?.classList.remove("hidden");
             closeIcon?.classList.add("hidden");
             document.body.style.overflow = "";
