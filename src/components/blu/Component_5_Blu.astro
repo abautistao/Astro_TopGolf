@@ -1,117 +1,169 @@
 ---
 // src/components/blu/Component_5_Blu.astro
-import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 import { Image } from "astro:assets";
-import Button from "./elements/Button.astro";
-import type { Boton } from "./elements/Button.astro";
+
+interface GalleryItem {
+    id: number;
+    src: string;
+    titulo: string;
+    subtitulo?: string;
+    tipo: "image" | "video";
+}
 
 interface Props {
-    titulo: string;
-    imagen: any;
-    beneficios: string[];
-    precioOferta?: string;
-    precioRegular?: string;
-    tipo?: "navy" | "cyan";
-    boton?: Boton | null;
+    items?: GalleryItem[];
 }
 
 const {
-    titulo = "VIP de Segundo Nivel",
-    imagen = "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_exp_1.jpg",
-    beneficios = [
-        "Cabina o espacio privado en la primer planta",
-        "Cóctel de bienvenida por persona",
-        "Servicio de mesero personalizado",
+    items = [
+        {
+            id: 1,
+            src: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            titulo: "Blu: Experiencia\nde día a noche",
+            tipo: "video",
+        },
+        {
+            id: 2,
+            src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            titulo: "Experiencias\nBlu",
+            tipo: "video",
+        },
+        {
+            id: 3,
+            src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            titulo: "Celebraciones\nFrente al Mar",
+            tipo: "video",
+        },
+        {
+            id: 4,
+            src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            titulo: "Momentos\nDiseñados\npara\nCelebrar",
+            tipo: "video",
+        },
     ],
-    precioOferta = "$799 MXN",
-    precioRegular = "$1099 MXN",
-    tipo = "navy",
-    boton = { id: 1, texto: "RESERVAR AQUÍ", url: "#", tipo: "version_1" },
 } = Astro.props;
 
-const strapiImageUrl = getStrapiUrl(imagen) || imagen;
-const bgColor =
-    tipo === "navy"
-        ? "bg-[var(--surface-brand-primary)]"
-        : "bg-[var(--neutral-background-subtle)]";
-
-const buttons: Boton[] = boton ? [boton] : [];
+// Clases de posicionamiento para el diseño de mosaico 4-items
+const gridClasses = [
+    "col-span-2 row-span-1", // Item 1 (Ancho)
+    "col-span-1 row-span-2", // Item 2 (Alto)
+    "col-span-1 row-span-1", // Item 3 (Pequeño)
+    "col-span-1 row-span-1", // Item 4 (Pequeño)
+];
 ---
 
-<div class="flex flex-col bg-white overflow-hidden shadow-xl group h-full">
-    <!-- Image -->
-    <div class="relative h-64 overflow-hidden">
-        <Image
-            src={strapiImageUrl}
-            alt={titulo}
-            width={600}
-            height={400}
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div class={`absolute top-0 right-0 p-4 ${bgColor}`}>
-            <i class="fa-solid fa-chevron-right text-white"></i>
-        </div>
-    </div>
-
-    <!-- Content -->
-    <div class="p-8 flex-grow flex flex-col">
-        <h3
-            class="text-2xl font-bold text-[var(--surface-brand-primary)] mb-6 uppercase tracking-tight font-[family-name:var(--font-blu-title)]"
+<section
+    class="w-full bg-[var(--surface-brand-secondary)] py-12 md:py-24 px-6 overflow-hidden"
+>
+    <div class="max-w-[1440px] mx-auto">
+        <div
+            id="experience-mosaic"
+            class="grid grid-cols-2 md:grid-cols-3 gap-4 h-[700px] md:h-[800px]"
         >
-            {titulo}
-        </h3>
-
-        <ul class="space-y-3 mb-8 flex-grow">
             {
-                beneficios.map((beneficio) => (
-                    <li class="flex items-start gap-3 text-sm text-[var(--surface-brand-primary)]/70 leading-tight font-[family-name:var(--font-blu-body)]">
-                        <span class="text-[var(--neutral-background-subtle)] mt-1">
-                            •
-                        </span>
-                        {beneficio}
-                    </li>
+                items.map((item, index) => (
+                    <div
+                        class:list={[
+                            "relative overflow-hidden group rounded-3xl cursor-pointer mosaic-item",
+                            gridClasses[index] || "col-span-1 row-span-1",
+                            index === 0 ? "hidden md:block" : "", // Opcional: Ocultar o reordenar en móvil si es necesario
+                        ]}
+                        data-index={index}
+                    >
+                        {/* Media Content */}
+                        {item.tipo === "video" ? (
+                            <video
+                                src={item.src}
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                        ) : (
+                            <Image
+                                src={item.src}
+                                alt={item.titulo}
+                                width={index === 0 ? 1000 : 500}
+                                height={index === 1 ? 1000 : 500}
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                        )}
+
+                        {/* Overlay Gradient always present on mobile active, active on hover on desktop */}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center text-center p-6 mosaic-overlay">
+                            <h3 class="text-white text-2xl md:text-3xl font-[family-name:var(--font-blu-title)] leading-tight whitespace-pre-line transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                {item.titulo}
+                            </h3>
+                        </div>
+
+                        {/* Mobile specific active state helper (shows via script) */}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-1000 md:hidden mobile-active-overlay" />
+                    </div>
                 ))
             }
-        </ul>
 
-        <!-- Prices -->
-        <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6 mb-8">
-            <div class="text-center">
-                <p
-                    class="text-[10px] uppercase tracking-widest text-[var(--neutral-background-subtle)] font-bold mb-1 font-[family-name:var(--font-blu-body)]"
-                >
-                    Precio Oferta
-                </p>
-                <p
-                    class="text-xl font-bold text-[var(--neutral-background-subtle)] font-[family-name:var(--font-blu-body)]"
-                >
-                    {precioOferta}
-                </p>
-            </div>
-            <div class="text-center border-l border-gray-100">
-                <p
-                    class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 font-[family-name:var(--font-blu-body)]"
-                >
-                    Precio Regular
-                </p>
-                <p
-                    class="text-xl font-bold text-gray-400 line-through font-[family-name:var(--font-blu-body)]"
-                >
-                    {precioRegular}
-                </p>
-            </div>
+            {
+                /* Versión Móvil: Si el item 0 se ocultó, podemos añadir una versión optimizada aquí o dejar que el grid fluya */
+            }
+            {
+                items[0] && (
+                    <div class="md:hidden col-span-2 row-span-1 relative overflow-hidden rounded-3xl mosaic-item">
+                        <video
+                            src={items[0].src}
+                            autoplay
+                            loop
+                            muted
+                            playsinline
+                            class="w-full h-full object-cover"
+                        />
+                        <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-500 flex items-center justify-center text-center p-6 mobile-active-overlay">
+                            <h3 class="text-white text-xl font-[family-name:var(--font-blu-title)] whitespace-pre-line">
+                                {items[0].titulo}
+                            </h3>
+                        </div>
+                    </div>
+                )
+            }
         </div>
-
-        <!-- Button -->
-        <Button botones={buttons} clase="w-full" />
     </div>
-</div>
+</section>
 
 <style>
-    /* Estilos para el botón dentro del card (sobreescribiendo si es necesario) */
-    :global(.w-full > a) {
-        display: block !important;
-        width: 100% !important;
-        text-align: center !important;
+    /* Estilos para el estado activo en móvil */
+    :global(.mosaic-item.is-active .mobile-active-overlay) {
+        opacity: 1 !important;
     }
+
+    :global(.mosaic-item.is-active h3) {
+        transform: translateY(0) !important;
+        opacity: 1 !important;
+    }
+
+    /* En escritorio el hover normal de Tailwind maneja todo */
 </style>
+
+<script>
+    function initMosaic() {
+        if (window.innerWidth >= 768) return;
+
+        const items = document.querySelectorAll(".mosaic-item");
+        let currentIndex = 0;
+
+        function rotateActive() {
+            items.forEach((item) => item.classList.remove("is-active"));
+
+            // Elegir uno aleatorio o secuencial
+            currentIndex = Math.floor(Math.random() * items.length);
+            items[currentIndex].classList.add("is-active");
+
+            // Cambiar cada 3 segundos
+            setTimeout(rotateActive, 3000);
+        }
+
+        rotateActive();
+    }
+
+    // Ejecutar al cargar y en cambios de tamaño
+    initMosaic();
+</script>
