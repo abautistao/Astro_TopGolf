@@ -1,57 +1,30 @@
 ---
 // src/components/blu/Component_3_Blu.astro
-import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
-import { Image } from "astro:assets";
-
-interface GalleryItem {
-    src: string;
-    text: string;
-    class?: string;
-    width?: number;
-    height?: number;
-}
 
 interface Props {
-    galeria?: GalleryItem[];
+    subtitulo?: string;
+    titulo?: string;
 }
 
-const {
-    galeria = [
-        { src: "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_1.jpg", text: "Momentos Inolvidables", class: "col-span-2 row-span-2", width: 800, height: 800 },
-        { src: "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_2.jpg", text: "Celebración Bajo el Sol", class: "col-span-1 row-span-1", width: 400, height: 400 },
-        { src: "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_3.jpg", text: "Pura Vida", class: "col-span-1 row-span-2", width: 400, height: 800 },
-        { src: "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_4.jpg", text: "Vibra Caribeña", class: "col-span-1 row-span-1", width: 400, height: 400 },
-    ],
-} = Astro.props;
+const { subtitulo = "La Experiencia que", titulo = "Flota en el Caribe" } =
+    Astro.props;
 ---
 
-<section class="w-full bg-[var(--surface-brand-secondary)] pb-20 md:pb-32 px-6">
-    <div class="max-w-[1440px] mx-auto">
-        <div class="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-4 h-[600px] md:h-[800px]">
-            {
-                galeria.map((img, index) => (
-                    <div
-                        class={`relative overflow-hidden group cursor-pointer ${img.class}`}
-                    >
-                        <Image
-                            src={img.src}
-                            alt={img.text}
-                            width={img.width || 400}
-                            height={img.height || 400}
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <!-- Overlay Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                        <!-- Text Overlay -->
-                        <div class="absolute bottom-0 left-0 p-6 md:p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                            <p class="text-white font-bold text-lg md:text-2xl leading-tight uppercase tracking-tight font-[family-name:var(--font-blu-title)]">
-                                {img.text}
-                            </p>
-                        </div>
-                    </div>
-                ))
-            }
-        </div>
+<section class="w-full py-8 md:py-8 px-6 relative overflow-hidden">
+    <div class="max-w-[1440px] mx-auto text-center relative z-10">
+        {
+            subtitulo && (
+                <span class="block text-2xl md:text-4xl font-[family-name:var(--font-blu-body)] text-[var(--surface-brand-primary)] mb-1 tracking-tight">
+                    {subtitulo}
+                </span>
+            )
+        }
+        {
+            titulo && (
+                <h2 class="text-5xl md:text-8xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-[1] md:leading-tight">
+                    {titulo}
+                </h2>
+            )
+        }
     </div>
 </section>

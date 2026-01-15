@@ -1,7 +1,5 @@
 ---
 // src/components/blu/Component_2_Blu.astro
-import { Image } from "astro:assets";
-import { getStrapiUrl } from "../../lib/strapi";
 import BookingWidgetBlu from "./elements/BookingWidgetBlu.astro";
 
 interface Props {
@@ -9,115 +7,14 @@ interface Props {
     descripcion?: string;
 }
 
-const {
-    titulo = "La Experiencia que\nFLOTA CON EL CARIBE",
-    descripcion = "Bienvenido al primer club de playa que redefine la diversión en alta mar. Un espacio diseñado para quienes buscan exclusividad, buena música y momentos inolvidables bajo el sol del Caribe. Aquí, cada ola cuenta una historia y cada brindis es una celebración de la vida.",
-} = Astro.props;
+const { titulo, descripcion } = Astro.props;
 ---
 
-<section
-    class="w-full bg-[var(--surface-brand-secondary)] pb-20 md:pb-32 px-6 font-[family-name:var(--font-blu-body)] relative"
->
-    <!-- Background Texture/Image (Optional: Replace with actual sand texture if available) -->
-    <div
-        class="absolute inset-0 opacity-20 pointer-events-none bg-[url('/assets/sand-texture.png')] mix-blend-multiply"
-    >
-    </div>
-
+<section class="w-full px-6 font-[family-name:var(--font-blu-body)] relative">
     <div class="max-w-[1440px] mx-auto relative z-10">
-        <!-- 1. Booking Widget (Floating Overlap) -->
-        {
-            /* Este widget tiene margen negativo para "subir" sobre el componente anterior (Hero) */
-        }
+        <!-- Booking Widget (Floating Overlap) -->
         <BookingWidgetBlu
-            className="relative z-20 -mt-20 md:-mt-24 mb-20 md:mb-32 max-w-6xl mx-auto"
+            className="relative z-20 mt-10 md:mt-24 mb-20 max-w-6xl mx-auto"
         />
-
-        <!-- 2. Intro Text -->
-        <div class="max-w-4xl mx-auto text-center mb-24 md:mb-32">
-            <h2
-                class="text-4xl md:text-6xl font-bold text-[var(--surface-brand-primary)] leading-[1.1] mb-8 uppercase tracking-tight whitespace-pre-line font-[family-name:var(--font-blu-title)]"
-            >
-                {titulo}
-            </h2>
-
-            <p
-                class="text-sm md:text-lg text-[var(--surface-brand-primary)]/80 font-medium leading-relaxed max-w-3xl mx-auto"
-            >
-                {descripcion}
-            </p>
-        </div>
-
-        <!-- 3. Integrated Gallery -->
-        <div
-            class="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-4 h-[500px] md:h-[700px]"
-        >
-            {
-                /* Aquí iría el map de la galería. Por ahora uso placeholders estáticos similares a la imagen */
-            }
-            <div
-                class="col-span-2 row-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden group rounded-2xl"
-            >
-                <Image
-                    src="https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_1.jpg"
-                    alt="DJ"
-                    width={800}
-                    height={400}
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div class="absolute bottom-6 left-6 text-white text-left">
-                    <h3
-                        class="font-[family-name:var(--font-blu-title)] text-2xl md:text-3xl leading-none"
-                    >
-                        Blu: Experiencia<br />de día a noche
-                    </h3>
-                </div>
-            </div>
-
-            <div
-                class="col-span-1 row-span-1 md:col-span-1 md:row-span-2 relative overflow-hidden group rounded-2xl"
-            >
-                <Image
-                    src="https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_2.jpg"
-                    alt="Drinks"
-                    width={400}
-                    height={800}
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-            </div>
-
-            <div
-                class="col-span-1 row-span-1 md:col-span-1 md:row-span-1 relative overflow-hidden group rounded-2xl"
-            >
-                <Image
-                    src="https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_3.jpg"
-                    alt="Party"
-                    width={400}
-                    height={400}
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-            </div>
-
-            <div
-                class="col-span-2 row-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden group rounded-2xl"
-            >
-                <Image
-                    src="https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_gallery_4.jpg"
-                    alt="Friends"
-                    width={800}
-                    height={400}
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div
-                    class="absolute bottom-6 left-6 text-white text-left text-shadow"
-                >
-                    <h3
-                        class="font-[family-name:var(--font-blu-title)] text-2xl md:text-3xl leading-none"
-                    >
-                        Momentos<br />Diseñados<br />para<br />Celebrar
-                    </h3>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
