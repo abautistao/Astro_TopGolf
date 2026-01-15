@@ -1,0 +1,284 @@
+---
+// src/components/blu/Component_7_Blu.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+interface Testimonio {
+    id: number;
+    cita: string;
+    nombre: string;
+    fecha: string;
+    avatar: any;
+}
+
+interface Props {
+    fondoDesktop?: any;
+    fondoMovil?: any;
+    testimonios?: Testimonio[];
+}
+
+const {
+    fondoDesktop,
+    fondoMovil,
+    testimonios = [
+        {
+            id: 1,
+            cita: "Dos experiencias distintas, un mismo nivel de vibra, atención y magia frente al mar. Cada una tiene su esencia, pero ambas se sienten inolvidables",
+            nombre: "Alondra Campos",
+            fecha: "Hace 3 meses",
+            avatar: "https://placehold.co/100x100?text=AC",
+        },
+        {
+            id: 2,
+            cita: "La mejor experiencia de mi vida. El servicio es impecable y las vistas son simplemente espectaculares. Definitivamente regresaré pronto.",
+            nombre: "Carlos Rivera",
+            fecha: "Hace 1 mes",
+            avatar: "https://placehold.co/100x100?text=CR",
+        },
+        {
+            id: 3,
+            cita: "Un lugar mágico para relajarse y disfrutar. La comida y las bebidas son de primera calidad.",
+            nombre: "Sofía Martínez",
+            fecha: "Hace 2 semanas",
+            avatar: "https://placehold.co/100x100?text=SM",
+        },
+    ],
+} = Astro.props;
+
+const desktopUrl =
+    getStrapiUrl(fondoDesktop) ||
+    "https://placehold.co/1920x1080/e2e8f0/1e293b?text=Fondo+Desktop";
+const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
+---
+
+<section class="relative w-full overflow-hidden bg-[#EBE7E0] py-12 md:py-24">
+    <div
+        class="max-w-[1440px] mx-auto px-4 md:px-6 relative flex flex-col md:block items-center"
+    >
+        {/* --- LEFT: IMAGE CONTAINER --- */}
+        <div
+            class="w-full md:w-[70%] h-[300px] md:h-[600px] relative rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl z-0"
+        >
+            <Image
+                src={desktopUrl}
+                alt="Lifestyle Blu"
+                width={1200}
+                height={800}
+                class="w-full h-full object-cover"
+            />
+            {/* Overlay Gradient for depth */}
+            <div class="absolute inset-0 bg-black/10 hidden md:block"></div>
+        </div>
+
+        {/* --- RIGHT: OVERLAPPING CARD --- */}
+        <div
+            class="w-full md:w-[45%] lg:w-[40%] relative md:absolute md:right-10 lg:right-20 md:top-1/2 md:-translate-y-1/2 z-10 mt-[-3rem] md:mt-0 px-2 md:px-0"
+        >
+            {/* Carousel Card */}
+            <div
+                id="testimonial-carousel"
+                class="w-full overflow-hidden relative rounded-[2rem] shadow-2xl bg-white border border-white/60 p-2"
+            >
+                {/* Inner Quote Box Style (Light Blue Background) */}
+                <div
+                    class="bg-[#E4ECF2] rounded-[1.5rem] p-8 md:p-12 relative h-[300px] md:h-[350px] flex items-center"
+                >
+                    <div
+                        class="flex transition-transform duration-500 ease-out w-full"
+                        id="carousel-track"
+                    >
+                        {
+                            testimonios.map((testimonio, index) => (
+                                <div class="w-full flex-shrink-0 flex flex-col items-center justify-center text-center px-4">
+                                    {/* Quote Icon */}
+                                    <div class="mb-4 text-[#94a3b8] self-start">
+                                        <i class="fa-solid fa-quote-left text-3xl md:text-4xl" />
+                                    </div>
+
+                                    {/* Cita */}
+                                    <p class="text-sm md:text-base text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] leading-relaxed mb-6 italic">
+                                        "{testimonio.cita}"
+                                    </p>
+
+                                    {/* Quote Right Icon */}
+                                    <div class="mb-2 text-[#94a3b8] self-end">
+                                        <i class="fa-solid fa-quote-right text-3xl md:text-4xl" />
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                {/* Footer: User Info & Controls (White Background) */}
+                <div class="bg-white px-6 pb-6 pt-4 flex flex-col items-center">
+                    <div class="relative w-full h-16 overflow-hidden mb-4">
+                        {
+                            /* We sync this manually, or just render the active one. For simplicity in vanilla JS without re-rendering, we will put ALL users here and slide them too or just fade them. 
+                             
+                             SIMPLIFICATION: To keep the vanilla JS slider simple, we will render the active user info inside the loop above? NO, the design has user info on white bg.
+                             
+                             Strategy: Duplicate the track for the user info section.
+                         */
+                        }
+                        <div
+                            id="user-info-track"
+                            class="flex transition-transform duration-500 ease-out w-full"
+                        >
+                            {
+                                testimonios.map((testimonio) => (
+                                    <div class="w-full flex-shrink-0 flex items-center justify-center gap-4">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                                            <Image
+                                                src={
+                                                    getStrapiUrl(
+                                                        testimonio.avatar,
+                                                    ) || testimonio.avatar
+                                                }
+                                                alt={testimonio.nombre}
+                                                width={48}
+                                                height={48}
+                                                class="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div class="text-left">
+                                            <h4 class="text-lg font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]">
+                                                {testimonio.nombre}
+                                            </h4>
+                                            <span class="text-xs text-[var(--surface-brand-primary)]/60 font-[family-name:var(--font-blu-body)]">
+                                                {testimonio.fecha}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+
+                    {/* Navigation Dots */}
+                    <div class="flex justify-center gap-2">
+                        {
+                            testimonios.map((_, index) => (
+                                <button
+                                    class={`w-2 h-2 rounded-full transition-all duration-300 carousel-dot ${index === 0 ? "bg-[#1d91b4] w-6" : "bg-[#1d91b4]/40 hover:bg-[#1d91b4]/70"}`}
+                                    data-index={index}
+                                    aria-label={`Ir al testimonio ${index + 1}`}
+                                />
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function initTestimonialCarousel() {
+        const track = document.getElementById("carousel-track");
+        const dots = document.querySelectorAll(".carousel-dot");
+
+        if (!track || dots.length === 0) return;
+
+        let currentIndex = 0;
+        const totalSlides = dots.length;
+        let autoplayInterval: number | undefined;
+
+        const userTrack = document.getElementById("user-info-track");
+
+        function updateCarousel(index: number) {
+            // Move Quote track
+            const translateX = -(index * 100);
+            track!.style.transform = `translateX(${translateX}%)`;
+
+            // Move User Info track (Sync)
+            if (userTrack) {
+                userTrack.style.transform = `translateX(${translateX}%)`;
+            }
+
+            // Update dots
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove("bg-[#1d91b4]/40", "w-2");
+                    dot.classList.add("bg-[#1d91b4]", "w-6");
+                } else {
+                    dot.classList.add("bg-[#1d91b4]/40", "w-2");
+                    dot.classList.remove("bg-[#1d91b4]", "w-6");
+                }
+            });
+
+            currentIndex = index;
+        }
+
+        function startAutoplay() {
+            stopAutoplay(); // Prevent multiple intervals
+            autoplayInterval = setInterval(() => {
+                const nextIndex = (currentIndex + 1) % totalSlides;
+                updateCarousel(nextIndex);
+            }, 6000) as unknown as number;
+        }
+
+        function stopAutoplay() {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+            }
+        }
+
+        // Add click events to dots
+        dots.forEach((dot) => {
+            dot.addEventListener("click", (e) => {
+                stopAutoplay(); // Stop on interaction
+                const index = parseInt(
+                    (e.target as HTMLElement).getAttribute("data-index") || "0",
+                );
+                updateCarousel(index);
+                startAutoplay(); // Restart after
+            });
+        });
+
+        // Touch Swipe Support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener(
+            "touchstart",
+            (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                stopAutoplay();
+            },
+            { passive: true },
+        );
+
+        track.addEventListener(
+            "touchend",
+            (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                startAutoplay();
+            },
+            { passive: true },
+        );
+
+        function handleSwipe() {
+            const threshold = 50; // min distance
+            if (touchEndX < touchStartX - threshold) {
+                // Swipe Left (Next)
+                const nextIndex = (currentIndex + 1) % totalSlides;
+                updateCarousel(nextIndex);
+            }
+            if (touchEndX > touchStartX + threshold) {
+                // Swipe Right (Prev)
+                const prevIndex =
+                    (currentIndex - 1 + totalSlides) % totalSlides;
+                updateCarousel(prevIndex);
+            }
+        }
+
+        // Start initial auto-play
+        startAutoplay();
+    }
+
+    // Run on load and view transitions
+    initTestimonialCarousel();
+    document.addEventListener("astro:page-load", initTestimonialCarousel);
+</script>
