@@ -1,13 +1,14 @@
 ---
 // src/components/blu/Component_5_Blu.astro
 import { Image } from "astro:assets";
+import { getStrapiUrl } from "../../lib/strapi.js";
 
 interface GalleryItem {
     id: number;
-    src: string;
     titulo: string;
-    subtitulo?: string;
-    tipo: "image" | "video";
+    tipo: "imagen" | "video";
+    media?: any;
+    src?: string; // Mantener para compatibilidad con mock data
 }
 
 interface Props {
@@ -59,59 +60,82 @@ const gridClasses = [
             class="grid grid-cols-2 md:grid-cols-3 gap-4 h-[700px] md:h-[800px]"
         >
             {
-                items.map((item, index) => (
-                    <div
-                        class:list={[
-                            "relative overflow-hidden group rounded-xl cursor-pointer mosaic-item",
-                            gridClasses[index] || "col-span-1 row-span-1",
-                            index === 0 ? "hidden md:block" : "", // Opcional: Ocultar o reordenar en móvil si es necesario
-                        ]}
-                        data-index={index}
-                    >
-                        {/* Media Content */}
-                        {item.tipo === "video" ? (
+                items.map((item, index) => {
+                    const mediaUrl = item.media
+                        ? getStrapiUrl(item.media)
+                        : item.src;
+                    const isVideo = item.tipo === "video";
+
+                    return (
+                        <div
+                            class:list={[
+                                "relative overflow-hidden group rounded-xl cursor-pointer mosaic-item",
+                                gridClasses[index] || "col-span-1 row-span-1",
+                                index === 0 ? "hidden md:block" : "",
+                            ]}
+                            data-index={index}
+                        >
+                            {/* Media Content */}
+                            {isVideo ? (
+                                <video
+                                    src={mediaUrl}
+                                    autoplay
+                                    loop
+                                    muted
+                                    playsinline
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                            ) : (
+                                <Image
+                                    src={mediaUrl}
+                                    alt={item.titulo}
+                                    width={index === 0 ? 1000 : 500}
+                                    height={index === 1 ? 1000 : 500}
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                            )}
+
+                            {/* Overlay */}
+                            <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-start text-left p-10 mosaic-overlay">
+                                <h3 class="text-white text-2xl md:text-5xl font-[family-name:var(--font-blu-title)] leading-tight whitespace-pre-line transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                    {item.titulo}
+                                </h3>
+                            </div>
+                        </div>
+                    );
+                })
+            }
+
+            {/* Versión Móvil: Item 0 */}
+            {
+                items[0] && (
+                    <div class="md:hidden col-span-2 row-span-1 relative overflow-hidden rounded-xl mosaic-item">
+                        {items[0].tipo === "video" ? (
                             <video
-                                src={item.src}
+                                src={
+                                    items[0].media
+                                        ? getStrapiUrl(items[0].media)
+                                        : items[0].src
+                                }
                                 autoplay
                                 loop
                                 muted
                                 playsinline
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                class="w-full h-full object-cover"
                             />
                         ) : (
                             <Image
-                                src={item.src}
-                                alt={item.titulo}
-                                width={index === 0 ? 1000 : 500}
-                                height={index === 1 ? 1000 : 500}
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                src={
+                                    items[0].media
+                                        ? getStrapiUrl(items[0].media)
+                                        : items[0].src
+                                }
+                                alt={items[0].titulo}
+                                width={800}
+                                height={600}
+                                class="w-full h-full object-cover"
                             />
                         )}
-
-                        {/* Overlay: Handles both Desktop Hover and Mobile Active state */}
-                        <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-start text-left p-10 mosaic-overlay">
-                            <h3 class="text-white text-2xl md:text-5xl font-[family-name:var(--font-blu-title)] leading-tight whitespace-pre-line transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                {item.titulo}
-                            </h3>
-                        </div>
-                    </div>
-                ))
-            }
-
-            {
-                /* Versión Móvil: Elemento extra para el item 0 si está oculto en el grid principal */
-            }
-            {
-                items[0] && (
-                    <div class="md:hidden col-span-2 row-span-1 relative overflow-hidden rounded-xl mosaic-item">
-                        <video
-                            src={items[0].src}
-                            autoplay
-                            loop
-                            muted
-                            playsinline
-                            class="w-full h-full object-cover"
-                        />
                         <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/70 opacity-0 transition-opacity duration-500 flex items-center justify-start text-left p-10 mosaic-overlay">
                             <h3 class="text-white text-2xl font-[family-name:var(--font-blu-title)] whitespace-pre-line transform translate-y-4 transition-transform duration-500">
                                 {items[0].titulo}
