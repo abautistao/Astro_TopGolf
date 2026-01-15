@@ -2,6 +2,8 @@
 // src/components/toca/Footer.astro
 import { getStrapiUrl } from '../../lib/strapi';
 import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro'; // Aseguramos importar el tipo si es necesario
+
 const defaultData = {
     title: "ARE YOU GAME?",
     locations_title: "LOCATIONS",
@@ -60,9 +62,9 @@ const newsletterButton: Boton[] = [{
 }];
 ---
 
-<footer class="w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col">
+<footer class="trigger-anim-footer w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col">
 
-    <div class="bg-[var(--surface-brand-secondary)] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center">
+    <div class="footer-part-1 bg-[var(--surface-brand-secondary)] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center">
         <div class="max-w-[1920px] mx-auto w-full flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-12 items-start lg:items-center">
 
             <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
@@ -142,7 +144,7 @@ const newsletterButton: Boton[] = [{
         </div>
     </div>
 
-    <div class="bg-[var(--brand-interactive-base)] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
+    <div class="footer-part-2 bg-[var(--brand-interactive-base)] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
         <div class="max-w-[1920px] mx-auto w-full flex flex-col justify-center items-center gap-4 text-sm font-bold">
 
             <div class="flex lg:hidden items-center gap-6">
@@ -182,3 +184,55 @@ const newsletterButton: Boton[] = [{
         </div>
     </div>
 </footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // 10% visible para que arranque (ya que el footer está al final)
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-footer');
+        targets.forEach(target => observer.observe(target));
+    });
+</script>
+
+<style>
+    /* CAMBIO 5: Lógica de animación */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Ocultamos ambas partes por defecto */
+    .footer-part-1, .footer-part-2 {
+        opacity: 0;
+    }
+
+    /* Animamos la parte 1 cuando el footer es visible */
+    :global(.trigger-anim-footer.is-visible) .footer-part-1 {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    /* Animamos la parte 2 con un pequeño retraso */
+    :global(.trigger-anim-footer.is-visible) .footer-part-2 {
+        animation: fadeInUp 0.8s ease-out forwards;
+        animation-delay: 0.2s; /* Se carga un poco después de la parte 1 */
+    }
+</style>

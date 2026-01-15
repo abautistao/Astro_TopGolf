@@ -14,9 +14,9 @@ const { imagenes } = Astro.props;
 const imagesList = imagenes || [];
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-8 lg:py-16">
-    <div class="max-w-[1400px] mx-auto px-4 md:px-8 relative group">
-        <!-- Swiper Container -->
+<section class="trigger-anim-slider w-full bg-[var(--surface-brand-primary)] py-8 lg:py-16">
+
+    <div class="anim-fade max-w-[1400px] mx-auto px-4 md:px-8 relative group">
         <div
             class="swiper mySwiper w-full rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]"
         >
@@ -39,7 +39,6 @@ const imagesList = imagenes || [];
                                           class="w-full h-full object-cover"
                                           loading="eager"
                                       />
-                                      {/* Optional overlay if needed for text visibility, though this is just an image slider */}
                                   </div>
                               );
                           })
@@ -55,11 +54,9 @@ const imagesList = imagenes || [];
                 }
             </div>
 
-            <!-- Pagination -->
             <div class="swiper-pagination !bottom-6"></div>
         </div>
 
-        <!-- Custom Navigation Arrows -->
         <div
             class="swiper-button-prev !hidden md:!flex !text-white hover:scale-110 transition-transform after:!text-2xl !w-12 !h-12 bg-black/20 hover:bg-black/40 rounded-full backdrop-blur-sm justify-center items-center"
         >
@@ -75,9 +72,14 @@ const imagesList = imagenes || [];
     import Swiper from "swiper";
     import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
-    // Function to init swiper to handle both initial load and view transitions if used
+    // CAMBIO 3: Unificamos la inicialización (Slider + Observer)
+    const initAll = () => {
+        initSlider();
+        initObserver();
+    };
+
+    // Lógica del Swiper
     const initSlider = () => {
-        // Destroy existing instance if any to prevent duplicates on re-renders
         const mw = document.querySelector(".mySwiper") as any;
         if (mw && mw.swiper) mw.swiper.destroy();
 
@@ -103,11 +105,30 @@ const imagesList = imagenes || [];
         });
     };
 
-    // Run on load
-    initSlider();
+    // CAMBIO 4: Lógica de la animación (Intersection Observer)
+    const initObserver = () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Se activa cuando el 20% es visible
+        };
 
-    // Run on Astro view transitions
-    document.addEventListener("astro:page-load", initSlider);
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-slider');
+        targets.forEach(target => observer.observe(target));
+    };
+
+    // Ejecutar en carga inicial y navegación de Astro
+    document.addEventListener("DOMContentLoaded", initAll);
+    document.addEventListener("astro:page-load", initAll);
 </script>
 
 <style>
@@ -122,17 +143,35 @@ const imagesList = imagenes || [];
     }
 
     :global(.swiper-pagination-bullet-active) {
-        background: var(
-            --brand-interactive-base
-        ); /* Brand color matching screenshot (teal/green) */
+        background: var(--brand-interactive-base);
         opacity: 1;
         transform: scale(1.2);
     }
 
-    /* Move arrows outside or adjust styles */
     .swiper-button-prev,
     .swiper-button-next {
-        /* Subtle override used in inline classes, but ensuring text color persists */
         color: var(--accent-feedback-strong);
+    }
+
+    /* --- CAMBIO 5: ESTILOS DE ANIMACIÓN FADEINUP --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px); /* Empieza desplazado hacia abajo */
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);    /* Termina en su posición original */
+        }
+    }
+
+    .anim-fade {
+        opacity: 0; /* Oculto inicialmente */
+    }
+
+    /* Solo se anima cuando JS agrega la clase .is-visible */
+    :global(.trigger-anim-slider.is-visible) .anim-fade {
+        animation: fadeInUp 2.5s ease-out forwards; /* Animación lenta y suave */
     }
 </style>

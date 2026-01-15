@@ -34,8 +34,9 @@ const boton_pricing: Boton[] = button
     }];
 ---
 
-<section class={`w-full bg-[var(--surface-brand-primary)] ${claseSection}`}>
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col items-center justify-center">
+<section class={`trigger-anim-pricing w-full bg-[var(--surface-brand-primary)] ${claseSection}`}>
+
+    <div class="anim-content max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col items-center justify-center">
 
         {titulo_seccion && (
             <h2 class="text-center font-bold text-2xl lg:text-7xl uppercase tracking-tighter text-[var(--accent-feedback-strong)] mb-8 lg:mb-10 title-extended">
@@ -73,8 +74,29 @@ const boton_pricing: Boton[] = button
     </div>
 </section>
 
-<style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Se activa cuando el 20% del elemento es visible
+        };
 
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-pricing');
+        targets.forEach(target => observer.observe(target));
+    });
+</script>
+
+<style>
     .strapi-rich-text :global(p) {
         margin-bottom: 0;
         color: inherit;
@@ -82,5 +104,29 @@ const boton_pricing: Boton[] = button
     .strapi-rich-text :global(strong) {
         font-weight: bold;
         color: inherit;
+    }
+
+    /* --- CAMBIO 4: LÓGICA CSS DE ANIMACIÓN --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-content {
+        opacity: 0; /* Oculto por defecto */
+    }
+
+    /* Solo cuando el padre (.trigger-anim-pricing) tenga la clase .is-visible
+       se ejecuta la animación en el hijo (.anim-content)
+    */
+    :global(.trigger-anim-pricing.is-visible) .anim-content {
+        animation: fadeInUp 0.8s ease-out forwards;
     }
 </style>

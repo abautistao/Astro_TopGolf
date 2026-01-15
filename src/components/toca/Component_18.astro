@@ -16,7 +16,7 @@ const fallbackItems = [
             id: 1,
             texto: "BOOK NOW",
             url: "#",
-            tipo: "version_1" // Assuming [var(--accent-feedback-strong)]/light button
+            tipo: "version_1"
         }]
     },
     {
@@ -46,10 +46,10 @@ const { items = [] } = Astro.props;
 const dataToShow = items.length > 0 ? items : fallbackItems;
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
-    <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+<section class="trigger-anim-18 w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
 
-        <!-- Swiper Container -->
+    <div class="anim-fade max-w-[1440px] mx-auto px-4 md:px-8">
+
         <div class="swiper swiper-component-18 relative">
             <div class="swiper-wrapper lg:grid lg:grid-cols-3 lg:gap-8">
                 {dataToShow.map((item, index) => {
@@ -57,18 +57,15 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                     const descripcionHtml = stringifyRichText(item.descripcion);
                     const botones = item.Boton ? (Array.isArray(item.Boton) ? item.Boton : [item.Boton]) : [];
 
-                    // Logic for different title colors based on index (simulating the screenshot)
                     let titleColorClass = "text-[var(--accent-feedback-strong)]";
-                    if (index % 3 === 1) titleColorClass = "text-[var(--brand-interactive-base)]"; // Green/Cyan
-                    if (index % 3 === 2) titleColorClass = "text-[var(--accent-feedback-strong)]"; // Pink/Red fallback
+                    if (index % 3 === 1) titleColorClass = "text-[var(--brand-interactive-base)]";
+                    if (index % 3 === 2) titleColorClass = "text-[var(--accent-feedback-strong)]";
 
                     return (
                         <div class="swiper-slide h-auto lg:h-full flex flex-col">
-                            <!-- Helper container for alignment -->
                             <div class="flex flex-col h-full w-full justify-between">
 
                                 <div class="flex flex-col">
-                                    <!-- Image (Top) -->
                                     <div class="w-full aspect-square relative overflow-hidden mb-6 lg:mb-8 shrink-0">
                                         <Image
                                             src={imageUrl || "https://placehold.co/600x600"}
@@ -78,7 +75,6 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                                         />
                                     </div>
 
-                                    <!-- Content (Title & Desc) -->
                                     <div class="text-center mb-6 lg:mb-8 flex-grow-0">
                                         <h3 class={`text-xl lg:text-base font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c18-title ${titleColorClass}`}>
                                             {item.titulo}
@@ -89,7 +85,6 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                                     </div>
                                 </div>
 
-                                <!-- Button -->
                                 <div class="mt-auto w-full flex justify-center">
                                     <Button
                                         botones={botones}
@@ -103,7 +98,6 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                 })}
             </div>
 
-            <!-- Mobile Custom Navigation Arrows -->
             <div class="flex lg:hidden justify-end items-center gap-4 mt-8">
                 <button class="swiper-button-prev-c18 text-[var(--accent-feedback-strong)] hover:text-[var(--brand-interactive-base)] transition-colors">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M14 7l-5 5 5 5V7z"/></svg>
@@ -122,21 +116,38 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
     import Swiper from "swiper";
     import { Navigation } from "swiper/modules";
 
-    document.addEventListener("astro:page-load", () => {
-        initSwiper();
-        initEqualHeights();
-    });
+    // CAMBIO 3: Unificamos la inicialización
+    document.addEventListener("astro:page-load", initAll);
+    document.addEventListener("DOMContentLoaded", initAll);
 
-    // Fallback for non-view-transitions
-    if (!document.startViewTransition) {
+    function initAll() {
         initSwiper();
         initEqualHeights();
-        document.addEventListener("DOMContentLoaded", () => {
-            initSwiper();
-            initEqualHeights();
-        });
+        initObserver();
     }
 
+    // --- LÓGICA DE ANIMACIÓN (FadeInUp) ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-18');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    // --- LÓGICA DEL CARRUSEL (EXISTENTE) ---
     // Recalculate on resize
     window.addEventListener('resize', () => {
         initEqualHeights();
@@ -174,11 +185,10 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
         const titles = document.querySelectorAll('.js-c18-title');
         const descs = document.querySelectorAll('.js-c18-desc');
 
-        // Reset heights first
         titles.forEach(el => (el as HTMLElement).style.height = 'auto');
         descs.forEach(el => (el as HTMLElement).style.height = 'auto');
 
-        if (!isDesktop) return; // Only apply on desktop
+        if (!isDesktop) return;
 
         equalize(titles);
         equalize(descs);
@@ -198,13 +208,32 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
     @media (min-width: 1024px) {
         .swiper-wrapper {
             display: grid !important;
-            /* grid-template-columns: repeat(3, 1fr);  <-- handled by Tailwind classes lg:grid lg:grid-cols-3 */
-            transform: none !important; /* Remove swiper translate */
+            transform: none !important;
             width: 100% !important;
         }
         .swiper-slide {
             width: auto !important;
             margin-right: 0 !important;
         }
+    }
+
+    /* --- CAMBIO 4: ESTILOS DE ANIMACIÓN --- */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0; /* Oculto inicialmente */
+    }
+
+    :global(.trigger-anim-18.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
     }
 </style>

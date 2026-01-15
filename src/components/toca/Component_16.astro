@@ -24,22 +24,22 @@ const fallbackItems = [
         descripcion: "Our menu includes iced teas, coffees, Matchas, and milkshakes – the perfect mix for catching up, cooling down, and keeping the vibes high.",
         imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
         Boton: [{
-             id: 2,
-             texto: "HYDRATION MENU",
-             url: "#",
-             tipo: "version_1"
-         }]
+            id: 2,
+            texto: "HYDRATION MENU",
+            url: "#",
+            tipo: "version_1"
+        }]
     },
     {
         titulo: "HAPPIEST MEALS",
         descripcion: "Our Little Ballers food and drink menu is the perfect way to fuel, delight, and keep our younger players energised, crafted exclusively with them in mind.",
         imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
         Boton: [{
-             id: 3,
-             texto: "KID'S MENU",
-             url: "#",
-             tipo: "version_1"
-         }]
+            id: 3,
+            texto: "KID'S MENU",
+            url: "#",
+            tipo: "version_1"
+        }]
     }
 ];
 
@@ -51,64 +51,59 @@ const { items = [] } = Astro.props;
 const dataToShow = items.length > 0 ? items : fallbackItems;
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
-    <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+<section class="trigger-anim-pack w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
 
-        <!-- Swiper Container -->
+    <div class="anim-fade max-w-[1440px] mx-auto px-4 md:px-8">
+
         <div class="swiper swiper-component-16 relative">
             <div class="swiper-wrapper lg:grid lg:grid-cols-3 lg:gap-8">
                 {dataToShow.map((item, index) => {
-                     const imageUrl = getStrapiUrl(item.imagen);
-                     const descripcionHtml = stringifyRichText(item.descripcion);
-                     const botones = item.Boton ? (Array.isArray(item.Boton) ? item.Boton : [item.Boton]) : [];
+                    const imageUrl = getStrapiUrl(item.imagen);
+                    const descripcionHtml = stringifyRichText(item.descripcion);
+                    const botones = item.Boton ? (Array.isArray(item.Boton) ? item.Boton : [item.Boton]) : [];
 
-                     return (
-                        <div class="swiper-slide h-auto lg:h-full flex flex-col">
-                            <!-- Helper container for alignment -->
-                            <div class="flex flex-col h-full w-full justify-between">
+                    return (
+                    <div class="swiper-slide h-auto lg:h-full flex flex-col">
+                        <div class="flex flex-col h-full w-full justify-between">
 
-                                <div>
-                                    <!-- Header (Title & Desc) -->
-                                    <div class="text-center mb-6 lg:mb-8 flex-grow-0">
-                                        <h3 class="text-white text-2xl lg:text-3xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c16-title">
-                                            {item.titulo}
-                                        </h3>
-                                        <div class="text-[var(--brand-interactive-base)] text-sm lg:text-base font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 flex items-start justify-center js-c16-desc">
-                                             <Fragment set:html={descripcionHtml} />
-                                        </div>
-                                    </div>
-
-                                    <!-- Image -->
-                                    <div class="w-full aspect-square relative overflow-hidden mb-6 lg:mb-8 shrink-0">
-                                        <Image
-                                            src={imageUrl || "https://placehold.co/600x600"}
-                                            alt={item.titulo}
-                                            inferSize={true}
-                                            class="w-full h-full object-cover"
-                                        />
+                            <div>
+                                <div class="text-center mb-6 lg:mb-8 flex-grow-0">
+                                    <h3 class="text-white text-2xl lg:text-3xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c16-title">
+                                        {item.titulo}
+                                    </h3>
+                                    <div class="text-[var(--brand-interactive-base)] text-sm lg:text-base font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 flex items-start justify-center js-c16-desc">
+                                            <Fragment set:html={descripcionHtml} />
                                     </div>
                                 </div>
 
-                                <!-- Button -->
-                                <div class="mt-auto w-full flex justify-center">
-                                    <Button
-                                        botones={botones}
-                                        clase="block w-full text-center  text-black font-bold uppercase py-3 text-lg lg:text-xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity"
+                                <div class="w-full aspect-square relative overflow-hidden mb-6 lg:mb-8 shrink-0">
+                                    <Image
+                                        src={imageUrl || "https://placehold.co/600x600"}
+                                        alt={item.titulo}
+                                        inferSize={true}
+                                        class="w-full h-full object-cover"
                                     />
                                 </div>
-
                             </div>
+
+                            <div class="mt-auto w-full flex justify-center">
+                                <Button
+                                    botones={botones}
+                                    clase="block w-full text-center  text-black font-bold uppercase py-3 text-lg lg:text-xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity"
+                                />
+                            </div>
+
                         </div>
-                     )
+                    </div>
+                    )
                 })}
             </div>
 
-            <!-- Mobile Custom Navigation Arrows -->
             <div class="flex lg:hidden justify-end items-center gap-4 mt-8">
-                <button class="swiper-button-prev-c16 text-[var(--brand-interactive-base)] hover:text-white transition-colors">
-                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                <button class="swiper-button-prev-c16 text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
-                <button class="swiper-button-next-c16 text-[var(--brand-interactive-base)] hover:text-white transition-colors">
+                <button class="swiper-button-next-c16 text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
             </div>
@@ -122,21 +117,38 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
     import Swiper from "swiper";
     import { Navigation } from "swiper/modules";
 
-    document.addEventListener("astro:page-load", () => {
-        initSwiper();
-        initEqualHeights();
-    });
+    // CAMBIO 3: Unificamos inicialización
+    document.addEventListener("astro:page-load", initAll);
+    document.addEventListener("DOMContentLoaded", initAll);
 
-    // Fallback for non-view-transitions
-    if (!document.startViewTransition) {
+    function initAll() {
         initSwiper();
         initEqualHeights();
-        document.addEventListener("DOMContentLoaded", () => {
-            initSwiper();
-            initEqualHeights();
-        });
+        initObserver();
     }
 
+    // --- LÓGICA DE ANIMACIÓN (FadeInUp) ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-pack');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    // --- LÓGICA EXISTENTE ---
     // Recalculate on resize
     window.addEventListener('resize', () => {
         initEqualHeights();
@@ -174,11 +186,10 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
         const titles = document.querySelectorAll('.js-c16-title');
         const descs = document.querySelectorAll('.js-c16-desc');
 
-        // Reset heights first
         titles.forEach(el => (el as HTMLElement).style.height = 'auto');
         descs.forEach(el => (el as HTMLElement).style.height = 'auto');
 
-        if (!isDesktop) return; // Only apply on desktop
+        if (!isDesktop) return;
 
         equalize(titles);
         equalize(descs);
@@ -195,21 +206,35 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 </script>
 
 <style>
-    /*
-       When Swiper is disabled (Desktop), we need to ensure the wrapper
-       behaves like a normal Grid container.
-       Swiper adds 'display: flex' to wrapper by default.
-    */
     @media (min-width: 1024px) {
         .swiper-wrapper {
             display: grid !important;
-            /* grid-template-columns: repeat(3, 1fr);  <-- handled by Tailwind classes lg:grid lg:grid-cols-3 */
-            transform: none !important; /* Remove swiper translate */
+            transform: none !important;
             width: 100% !important;
         }
         .swiper-slide {
             width: auto !important;
             margin-right: 0 !important;
         }
+    }
+
+    /* --- CAMBIO 4: ESTILOS DE ANIMACIÓN --- */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0;
+    }
+
+    :global(.trigger-anim-pack.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
     }
 </style>

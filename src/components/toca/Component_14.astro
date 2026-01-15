@@ -5,7 +5,7 @@ import Icono from "../shared/Icono.astro";
 interface Props {
   subtitulo: string;
   titulo: string;
-  categorias_faq: any[]; // Array of categories, each with a list of preguntas
+  categorias_faq: any[];
 }
 
 const {
@@ -14,19 +14,6 @@ const {
   categorias_faq = [],
 } = Astro.props;
 
-// Data structure expected from Strapi:
-// categories_faq: [
-//   {
-//     label: "BOX BOOKING",
-//     faqs: [
-//       { pregunta: "How long will my game be?", respuesta: "..." },
-//       ...
-//     ]
-//   },
-//   ...
-// ]
-
-// Fallback data for preview
 const fallbackData = [
     {
         label: "BOX BOOKING",
@@ -61,24 +48,26 @@ const fallbackData = [
 const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20" x-data="{ activeTab: 0 }">
-    <div class="max-w-[1000px] mx-auto px-4">
-        
-        <!-- Header -->
+<section
+    class="trigger-anim-faq w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20"
+    x-data="{ activeTab: 0 }"
+>
+    <div class="anim-fade max-w-[1200px] mx-auto px-4">
+
         <div class="text-center mb-12">
             <h3 class="text-white text-sm lg:text-base font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-medium) mb-2 uppercase">
                 {subtitulo}
             </h3>
-            <h2 class="text-white text-4xl lg:text-7xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) leading-[0.9]">
+
+            <h2 class="text-white text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">
                 {titulo}
             </h2>
         </div>
 
-        <!-- Custom Tabs Navigation -->
         <div class="flex flex-wrap border border-[var(--brand-interactive-base)] mb-12">
             {categories.map((cat: any, index: number) => (
                 <button
-                    class="flex-1 py-4 px-2 text-center text-lg lg:text-xl font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
+                    class="flex-1 py-3 px-6 text-center text-base lg:text-base font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
                     :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-white bg-transparent'`}
                     @click={`activeTab = ${index}`}
                 >
@@ -87,25 +76,24 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
             ))}
         </div>
 
-        <!-- Tab Content -->
         <div>
             {categories.map((cat: any, index: number) => (
                 <div x-show={`activeTab === ${index}`} style="display: none;">
-                    
-                    <div class="flex flex-col border-t border-[var(--neutral-stroke-weak)]">
+
+                    <div class="flex flex-col border-t border-[var(--neutral-stroke-weak)] max-w-4xl mx-auto w-full">
                         {cat.faqs.map((faq: any) => (
                             <div x-data="{ expanded: false }" class="border-b border-[var(--neutral-stroke-weak)]">
-                                <button 
-                                    @click="expanded = !expanded" 
+                                <button
+                                    @click="expanded = !expanded"
                                     class="w-full py-6 flex items-center justify-between text-left group"
                                 >
-                                    <span 
-                                        class="text-[var(--brand-interactive-base)] font-bold text-lg lg:text-xl font-(family-name:--font-sharp-sans-medium) transition-colors group-hover:text-white"
+                                    <span
+                                        class="text-[var(--brand-interactive-base)] font-bold text-lg lg:text-xl font-(family-name:--font-sharp-sans-bold) transition-colors group-hover:text-white"
                                         :class="expanded ? 'text-white' : 'text-[var(--brand-interactive-base)]'"
                                     >
                                         {faq.pregunta}
                                     </span>
-                                    <span 
+                                    <span
                                         class="text-[var(--brand-interactive-base)] transition-transform duration-300 transform"
                                         :class="expanded ? 'rotate-180 text-white' : ''"
                                     >
@@ -114,9 +102,9 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
                                         </svg>
                                     </span>
                                 </button>
-                                
-                                <div 
-                                    x-show="expanded" 
+
+                                <div
+                                    x-show="expanded"
                                     x-collapse
                                     class="pb-6 text-white text-base lg:text-lg opacity-90 font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
                                 >
@@ -133,17 +121,61 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
     </div>
 </section>
 
+<script>
+    document.addEventListener('astro:page-load', initObserver);
+    document.addEventListener('DOMContentLoaded', initObserver);
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-faq');
+        targets.forEach(target => observer.observe(target));
+    }
+</script>
+
 <style>
-    /* Styling for the borders to match the cyan/mint color */
     .border-\[var\(--brand-interactive-base\)\] {
         border-color: var(--brand-interactive-base);
     }
-    
+
     .border-\[var\(--neutral-stroke-weak\)\] {
         border-color: rgba(255, 255, 255, 0.2);
     }
 
     div[x-show="true"] {
         display: block !important;
+    }
+
+    /* Animación Lenta 3s */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0;
+    }
+
+    :global(.trigger-anim-faq.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
     }
 </style>

@@ -9,7 +9,6 @@ interface Props {
     descripcion_secundaria: string;
     imagen_izquierda: any;
     imagen_derecha: any;
-    // Recibimos los objetos directos, tal cual vienen de Strapi
     boton_primario: {
         id: number;
         texto: string;
@@ -33,15 +32,13 @@ const {
     boton_secundario
 } = Astro.props;
 
-// YA NO HACEMOS EL ARRAY AQUÍ. CÓDIGO LIMPIO.
-
 const imgLeftUrl    = getStrapiUrl(imagen_izquierda);
 const imgRightUrl   = getStrapiUrl(imagen_derecha);
 const mainTextHtml  = stringifyRichText(descripcion_principal);
 const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 ---
 
-<section class="w-full bg-split pt-12 pb-12 lg:pt-5 lg:pb-28 overflow-visible relative">
+<section class="trigger-anim-split section-animate w-full bg-split pt-12 pb-12 lg:pt-5 lg:pb-28 overflow-visible relative">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div class="flex flex-col lg:flex-row items-end justify-between gap-8 lg:gap-4">
 
@@ -96,7 +93,30 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
     </div>
 </section>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Se activa cuando el 20% es visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-split');
+        targets.forEach(target => observer.observe(target));
+    });
+</script>
+
 <style>
+    /* Estilos existentes */
     .bg-split {
         background-color: var(--surface-brand-secondary);
     }
@@ -109,4 +129,29 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 
     .rotate-card-left { transform: rotate(-6deg); }
     .rotate-card-right { transform: rotate(6deg); }
+
+    /* --- CAMBIO 3: LÓGICA DE ANIMACIÓN --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px); /* Un poco más de desplazamiento para notar el efecto */
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .section-animate {
+        opacity: 0; /* Oculto inicialmente por defecto */
+        /* Eliminamos la animation aquí para que no corra sola al cargar la página */
+    }
+
+    /* La animación solo corre cuando JS agrega la clase .is-visible */
+    .section-animate.is-visible {
+        animation: fadeInUp 0.8s ease-out forwards;
+        /* Puedes ajustar el delay aquí si quieres que tarde un pelín en arrancar */
+        /* animation-delay: 0.2s; */
+    }
 </style>

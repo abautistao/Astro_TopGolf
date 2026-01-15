@@ -1,5 +1,6 @@
 ---
 // src/components/HowToPlay.astro
+// ... (MANTÉN TODO EL BLOQUE DE IMPORTS Y PROPS IGUAL)
 import { Image } from "astro:assets";
 import { getStrapiUrl } from '../../lib/strapi.js';
 
@@ -36,9 +37,9 @@ const finalPoster = posterUrl || PLACEHOLDER_IMG;
 const altText = titulo || "How to play video thumbnail";
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-6 px-4 md:px-8 md:py-8">
+<section class="trigger-anim-video w-full bg-[var(--surface-brand-primary)] py-6 px-4 md:px-8 md:py-8">
 
-    <div class="max-w-7xl mx-auto">
+    <div class="anim-fade max-w-7xl mx-auto">
 
         <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-3xl md:text-[75px] font-medium uppercase text-center mb-6">
             {titulo}
@@ -86,30 +87,87 @@ const altText = titulo || "How to play video thumbnail";
 </section>
 
 <script>
-    const video = document.getElementById('videoPlayer') as HTMLVideoElement;
-    const overlay = document.getElementById('playOverlay');
+    // El SCRIPT sigue igual
+    document.addEventListener('astro:page-load', initAll);
+    document.addEventListener('DOMContentLoaded', initAll);
 
-    if (video && overlay) {
-        overlay.addEventListener('click', () => {
-            if (video.paused) {
-                video.play();
-                overlay.classList.add('opacity-0', 'pointer-events-none');
-                video.controls = true;
-            } else {
-                video.pause();
+    function initAll() {
+        initVideoPlayer();
+        initObserver();
+    }
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-video');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    function initVideoPlayer() {
+        const video = document.getElementById('videoPlayer') as HTMLVideoElement;
+        const overlay = document.getElementById('playOverlay');
+
+        if (video && overlay) {
+            const newOverlay = overlay.cloneNode(true);
+            if (overlay.parentNode) overlay.parentNode.replaceChild(newOverlay, overlay);
+
+            const activeOverlay = document.getElementById('playOverlay');
+
+            if(activeOverlay) {
+                activeOverlay.addEventListener('click', () => {
+                    if (video.paused) {
+                        video.play();
+                        activeOverlay.classList.add('opacity-0', 'pointer-events-none');
+                        video.controls = true;
+                    } else {
+                        video.pause();
+                    }
+                });
             }
-        });
 
-        video.addEventListener('ended', () => {
-            overlay.classList.remove('opacity-0', 'pointer-events-none');
-            video.controls = false;
-            video.load();
-        });
-
-        video.addEventListener('pause', () => {
-            if (!video.seeking && video.currentTime > 0 && !video.ended) {
-            // Opcional
-            }
-        });
+            video.addEventListener('ended', () => {
+                const currentOverlay = document.getElementById('playOverlay');
+                if(currentOverlay) currentOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                video.controls = false;
+                video.load();
+            });
+        }
     }
 </script>
+
+<style>
+    /* --- CAMBIO EN LA VELOCIDAD DE ANIMACIÓN --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0;
+    }
+
+    /* Aumentamos el tiempo a 3s para que sea mucho más lento */
+    :global(.trigger-anim-video.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
+    }
+</style>

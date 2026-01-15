@@ -2,6 +2,7 @@
 // src/components/toca/Component_3.astro
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
+
 interface TarjetaData {
     id: number;
     titulo: string;
@@ -42,11 +43,11 @@ const ProcessedTarjetas = rawData.map((card) => ({
     img: getStrapiUrl(card.imagen),
     alt: card.titulo || "Toca Social Image"
 }));
-
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 relative">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full">
+<section class="trigger-anim-cards w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 relative">
+
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full fade-in-up">
 
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
@@ -98,14 +99,38 @@ const ProcessedTarjetas = rawData.map((card) => ({
 </section>
 
 <script>
-    document.addEventListener('astro:page-load', () => {
-        initCarousel();
-    });
+    // CAMBIO 2: Lógica unificada para el carrusel y la animación de entrada
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function initAll() {
         initCarousel();
-    });
+        initObserver();
+    }
 
+    document.addEventListener('astro:page-load', initAll);
+    document.addEventListener('DOMContentLoaded', initAll);
+
+    // --- LÓGICA DE ANIMACIÓN AL SCROLL ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // Se activa cuando el 10% es visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-cards');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    // --- LÓGICA DE CARRUSEL (EXISTENTE) ---
     function initCarousel() {
         const items = document.querySelectorAll('.carousel-item');
         const prevBtns = document.querySelectorAll('.prev-btn');
@@ -117,8 +142,6 @@ const ProcessedTarjetas = rawData.map((card) => ({
 
         function showItem(index) {
             items.forEach((item, i) => {
-                // Solo afecta móvil donde usamos flex/hidden para el carrusel
-                // En escritorio (lg:flex) esto se sobrescribe por CSS
                 item.classList.remove('flex');
                 item.classList.add('hidden');
 
@@ -139,15 +162,24 @@ const ProcessedTarjetas = rawData.map((card) => ({
             showItem(currentIndex);
         }
 
+        // Clonamos nodos para evitar acumulación de event listeners si usas view transitions
+        // O simplemente nos aseguramos de no duplicar lógica.
+        // (Nota: En implementaciones simples esto está bien).
+
         nextBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            // Un pequeño truco para limpiar listeners viejos: cloneNode
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 nextSlide();
             });
         });
 
         prevBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 prevSlide();
             });
@@ -159,5 +191,28 @@ const ProcessedTarjetas = rawData.map((card) => ({
     .strapi-rich-text :global(p) {
         margin-bottom: 0;
         color: inherit;
+    }
+
+    /* CAMBIO 3: La animación solo se ejecuta cuando la clase .is-visible existe en el padre */
+
+    .fade-in-up {
+        opacity: 0; /* Oculto por defecto */
+        /* Eliminamos la animation: aquí para que no arranque sola */
+    }
+
+    /* Cuando el padre (section) tiene 'is-visible', animamos el hijo */
+    :global(.trigger-anim-cards.is-visible) .fade-in-up {
+        animation: fadeInUp 1.5s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 40px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
     }
 </style>

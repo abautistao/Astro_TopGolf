@@ -30,23 +30,21 @@ const boton_data: Boton[] = Boton
 const descripcionHtml = stringifyRichText(descripcion);
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-15 px-4">
-    <div class="max-w-4xl mx-auto flex flex-col items-center text-center">
-        <!-- Title -->
+<section class="trigger-anim-menu w-full bg-[var(--surface-brand-primary)] py-12 lg:py-15 px-4">
+
+    <div class="anim-fade max-w-4xl mx-auto flex flex-col items-center text-center">
         <h2
-            class="text-white text-4xl lg:text-7xl font-bold uppercase mb-6 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-none tracking-wide"
+            class="text-[var(--accent-feedback-strong)] text-4xl lg:text-3xl font-bold uppercase mb-6 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-none tracking-wide"
         >
             {titulo}
         </h2>
 
-        <!-- Description -->
         <div
             class="text-[var(--accent-feedback-strong)] text-base lg:text-xl font-(family-name:--font-sharp-sans-medium) leading-relaxed max-w-3xl mb-10 opacity-90 strapi-rich-text"
         >
             <Fragment set:html={descripcionHtml} />
         </div>
 
-        <!-- CTA Button -->
         <div class="w-full flex justify-center">
             <Button
                 botones={boton_data}
@@ -56,10 +54,56 @@ const descripcionHtml = stringifyRichText(descripcion);
     </div>
 </section>
 
+<script>
+    document.addEventListener('astro:page-load', initObserver);
+    document.addEventListener('DOMContentLoaded', initObserver);
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Se activa cuando el 20% es visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-menu');
+        targets.forEach(target => observer.observe(target));
+    }
+</script>
+
 <style>
     /* Ensure rich text links inherit color or have specific style if needed */
     .strapi-rich-text a {
         color: var(--brand-interactive-base);
         text-decoration: underline;
+    }
+
+    /* --- CAMBIO 4: ESTILOS DE ANIMACIÓN --- */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0; /* Oculto por defecto */
+    }
+
+    /* Se anima solo cuando el padre tiene .is-visible */
+    :global(.trigger-anim-menu.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
     }
 </style>
