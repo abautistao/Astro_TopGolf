@@ -1,0 +1,72 @@
+---
+// src/components/blu/ContainerBackgroundHome_Blu.astro
+import { getStrapiUrl } from "../../lib/strapi.js";
+import Component_1_Blu from "./Component_1_Blu.astro";
+import Component_2_Blu from "./Component_2_Blu.astro";
+import Component_3_Blu from "./Component_3_Blu.astro";
+import Component_4_Blu from "./Component_4_Blu.astro";
+import Component_5_Blu from "./Component_5_Blu.astro";
+import Component_6_Blu from "./Component_6_Blu.astro";
+
+interface Props {
+    fondoDesktop?: any;
+    fondoMovil?: any;
+    fondoFijo?: boolean;
+    // Componentes individuales como campos de Strapi
+    componente_1?: any;
+    componente_2?: any;
+    componente_3?: any;
+    componente_4?: any;
+    componente_5?: any;
+    componente_6?: any;
+}
+
+const {
+    fondoDesktop,
+    fondoMovil,
+    fondoFijo = false,
+    componente_1,
+    componente_2,
+    componente_3,
+    componente_4,
+    componente_5,
+    componente_6,
+} = Astro.props;
+
+const desktopUrl = getStrapiUrl(fondoDesktop);
+const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
+---
+
+<section
+    class:list={[
+        "relative w-full overflow-hidden bg-cover bg-center",
+        fondoFijo ? "bg-fixed" : "bg-scroll",
+    ]}
+    style={desktopUrl ? `background-image: url('${desktopUrl}');` : ""}
+>
+    {/* Estilos específicos para el cambio de imagen y fix de mobile */}
+    <style define:vars={{ desktopUrl, mobileUrl }}>
+        section {
+            background-image: url(var(--desktopUrl));
+        }
+        @media (max-width: 768px) {
+            section {
+                background-image: url(var(--mobileUrl));
+                background-attachment: scroll !important;
+            }
+        }
+    </style>
+
+    {/* --- RENDERIZADO DE COMPONENTES POR SLOTS --- */}
+    <div class="relative z-10 w-full">
+        {componente_1 && <Component_1_Blu {...componente_1} />}
+        {componente_2 && <Component_2_Blu {...componente_2} />}
+        {componente_3 && <Component_3_Blu {...componente_3} />}
+        {componente_4 && <Component_4_Blu {...componente_4} />}
+        {componente_5 && <Component_5_Blu {...componente_5} />}
+        {componente_6 && <Component_6_Blu {...componente_6} />}
+
+        {/* Slot por si se usa de forma manual en el código */}
+        <slot />
+    </div>
+</section>

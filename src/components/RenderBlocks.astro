@@ -84,12 +84,14 @@ import Component_4_Blu from "./blu/Component_4_Blu.astro";
 import Component_5_Blu from "./blu/Component_5_Blu.astro";
 import Component_6_Blu from "./blu/Component_6_Blu.astro";
 
+import ContainerBackgroundHome_Blu from "./blu/ContainerBackgroundHome_Blu.astro";
+
 interface Props {
     blocks: any[];
 }
 
 const { blocks } = Astro.props;
-
+console.log(blocks);
 // ==========================================================================================
 // SECCIÓN 2: MAPA DE COMPONENTES
 // ==========================================================================================
@@ -173,6 +175,7 @@ const componentsMap = {
     "secciones.componente-4-blu": Component_4_Blu,
     "secciones.componente-5-blu": Component_5_Blu,
     "secciones.componente-6-blu": Component_6_Blu,
+    "secciones.contenedor-background-blu": ContainerBackgroundHome_Blu,
 };
 ---
 
