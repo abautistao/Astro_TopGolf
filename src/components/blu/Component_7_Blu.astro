@@ -84,29 +84,33 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
                     class="bg-[#E4ECF2] rounded-[1.5rem] p-8 md:p-12 relative h-[300px] md:h-[350px] flex items-center"
                 >
                     <div
-                        class="flex transition-transform duration-500 ease-out w-full"
-                        id="carousel-track"
+                        class="w-full h-full overflow-hidden flex items-center"
                     >
-                        {
-                            testimonios.map((testimonio, index) => (
-                                <div class="w-full flex-shrink-0 flex flex-col items-center justify-center text-center px-4">
-                                    {/* Quote Icon */}
-                                    <div class="mb-4 text-[#94a3b8] self-start">
-                                        <i class="fa-solid fa-quote-left text-3xl md:text-4xl" />
-                                    </div>
+                        <div
+                            class="flex transition-transform duration-500 ease-out w-full"
+                            id="carousel-track"
+                        >
+                            {
+                                testimonios.map((testimonio, index) => (
+                                    <div class="w-full flex-shrink-0 flex flex-col items-center justify-center text-center px-4">
+                                        {/* Quote Icon */}
+                                        <div class="mb-4 text-[#94a3b8] self-start">
+                                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl" />
+                                        </div>
 
-                                    {/* Cita */}
-                                    <p class="text-sm md:text-base text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] leading-relaxed mb-6 italic">
-                                        "{testimonio.cita}"
-                                    </p>
+                                        {/* Cita */}
+                                        <p class="text-sm md:text-base text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] leading-relaxed mb-6 italic">
+                                            "{testimonio.cita}"
+                                        </p>
 
-                                    {/* Quote Right Icon */}
-                                    <div class="mb-2 text-[#94a3b8] self-end">
-                                        <i class="fa-solid fa-quote-right text-3xl md:text-4xl" />
+                                        {/* Quote Right Icon */}
+                                        <div class="mb-2 text-[#94a3b8] self-end">
+                                            <i class="fa-solid fa-quote-right text-3xl md:text-4xl" />
+                                        </div>
                                     </div>
-                                </div>
-                            ))
-                        }
+                                ))
+                            }
+                        </div>
                     </div>
                 </div>
 
@@ -121,37 +125,39 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
                              Strategy: Duplicate the track for the user info section.
                          */
                         }
-                        <div
-                            id="user-info-track"
-                            class="flex transition-transform duration-500 ease-out w-full"
-                        >
-                            {
-                                testimonios.map((testimonio) => (
-                                    <div class="w-full flex-shrink-0 flex items-center justify-center gap-4">
-                                        <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
-                                            <Image
-                                                src={
-                                                    getStrapiUrl(
-                                                        testimonio.avatar,
-                                                    ) || testimonio.avatar
-                                                }
-                                                alt={testimonio.nombre}
-                                                width={48}
-                                                height={48}
-                                                class="w-full h-full object-cover"
-                                            />
+                        <div class="w-full h-full overflow-hidden">
+                            <div
+                                id="user-info-track"
+                                class="flex transition-transform duration-500 ease-out w-full"
+                            >
+                                {
+                                    testimonios.map((testimonio) => (
+                                        <div class="w-full flex-shrink-0 flex items-center justify-center gap-4">
+                                            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                                                <Image
+                                                    src={
+                                                        getStrapiUrl(
+                                                            testimonio.avatar,
+                                                        ) || testimonio.avatar
+                                                    }
+                                                    alt={testimonio.nombre}
+                                                    width={48}
+                                                    height={48}
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div class="text-left">
+                                                <h4 class="text-lg font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]">
+                                                    {testimonio.nombre}
+                                                </h4>
+                                                <span class="text-xs text-[var(--surface-brand-primary)]/60 font-[family-name:var(--font-blu-body)]">
+                                                    {testimonio.fecha}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="text-left">
-                                            <h4 class="text-lg font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]">
-                                                {testimonio.nombre}
-                                            </h4>
-                                            <span class="text-xs text-[var(--surface-brand-primary)]/60 font-[family-name:var(--font-blu-body)]">
-                                                {testimonio.fecha}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))
-                            }
+                                    ))
+                                }
+                            </div>
                         </div>
                     </div>
 
