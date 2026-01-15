@@ -90,21 +90,18 @@ const gridClasses = [
                             />
                         )}
 
-                        {/* Overlay Gradient always present on mobile active, active on hover on desktop */}
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center text-center p-6 mosaic-overlay">
-                            <h3 class="text-white text-2xl md:text-3xl font-[family-name:var(--font-blu-title)] leading-tight whitespace-pre-line transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        {/* Overlay: Handles both Desktop Hover and Mobile Active state */}
+                        <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-start text-left p-10 mosaic-overlay">
+                            <h3 class="text-white text-2xl md:text-5xl font-[family-name:var(--font-blu-title)] leading-tight whitespace-pre-line transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                                 {item.titulo}
                             </h3>
                         </div>
-
-                        {/* Mobile specific active state helper (shows via script) */}
-                        <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-1000 md:hidden mobile-active-overlay" />
                     </div>
                 ))
             }
 
             {
-                /* Versión Móvil: Si el item 0 se ocultó, podemos añadir una versión optimizada aquí o dejar que el grid fluya */
+                /* Versión Móvil: Elemento extra para el item 0 si está oculto en el grid principal */
             }
             {
                 items[0] && (
@@ -117,8 +114,8 @@ const gridClasses = [
                             playsinline
                             class="w-full h-full object-cover"
                         />
-                        <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-500 flex items-center justify-center text-center p-6 mobile-active-overlay">
-                            <h3 class="text-white text-xl font-[family-name:var(--font-blu-title)] whitespace-pre-line">
+                        <div class="absolute inset-0 bg-[var(--neutral-background-strong)]/70 opacity-0 transition-opacity duration-500 flex items-center justify-start text-left p-10 mosaic-overlay">
+                            <h3 class="text-white text-2xl font-[family-name:var(--font-blu-title)] whitespace-pre-line transform translate-y-4 transition-transform duration-500">
                                 {items[0].titulo}
                             </h3>
                         </div>
@@ -130,40 +127,56 @@ const gridClasses = [
 </section>
 
 <style>
-    /* Estilos para el estado activo en móvil */
-    :global(.mosaic-item.is-active .mobile-active-overlay) {
+    /* Estilos para el estado activo en móvil usando el mismo overlay */
+    :global(.mosaic-item.is-active .mosaic-overlay) {
         opacity: 1 !important;
     }
 
     :global(.mosaic-item.is-active h3) {
         transform: translateY(0) !important;
-        opacity: 1 !important;
     }
-
-    /* En escritorio el hover normal de Tailwind maneja todo */
 </style>
 
 <script>
     function initMosaic() {
         if (window.innerWidth >= 768) return;
 
-        const items = document.querySelectorAll(".mosaic-item");
-        let currentIndex = 0;
+        const items = Array.from(document.querySelectorAll(".mosaic-item"));
+        if (items.length < 2) return;
 
-        function rotateActive() {
-            items.forEach((item) => item.classList.remove("is-active"));
-
-            // Elegir uno aleatorio o secuencial
-            currentIndex = Math.floor(Math.random() * items.length);
-            items[currentIndex].classList.add("is-active");
-
-            // Cambiar cada 3 segundos
-            setTimeout(rotateActive, 3000);
+        // 1. Obtener orden aleatorio inicial (solo una vez al cargar)
+        const indices = items.map((_, i) => i);
+        for (let i = indices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [indices[i], indices[j]] = [indices[j], indices[i]];
         }
 
-        rotateActive();
+        // 2. Crear dos grupos para alternar (ej: elementos 1 y 3 vs 2 y 4)
+        const group1 = indices.filter((_, i) => i % 2 === 0);
+        const group2 = indices.filter((_, i) => i % 2 !== 0);
+
+        let showGroup1 = true;
+
+        function togglePairs() {
+            // Apagar todos
+            items.forEach((item) => item.classList.remove("is-active"));
+
+            setTimeout(() => {
+                // Seleccionar grupo actual y encenderlo
+                const currentGroup = showGroup1 ? group1 : group2;
+                currentGroup.forEach((idx) => {
+                    items[idx].classList.add("is-active");
+                });
+
+                showGroup1 = !showGroup1;
+
+                // Reiniciar ciclo
+                setTimeout(togglePairs, 2500);
+            }, 1000);
+        }
+
+        togglePairs();
     }
 
-    // Ejecutar al cargar y en cambios de tamaño
     initMosaic();
 </script>
