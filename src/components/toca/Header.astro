@@ -1,16 +1,15 @@
 ---
 // src/components/toca/Header.astro
-import { getHeaderData, getStrapiUrl } from '../../lib/strapi';
-import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro';
-import defaultLogoImg from '../../assets/TOCA_Social_One_Color.png';
+import { getHeaderData, getStrapiUrl } from "../../lib/strapi";
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+import defaultLogoImg from "../../assets/TOCA_Social_One_Color.png";
 
 const { data } = Astro.props;
-const headerData = data || await getHeaderData();
+const headerData = data || (await getHeaderData());
 const strapiLogo = getStrapiUrl(headerData?.logo);
 const logoUrl = strapiLogo || defaultLogoImg.src;
 console.log(Astro.props);
-
 
 // --- 1. DEFINICIÓN DE DATOS Y SUBMENÚS ---
 // Aquí definimos manualmente el submenú de "INFO" para que coincida con tu imagen.
@@ -19,7 +18,11 @@ console.log(Astro.props);
 const infoSubmenuItems = [
     { label: "GAMES", icon: "fa-solid fa-shapes", url: "/games" }, // Icono aproximado
     { label: "PRICING", icon: "fa-solid fa-sterling-sign", url: "/pricing" },
-    { label: "WHAT'S ON", icon: "fa-regular fa-calendar-check", url: "/whats-on" },
+    {
+        label: "WHAT'S ON",
+        icon: "fa-regular fa-calendar-check",
+        url: "/whats-on",
+    },
     { label: "MORE FUN", icon: "fa-solid fa-people-group", url: "/more-fun" },
     { label: "FAQS", icon: "fa-regular fa-circle-question", url: "/faqs" },
     { label: "FOOD & DRINK", icon: "fa-solid fa-burger", url: "/food-drink" },
@@ -30,67 +33,139 @@ const defaultLinks = [
     { texto: "INFO", url: "/info", submenu: infoSubmenuItems },
     { texto: "EVENTS", url: "/events", submenu: null }, // Puedes agregar null o crear otro array si Events tiene menú
     { texto: "WHAT'S ON", url: "/whats-on", submenu: null },
-    { texto: "XMAS", url: "/xmas", submenu: null }
+    { texto: "XMAS", url: "/xmas", submenu: null },
 ];
 
 // Si viene info de Strapi, intentamos fusionarla, si no, usamos defaultLinks
-const links = (headerData?.links && headerData.links.length > 0)
-    ? headerData.links.map((link:any) => {
-        // Si el link de strapi se llama INFO, le inyectamos el submenú visual
-        if(link.texto.toUpperCase() === 'INFO') return { ...link, submenu: infoSubmenuItems };
-        return { ...link, submenu: null };
-    })
-    : defaultLinks;
+const links =
+    headerData?.links && headerData.links.length > 0
+        ? headerData.links.map((link: any) => {
+              // Si el link de strapi se llama INFO, le inyectamos el submenú visual
+              if (link.texto.toUpperCase() === "INFO")
+                  return { ...link, submenu: infoSubmenuItems };
+              return { ...link, submenu: null };
+          })
+        : defaultLinks;
 
 const rawButton = Array.isArray(headerData?.Botones2)
     ? headerData.Botones2[0]
-    : (headerData?.Botones2 || { texto: "BOOK NOW", url: "#", tipo: "version_1" });
+    : headerData?.Botones2 || {
+          texto: "BOOK NOW",
+          url: "#",
+          tipo: "version_1",
+      };
 
-const ctaButtons: Boton[] = [{
-    id: rawButton.id || 1,
-    texto: rawButton.texto,
-    url: rawButton.url,
-    tipo: rawButton.tipo || 'version_1'
-}];
+const ctaButtons: Boton[] = [
+    {
+        id: rawButton.id || 1,
+        texto: rawButton.texto,
+        url: rawButton.url,
+        tipo: rawButton.tipo || "version_1",
+    },
+];
 ---
 
-<header class="w-full relative z-50 font-sans" id="main-header">
+<header
+    class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)"
+    id="main-header"
+>
     <div class="relative z-50 bg-[var(--brand-interactive-base)]">
-        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]">
-
+        <div
+            class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]"
+        >
             <div class="flex items-center gap-4 md:gap-8 h-full">
                 <a href="/" class="flex-shrink-0">
-                    <img src={logoUrl} alt="Toca Social" class="h-8 md:h-10 w-auto object-contain" />
+                    <img
+                        src={logoUrl}
+                        alt="Toca Social"
+                        class="h-8 md:h-10 w-auto object-contain"
+                    />
                 </a>
 
                 <div class="hidden md:flex items-center h-full static">
-                    <button type="button" class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter h-full px-2 focus:outline-none" data-target="locations-dropdown">
+                    <button
+                        type="button"
+                        class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter h-full px-2 focus:outline-none"
+                        data-target="locations-dropdown"
+                    >
                         LOCATIONS
-                        <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"></i>
+                        <i
+                            class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"
+                        ></i>
                     </button>
 
-                    <div id="locations-dropdown" class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--brand-interactive-base)] shadow-lg border-t border-black/10 z-40 pb-12 pt-8">
-                        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-                            <div class="flex flex-col md:flex-row gap-12 lg:gap-24">
+                    <div
+                        id="locations-dropdown"
+                        class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--brand-interactive-base)] shadow-lg border-t border-black/10 z-40 pb-12 pt-8"
+                    >
+                        <div
+                            class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8"
+                        >
+                            <div
+                                class="flex flex-col md:flex-row gap-12 lg:gap-24"
+                            >
                                 <div class="flex-1 max-w-4xl">
-                                    <h3 class="font-bold uppercase text-[var(--surface-brand-primary)] text-xl mb-6 tracking-wide">UK VENUES</h3>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                    <h3
+                                        class="font-bold uppercase text-[var(--surface-brand-primary)] text-xl mb-6 tracking-wide"
+                                    >
+                                        UK VENUES
+                                    </h3>
+                                    <div
+                                        class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8"
+                                    >
                                         <div class="flex flex-col gap-8">
-                                            <a href="#" class="block w-full border-b border-black pb-1 hover:opacity-70"><span class="text-2xl font-bold text-[var(--surface-brand-primary)]">The O2, London</span></a>
-                                            <a href="#" class="block w-full border-b border-black pb-1 hover:opacity-70"><span class="text-2xl font-bold text-[var(--surface-brand-primary)]">Westfield White City, London</span></a>
+                                            <a
+                                                href="#"
+                                                class="block w-full border-b border-black pb-1 hover:opacity-70"
+                                                ><span
+                                                    class="text-2xl font-bold text-[var(--surface-brand-primary)]"
+                                                    >The O2, London</span
+                                                ></a
+                                            >
+                                            <a
+                                                href="#"
+                                                class="block w-full border-b border-black pb-1 hover:opacity-70"
+                                                ><span
+                                                    class="text-2xl font-bold text-[var(--surface-brand-primary)]"
+                                                    >Westfield White City,
+                                                    London</span
+                                                ></a
+                                            >
                                         </div>
                                         <div class="flex flex-col gap-8">
-                                            <a href="#" class="block w-full border-b border-black pb-1 hover:opacity-70"><span class="text-2xl font-bold text-[var(--surface-brand-primary)]">Birmingham Bullring</span></a>
+                                            <a
+                                                href="#"
+                                                class="block w-full border-b border-black pb-1 hover:opacity-70"
+                                                ><span
+                                                    class="text-2xl font-bold text-[var(--surface-brand-primary)]"
+                                                    >Birmingham Bullring</span
+                                                ></a
+                                            >
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex-1 max-w-2xl">
-                                    <h3 class="font-bold uppercase text-[var(--surface-brand-primary)] text-xl mb-6 tracking-wide">GLOBAL VENUES</h3>
-                                    <div class="relative flex items-center gap-4 border-b border-black pb-1 max-w-md">
-                                        <div class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center p-1 transform -rotate-12 flex-shrink-0">
-                                            <span class="text-[9px] font-bold leading-tight text-center uppercase">Coming<br>Soon</span>
+                                    <h3
+                                        class="font-bold uppercase text-[var(--surface-brand-primary)] text-xl mb-6 tracking-wide"
+                                    >
+                                        GLOBAL VENUES
+                                    </h3>
+                                    <div
+                                        class="relative flex items-center gap-4 border-b border-black pb-1 max-w-md"
+                                    >
+                                        <div
+                                            class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center p-1 transform -rotate-12 flex-shrink-0"
+                                        >
+                                            <span
+                                                class="text-[9px] font-bold leading-tight text-center uppercase"
+                                                >Coming<br />Soon</span
+                                            >
                                         </div>
-                                        <a href="#" class="text-2xl font-bold text-[var(--surface-brand-primary)] hover:opacity-70">Grandscape Dallas, TX USA</a>
+                                        <a
+                                            href="#"
+                                            class="text-2xl font-bold text-[var(--surface-brand-primary)] hover:opacity-70"
+                                            >Grandscape Dallas, TX USA</a
+                                        >
                                     </div>
                                 </div>
                             </div>
@@ -102,65 +177,97 @@ const ctaButtons: Boton[] = [{
             <div class="flex items-center gap-3 md:gap-8 h-full">
                 <nav class="hidden lg:flex h-full items-center">
                     <ul class="flex items-center gap-8 h-full">
-                        {links.map((link: any, index: number) => (
-                            <li class="h-full flex items-center static">
-                                {link.submenu ? (
-                                    <>
-                                        {/* ENLACE CON DROPDOWN (Ej: INFO) */}
-                                        <button
-                                            type="button"
-                                            class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter focus:outline-none"
-                                            data-target={`menu-${index}`}
-                                        >
-                                            {link.texto}
-                                            <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"></i>
-                                        </button>
+                        {
+                            links.map((link: any, index: number) => (
+                                <li class="h-full flex items-center static">
+                                    {link.submenu ? (
+                                        <>
+                                            {/* ENLACE CON DROPDOWN (Ej: INFO) */}
+                                            <button
+                                                type="button"
+                                                class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter focus:outline-none"
+                                                data-target={`menu-${index}`}
+                                            >
+                                                {link.texto}
+                                                <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
+                                            </button>
 
-                                        {/* MEGA MENU DARK BLUE (Estilo Imagen) */}
-                                        <div
-                                            id={`menu-${index}`}
-                                            class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[#0a0030] shadow-xl z-40 py-5 border-t border-[var(--brand-interactive-base)]/30 border-b-[2px] border-b-[var(--brand-interactive-base)]"
-                                        >
-                                            <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-                                                <div class="flex justify-center items-start gap-8 xl:gap-20">
-                                                    {link.submenu.map((subItem: any) => (
-                                                        <a href={subItem.url} class="group flex flex-col items-center gap-4 text-center w-32 hover:scale-105 transition-transform duration-200">
-                                                            {/* Icono Grande Neón */}
-                                                            <div class="h-20 flex items-center justify-center">
-                                                                <i class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}></i>
-                                                            </div>
-                                                            {/* Texto Neón */}
-                                                            <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-lg tracking-wide">{subItem.label}</span>
-                                                        </a>
-                                                    ))}
+                                            {/* MEGA MENU DARK BLUE (Estilo Imagen) */}
+                                            <div
+                                                id={`menu-${index}`}
+                                                class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[#0a0030] shadow-xl z-40 py-5 border-t border-[var(--brand-interactive-base)]/30 border-b-[2px] border-b-[var(--brand-interactive-base)]"
+                                            >
+                                                <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+                                                    <div class="flex justify-center items-start gap-8 xl:gap-20">
+                                                        {link.submenu.map(
+                                                            (subItem: any) => (
+                                                                <a
+                                                                    href={
+                                                                        subItem.url
+                                                                    }
+                                                                    class="group flex flex-col items-center gap-4 text-center w-32 hover:scale-105 transition-transform duration-200"
+                                                                >
+                                                                    {/* Icono Grande Neón */}
+                                                                    <div class="h-20 flex items-center justify-center">
+                                                                        <i
+                                                                            class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}
+                                                                        />
+                                                                    </div>
+                                                                    {/* Texto Neón */}
+                                                                    <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-lg tracking-wide">
+                                                                        {
+                                                                            subItem.label
+                                                                        }
+                                                                    </span>
+                                                                </a>
+                                                            ),
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </>
-                                ) : (
-                                    /* ENLACE NORMAL (Ej: WHAT'S ON) */
-                                    <a href={link.url || '#'} class="font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter hover:underline decoration-4 decoration-black underline-offset-4">
-                                        {link.texto}
-                                    </a>
-                                )}
-                            </li>
-                        ))}
+                                        </>
+                                    ) : (
+                                        /* ENLACE NORMAL (Ej: WHAT'S ON) */
+                                        <a
+                                            href={link.url || "#"}
+                                            class="font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter hover:underline decoration-4 decoration-black underline-offset-4"
+                                        >
+                                            {link.texto}
+                                        </a>
+                                    )}
+                                </li>
+                            ))
+                        }
                     </ul>
                 </nav>
 
                 <ButtonGroup botones={ctaButtons} />
 
-                <button id="mobile-menu-btn" class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50">
-                    <i id="icon-menu" class="fa-solid fa-bars text-[32px] cursor-pointer"></i>
-                    <i id="icon-close" class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"></i>
+                <button
+                    id="mobile-menu-btn"
+                    class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50"
+                >
+                    <i
+                        id="icon-menu"
+                        class="fa-solid fa-bars text-[32px] cursor-pointer"></i>
+                    <i
+                        id="icon-close"
+                        class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"
+                    ></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="mobile-menu" class="hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-[var(--brand-interactive-base)] z-40 overflow-y-auto border-t-4 transition-all">
+    <div
+        id="mobile-menu"
+        class="hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-[var(--brand-interactive-base)] z-40 overflow-y-auto border-t-4 transition-all"
+    >
         <div class="flex flex-col p-6 space-y-4">
-            <span class="text-2xl font-bold uppercase text-[var(--surface-brand-primary)]">LOCATIONS</span>
+            <span
+                class="text-2xl font-bold uppercase text-[var(--surface-brand-primary)]"
+                >LOCATIONS</span
+            >
         </div>
     </div>
 </header>
@@ -168,27 +275,27 @@ const ctaButtons: Boton[] = [{
 <script>
     // --- Lógica Mega Menu Genérica (Click) ---
     // Seleccionamos todos los botones que abren menús
-    const triggers = document.querySelectorAll('.menu-trigger');
-    const allMenus = document.querySelectorAll('.mega-menu');
+    const triggers = document.querySelectorAll(".menu-trigger");
+    const allMenus = document.querySelectorAll(".mega-menu");
 
     // Función para cerrar todo
     const closeAllMenus = () => {
-        allMenus.forEach(menu => menu.classList.add('hidden'));
-        triggers.forEach(trigger => {
-            const chevron = trigger.querySelector('.chevron');
-            if(chevron) chevron.classList.remove('rotate-180');
+        allMenus.forEach((menu) => menu.classList.add("hidden"));
+        triggers.forEach((trigger) => {
+            const chevron = trigger.querySelector(".chevron");
+            if (chevron) chevron.classList.remove("rotate-180");
         });
     };
 
-    triggers.forEach(trigger => {
-        trigger.addEventListener('click', (e) => {
+    triggers.forEach((trigger) => {
+        trigger.addEventListener("click", (e) => {
             e.stopPropagation();
             const targetId = (trigger as HTMLElement).dataset.target;
-            const targetMenu = document.getElementById(targetId || '');
-            const chevron = trigger.querySelector('.chevron');
+            const targetMenu = document.getElementById(targetId || "");
+            const chevron = trigger.querySelector(".chevron");
 
             // Si el menú clickeado ya está abierto, lo cerramos
-            if (targetMenu && !targetMenu.classList.contains('hidden')) {
+            if (targetMenu && !targetMenu.classList.contains("hidden")) {
                 closeAllMenus();
                 return;
             }
@@ -197,17 +304,17 @@ const ctaButtons: Boton[] = [{
             closeAllMenus();
 
             if (targetMenu) {
-                targetMenu.classList.remove('hidden');
-                if(chevron) chevron.classList.add('rotate-180');
+                targetMenu.classList.remove("hidden");
+                if (chevron) chevron.classList.add("rotate-180");
             }
         });
     });
 
     // Cerrar al clickear fuera
-    document.addEventListener('click', (e) => {
+    document.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
-        const isClickInsideMenu = target.closest('.mega-menu');
-        const isClickInsideTrigger = target.closest('.menu-trigger');
+        const isClickInsideMenu = target.closest(".mega-menu");
+        const isClickInsideTrigger = target.closest(".menu-trigger");
 
         if (!isClickInsideMenu && !isClickInsideTrigger) {
             closeAllMenus();
@@ -215,22 +322,22 @@ const ctaButtons: Boton[] = [{
     });
 
     // Cerrar con ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeAllMenus();
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAllMenus();
     });
 
     // --- Lógica Mobile (se mantiene igual) ---
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const iconMenu = document.getElementById('icon-menu');
-    const iconClose = document.getElementById('icon-close');
+    const menuBtn = document.getElementById("mobile-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const iconMenu = document.getElementById("icon-menu");
+    const iconClose = document.getElementById("icon-close");
 
     if (menuBtn && mobileMenu && iconMenu && iconClose) {
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            document.body.classList.toggle('overflow-hidden');
-            iconMenu.classList.toggle('hidden');
-            iconClose.classList.toggle('hidden');
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+            document.body.classList.toggle("overflow-hidden");
+            iconMenu.classList.toggle("hidden");
+            iconClose.classList.toggle("hidden");
         });
     }
 </script>
