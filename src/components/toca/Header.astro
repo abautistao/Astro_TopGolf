@@ -16,16 +16,42 @@ console.log(Astro.props);
 // En un futuro, esto podría venir de Strapi si tu CMS lo soporta.
 
 const infoSubmenuItems = [
-    { label: "GAMES", icon: "fa-solid fa-shapes", url: "/games" }, // Icono aproximado
-    { label: "PRICING", icon: "fa-solid fa-sterling-sign", url: "/pricing" },
+    {
+        label: "GAMES",
+        icon: "fa-solid fa-shapes",
+        url: "/games",
+        lottie: "/lottie/Games.json",
+    },
+    {
+        label: "PRICING",
+        icon: "fa-solid fa-sterling-sign",
+        url: "/pricing",
+        lottie: "/lottie/Pricing.json",
+    },
     {
         label: "WHAT'S ON",
         icon: "fa-regular fa-calendar-check",
         url: "/whats-on",
+        lottie: "/lottie/Whats_On.json",
     },
-    { label: "MORE FUN", icon: "fa-solid fa-people-group", url: "/more-fun" },
-    { label: "FAQS", icon: "fa-regular fa-circle-question", url: "/faqs" },
-    { label: "FOOD & DRINK", icon: "fa-solid fa-burger", url: "/food-drink" },
+    {
+        label: "MORE FUN",
+        icon: "fa-solid fa-people-group",
+        url: "/more-fun",
+        lottie: "/lottie/More_Fun.json",
+    },
+    {
+        label: "FAQS",
+        icon: "fa-regular fa-circle-question",
+        url: "/faqs",
+        lottie: "/lottie/FAQs.json",
+    },
+    {
+        label: "FOOD & DRINK",
+        icon: "fa-solid fa-burger",
+        url: "/food-drink",
+        lottie: "/lottie/Social.json",
+    },
 ];
 
 // Mapeamos los enlaces. Si el texto es "INFO", le asignamos el submenú.
@@ -208,10 +234,19 @@ const ctaButtons: Boton[] = [
                                                                     class="group flex flex-col items-center gap-4 text-center w-32 hover:scale-105 transition-transform duration-200"
                                                                 >
                                                                     {/* Icono Grande Neón */}
-                                                                    <div class="h-20 flex items-center justify-center">
-                                                                        <i
-                                                                            class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}
-                                                                        />
+                                                                    <div class="h-24 flex items-center justify-center">
+                                                                        {subItem.lottie ? (
+                                                                            <div
+                                                                                class="lottie-icon w-24 h-24"
+                                                                                data-animation-path={
+                                                                                    subItem.lottie
+                                                                                }
+                                                                            />
+                                                                        ) : (
+                                                                            <i
+                                                                                class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}
+                                                                            />
+                                                                        )}
                                                                     </div>
                                                                     {/* Texto Neón */}
                                                                     <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-lg tracking-wide">
@@ -273,6 +308,22 @@ const ctaButtons: Boton[] = [
 </header>
 
 <script>
+    import lottie from "lottie-web";
+
+    // --- Inicialización de Lottie ---
+    document.querySelectorAll(".lottie-icon").forEach((container) => {
+        const path = (container as HTMLElement).dataset.animationPath;
+        if (path) {
+            lottie.loadAnimation({
+                container: container,
+                renderer: "svg",
+                loop: true,
+                autoplay: true,
+                path: path,
+            });
+        }
+    });
+
     // --- Lógica Mega Menu Genérica (Click) ---
     // Seleccionamos todos los botones que abren menús
     const triggers = document.querySelectorAll(".menu-trigger");
