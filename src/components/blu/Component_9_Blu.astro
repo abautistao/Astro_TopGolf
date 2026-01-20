@@ -1,0 +1,386 @@
+---
+// src/components/blu/Component_9_Blu.astro
+import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    titulo?: string;
+    subtitulo_superior?: string;
+    subtitulo_inferior?: string;
+    galeria?: {
+        url: string;
+        mime: string;
+        width?: number;
+        height?: number;
+    }[];
+}
+
+const {
+    titulo = "Highlights",
+    subtitulo_superior = "Esto es Blu",
+    subtitulo_inferior = "Sol • Música • Momentos",
+    galeria = [],
+} = Astro.props;
+
+// Helper to chunk array into groups of 5
+const chunkSize = 5;
+const slides = [];
+for (let i = 0; i < galeria.length; i += chunkSize) {
+    slides.push(galeria.slice(i, i + chunkSize));
+}
+
+const isVideo = (mime: string) => mime?.startsWith("video");
+
+// Generate stable ID for this component instance to avoid conflicts
+const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
+---
+
+<section
+    class="w-full py-12 md:py-20 px-6 relative overflow-hidden bg-[#fafafa]"
+>
+    <!-- Header -->
+    <div class="max-w-[1440px] mx-auto mb-8 relative z-10">
+        <div
+            class="flex flex-col md:flex-row justify-between items-end md:items-center"
+        >
+            <div class="text-left">
+                {
+                    subtitulo_superior && (
+                        <span class="block text-xl md:text-2xl font-[family-name:var(--font-blu-body)] text-[var(--neutral-background-subtle)] mb-2">
+                            {subtitulo_superior}
+                        </span>
+                    )
+                }
+                {
+                    titulo && (
+                        <h2 class="text-5xl md:text-7xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-none">
+                            {titulo}
+                        </h2>
+                    )
+                }
+            </div>
+            {
+                subtitulo_inferior && (
+                    <div class="mt-4 md:mt-0">
+                        <span class="block text-lg md:text-xl font-[family-name:var(--font-blu-body)] text-[var(--surface-brand-primary)] opacity-80">
+                            {subtitulo_inferior}
+                        </span>
+                    </div>
+                )
+            }
+        </div>
+    </div>
+
+    <!-- Main Gallery Swiper -->
+    <div class="max-w-[1440px] mx-auto relative">
+        <div class="swiper main-gallery-swiper" id={componentId}>
+            <div class="swiper-wrapper">
+                {
+                    slides.map((group, slideIndex) => (
+                        <div class="swiper-slide">
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 h-[600px] md:h-[600px]">
+                                {/* Item 1: Big Left (Desktop: 6 cols, 2 rows) */}
+                                {group[0] && (
+                                    <a
+                                        href={getStrapiUrl(group[0])}
+                                        data-fancybox={`gallery-${componentId}`}
+                                        class="relative md:col-span-8 md:row-span-2 group overflow-hidden rounded-2xl block h-full w-full"
+                                    >
+                                        {isVideo(group[0].mime) ? (
+                                            <video
+                                                src={getStrapiUrl(group[0])}
+                                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                muted
+                                                loop
+                                                playsinline
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={getStrapiUrl(group[0])}
+                                                alt="Gallery Image"
+                                                width={1200}
+                                                height={800}
+                                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                        )}
+                                        {/* Play Icon Overlay for Videos */}
+                                        {isVideo(group[0].mime) && (
+                                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                <div class="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:bg-white/50 transition-colors">
+                                                    <i class="fa-solid fa-play text-white text-2xl" />
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* Zoom Icon Overlay */}
+                                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white">
+                                                <i class="fa-solid fa-plus" />
+                                            </div>
+                                        </div>
+                                    </a>
+                                )}
+
+                                {/* Right Side Grid Container (4 cols) */}
+                                <div class="hidden md:grid md:col-span-4 md:row-span-2 grid-rows-2 gap-4 h-full">
+                                    {/* Top Row: Item 2 & 3 */}
+                                    <div class="grid grid-cols-2 gap-4 row-span-1">
+                                        {group[1] && (
+                                            <a
+                                                href={getStrapiUrl(group[1])}
+                                                data-fancybox={`gallery-${componentId}`}
+                                                class="relative overflow-hidden rounded-xl group block h-full w-full"
+                                            >
+                                                {isVideo(group[1].mime) ? (
+                                                    <video
+                                                        src={getStrapiUrl(
+                                                            group[1],
+                                                        )}
+                                                        class="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <Image
+                                                        src={getStrapiUrl(
+                                                            group[1],
+                                                        )}
+                                                        alt="Gallery"
+                                                        width={400}
+                                                        height={300}
+                                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    />
+                                                )}
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                            </a>
+                                        )}
+                                        {group[2] && (
+                                            <a
+                                                href={getStrapiUrl(group[2])}
+                                                data-fancybox={`gallery-${componentId}`}
+                                                class="relative overflow-hidden rounded-xl group block h-full w-full"
+                                            >
+                                                {isVideo(group[2].mime) ? (
+                                                    <video
+                                                        src={getStrapiUrl(
+                                                            group[2],
+                                                        )}
+                                                        class="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <Image
+                                                        src={getStrapiUrl(
+                                                            group[2],
+                                                        )}
+                                                        alt="Gallery"
+                                                        width={400}
+                                                        height={300}
+                                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    />
+                                                )}
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                            </a>
+                                        )}
+                                    </div>
+                                    {/* Bottom Row: Item 4 & 5 */}
+                                    <div class="grid grid-cols-2 gap-4 row-span-1">
+                                        {group[3] && (
+                                            <a
+                                                href={getStrapiUrl(group[3])}
+                                                data-fancybox={`gallery-${componentId}`}
+                                                class="relative overflow-hidden rounded-xl group block h-full w-full"
+                                            >
+                                                {isVideo(group[3].mime) ? (
+                                                    <video
+                                                        src={getStrapiUrl(
+                                                            group[3],
+                                                        )}
+                                                        class="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <Image
+                                                        src={getStrapiUrl(
+                                                            group[3],
+                                                        )}
+                                                        alt="Gallery"
+                                                        width={400}
+                                                        height={300}
+                                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    />
+                                                )}
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                            </a>
+                                        )}
+                                        {group[4] && (
+                                            <a
+                                                href={getStrapiUrl(group[4])}
+                                                data-fancybox={`gallery-${componentId}`}
+                                                class="relative overflow-hidden rounded-xl group block h-full w-full"
+                                            >
+                                                {isVideo(group[4].mime) ? (
+                                                    <video
+                                                        src={getStrapiUrl(
+                                                            group[4],
+                                                        )}
+                                                        class="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <Image
+                                                        src={getStrapiUrl(
+                                                            group[4],
+                                                        )}
+                                                        alt="Gallery"
+                                                        width={400}
+                                                        height={300}
+                                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    />
+                                                )}
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                                {/* Mobile backup for items 2-5 (Hidden on Desktop) */}
+                                <div class="md:hidden grid grid-cols-2 gap-4 h-48 mt-4">
+                                    {group.slice(1, 4).map((item) => (
+                                        <a
+                                            href={getStrapiUrl(item)}
+                                            data-fancybox={`gallery-${componentId}`}
+                                            class="relative overflow-hidden rounded-xl h-full w-full"
+                                        >
+                                            {isVideo(item.mime) ? (
+                                                <video
+                                                    src={getStrapiUrl(item)}
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src={getStrapiUrl(item)}
+                                                    alt="Gallery"
+                                                    width={300}
+                                                    height={300}
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            )}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex items-center justify-between mt-8 md:mt-12">
+            <div class="flex gap-4">
+                <button
+                    class={`prev-${componentId} w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all`}
+                >
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button
+                    class={`next-${componentId} w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all`}
+                >
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Fraction Pagination -->
+            <div
+                class={`pagination-${componentId} text-4xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]`}
+            >
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    import Swiper from "swiper";
+    import "swiper/css";
+    import "swiper/css/navigation";
+    import "swiper/css/pagination";
+    import { Navigation, Pagination } from "swiper/modules";
+    import { Fancybox } from "@fancyapps/ui";
+    import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+    document.addEventListener("astro:page-load", () => {
+        // Initialize Swipers
+        const sliders = document.querySelectorAll(".main-gallery-swiper");
+
+        sliders.forEach((slider) => {
+            const id = slider.id;
+
+            // Find controls relative to this slider's container
+            // The structure is current: .swipper-container > .controls-container
+            // We need to look outside the swiper div
+            const container = slider.closest("section");
+            const nextEl = container?.querySelector(`.next-${id}`);
+            const prevEl = container?.querySelector(`.prev-${id}`);
+            const paginationEl = container?.querySelector(`.pagination-${id}`);
+
+            if (nextEl && prevEl && paginationEl) {
+                new Swiper(slider, {
+                    modules: [Navigation, Pagination],
+                    slidesPerView: 1,
+                    spaceBetween: 30,
+                    loop: false, // Set to false to see if looping is causing issues with small sets
+                    navigation: {
+                        nextEl: nextEl,
+                        prevEl: prevEl,
+                    },
+                    pagination: {
+                        el: paginationEl,
+                        type: "fraction",
+                        formatFractionCurrent: (number) => number,
+                        formatFractionTotal: (number) => number,
+                        renderFraction: (currentClass, totalClass) => {
+                            return `<span class="${currentClass} text-5xl"></span><span class="text-2xl opacity-50 mx-2">/</span><span class="${totalClass} text-2xl opacity-50"></span>`;
+                        },
+                    },
+                });
+            }
+
+            // Initialize Fancybox with explicit z-index
+            Fancybox.bind(`[data-fancybox="gallery-${id}"]`, {
+                // Force high z-index via JS config as well
+                zIndex: 999999,
+                // Default toolbar usually includes the close button.
+                // We'll trust the default but ensure basic interaction works.
+                closeButton: "top", // Force explicit position if supported
+
+                // Ensure events bubble correctly
+                on: {
+                    init: () => {
+                        console.log("Fancybox initialized for", id);
+                    },
+                },
+            });
+        });
+    });
+</script>
+
+<style is:global>
+    /* Force extremely high z-index for Fancybox container and content */
+    .fancybox__container {
+        z-index: 999999 !important;
+    }
+    .fancybox__toolbar {
+        z-index: 999999 !important;
+    }
+
+    /* Ensure the close button is visible */
+    .f-button.is-close-btn {
+        opacity: 1 !important;
+        visibility: visible !important;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+    }
+</style>
+
+<style>
+    /* Custom styles for pagination if needed */
+    .swiper-pagination-fraction {
+        bottom: 0;
+        position: static;
+        width: auto;
+    }
+</style>
