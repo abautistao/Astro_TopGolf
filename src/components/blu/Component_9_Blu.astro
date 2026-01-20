@@ -71,8 +71,8 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
         </div>
     </div>
 
-    <!-- Main Gallery Swiper -->
-    <div class="max-w-[1440px] mx-auto relative">
+    <!-- Main Gallery Swiper Container -->
+    <div class="max-w-[1440px] mx-auto relative" data-gallery-id={componentId}>
         <div class="swiper main-gallery-swiper" id={componentId}>
             <div class="swiper-wrapper">
                 {
@@ -83,7 +83,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                 {group[0] && (
                                     <a
                                         href={getStrapiUrl(group[0])}
-                                        data-fancybox={`gallery-${componentId}`}
+                                        data-fancybox={componentId}
                                         class="relative md:col-span-8 md:row-span-2 group overflow-hidden rounded-2xl block h-full w-full"
                                     >
                                         {isVideo(group[0].mime) ? (
@@ -127,7 +127,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                         {group[1] && (
                                             <a
                                                 href={getStrapiUrl(group[1])}
-                                                data-fancybox={`gallery-${componentId}`}
+                                                data-fancybox={componentId}
                                                 class="relative overflow-hidden rounded-xl group block h-full w-full"
                                             >
                                                 {isVideo(group[1].mime) ? (
@@ -154,7 +154,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                         {group[2] && (
                                             <a
                                                 href={getStrapiUrl(group[2])}
-                                                data-fancybox={`gallery-${componentId}`}
+                                                data-fancybox={componentId}
                                                 class="relative overflow-hidden rounded-xl group block h-full w-full"
                                             >
                                                 {isVideo(group[2].mime) ? (
@@ -184,7 +184,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                         {group[3] && (
                                             <a
                                                 href={getStrapiUrl(group[3])}
-                                                data-fancybox={`gallery-${componentId}`}
+                                                data-fancybox={componentId}
                                                 class="relative overflow-hidden rounded-xl group block h-full w-full"
                                             >
                                                 {isVideo(group[3].mime) ? (
@@ -211,7 +211,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                         {group[4] && (
                                             <a
                                                 href={getStrapiUrl(group[4])}
-                                                data-fancybox={`gallery-${componentId}`}
+                                                data-fancybox={componentId}
                                                 class="relative overflow-hidden rounded-xl group block h-full w-full"
                                             >
                                                 {isVideo(group[4].mime) ? (
@@ -242,7 +242,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                     {group.slice(1, 4).map((item) => (
                                         <a
                                             href={getStrapiUrl(item)}
-                                            data-fancybox={`gallery-${componentId}`}
+                                            data-fancybox={componentId}
                                             class="relative overflow-hidden rounded-xl h-full w-full"
                                         >
                                             {isVideo(item.mime) ? (
@@ -273,12 +273,12 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
         <div class="flex items-center justify-between mt-8 md:mt-12">
             <div class="flex gap-4">
                 <button
-                    class={`prev-${componentId} w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all`}
+                    class="gallery-prev-btn w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all"
                 >
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <button
-                    class={`next-${componentId} w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all`}
+                    class="gallery-next-btn w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all"
                 >
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
@@ -286,7 +286,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
 
             <!-- Fraction Pagination -->
             <div
-                class={`pagination-${componentId} text-4xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]`}
+                class="gallery-pagination text-4xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]"
             >
             </div>
         </div>
@@ -302,60 +302,58 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
     import { Fancybox } from "@fancyapps/ui";
     import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
-    document.addEventListener("astro:page-load", () => {
+    function initGalleries() {
+        // Initialize Fancybox globally
+        try {
+            Fancybox.bind("[data-fancybox]", {
+                zIndex: 999999,
+                closeButton: "top",
+                Toolbar: {
+                    display: {
+                        left: ["infobar"],
+                        middle: [],
+                        right: ["slideshow", "close"],
+                    },
+                },
+            });
+        } catch (err) {
+            console.error("Fancybox init error:", err);
+        }
+
         // Initialize Swipers
         const sliders = document.querySelectorAll(".main-gallery-swiper");
-
         sliders.forEach((slider) => {
             const id = slider.id;
+            const container = document.querySelector(
+                `[data-gallery-id="${id}"]`,
+            );
+            if (!container) return;
 
-            // Find controls relative to this slider's container
-            // The structure is current: .swipper-container > .controls-container
-            // We need to look outside the swiper div
-            const container = slider.closest("section");
-            const nextEl = container?.querySelector(`.next-${id}`);
-            const prevEl = container?.querySelector(`.prev-${id}`);
-            const paginationEl = container?.querySelector(`.pagination-${id}`);
+            const nextEl = container.querySelector(".gallery-next-btn");
+            const prevEl = container.querySelector(".gallery-prev-btn");
+            const paginationEl = container.querySelector(".gallery-pagination");
 
             if (nextEl && prevEl && paginationEl) {
                 new Swiper(slider, {
                     modules: [Navigation, Pagination],
                     slidesPerView: 1,
                     spaceBetween: 30,
-                    loop: false, // Set to false to see if looping is causing issues with small sets
-                    navigation: {
-                        nextEl: nextEl,
-                        prevEl: prevEl,
-                    },
+                    loop: true,
+                    navigation: { nextEl, prevEl },
                     pagination: {
                         el: paginationEl,
                         type: "fraction",
-                        formatFractionCurrent: (number) => number,
-                        formatFractionTotal: (number) => number,
                         renderFraction: (currentClass, totalClass) => {
                             return `<span class="${currentClass} text-5xl"></span><span class="text-2xl opacity-50 mx-2">/</span><span class="${totalClass} text-2xl opacity-50"></span>`;
                         },
                     },
                 });
             }
-
-            // Initialize Fancybox with explicit z-index
-            Fancybox.bind(`[data-fancybox="gallery-${id}"]`, {
-                // Force high z-index via JS config as well
-                zIndex: 999999,
-                // Default toolbar usually includes the close button.
-                // We'll trust the default but ensure basic interaction works.
-                closeButton: "top", // Force explicit position if supported
-
-                // Ensure events bubble correctly
-                on: {
-                    init: () => {
-                        console.log("Fancybox initialized for", id);
-                    },
-                },
-            });
         });
-    });
+    }
+
+    document.addEventListener("DOMContentLoaded", initGalleries);
+    document.addEventListener("astro:page-load", initGalleries);
 </script>
 
 <style is:global>
