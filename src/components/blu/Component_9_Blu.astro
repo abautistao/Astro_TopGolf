@@ -39,35 +39,42 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
     class="w-full py-12 md:py-20 px-6 relative overflow-hidden bg-[#fafafa]"
 >
     <!-- Header -->
-    <div class="max-w-[1440px] mx-auto mb-8 relative z-10">
+    <div class="max-w-[1440px] mx-auto mb-8 relative z-10 md:px-0">
         <div
-            class="flex flex-col md:flex-row justify-between items-end md:items-center"
+            class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] md:items-end gap-4"
         >
-            <div class="text-left">
+            <!-- Left: Subtitulo Superior -->
+            <div class="text-left order-2 md:order-1">
                 {
                     subtitulo_superior && (
-                        <span class="block text-xl md:text-2xl font-[family-name:var(--font-blu-body)] text-[var(--neutral-background-subtle)] mb-2">
+                        <span class="block text-xl md:text-3xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] opacity-50">
                             {subtitulo_superior}
                         </span>
                     )
                 }
+            </div>
+
+            <!-- Center: Title -->
+            <div class="text-center order-1 md:order-2">
                 {
                     titulo && (
-                        <h2 class="text-5xl md:text-7xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-none">
+                        <h2 class="text-5xl md:text-7xl font-[family-name:var(--font-blu-title)] mb-30 text-[var(--surface-brand-primary)] leading-none">
                             {titulo}
                         </h2>
                     )
                 }
             </div>
-            {
-                subtitulo_inferior && (
-                    <div class="mt-4 md:mt-0">
-                        <span class="block text-lg md:text-xl font-[family-name:var(--font-blu-body)] text-[var(--surface-brand-primary)] opacity-80">
+
+            <!-- Right: Subtitulo Inferior -->
+            <div class="text-right order-3 md:order-3">
+                {
+                    subtitulo_inferior && (
+                        <span class="block text-xl md:text-3xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] opacity-50">
                             {subtitulo_inferior}
                         </span>
-                    </div>
-                )
-            }
+                    )
+                }
+            </div>
         </div>
     </div>
 
@@ -270,25 +277,26 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
         </div>
 
         <!-- Navigation Controls -->
-        <div class="flex items-center justify-between mt-8 md:mt-12">
-            <div class="flex gap-4">
-                <button
-                    class="gallery-prev-btn w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all"
-                >
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button
-                    class="gallery-next-btn w-12 h-12 rounded-full border border-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all"
-                >
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
+        <div
+            class="flex items-center justify-between w-full mt-8 md:mt-12 px-4 md:px-0"
+        >
+            <button
+                class="gallery-prev-btn text-[var(--surface-brand-primary)] hover:opacity-70 transition-opacity p-2"
+            >
+                <i class="fa-solid fa-chevron-left text-2xl md:text-3xl"></i>
+            </button>
 
             <!-- Fraction Pagination -->
             <div
-                class="gallery-pagination text-4xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)]"
+                class="gallery-pagination font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] flex items-baseline gap-1"
             >
             </div>
+
+            <button
+                class="gallery-next-btn text-[var(--surface-brand-primary)] hover:opacity-70 transition-opacity p-2"
+            >
+                <i class="fa-solid fa-chevron-right text-2xl md:text-3xl"></i>
+            </button>
         </div>
     </div>
 </section>
@@ -307,7 +315,6 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
         try {
             Fancybox.bind("[data-fancybox]", {
                 zIndex: 999999,
-                closeButton: "top",
                 Toolbar: {
                     display: {
                         left: ["infobar"],
@@ -344,7 +351,9 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                         el: paginationEl,
                         type: "fraction",
                         renderFraction: (currentClass, totalClass) => {
-                            return `<span class="${currentClass} text-5xl"></span><span class="text-2xl opacity-50 mx-2">/</span><span class="${totalClass} text-2xl opacity-50"></span>`;
+                            return `<span class="${currentClass} text-5xl md:text-7xl font-medium leading-none"></span>
+                                    <span class="text-2xl md:text-3xl opacity-40 mx-2 self-end mb-2">/</span>
+                                    <span class="${totalClass} text-2xl md:text-3xl opacity-40 self-end mb-2"></span>`;
                         },
                     },
                 });
