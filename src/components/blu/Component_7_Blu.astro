@@ -14,12 +14,14 @@ interface Testimonio {
 interface Props {
     fondoDesktop?: any;
     fondoMovil?: any;
+    imagen?: any;
     testimonios?: Testimonio[];
 }
 
 const {
     fondoDesktop,
     fondoMovil,
+    imagen,
     testimonios = [
         {
             id: 1,
@@ -44,23 +46,44 @@ const {
         },
     ],
 } = Astro.props;
-
+console.log(Astro.props);
 const desktopUrl =
     getStrapiUrl(fondoDesktop) ||
-    "https://placehold.co/1920x1080/e2e8f0/1e293b?text=Fondo+Desktop";
-const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
+    "https://placehold.co/1920x1080/e2e8f0/1e293b?text=imagen";
+
+const mobileUrl =
+    getStrapiUrl(fondoMovil) ||
+    "https://placehold.co/1920x1080/e2e8f0/1e293b?text=imagen";
+
+const featureImage =
+    getStrapiUrl(imagen) ||
+    "https://placehold.co/1920x1080/e2e8f0/1e293b?text=imagen";
 ---
 
-<section class="relative w-full overflow-hidden bg-[#EBE7E0] py-12 md:py-24">
+<section
+    class="relative w-full overflow-hidden py-12 md:py-24 bg-cover bg-center"
+    style={desktopUrl ? `background-image: url('${desktopUrl}');` : ""}
+>
+    <style define:vars={{ desktopUrl, mobileUrl }}>
+        section {
+            background-image: url(var(--desktopUrl));
+        }
+        @media (max-width: 768px) {
+            section {
+                background-image: url(var(--mobileUrl));
+            }
+        }
+    </style>
     <div
         class="max-w-[1440px] mx-auto px-4 md:px-6 relative flex flex-col md:block items-center"
     >
         {/* --- LEFT: IMAGE CONTAINER --- */}
+
         <div
-            class="w-full md:w-[70%] h-[300px] md:h-[600px] relative rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl z-0"
+            class="w-full md:w-[70%] h-[300px] md:h-[600px] relative rounded-t-4xl md:rounded-l-none md:rounded-r-4xl overflow-hidden shadow-2xl z-0"
         >
             <Image
-                src={desktopUrl}
+                src={featureImage}
                 alt="Lifestyle Blu"
                 width={1200}
                 height={800}
@@ -77,11 +100,11 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
             {/* Carousel Card */}
             <div
                 id="testimonial-carousel"
-                class="w-full overflow-hidden relative rounded-[2rem] shadow-2xl bg-white border border-white/60 p-2"
+                class="w-full overflow-hidden relative rounded-[2rem] shadow-2xl bg-white border border-white/60 p-5"
             >
                 {/* Inner Quote Box Style (Light Blue Background) */}
                 <div
-                    class="bg-[#E4ECF2] rounded-[1.5rem] p-8 md:p-12 relative h-[300px] md:h-[350px] flex items-center"
+                    class="bg-[#E4ECF2] rounded-[1.5rem] p-1 md:p-1 relative h-[200px] md:h-[250px] flex items-center"
                 >
                     <div
                         class="w-full h-full overflow-hidden flex items-center"
@@ -92,7 +115,7 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
                         >
                             {
                                 testimonios.map((testimonio, index) => (
-                                    <div class="w-full flex-shrink-0 flex flex-col items-center justify-center text-center px-4">
+                                    <div class="w-full flex-shrink-0 flex flex-col items-center justify-center text-center px-2">
                                         {/* Quote Icon */}
                                         <div class="mb-4 text-[#94a3b8] self-start">
                                             <i class="fa-solid fa-quote-left text-3xl md:text-4xl" />
@@ -138,7 +161,9 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
                                                     src={
                                                         getStrapiUrl(
                                                             testimonio.avatar,
-                                                        ) || testimonio.avatar
+                                                        ) ||
+                                                        testimonio.avatar ||
+                                                        "https://placehold.co/100x100?text=Avatar"
                                                     }
                                                     alt={testimonio.nombre}
                                                     width={48}
