@@ -12,7 +12,7 @@ interface Props {
     imagen: any;
     boton: Boton | null;
 }
-
+console.log(Astro.props);
 const { subtitulo, titulo, descripcion, imagen, boton = null } = Astro.props;
 
 const strapiImageUrl =
@@ -20,7 +20,7 @@ const strapiImageUrl =
     "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
 const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
 
-const buttons: Boton[] = boton ? [boton] : [];
+const buttons: Boton[] = Array.isArray(boton) ? boton : boton ? [boton] : [];
 
 // Check if we have any content to show
 const hasContent = titulo || subtitulo || descripcion;
@@ -40,7 +40,7 @@ const showVideo = isVideo(strapiImageUrl);
 ---
 
 <section
-    class="relative w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end md:items-center justify-center overflow-hidden"
+    class="relative w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end justify-center overflow-hidden"
 >
     <!-- Background Image or Video -->
     <div class="absolute inset-0 z-0">
@@ -69,7 +69,7 @@ const showVideo = isVideo(strapiImageUrl);
             hasContent && (
                 <>
                     <div class="absolute inset-0 bg-[#012b49]/20 hidden md:block" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#012b49]/80 via-transparent to-transparent md:hidden" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#012b49]/90 via-transparent to-transparent" />
                 </>
             )
         }
@@ -78,10 +78,10 @@ const showVideo = isVideo(strapiImageUrl);
     <!-- Content -->
     {
         hasContent && (
-            <div class="relative z-10 w-full max-w-[1440px] px-6 pb-16 md:pb-0 text-left md:text-center text-white md:mt-[-50px]">
-                {/* Mobile Layout: Bottom Left. Desktop Layout: Center Center */}
+            <div class="relative z-10 w-full max-w-[1440px] px-6 pb-16 md:pb-32 text-left text-white">
+                {/* Mobile Layout: Bottom Left. Desktop Layout: Bottom Left */}
                 {subtitulo && (
-                    <span class="block text-lg md:text-base font-normal md:font-medium tracking-normal md:tracking-[0.3em] font-[family-name:var(--font-blu-body)] mb-0 md:mb-4">
+                    <span class="block text-xl md:text-3xl font-normal md:font-medium tracking-normal md:tracking-[0.1em] font-[family-name:var(--font-blu-body)] mb-0 md:mb-4">
                         {subtitulo}
                     </span>
                 )}
@@ -91,7 +91,7 @@ const showVideo = isVideo(strapiImageUrl);
                     </h1>
                 )}
                 {descripcionHtml && (
-                    <div class="text-sm md:text-xl font-medium md:font-light tracking-wide md:tracking-widest opacity-90 font-[family-name:var(--font-blu-body)] max-w-2xl md:mx-auto">
+                    <div class="text-sm md:text-xl font-medium md:font-light tracking-wide md:tracking-widest opacity-90 font-[family-name:var(--font-blu-body)] max-w-2xl">
                         <Fragment set:html={descripcionHtml} />
                     </div>
                 )}
