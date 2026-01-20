@@ -1,0 +1,145 @@
+---
+// src/components/blu/Component_11_Blu.astro
+import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    imagenes?: {
+        url: string;
+        mime: string;
+        width?: number;
+        height?: number;
+        alternativeText?: string;
+    }[];
+}
+
+const { imagenes = [] } = Astro.props;
+
+// Generate unique ID for this instance
+const componentId = "slider-" + Math.random().toString(36).substr(2, 9);
+---
+
+<section class="w-full py-12 md:py-16 bg-[#f4f0ec]">
+    <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+        <div
+            class="relative w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-lg h-[400px] md:h-[600px]"
+        >
+            <div
+                class="swiper simple-slider-swiper h-full w-full"
+                id={componentId}
+            >
+                <div class="swiper-wrapper h-full">
+                    {
+                        imagenes.length > 0 ? (
+                            imagenes.map((img) => (
+                                <div class="swiper-slide h-full w-full">
+                                    <Image
+                                        src={getStrapiUrl(img)}
+                                        alt={
+                                            img.alternativeText ||
+                                            "Slider Image"
+                                        }
+                                        width={1440}
+                                        height={800}
+                                        class="w-full h-full object-cover"
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            /* Placeholder if no images */
+                            <div class="swiper-slide h-full w-full">
+                                <img
+                                    src="https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg"
+                                    alt="Placeholder"
+                                    class="w-full h-full object-cover"
+                                />
+                            </div>
+                        )
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div
+                    class="swiper-pagination custom-pagination absolute bottom-6 z-10 w-full flex justify-center gap-2"
+                >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    import Swiper from "swiper";
+    import "swiper/css";
+    import "swiper/css/pagination";
+    import { Pagination, Autoplay } from "swiper/modules";
+
+    function initSimpleSliders() {
+        const sliders = document.querySelectorAll(".simple-slider-swiper");
+
+        sliders.forEach((sliderElement) => {
+            const slider = sliderElement as HTMLElement & { swiper?: any };
+
+            // Avoid re-initialization
+            if (slider.swiper) return;
+
+            new Swiper(slider as HTMLElement, {
+                modules: [Pagination, Autoplay],
+                slidesPerView: 1,
+                loop: true,
+                grabCursor: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: slider.querySelector(
+                        ".swiper-pagination",
+                    ) as HTMLElement,
+                    clickable: true,
+                    renderBullet: function (index, className) {
+                        return `<span class="${className} custom-bullet"></span>`;
+                    },
+                },
+            });
+        });
+    }
+
+    // Init on load and after Astro transitions
+    document.addEventListener("DOMContentLoaded", initSimpleSliders);
+    document.addEventListener("astro:page-load", initSimpleSliders);
+</script>
+
+<style is:global>
+    /* Custom Pagination Styles */
+    .swiper-pagination.custom-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px; /* Espacio entre los puntos */
+        bottom: 30px !important; /* Posición vertical */
+        z-index: 20;
+    }
+
+    /* Estilo base para los bullets (los inactivos) */
+    .custom-pagination .swiper-pagination-bullet {
+        width: 14px;
+        height: 14px;
+        background: rgba(255, 255, 255, 0.4); /* Blanco semi-transparente */
+        opacity: 1;
+        border-radius: 50%; /* Círculos perfectos */
+        transition: all 0.4s ease; /* Transición suave */
+        margin: 0 !important; /* Reseteo de margen de swiper */
+        display: block;
+        cursor: pointer;
+    }
+
+    /* Estilo para el bullet activo (Barra alargada) */
+    .custom-pagination .swiper-pagination-bullet-active {
+        width: 120px; /* Longitud de la barra */
+        height: 14px; /* Altura igual a los puntos */
+        background: #ffffff; /* Blanco sólido */
+        border-radius: 999px; /* Bordes completamente redondeados */
+    }
+</style>
