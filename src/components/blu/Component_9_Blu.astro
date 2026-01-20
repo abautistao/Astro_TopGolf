@@ -13,6 +13,7 @@ interface Props {
         width?: number;
         height?: number;
     }[];
+    imagen_fondo?: any;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
     subtitulo_superior = "Esto es Blu",
     subtitulo_inferior = "Sol • Música • Momentos",
     galeria = [],
+    imagen_fondo,
 } = Astro.props;
 
 // Helper to chunk array into groups of 5
@@ -30,6 +32,7 @@ for (let i = 0; i < galeria.length; i += chunkSize) {
 }
 
 const isVideo = (mime: string) => mime?.startsWith("video");
+const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 
 // Generate stable ID for this component instance to avoid conflicts
 const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
@@ -38,6 +41,20 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
 <section
     class="w-full py-12 md:py-20 px-6 relative overflow-hidden bg-[#fafafa]"
 >
+    <!-- Background Image -->
+    {
+        bgUrl && (
+            <div class="absolute inset-0 pointer-events-none">
+                <Image
+                    src={bgUrl}
+                    alt="Background"
+                    width={1920}
+                    height={1080}
+                    class="w-full h-full object-cover opacity-100"
+                />
+            </div>
+        )
+    }
     <!-- Header -->
     <div class="max-w-[1440px] mx-auto mb-8 relative z-10 md:px-0">
         <div
@@ -58,7 +75,7 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
             <div class="text-center order-1 md:order-2">
                 {
                     titulo && (
-                        <h2 class="text-5xl md:text-7xl font-[family-name:var(--font-blu-title)] mb-30 text-[var(--surface-brand-primary)] leading-none">
+                        <h2 class="text-5xl md:text-7xl font-[family-name:var(--font-blu-title)] md:mb-30 text-[var(--surface-brand-primary)] leading-none">
                             {titulo}
                         </h2>
                     )
