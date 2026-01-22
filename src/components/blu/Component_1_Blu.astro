@@ -40,7 +40,7 @@ const showVideo = isVideo(strapiImageUrl);
 ---
 
 <section
-    class="relative w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end md:items-center justify-center overflow-hidden"
+    class="relative z-10 w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end md:items-center justify-center overflow-hidden"
 >
     <!-- Background Image or Video -->
     <div class="absolute inset-0 z-0">
@@ -96,7 +96,7 @@ const showVideo = isVideo(strapiImageUrl);
                     </div>
                 )}
                 {boton && (
-                    <div class="mt-6 md:mt-8 animate-fade-in-up delay-300">
+                    <div class="relative z-10 mt-6 md:mt-8 animate-fade-in-up delay-300">
                         <Button botones={buttons} />
                     </div>
                 )}

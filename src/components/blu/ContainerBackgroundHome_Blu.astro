@@ -39,7 +39,7 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
 
 <section
     class:list={[
-        "relative w-full overflow-hidden bg-cover bg-center",
+        "relative z-30 w-full overflow-visible bg-cover bg-center flex flex-col",
         fondoFijo ? "bg-fixed" : "bg-scroll",
     ]}
     style={desktopUrl ? `background-image: url('${desktopUrl}');` : ""}
