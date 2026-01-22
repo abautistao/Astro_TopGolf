@@ -1,0 +1,35 @@
+---
+// src/components/blu/Component_13_Blu.astro
+
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+}
+
+const {
+    titulo = "Lo que dice la vibra",
+    subtitulo = "Sol • Música • Momentos",
+} = Astro.props;
+---
+
+<section
+    class="w-full px-6 py-12 md:py-16 font-[family-name:var(--font-blu-body)] bg-transparent"
+>
+    <div
+        class="max-w-[1440px] mx-auto w-full flex flex-row items-end justify-between gap-4 md:gap-12 pb-4 md:pb-6"
+    >
+        <!-- Left Title -->
+        <h2
+            class="text-lg md:text-6xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-none"
+        >
+            {titulo}
+        </h2>
+
+        <!-- Right Subtitle -->
+        <div
+            class="text-[var(--surface-brand-primary)]/75 text-sm md:text-2xl font-medium tracking-wide"
+        >
+            {subtitulo}
+        </div>
+    </div>
+</section>

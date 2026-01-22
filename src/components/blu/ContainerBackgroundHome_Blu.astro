@@ -7,6 +7,7 @@ import Component_3_Blu from "./Component_3_Blu.astro";
 import Component_4_Blu from "./Component_4_Blu.astro";
 import Component_5_Blu from "./Component_5_Blu.astro";
 import Component_6_Blu from "./Component_6_Blu.astro";
+import Component_13_Blu from "./Component_13_Blu.astro";
 
 interface Props {
     fondoDesktop?: any;
@@ -19,6 +20,7 @@ interface Props {
     componente_4?: any;
     componente_5?: any;
     componente_6?: any;
+    componente_13?: any;
 }
 
 const {
@@ -31,6 +33,7 @@ const {
     componente_4,
     componente_5,
     componente_6,
+    componente_13,
 } = Astro.props;
 
 const desktopUrl = getStrapiUrl(fondoDesktop);
@@ -65,6 +68,7 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
         {componente_4 && <Component_4_Blu {...componente_4} />}
         {componente_5 && <Component_5_Blu {...componente_5} />}
         {componente_6 && <Component_6_Blu {...componente_6} />}
+        {componente_13 && <Component_13_Blu {...componente_13} />}
 
         {/* Slot por si se usa de forma manual en el código */}
         <slot />
