@@ -164,6 +164,15 @@
     font-display: swap;
 }
 
+/* Tenor Sans */
+@font-face {
+    font-family: 'Tenor Sans';
+    src: url('/fonts/Tenor_Sans/TenorSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --font-shields-sans-regular: 'ShieldSans-Regular', sans-serif;
     --font-shields-sans-condensed: 'ShieldSans-Condensed', sans-serif;
@@ -187,7 +196,7 @@
     --neutral-background-subtle: #1d91b4;
 
     /* Blu Typography */
-    --font-blu-title: 'Scheherazade New', serif;
+    --font-blu-title: 'Tenor Sans', sans-serif;
     --font-blu-body: 'Satoshi-Regular', sans-serif;
 }
 
