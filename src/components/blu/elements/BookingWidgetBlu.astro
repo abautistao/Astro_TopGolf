@@ -14,10 +14,21 @@ const { className = "" } = Astro.props;
     ]}
 >
     <!-- Background Watermark (Optional: "Blu" logo opacity) -->
-    <div
-        class="absolute -left-10 bottom-0 text-[150px] leading-none font-bold text-white/5 pointer-events-none font-serif select-none"
-    >
-        Blu
+    <div class="absolute left-0 bottom-0 z-0 pointer-events-none select-none">
+        <img
+            src="/SVG/Blu.svg"
+            alt="Blu"
+            class="h-[70px] md:h-[140px] w-auto mb-[-10px] ml-[-10px]"
+        />
+    </div>
+
+    <!-- Right Background Watermark -->
+    <div class="absolute right-0 bottom-0 z-0 pointer-events-none select-none">
+        <img
+            src="/SVG/Blu_Vectores.svg"
+            alt="Blu"
+            class="h-[70px] md:h-[140px] w-auto mb-[-10px] mr-[-10px]"
+        />
     </div>
 
     <!-- Content Wrapper -->
