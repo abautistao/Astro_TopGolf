@@ -4,332 +4,275 @@ import { getHeaderData, getStrapiUrl } from "../../lib/strapi";
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 import defaultLogoImg from "../../assets/TOCA_Social_One_Color.png";
+import { getIconClass, getLottiePath } from "../../utils/iconMapper";
 
 const { data } = Astro.props;
 const headerData = data || (await getHeaderData());
+
 const strapiLogo = getStrapiUrl(headerData?.logo);
 const logoUrl = strapiLogo || defaultLogoImg.src;
-console.log(Astro.props);
+const headerTitle = headerData?.Titulo;
 
-// --- 1. DEFINICIÓN DE DATOS Y SUBMENÚS ---
-// Aquí definimos manualmente el submenú de "INFO" para que coincida con tu imagen.
-// En un futuro, esto podría venir de Strapi si tu CMS lo soporta.
+// --- DATOS LINKS DOS (LOCATIONS) ---
+const locationsLinks = headerData?.links_dos || [];
 
-const infoSubmenuItems = [
-    {
-        label: "GAMES",
-        icon: "fa-solid fa-shapes",
-        url: "/games",
-        lottie: "/lottie/Games.json",
-    },
-    {
-        label: "PRICING",
-        icon: "fa-solid fa-sterling-sign",
-        url: "/pricing",
-        lottie: "/lottie/Pricing.json",
-    },
-    {
-        label: "WHAT'S ON",
-        icon: "fa-regular fa-calendar-check",
-        url: "/whats-on",
-        lottie: "/lottie/Whats_On.json",
-    },
-    {
-        label: "MORE FUN",
-        icon: "fa-solid fa-people-group",
-        url: "/more-fun",
-        lottie: "/lottie/More_Fun.json",
-    },
-    {
-        label: "FAQS",
-        icon: "fa-regular fa-circle-question",
-        url: "/faqs",
-        lottie: "/lottie/FAQs.json",
-    },
-    {
-        label: "FOOD & DRINK",
-        icon: "fa-solid fa-burger",
-        url: "/food-drink",
-        lottie: "/lottie/Social.json",
-    },
-];
+// Lógica para Links Principales
+const links = headerData?.links?.length > 0
+    ? headerData.links.map((link: any) => {
+        const hasDropdown = link.tiene_dropdown;
+        let formattedSubmenu = null;
 
-// Mapeamos los enlaces. Si el texto es "INFO", le asignamos el submenú.
-const defaultLinks = [
-    { texto: "INFO", url: "/info", submenu: infoSubmenuItems },
-    { texto: "EVENTS", url: "/events", submenu: null }, // Puedes agregar null o crear otro array si Events tiene menú
-    { texto: "WHAT'S ON", url: "/whats-on", submenu: null },
-    { texto: "XMAS", url: "/xmas", submenu: null },
-];
+        if (hasDropdown && link.dropdown_items && link.dropdown_items.length > 0) {
+            formattedSubmenu = link.dropdown_items.map((item: any) => {
+                const imgUrl = item.imagen ? getStrapiUrl(item.imagen) : null;
+                const finalIcon = getIconClass(item.icono);
+                const finalLottie = getLottiePath(item.icono);
 
-// Si viene info de Strapi, intentamos fusionarla, si no, usamos defaultLinks
-const links =
-    headerData?.links && headerData.links.length > 0
-        ? headerData.links.map((link: any) => {
-              // Si el link de strapi se llama INFO, le inyectamos el submenú visual
-              if (link.texto.toUpperCase() === "INFO")
-                  return { ...link, submenu: infoSubmenuItems };
-              return { ...link, submenu: null };
-          })
-        : defaultLinks;
+                return {
+                    label: item.titulo,
+                    subLabel: item.subtitulo,
+                    url: item.url || "#",
+                    imageUrl: imgUrl,
+                    icon: finalIcon,
+                    lottie: finalLottie,
+                };
+            });
+        }
 
-const rawButton = Array.isArray(headerData?.Botones2)
-    ? headerData.Botones2[0]
-    : headerData?.Botones2 || {
-          texto: "BOOK NOW",
-          url: "#",
-          tipo: "version_1",
-      };
+        return {
+            texto: link.texto,
+            url: link.url,
+            submenu: formattedSubmenu
+        };
+      })
+    : [];
 
-const ctaButtons: Boton[] = [
-    {
-        id: rawButton.id || 1,
-        texto: rawButton.texto,
-        url: rawButton.url,
-        tipo: rawButton.tipo || "version_1",
-    },
-];
+const rawButton = Array.isArray(headerData?.Botones2) ? headerData.Botones2[0] : headerData?.Botones2 || { texto: "BOOK NOW", url: "#", tipo: "version_1" };
+const ctaButtons: Boton[] = [{ id: rawButton.id || 1, texto: rawButton.texto, url: rawButton.url, tipo: rawButton.tipo || "version_1" }];
 ---
 
-<header
-    class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)"
-    id="main-header"
->
-    <div class="relative z-50 bg-[var(--brand-interactive-base)]">
-        <div
-            class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]"
-        >
+<header class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)" id="main-header">
+    <div class="relative z-50 bg-[#4fffc3] transition-colors duration-300 shadow-sm border-b border-black md:border-none">
+        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]">
+
+            {/* IZQUIERDA: Logo/Titulo + LOCATIONS BUTTON */}
             <div class="flex items-center gap-4 md:gap-8 h-full">
-                <a href="/" class="flex-shrink-0">
-                    <img
-                        src={logoUrl}
-                        alt="Toca Social"
-                        class="h-8 md:h-10 w-auto object-contain"
-                    />
+                <a href="/" class="flex-shrink-0 no-underline">
+                    {headerTitle ? (
+                        <h1 class="text-2xl md:text-4xl font-[900] uppercase text-black tracking-tighter m-0 leading-none">{headerTitle}</h1>
+                    ) : (
+                        <img src={logoUrl} alt="Toca Social" class="h-6 md:h-10 w-auto object-contain brightness-0 md:brightness-100 transition-[filter]" />
+                    )}
                 </a>
 
+                {/* --- NUEVO DISEÑO: LOCATIONS MENU (LINKS DOS) --- */}
                 <div class="hidden md:flex items-center h-full static">
-                    <button
-                        type="button"
-                        class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter h-full px-2 focus:outline-none"
-                        data-target="locations-dropdown"
-                    >
-                        LOCATIONS
-                        <i
-                            class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"
-                        ></i>
+                    <button type="button" class="menu-trigger flex items-center gap-1 font-[900] uppercase text-black text-xs tracking-tighter h-full px-2 focus:outline-none hover:text-black/70 transition-colors" data-target="locations-dropdown">
+                        LOCATIONS <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"></i>
                     </button>
 
-                    <div
-                        id="locations-dropdown"
-                        class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--brand-interactive-base)] shadow-lg border-t border-black/10 z-40 pb-12 pt-8"
-                    >
-                        <div
-                            class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8"
-                        >
-                            <div
-                                class="flex flex-col md:flex-row gap-12 lg:gap-24"
-                            >
-                                <div class="flex-1 max-w-4xl">
-                                    <h3
-                                        class="font-bold uppercase text-[var(--surface-brand-primary)] text-xl mb-6 tracking-wide"
-                                    >
-                                        UK VENUES
-                                    </h3>
-                                    <div
-                                        class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8"
-                                    >
-                                        <div class="flex flex-col gap-8">
-                                            <a
-                                                href="#"
-                                                class="block w-full border-b border-black pb-1 hover:opacity-70"
-                                                ><span
-                                                    class="text-2xl font-bold text-[var(--surface-brand-primary)]"
-                                                    >The O2, London</span
-                                                ></a
-                                            >
-                                            <a
-                                                href="#"
-                                                class="block w-full border-b border-black pb-1 hover:opacity-70"
-                                                ><span
-                                                    class="text-2xl font-bold text-[var(--surface-brand-primary)]"
-                                                    >Westfield White City,
-                                                    London</span
-                                                ></a
-                                            >
-                                        </div>
-                                        <div class="flex flex-col gap-8">
-                                            <a
-                                                href="#"
-                                                class="block w-full border-b border-black pb-1 hover:opacity-70"
-                                                ><span
-                                                    class="text-2xl font-bold text-[var(--surface-brand-primary)]"
-                                                    >Birmingham Bullring</span
-                                                ></a
-                                            >
-                                        </div>
+                    {/* MEGA MENU: Fondo #4fffc3 (Menta) y borde negro */}
+                    <div id="locations-dropdown" class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[#4fffc3] shadow-lg border-t border-black z-40 py-10">
+                        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+
+                            {/* Layout General: Flex para separar UK (izquierda) y Global (derecha) */}
+                            <div class="flex flex-col lg:flex-row gap-12 lg:gap-32 w-full">
+                                {locationsLinks.map((group: any, index: number) => (
+                                    // Asumimos que el primer grupo es el principal (UK) y le damos más espacio (flex-grow)
+                                    <div class={`${index === 0 ? 'flex-[2]' : 'flex-1'} flex flex-col`}>
+
+                                        {/* TÍTULO DEL GRUPO (ej: UK VENUES) */}
+                                        <h3 class="font-[900] text-black text-lg md:text-xl uppercase tracking-tighter mb-4">
+                                            {group.texto}
+                                        </h3>
+
+                                        {/* LISTA DE ITEMS:
+                                            Si es el primer grupo (UK), usamos grid de 2 columnas para que "Birmingham" quede a la derecha de "The O2".
+                                            Si es el segundo (Global), una sola columna.
+                                        */}
+                                        <ul class={`grid gap-x-16 gap-y-2 w-full ${index === 0 ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'}`}>
+                                            {group.dropdown_items && group.dropdown_items.map((item: any) => (
+                                                <li class="w-full">
+                                                    <a href={item.url || "#"} class="group block w-full no-underline">
+                                                        <div class="flex items-center gap-3 border-b-2 border-black pb-1 mb-2 hover:pl-2 transition-all duration-300">
+
+                                                            {/* LOGICA PARA BADGE (Círculo negro "Coming Soon") */}
+                                                            {/* Strapi debe mandar esto en 'item.imagen' */}
+                                                            {item.imagen && (
+                                                                <img
+                                                                    src={getStrapiUrl(item.imagen)}
+                                                                    alt="Badge"
+                                                                    class="h-10 w-10 object-contain"
+                                                                />
+                                                            )}
+
+                                                            <span class="text-black font-bold text-lg md:text-xl uppercase tracking-tight">
+                                                                {item.titulo || item.texto}
+                                                            </span>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
-                                </div>
-                                <div class="flex-1 max-w-2xl">
-                                    <h3
-                                        class="font-bold uppercase text-[var(--surface-brand-primary)] text-xl mb-6 tracking-wide"
-                                    >
-                                        GLOBAL VENUES
-                                    </h3>
-                                    <div
-                                        class="relative flex items-center gap-4 border-b border-black pb-1 max-w-md"
-                                    >
-                                        <div
-                                            class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center p-1 transform -rotate-12 flex-shrink-0"
-                                        >
-                                            <span
-                                                class="text-[9px] font-bold leading-tight text-center uppercase"
-                                                >Coming<br />Soon</span
-                                            >
-                                        </div>
-                                        <a
-                                            href="#"
-                                            class="text-2xl font-bold text-[var(--surface-brand-primary)] hover:opacity-70"
-                                            >Grandscape Dallas, TX USA</a
-                                        >
-                                    </div>
-                                </div>
+                                ))}
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* DERECHA: Nav Principal + Botones */}
             <div class="flex items-center gap-3 md:gap-8 h-full">
                 <nav class="hidden lg:flex h-full items-center">
                     <ul class="flex items-center gap-8 h-full">
-                        {
-                            links.map((link: any, index: number) => (
-                                <li class="h-full flex items-center static">
-                                    {link.submenu ? (
-                                        <>
-                                            {/* ENLACE CON DROPDOWN (Ej: INFO) */}
-                                            <button
-                                                type="button"
-                                                class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter focus:outline-none"
-                                                data-target={`menu-${index}`}
-                                            >
-                                                {link.texto}
-                                                <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
-                                            </button>
-
-                                            {/* MEGA MENU DARK BLUE (Estilo Imagen) */}
-                                            <div
-                                                id={`menu-${index}`}
-                                                class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[#0a0030] shadow-xl z-40 py-5 border-t border-[var(--brand-interactive-base)]/30 border-b-[2px] border-b-[var(--brand-interactive-base)]"
-                                            >
-                                                <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-                                                    <div class="flex justify-center items-start gap-8 xl:gap-20">
-                                                        {link.submenu.map(
-                                                            (subItem: any) => (
-                                                                <a
-                                                                    href={
-                                                                        subItem.url
-                                                                    }
-                                                                    class="group flex flex-col items-center gap-4 text-center w-32 hover:scale-105 transition-transform duration-200"
-                                                                >
-                                                                    {/* Icono Grande Neón */}
-                                                                    <div class="h-24 flex items-center justify-center">
-                                                                        {subItem.lottie ? (
-                                                                            <div
-                                                                                class="lottie-icon w-24 h-24"
-                                                                                data-animation-path={
-                                                                                    subItem.lottie
-                                                                                }
-                                                                            />
-                                                                        ) : (
-                                                                            <i
-                                                                                class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                    {/* Texto Neón */}
-                                                                    <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-lg tracking-wide">
-                                                                        {
-                                                                            subItem.label
-                                                                        }
-                                                                    </span>
-                                                                </a>
-                                                            ),
-                                                        )}
-                                                    </div>
+                        {links.map((link: any, index: number) => (
+                            <li class="h-full flex items-center static">
+                                {link.submenu ? (
+                                    <>
+                                        <button type="button" class="menu-trigger h-full flex items-center gap-1 font-[900] uppercase text-black text-xs tracking-tighter focus:outline-none hover:text-white transition-colors" data-target={`menu-${index}`}>
+                                            {link.texto} <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
+                                        </button>
+                                        <div id={`menu-${index}`} class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[#0a0030] shadow-xl z-40 py-5">
+                                            <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+                                                <div class="flex justify-center items-start gap-8 xl:gap-20">
+                                                    {link.submenu.map((subItem: any) => (
+                                                        <a href={subItem.url} class="group flex flex-col items-center gap-4 text-center w-32 hover:scale-105 transition-transform duration-200">
+                                                            <div class="h-24 flex items-center justify-center relative">
+                                                                {subItem.imageUrl ? (
+                                                                    <img src={subItem.imageUrl} alt={subItem.label} class="max-h-20 w-auto object-contain drop-shadow-[0_0_8px_rgba(74,255,194,0.3)]" />
+                                                                ) : subItem.lottie ? (
+                                                                    <div class="js-lottie-anim w-24 h-24" data-path={subItem.lottie} data-loop="true"></div>
+                                                                ) : (
+                                                                    <i class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`} />
+                                                                )}
+                                                            </div>
+                                                            <div class="flex flex-col">
+                                                                <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-xs tracking-wide">{subItem.label}</span>
+                                                            </div>
+                                                        </a>
+                                                    ))}
                                                 </div>
                                             </div>
-                                        </>
-                                    ) : (
-                                        /* ENLACE NORMAL (Ej: WHAT'S ON) */
-                                        <a
-                                            href={link.url || "#"}
-                                            class="font-bold uppercase text-[var(--surface-brand-primary)] text-lg tracking-tighter hover:underline decoration-4 decoration-black underline-offset-4"
-                                        >
-                                            {link.texto}
-                                        </a>
-                                    )}
-                                </li>
-                            ))
-                        }
+                                        </div>
+                                    </>
+                                ) : (
+                                    <a href={link.url || "#"} class="font-[900] uppercase text-black text-xs tracking-tighter hover:text-white transition-colors">{link.texto}</a>
+                                )}
+                            </li>
+                        ))}
                     </ul>
                 </nav>
 
-                <ButtonGroup botones={ctaButtons} />
+                <div class="hidden md:block"><ButtonGroup botones={ctaButtons} /></div>
 
-                <button
-                    id="mobile-menu-btn"
-                    class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50"
-                >
-                    <i
-                        id="icon-menu"
-                        class="fa-solid fa-bars text-[32px] cursor-pointer"></i>
-                    <i
-                        id="icon-close"
-                        class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"
-                    ></i>
+                {/* Mobile Toggles */}
+                <a href={rawButton.url} class="md:hidden flex items-center justify-center gap-2 bg-[#F663F6] border-2 border-black px-3 py-1 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all mr-1">
+                    <span class="font-[900] uppercase text-black text-sm tracking-tighter leading-none pt-[2px]">{rawButton.texto}</span>
+                    <i class="fa-solid fa-caret-down text-black text-xs"></i>
+                </a>
+                <button id="mobile-menu-btn" class="lg:hidden text-black focus:outline-none p-1 z-50 transition-colors w-8 h-8 flex items-center justify-center">
+                    <i id="icon-menu" class="fa-solid fa-bars text-[28px] cursor-pointer"></i>
+                    <i id="icon-close" class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <div
-        id="mobile-menu"
-        class="hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-[var(--brand-interactive-base)] z-40 overflow-y-auto border-t-4 transition-all"
-    >
-        <div class="flex flex-col p-6 space-y-4">
-            <span
-                class="text-2xl font-bold uppercase text-[var(--surface-brand-primary)]"
-                >LOCATIONS</span
-            >
+    {/* MENU MOBILE */}
+    <div id="mobile-menu" class="hidden fixed top-[65px] left-0 w-full h-[calc(100vh-65px)] bg-[#0a0030] z-40 overflow-y-auto transition-all">
+        <div class="flex flex-col w-full pb-20">
+
+            {/* LOCATIONS MOBILE (Estilo igual al anterior pero dinámico) */}
+            <div class="w-full border-b border-[#4fffc3]/30">
+                <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[#4fffc3] hover:text-white transition-colors group">
+                    <span class="text-xs font-bold uppercase tracking-wide">LOCATIONS</span>
+                    <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180"></i>
+                </button>
+                <div class="accordion-content hidden bg-[#0a0030] pb-8 text-center space-y-8 animate-fade-in-down px-4">
+                    {locationsLinks.map((group: any) => (
+                        <div>
+                            <h4 class="text-[#4fffc3] text-xs font-bold uppercase tracking-widest border-b border-[#4fffc3] inline-block mb-4 pb-1">
+                                {group.texto}
+                            </h4>
+                            <ul class="space-y-3 pt-2">
+                                {group.dropdown_items && group.dropdown_items.map((item: any) => (
+                                    <li class="flex items-center justify-center gap-2">
+                                        {/* Icono pequeño en mobile si existe */}
+                                        {item.imagen && <img src={getStrapiUrl(item.imagen)} class="h-5 w-5 object-contain brightness-0 invert"/>}
+                                        <a href={item.url || "#"} class="text-white hover:text-[#4fffc3] text-sm font-medium">
+                                            {item.titulo || item.texto}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* RESTO DE LINKS MOBILE (Info, Events, etc) */}
+            {links.map((link: any) => (
+                <div class="w-full border-b border-[#4fffc3]/30">
+                    {link.submenu ? (
+                        <>
+                            <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[#4fffc3] hover:text-white transition-colors">
+                                <span class="text-xs font-bold uppercase tracking-wide">{link.texto}</span>
+                                <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180"></i>
+                            </button>
+                            <div class="accordion-content hidden pb-8 px-6">
+                                <div class="grid grid-cols-2 gap-y-10 gap-x-4">
+                                    {link.submenu.map((sub: any) => (
+                                        <a href={sub.url} class="flex flex-col items-center justify-start text-center group">
+                                            <div class="h-16 mb-2 flex items-center justify-center">
+                                                {sub.imageUrl ? (
+                                                    <img src={sub.imageUrl} alt={sub.label} class="max-h-14 w-auto object-contain" />
+                                                ) : (
+                                                    <i class={`${sub.icon} text-xs text-transparent text-stroke-neon`} style="-webkit-text-stroke: 1px #4fffc3; color: transparent;"></i>
+                                                )}
+                                            </div>
+                                            <span class="text-[#4fffc3] font-bold uppercase text-xs tracking-wider">{sub.label}</span>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <a href={link.url} class="w-full py-6 flex items-center justify-center gap-2 text-[#4fffc3] hover:text-white transition-colors">
+                            <span class="text-xs font-bold uppercase tracking-wide">{link.texto}</span>
+                        </a>
+                    )}
+                </div>
+            ))}
         </div>
     </div>
 </header>
 
+<style>
+    .text-stroke-neon { -webkit-text-stroke: 1.5px #4fffc3; color: transparent; }
+</style>
+
 <script>
     import lottie from "lottie-web";
 
-    // --- Inicialización de Lottie ---
-    document.querySelectorAll(".lottie-icon").forEach((container) => {
-        const path = (container as HTMLElement).dataset.animationPath;
+    // Scripts de inicialización (Igual que antes)
+    const lottieContainers = document.querySelectorAll('.js-lottie-anim');
+    lottieContainers.forEach((container) => {
+        const path = (container as HTMLElement).dataset.path;
         if (path) {
             lottie.loadAnimation({
                 container: container,
-                renderer: "svg",
+                renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                path: path,
+                path: path
             });
         }
     });
 
-    // --- Lógica Mega Menu Genérica (Click) ---
-    // Seleccionamos todos los botones que abren menús
     const triggers = document.querySelectorAll(".menu-trigger");
     const allMenus = document.querySelectorAll(".mega-menu");
-
-    // Función para cerrar todo
     const closeAllMenus = () => {
         allMenus.forEach((menu) => menu.classList.add("hidden"));
         triggers.forEach((trigger) => {
@@ -337,47 +280,32 @@ const ctaButtons: Boton[] = [
             if (chevron) chevron.classList.remove("rotate-180");
         });
     };
-
     triggers.forEach((trigger) => {
         trigger.addEventListener("click", (e) => {
             e.stopPropagation();
             const targetId = (trigger as HTMLElement).dataset.target;
             const targetMenu = document.getElementById(targetId || "");
             const chevron = trigger.querySelector(".chevron");
-
-            // Si el menú clickeado ya está abierto, lo cerramos
             if (targetMenu && !targetMenu.classList.contains("hidden")) {
                 closeAllMenus();
                 return;
             }
-
-            // Si estaba cerrado: cerramos los otros y abrimos este
             closeAllMenus();
-
             if (targetMenu) {
                 targetMenu.classList.remove("hidden");
                 if (chevron) chevron.classList.add("rotate-180");
             }
         });
     });
-
-    // Cerrar al clickear fuera
     document.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         const isClickInsideMenu = target.closest(".mega-menu");
         const isClickInsideTrigger = target.closest(".menu-trigger");
-
         if (!isClickInsideMenu && !isClickInsideTrigger) {
             closeAllMenus();
         }
     });
 
-    // Cerrar con ESC
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeAllMenus();
-    });
-
-    // --- Lógica Mobile (se mantiene igual) ---
     const menuBtn = document.getElementById("mobile-menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const iconMenu = document.getElementById("icon-menu");
@@ -391,4 +319,18 @@ const ctaButtons: Boton[] = [
             iconClose.classList.toggle("hidden");
         });
     }
+
+    const accordionTriggers = document.querySelectorAll(".mobile-accordion-trigger");
+    accordionTriggers.forEach(trigger => {
+        trigger.addEventListener("click", () => {
+            const content = trigger.nextElementSibling;
+            const chevron = trigger.querySelector(".accordion-chevron");
+            if (content) {
+                content.classList.toggle("hidden");
+                if (chevron) {
+                    chevron.classList.toggle("rotate-180");
+                }
+            }
+        });
+    });
 </script>
