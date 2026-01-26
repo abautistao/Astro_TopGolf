@@ -9,6 +9,7 @@ export const iconMap: Record<string, string> = {
     "people": "fa-solid fa-people-group",
     "circle question": "fa-regular fa-circle-question",
     "burger": "fa-solid fa-burger",
+    "enquire": "fa-solid fa-enquire",
     "martini": "fa-solid fa-martini-glass-citrus",
 
     // --- NUEVOS: Events / Submenú (Con nombres cortos) ---
@@ -28,14 +29,15 @@ export const lottieMap: Record<string, string> = {
     "calendar": "/lottie/Whats_On.json",
     "people": "/lottie/More_Fun.json",
     "circle question": "/lottie/FAQs.json",
-    "burger": "/lottie/Social.json",
+    "burger": "/lottie/Festive.json",
+    "enquire": "/lottie/Enquire.json",
 
     // --- NUEVOS: Events / Submenú ---
-    "clapping": "/lottie/Special_Occasions.json",
-    "briefcase": "/lottie/Corporate_Events.json",
-    "snowflake": "/lottie/Christmas_Events.json",
-    "store": "/lottie/Brand_Activations.json",
-    "cake": "/lottie/Kids_Birthdays.json",
+    "clapping": "/lottie/Social.json",
+    "briefcase": "/lottie/Corporate.json",
+    "snowflake": "/lottie/Spaces.json",
+    "store": "/lottie/Spaces.json",
+    "cake": "/lottie/birthday.json",
 };
 
 // Función para obtener clase de FontAwesome
