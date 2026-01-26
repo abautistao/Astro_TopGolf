@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     try {
         const { data: emailData, error } = await resend.emails.send({
             from: "Contacto Topgolf <contacto@topgolf.com.mx>", // TODO: Update with your verified domain
-            to: ["ventas_mty@topgolf.com.mx","agonzalez@topgolf.com.mx","ffraga@topgolf.com.mx"],
+            to: ["ventas_mty@topgolf.com.mx","agonzalez@topgolf.com.mx","apuente@topgolf.com.mx"],
             bcc: ["abautista@venturae.com.mx"],
             subject: `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`,
             html: `
