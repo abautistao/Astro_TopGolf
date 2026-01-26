@@ -99,7 +99,6 @@ const ProcessedTarjetas = rawData.map((card) => ({
 </section>
 
 <script>
-    // CAMBIO 2: Lógica unificada para el carrusel y la animación de entrada
 
     function initAll() {
         initCarousel();
@@ -114,7 +113,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 // Se activa cuando el 10% es visible
+            threshold: 0.1
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
@@ -161,11 +160,6 @@ const ProcessedTarjetas = rawData.map((card) => ({
             currentIndex = (currentIndex - 1 + totalItems) % totalItems;
             showItem(currentIndex);
         }
-
-        // Clonamos nodos para evitar acumulación de event listeners si usas view transitions
-        // O simplemente nos aseguramos de no duplicar lógica.
-        // (Nota: En implementaciones simples esto está bien).
-
         nextBtns.forEach(btn => {
             // Un pequeño truco para limpiar listeners viejos: cloneNode
             const newBtn = btn.cloneNode(true);
@@ -193,14 +187,11 @@ const ProcessedTarjetas = rawData.map((card) => ({
         color: inherit;
     }
 
-    /* CAMBIO 3: La animación solo se ejecuta cuando la clase .is-visible existe en el padre */
 
     .fade-in-up {
-        opacity: 0; /* Oculto por defecto */
-        /* Eliminamos la animation: aquí para que no arranque sola */
+        opacity: 0;
     }
 
-    /* Cuando el padre (section) tiene 'is-visible', animamos el hijo */
     :global(.trigger-anim-cards.is-visible) .fade-in-up {
         animation: fadeInUp 1.5s ease-out forwards;
     }

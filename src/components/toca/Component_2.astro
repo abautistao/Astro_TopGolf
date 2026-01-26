@@ -64,7 +64,7 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
                     <Fragment set:html={mainTextHtml} />
                 </div>
 
-                <div class="font-(family-name:--font-sharp-sans-medium-italic) font-normal text-[var(--surface-brand-primary)] text-sm md:text-base mb-8 max-w-xl mx-auto px-8 lg:px-20 text-center">
+                <div class="font-(family-name:--font-sharp-sans-medium) font-normal text-[var(--surface-brand-primary)] text-base md:text-base mb-8 max-w-xl mx-auto px-8 lg:px-20 text-center">
                     <Fragment set:html={secondaryTextHtml} />
                 </div>
 
@@ -116,7 +116,6 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 </script>
 
 <style>
-    /* Estilos existentes */
     .bg-split {
         background-color: var(--surface-brand-secondary);
     }
@@ -130,12 +129,11 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
     .rotate-card-left { transform: rotate(-6deg); }
     .rotate-card-right { transform: rotate(6deg); }
 
-    /* --- CAMBIO 3: LÓGICA DE ANIMACIÓN --- */
 
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px); /* Un poco más de desplazamiento para notar el efecto */
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
@@ -144,14 +142,10 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
     }
 
     .section-animate {
-        opacity: 0; /* Oculto inicialmente por defecto */
-        /* Eliminamos la animation aquí para que no corra sola al cargar la página */
+        opacity: 0;
     }
 
-    /* La animación solo corre cuando JS agrega la clase .is-visible */
     .section-animate.is-visible {
         animation: fadeInUp 0.8s ease-out forwards;
-        /* Puedes ajustar el delay aquí si quieres que tarde un pelín en arrancar */
-        /* animation-delay: 0.2s; */
     }
 </style>

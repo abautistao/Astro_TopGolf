@@ -55,7 +55,7 @@ const boton_pricing: Boton[] = button
 
             <div class="bg-[var(--surface-brand-primary)] p-6 lg:p-4 text-center flex flex-col items-center justify-center">
 
-                <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium text-[var(--accent-feedback-strong)] lg:text-5xl uppercase leading-none mb-3">
+                <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--accent-feedback-strong)] lg:text-5xl uppercase leading-none mb-3">
                     {precio}
                 </h3>
 
@@ -79,7 +79,7 @@ const boton_pricing: Boton[] = button
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.2 // Se activa cuando el 20% del elemento es visible
+            threshold: 0.2
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
@@ -106,7 +106,6 @@ const boton_pricing: Boton[] = button
         color: inherit;
     }
 
-    /* --- CAMBIO 4: LÓGICA CSS DE ANIMACIÓN --- */
 
     @keyframes fadeInUp {
         from {
@@ -120,12 +119,9 @@ const boton_pricing: Boton[] = button
     }
 
     .anim-content {
-        opacity: 0; /* Oculto por defecto */
+        opacity: 0;
     }
 
-    /* Solo cuando el padre (.trigger-anim-pricing) tenga la clase .is-visible
-       se ejecuta la animación en el hijo (.anim-content)
-    */
     :global(.trigger-anim-pricing.is-visible) .anim-content {
         animation: fadeInUp 0.8s ease-out forwards;
     }

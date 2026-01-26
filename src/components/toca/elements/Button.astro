@@ -25,22 +25,14 @@ const {
         <a
             href={formatUrl(boton.url)}
             class:list={[
-                // --- Estilos Base (Tipografía, Bordes, Animación) ---
-                // CAMBIO: 'leading-none' a 'leading-tight' para que no se peguen las líneas si hace salto de línea
                 'inline-block border-2 border-[var(--surface-brand-primary)] font-black uppercase tracking-tight leading-tight',
 
-                // CAMBIO: Quitamos 'whitespace-nowrap' y agregamos 'whitespace-normal text-center max-w-full'
-                // Esto permite que el texto baje y se centre si es muy largo
                 'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
 
                 // --- Tamaños Responsivos (Móvil vs Desktop) ---
-                // Ajustado para que se vea bien en el header (más pequeño en móvil)
-                'px-4 py-2 text-lg md:px-6 md:py-2 md:text-xl',
-
-                // --- Sombras Duras (Hard Shadows) ---
+                'px-4 py-2 text-lg md:px-6 md:py-2 md:text-base',
                 'shadow-[3px_3px_0px_0px_black] md:shadow-[4px_4px_0px_0px_black]',
 
-                // --- Efectos Hover/Active (Presionar botón) ---
                 'active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
                 'hover:md:translate-x-[1px] hover:md:translate-y-[1px]',
                 'hover:md:shadow-[2px_2px_0px_0px_black]',

@@ -67,7 +67,7 @@ const ctaButtons: Boton[] = [
             <div class="flex items-center gap-4 md:gap-8 h-full">
                 <a href="/" class="flex-shrink-0 no-underline">
                     {headerTitle ? (
-                        <h1 class="text-2xl md:text-4xl font-[900] uppercase text-[var(--surface-brand-primary)] tracking-tighter m-0 leading-none">{headerTitle}</h1>
+                        <h1 class="text-2xl md:text-4xl font-bold uppercase text-[var(--surface-brand-primary)] tracking-tighter m-0 leading-none">{headerTitle}</h1>
                     ) : (
                         <img src={logoUrl} alt="Toca Social" class="h-6 md:h-10 w-auto object-contain brightness-0 md:brightness-100 transition-[filter]" />
                     )}
@@ -78,7 +78,7 @@ const ctaButtons: Boton[] = [
                     <div class="hidden md:flex items-center h-full static">
                         <button
                             type="button"
-                            class="menu-trigger flex items-center gap-1 font-[900] uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter h-full px-2 focus:outline-none"
+                            class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter h-full px-2 focus:outline-none"
                             data-target={`multi-dropdown-${idx}`}
                         >
                             {section.titulo_seccion} <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"></i>
@@ -89,7 +89,7 @@ const ctaButtons: Boton[] = [
                                 <div class="flex flex-col md:flex-row gap-12 lg:gap-32 w-full">
                                     {section.links_dos && section.links_dos.map((group: any, index: number) => (
                                         <div class={`${index === 0 ? 'flex-[2]' : 'flex-1'} flex flex-col`}>
-                                            <h3 class="font-[900] text-[var(--surface-brand-primary)] text-xs uppercase tracking-tighter mb-4">
+                                            <h3 class="font-bold text-[var(--surface-brand-primary)] text-base uppercase tracking-tighter mb-4">
                                                 {group.texto}
                                             </h3>
 
@@ -110,12 +110,12 @@ const ctaButtons: Boton[] = [
                                                                         )}
                                                                     </div>
 
-                                                                    <span class="text-[var(--surface-brand-primary)] font-bold text-xs uppercase tracking-tight">
+                                                                    <span class="font-(family-name:--font-sharp-sans-bold) text-[var(--surface-brand-primary)] font-bold text-base uppercase tracking-tight">
                                                                         {item.titulo || item.texto}
                                                                     </span>
                                                                 </div>
 
-                                                                <i class="fa-solid fa-play text-[var(--surface-brand-primary)] text-xs opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-150 transition-all duration-150"></i>
+                                                                <i class="fa-solid fa-play text-[var(--surface-brand-primary)] text-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-150 transition-all duration-150"></i>
                                                             </div>
                                                         </a>
                                                     </li>
@@ -138,7 +138,7 @@ const ctaButtons: Boton[] = [
                             <li class="h-full flex items-center static">
                                 {link.submenu ? (
                                     <>
-                                        <button type="button" class="menu-trigger h-full flex items-center gap-1 font-[900] uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter focus:outline-none" data-target={`menu-${index}`}>
+                                        <button type="button" class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter focus:outline-none" data-target={`menu-${index}`}>
                                             {link.texto} <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
                                         </button>
                                         <div id={`menu-${index}`} class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--surface-brand-primary)]  border-b-4 border-[var(--brand-interactive-base)] shadow-xl z-40 py-5">
@@ -165,7 +165,7 @@ const ctaButtons: Boton[] = [
                                         </div>
                                     </>
                                 ) : (
-                                    <a href={link.url || "#"} class="font-[900] uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter ">{link.texto}</a>
+                                    <a href={link.url || "#"} class="font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter ">{link.texto}</a>
                                 )}
                             </li>
                         ))}
