@@ -55,12 +55,24 @@ const seoProps = seo || defaultSeo;
         <meta charset="UTF-8" />
         <link rel="icon" href={faviconUrl} />
         <meta name="generator" content={Astro.generator} />
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-K8XNXZM');
+        </script>
+        <!-- End Google Tag Manager -->
         <SEO {...seoProps} />
 
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
         <style is:global set:html={allStyles} />
     </head>
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K8XNXZM"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <Header />
         <!-- El contenido de la página se insertará aquí. -->
         <slot />
