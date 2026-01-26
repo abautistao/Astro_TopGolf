@@ -1,1 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'ShieldSans-Bold';
+    src: url('/fonts/Shield-Sans/ShieldSans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans-Black';
+    src: url('/fonts/Shield-Sans/ShieldSans-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans-Regular';
+    src: url('/fonts/Shield-Sans/ShieldSans-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans';
+    src: url('/fonts/Shield-Sans/ShieldSans-Bold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans';
+    src: url('/fonts/Shield-Sans/ShieldSans-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans-Condensed';
+    src: url('/fonts/Shield-Sans/ShieldSans-RegularCondensed.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tee Line';
+    src: url('/fonts/Tee-Line/TeeLine-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tee Line';
+    src: url('/fonts/Tee-Line/TeeLine-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tee Line Bold-Italic';
+    src: url('/fonts/Tee-Line/TeeLine-BoldItalic.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ShieldSans-Semibold-Condensed';
+    src: url('/fonts/Shield-Sans/ShieldSans-SemiBoldCondensed.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --font-shields-sans-regular: 'ShieldSans-Regular', sans-serif;
+    --font-shields-sans-condensed: 'ShieldSans-Condensed', sans-serif;
+    --font-tee-line-bold-italic: 'Tee Line Bold-Italic', sans-serif;
+    --font-shields-sans-semibold-condensed: 'ShieldSans-Semibold-Condensed', sans-serif;
+    --font-shields-sans-bold: 'ShieldSans-Bold', sans-serif;
+    --font-shields-sans-semibold: 'ShieldSans', sans-serif;
+    --font-tee-line-bold: 'Tee Line', sans-serif;
+    --font-tee-line-regular: 'Tee Line', sans-serif;
+    --font-shields-sans-black: 'ShieldSans-Black', sans-serif;
+}
+
 @import "tailwindcss";
+
+body.dark-mode {
+    background-color: #0D1116;
+}
+
+body.dark-mode div.bg-\[var\(--neutral-text-inverted\)\],
+body.dark-mode section.bg-\[var\(--neutral-text-inverted\)\] {
+    background-color: #0D1116;
+}

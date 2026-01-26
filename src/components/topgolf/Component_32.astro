@@ -1,0 +1,43 @@
+---
+// src/components/Component_32.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+import CalloutSection from './elements/CalloutSection.astro'; // Nuevo componente base
+import type { Boton } from './elements/Button.astro';
+
+export interface Props {
+    titulo: string;
+    contenido: any; // Rich Text
+    Boton: Boton[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo, contenido, Boton } = Astro.props;
+
+const placeholderData: Props = {
+    titulo: "MEMBRESÍA CORPORATIVA",
+    contenido: [{ type: 'paragraph', children: [{ type: 'text', text: "Somos el lugar perfecto para cerrar ventas, o celebrar eventos especiales con tus colegas de la oficina. Las membresías corporativas están diseñadas para que varios colaboradores puedan disfrutar de los beneficios VIP que tenemos disponibles, desde juego gratis hasta acceso prioritario, con una o más tarjetas." }] }],
+    Boton: [],
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+    titulo: titulo || placeholderData.titulo,
+    contenido: stringifyRichText(contenido || placeholderData.contenido),
+};
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "CONOCE MÁS",
+        url: "#",
+        tipo: "version_3"
+    }
+];
+---
+
+<!-- Usamos el nuevo componente base y pasamos los props -->
+<CalloutSection
+    version="version_3"
+    titulo={dataToRender.titulo}
+    contenido={dataToRender.contenido}
+    botones={componentButtons}
+/>

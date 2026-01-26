@@ -1,11 +1,21 @@
 ---
+// Importa los estilos y componentes necesarios.
+import '@awesome.me/kit-ea4a75e062/icons/css/all.css';
 import '../styles/global.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { getSiteSetup } from '../lib/strapi.js';
+import Header from '../components/topgolf/Header.astro';
+import Footer from '../components/topgolf/Footer.astro';
+import SEO from '../components/shared/SEO.astro';
+// Importa las funciones para obtener datos de configuración y generar fuentes desde Strapi.
+import { getSiteSetup, generateFontFaces, getStrapiUrl } from '../lib/strapi.js';
 
+// Obtiene los datos de configuración del sitio.
 const setupData = await getSiteSetup();
+const faviconUrl = setupData?.favicon ? getStrapiUrl(setupData.favicon) : '/favicon.svg';
 
+// Genera las declaraciones @font-face si los datos de tipografía existen.
+//const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
+
+// Define variables CSS personalizadas y otros estilos basados en los datos de configuración.
 const customStyles = setupData ? `
     :root {
         --surface-brand-primary: ${setupData.surface_brand_primary};
@@ -20,28 +30,58 @@ const customStyles = setupData ? `
         --feedback-positive-base: ${setupData.feedback_positive_base};
         --feedback-info-background: ${setupData.feedback_info_background};
         --neutral-background-strong: ${setupData.neutral_background_strong};
+        --accent-highlight-tertiary: ${setupData.accent_highlight_tertiary};
+    }
+    .bg-custom-gradient {
+        background-image: linear-gradient(to right, var(--surface-brand-secondary), var(--brand-interactive-base));
     }
 ` : '';
+
+// Combina los estilos de fuente y los estilos personalizados en una sola cadena.
+const allStyles = customStyles;
+
+const { seo, title } = Astro.props;
+const defaultSeo = {
+  metaTitle: title || "Astro Basics",
+  metaDescription: "Sitio web desarrollado con Astro y Strapi",
+};
+
+const seoProps = seo || defaultSeo;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es" class="scroll-smooth">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href={faviconUrl} />
         <meta name="generator" content={Astro.generator} />
-        <title>Astro Basics</title>
-        <style is:global set:html={customStyles} />
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-K8XNXZM');
+        </script>
+        <!-- End Google Tag Manager -->
+        <SEO {...seoProps} />
+
+        <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
+        <style is:global set:html={allStyles} />
     </head>
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K8XNXZM"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <Header />
+        <!-- El contenido de la página se insertará aquí. -->
         <slot />
-		<Footer />
+        <Footer />
     </body>
 </html>
 
 <style>
+    /* Estilos básicos para asegurar que el HTML y el body ocupen toda la pantalla. */
     html,
     body {
         margin: 0;

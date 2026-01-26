@@ -1,0 +1,151 @@
+---
+// src/pages/libreria-de-componentes.astro
+import Layout from "../layouts/Layout.astro";
+
+// Import all components
+import BloqueDeTexto from "../components/topgolf/BloqueDeTexto.astro";
+import Component_1 from "../components/topgolf/Component_1.astro";
+import Component_2 from "../components/topgolf/Component_2.astro";
+import Component_3 from "../components/topgolf/Component_3.astro";
+import Component_4 from "../components/topgolf/Component_4.astro";
+import Component_5 from "../components/topgolf/Component_5.astro";
+import Component_6 from "../components/topgolf/Component_6.astro";
+import Component_7 from "../components/topgolf/Component_7.astro";
+import Component_8 from "../components/topgolf/Component_8.astro";
+import Component_9 from "../components/topgolf/Component_9.astro";
+import Component_10 from "../components/topgolf/Component_10.astro";
+import Component_11 from "../components/topgolf/Component_11.astro";
+import Component_12 from "../components/topgolf/Component_12.astro";
+import Component_13 from "../components/topgolf/Component_13.astro";
+import Component_14 from "../components/topgolf/Component_14.astro";
+import Component_15 from "../components/topgolf/Component_15.astro";
+import Component_16 from "../components/topgolf/Component_16.astro";
+import Component_17 from "../components/topgolf/Component_17.astro";
+import Component_18 from "../components/topgolf/Component_18.astro";
+import Component_19 from "../components/topgolf/Component_19.astro";
+import Component_20 from "../components/topgolf/Component_20.astro";
+import Component_21 from "../components/topgolf/Component_21.astro";
+import Component_22 from "../components/topgolf/Component_22.astro";
+import Component_23 from "../components/topgolf/Component_23.astro";
+import Component_24 from "../components/topgolf/Component_24.astro";
+import Component_25 from "../components/topgolf/Component_25.astro";
+import Component_26 from "../components/topgolf/Component_26.astro";
+import Component_27 from "../components/topgolf/Component_27.astro";
+import Component_28 from "../components/topgolf/Component_28.astro";
+import Component_29 from "../components/topgolf/Component_29.astro";
+import Component_30 from "../components/topgolf/Component_30.astro";
+import Component_31 from "../components/topgolf/Component_31.astro";
+import Component_32 from "../components/topgolf/Component_32.astro";
+import Component_33 from "../components/topgolf/Component_33.astro";
+import Component_34 from "../components/topgolf/Component_34.astro";
+import Component_35 from "../components/topgolf/Component_35.astro";
+import Component_36 from "../components/topgolf/Component_36.astro";
+import Component_37 from "../components/topgolf/Component_37.astro";
+import Component_38 from "../components/topgolf/Component_38.astro";
+import Component_39 from "../components/topgolf/Component_39.astro";
+import Component_40 from "../components/topgolf/Component_40.astro";
+import Component_41 from "../components/topgolf/Component_41.astro";
+import Component_42 from "../components/topgolf/Component_42.astro";
+import Component_43 from "../components/topgolf/Component_43.astro";
+import Component_44 from "../components/topgolf/Component_44.astro";
+import Component_45 from "../components/topgolf/Component_45.astro";
+import Icono from "../components/shared/Icono.astro";
+import ButtonGroup from "../components/topgolf/elements/Button.astro";
+import Component_404 from "../components/errors/Component_404.astro";
+// Sample data for components that need props
+const sampleButtons = [
+  { id: 1, texto: "Botón Primario", url: "#", tipo: "primario" },
+  { id: 2, texto: "Botón Secundario", url: "#", tipo: "secundario" },
+];
+
+const components = [
+  {
+    name: "BloqueDeTexto",
+    Comp: BloqueDeTexto,
+    props: {
+      titulo: "Bloque de Texto",
+      texto:
+        "Este es un bloque de texto de ejemplo con contenido lorem ipsum para rellenar espacio.",
+    },
+  },
+  { name: "Component_1", Comp: Component_1, props: {} },
+  { name: "Component_2", Comp: Component_2, props: {} },
+  { name: "Component_3", Comp: Component_3, props: {} },
+  { name: "Component_4", Comp: Component_4, props: {} },
+  { name: "Component_5", Comp: Component_5, props: {} },
+  { name: "Component_6", Comp: Component_6, props: {} },
+  { name: "Component_7", Comp: Component_7, props: {} },
+  { name: "Component_8", Comp: Component_8, props: {} },
+  { name: "Component_9", Comp: Component_9, props: {} },
+  { name: "Component_10", Comp: Component_10, props: {} },
+  { name: "Component_11", Comp: Component_11, props: {} },
+  { name: "Component_12", Comp: Component_12, props: {} },
+  { name: "Component_13", Comp: Component_13, props: {} },
+  { name: "Component_14", Comp: Component_14, props: {} },
+  { name: "Component_15", Comp: Component_15, props: {} },
+  { name: "Component_16", Comp: Component_16, props: {} },
+  { name: "Component_17", Comp: Component_17, props: {} },
+  { name: "Component_18", Comp: Component_18, props: {} },
+  { name: "Component_19", Comp: Component_19, props: {} },
+  { name: "Component_20", Comp: Component_20, props: {} },
+  { name: "Component_21", Comp: Component_21, props: {} },
+  { name: "Component_22", Comp: Component_22, props: {} },
+  { name: "Component_23", Comp: Component_23, props: {} },
+  { name: "Component_24", Comp: Component_24, props: {} },
+  { name: "Component_25", Comp: Component_25, props: {} },
+  { name: "Component_26", Comp: Component_26, props: {} },
+  { name: "Component_27", Comp: Component_27, props: {} },
+  { name: "Component_28", Comp: Component_28, props: {} },
+  { name: "Component_29", Comp: Component_29, props: {} },
+  { name: "Component_30", Comp: Component_30, props: {} },
+  { name: "Component_31", Comp: Component_31, props: {} },
+  { name: "Component_32", Comp: Component_32, props: {} },
+  { name: "Component_33", Comp: Component_33, props: {} },
+  { name: "Component_34", Comp: Component_34, props: {} },
+  { name: "Component_35", Comp: Component_35, props: {} },
+  { name: "Component_36", Comp: Component_36, props: {} },
+  { name: "Component_37", Comp: Component_37, props: {} },
+  { name: "Component_38", Comp: Component_38, props: {} },
+  { name: "Component_39", Comp: Component_39, props: {} },
+  { name: "Component_40", Comp: Component_40, props: {} },
+  { name: "Component_41", Comp: Component_41, props: {} },
+  { name: "Component_42", Comp: Component_42, props: {} },
+  { name: "Component_43", Comp: Component_43, props: {} },
+  { name: "Component_44", Comp: Component_44, props: {} },
+  { name: "Component_45", Comp: Component_45, props: {} },
+  { name: "Icono", Comp: Icono, props: { name: "star" } },
+  {
+    name: "ButtonGroup (elements/Button.astro)",
+    Comp: ButtonGroup,
+    props: { botones: sampleButtons },
+  },
+];
+---
+
+<Layout title="Librería de Componentes">
+  <main class="container p-4 mx-auto my-12 md:p-8">
+    <h1 class="mb-8 text-4xl font-bold text-center">Librería de Componentes</h1>
+    <div class="grid grid-cols-1 gap-12">
+      {
+        components.map(({ name, Comp, props }) => (
+          <section class="p-4 border rounded-lg shadow-lg md:p-8">
+            <h2 class="mb-6 text-2xl font-semibold text-center">{name}</h2>
+            <div class="component-wrapper">
+              <Comp {...props} />
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .component-wrapper {
+    border: 2px dashed #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #fdfdff;
+    overflow: hidden;
+  }
+</style>

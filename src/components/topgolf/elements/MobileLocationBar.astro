@@ -1,0 +1,52 @@
+---
+// src/components/elements/MobileLocationBar.astro
+import ButtonGroup from './ButtonHeader.astro'; // Asegúrate de que la ruta sea correcta
+import type { Boton } from './ButtonHeader.astro';
+
+interface Props {
+    ubicacion: string;
+    horario: string;
+    direccion: string;
+    botones: Boton[];
+    idSuffix: string; // Esto es clave para evitar conflictos de ID
+}
+
+const { ubicacion, horario, direccion, botones, idSuffix } = Astro.props;
+
+// Creamos IDs únicos basados en el sufijo que le pasemos
+const toggleId = `location-toggle-${idSuffix}`;
+const detailsId = `location-details-${idSuffix}`;
+const arrowId = `location-arrow-${idSuffix}`;
+---
+
+<div class="relative z-30 font-sans text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)]">
+    <button id={toggleId} class="flex items-center justify-between w-full !px-4 !py-2 text-sm font-bold bg-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-black) cursor-pointer">
+        <span>{ubicacion}</span>
+        <div class="flex items-center">
+            <span>{horario}</span>
+            <svg id={arrowId} xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+    </button>
+    <div id={detailsId} class="font-(family-name:--font-shields-sans-regular) hidden !px-4 !py-5 bg-[var(--brand-interactive-base)] border-t border-white/10">
+        <div class="text-sm" set:html={direccion}></div>
+        <div class="mt-4">
+            <ButtonGroup botones={botones} />
+        </div>
+    </div>
+</div>
+
+<script define:vars={{ toggleId, detailsId, arrowId }}>
+    const toggle = document.getElementById(toggleId);
+    const details = document.getElementById(detailsId);
+    const arrow = document.getElementById(arrowId);
+
+    if (toggle) {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (details) details.classList.toggle('hidden');
+            if (arrow) arrow.classList.toggle('rotate-180');
+        });
+    }
+</script>

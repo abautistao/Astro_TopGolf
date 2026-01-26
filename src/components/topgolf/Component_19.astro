@@ -1,0 +1,208 @@
+---
+// src/components/Component_19.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+
+const FALLBACK_IMAGE_URL =
+    "https://placehold.co/800x600/4a5568/ffffff?text=Imagen+no+disponible";
+
+// 1. Interfaz para el objeto de imagen de Strapi (Mantenemos la estructura de datos limpia)
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+}
+
+export interface Props {
+    pre_titulo: string;
+    contenido: any; // Rich Text
+    imagen_superior: StrapiMedia | null;
+    imagen_inferior_izquierda: StrapiMedia | null;
+    imagen_inferior_derecha: StrapiMedia | null;
+}
+
+// 2. Recibimos las props y definimos placeholders
+const {
+    pre_titulo,
+    contenido,
+    imagen_superior,
+    imagen_inferior_izquierda,
+    imagen_inferior_derecha,
+} = Astro.props;
+
+const placeholderData: Props = {
+    pre_titulo: "NO HAY NADA COMO TOPGOLF",
+    contenido: [
+        {
+            type: "paragraph",
+            children: [
+                {
+                    type: "text",
+                    text: "Este es un texto de ejemplo. El contenido real vendrá de Strapi.",
+                },
+            ],
+        },
+    ],
+    imagen_superior: null,
+    imagen_inferior_izquierda: null,
+    imagen_inferior_derecha: null,
+};
+
+// 3. Preparamos los datos para renderizar
+const preTituloToRender = pre_titulo || placeholderData.pre_titulo;
+const contentHtml = stringifyRichText(contenido || placeholderData.contenido);
+
+// Lógica de fallback para cada imagen
+const imgSupUrl = (imagen_superior
+    ? getStrapiUrl(imagen_superior)
+    : null) || FALLBACK_IMAGE_URL;
+const imgSupAlt = imagen_superior?.alternativeText || "Imagen superior";
+
+const imgInfIzqUrl = (imagen_inferior_izquierda
+    ? getStrapiUrl(imagen_inferior_izquierda)
+    : null) || FALLBACK_IMAGE_URL;
+const imgInfIzqAlt =
+    imagen_inferior_izquierda?.alternativeText || "Imagen inferior izquierda";
+
+const imgInfDerUrl = (imagen_inferior_derecha
+    ? getStrapiUrl(imagen_inferior_derecha)
+    : null) || FALLBACK_IMAGE_URL;
+const imgInfDerAlt =
+    imagen_inferior_derecha?.alternativeText || "Imagen inferior derecha";
+---
+
+<section class="bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-15">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* --- BLOQUE DE IMÁGENES (A LA IZQUIERDA EN ESCRITORIO) --- */}
+            {
+                /* CLAVE: order-1 (Móvil: primero), md:order-1 (Escritorio: primero/izquierda) */
+            }
+            <div class="order-1 md:order-1">
+                {/* --- VERSIÓN MÓVIL: CARRUSEL --- */}
+                <div class="md:hidden">
+                    <div class="swiper shadow-lg">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <Image
+                                    src={imgSupUrl}
+                                    alt={imgSupAlt}
+                                    class="w-full h-80 object-cover"
+                                    inferSize={true}
+                                />
+                            </div>
+                            <div class="swiper-slide">
+                                <Image
+                                    src={imgInfIzqUrl}
+                                    alt={imgInfIzqAlt}
+                                    class="w-full h-80 object-cover"
+                                    inferSize={true}
+                                />
+                            </div>
+                            <div class="swiper-slide">
+                                <Image
+                                    src={imgInfDerUrl}
+                                    alt={imgInfDerAlt}
+                                    class="w-full h-80 object-cover"
+                                    inferSize={true}
+                                />
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+
+                {/* --- VERSIÓN ESCRITORIO: LAYOUT ORIGINAL --- */}
+                <div class="hidden md:flex flex-col gap-4">
+                    <div class="flex">
+                        <div class="w-2/3">
+                            <div class="flex justify-end">
+                                <Image
+                                    src={imgSupUrl}
+                                    alt={imgSupAlt}
+                                    class="w-2/4 object-cover shadow-lg h-[200px]"
+                                    inferSize={true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <Image
+                            src={imgInfIzqUrl}
+                            alt={imgInfIzqAlt}
+                            class="w-2/3 object-cover shadow-lg h-[300px]"
+                            inferSize={true}
+                        />
+                        <Image
+                            src={imgInfDerUrl}
+                            alt={imgInfDerAlt}
+                            class="w-1/3 object-cover shadow-lg h-[300px]"
+                            inferSize={true}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-6 order-2 md:order-2">
+                <p
+                    class="whitespace-nowrap leading-none mb-0 uppercase font-semibold text-[var(--surface-brand-primary)] tracking-wide text-3xl md:text-5xl font-(family-name:--font-shields-sans-condensed)"
+                >
+                    {preTituloToRender}
+                </p>
+                <div
+                    class="font-(family-name:--font-shields-sans-regular) prose prose-lg text-base text-[var(--neutral-background-strong)] strapi-rich-text font-normal"
+                    set:html={contentHtml}
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination } from "swiper/modules";
+    import "swiper/css";
+    import "swiper/css/navigation";
+    import "swiper/css/pagination";
+
+    const swiper = new Swiper(".swiper", {
+        modules: [Navigation, Pagination],
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 20,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+</script>
+
+<style>
+    .swiper {
+        --swiper-theme-color: var(--brand-interactive-base);
+        --swiper-navigation-size: 30px;
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--neutral_background_strong);
+        font-family: var(--font-tee-line-bold-italic) !important;
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        text-decoration: underline;
+        text-decoration-color: var(--accent-highlight-secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        color: inherit;
+    }
+</style>

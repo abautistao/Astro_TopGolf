@@ -1,0 +1,125 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl } from '../../lib/strapi.js';
+import { formatUrl } from '../../lib/strapi';
+
+const FALLBACK_IMAGE_URL =
+  "https://s3-intl.topgolf.com/mexico/FAVS-INCLUYE-NOV25-DESK.png";
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface Promo {
+  id: number;
+  descripcion: any;
+  is_bold: boolean;
+}
+
+export interface StrapiMedia {
+  id: number;
+  url: string;
+  alternativeText: string | null;
+}
+
+export interface Props {
+  imagen_desktop: StrapiMedia | null;
+  imagen_mobile: StrapiMedia | null;
+  link?: string;
+  background: string;
+  is_boxed: boolean
+  title?: string
+  title_color?: string
+  title_bottom?: string
+}
+
+// 2. Recibimos las props y definimos placeholders
+const {
+  imagen_desktop,
+  imagen_mobile,
+  link,
+  background,
+  is_boxed,
+  title,
+  title_color,
+  title_bottom
+} = Astro.props;
+
+const placeholderData: Props = {
+  imagen_desktop: null,
+  imagen_mobile,
+  link,
+  background,
+  is_boxed,
+  title,
+  title_color,
+  title_bottom
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+    imagen_principal: imagen_desktop || FALLBACK_IMAGE_URL,
+    imagen_mobile: imagen_mobile || FALLBACK_IMAGE_URL,
+    link: link || '',
+    background: background || 'red',
+    is_boxed: is_boxed || false,
+};
+
+const imageUrlDesktop = (imagen_desktop
+  ? getStrapiUrl(imagen_desktop)
+  : null) || FALLBACK_IMAGE_URL;
+
+const imageAlt =
+  imagen_desktop?.alternativeText || "Imagen principal de la sección";
+
+const imageUrlMobile = (imagen_mobile
+  ? getStrapiUrl(imagen_mobile)
+  : null) || FALLBACK_IMAGE_URL;
+
+const imageAltMobile =
+  imagen_mobile?.alternativeText || "Imagen principal de la sección";
+---
+
+<section id="banner_image" class:list={[
+    {
+        'px-3 lg:px-8 py-8 lg:py-16': is_boxed,
+    }
+]}>
+  <div class:list={[
+    {
+        'w-full mx-auto max-w-7xl': is_boxed
+    }
+  ]}>
+
+    {title && (
+      <h2 id="banner-title" class="text-center text-3xl md:text-4xl uppercase font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed) px-4">{title}</h2>
+    )}
+    
+    <a href={formatUrl(link)}>
+      <Image
+          src={imageUrlDesktop}
+          alt={imageAlt}
+          class="w-full hidden md:block"
+          inferSize={true}
+      />
+  
+      <Image
+          src={imageUrlMobile}
+          alt={imageAltMobile}
+          class="w-full block md:hidden"
+          inferSize={true}
+      />
+    </a>
+
+    {title_bottom && (
+      <h3 id="banner-title-bottom" class="text-center text-1xl md:text-2xl uppercase font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed) px-4">{title_bottom}</h3>
+    )}
+  </div>
+</section>
+
+<style define:vars={{ background, title_color }}>
+  #banner_image {
+    background-color: var(--background);
+  }
+
+  #banner-title, #banner-title-bottom {
+    color: var(--title_color);
+  }
+</style>

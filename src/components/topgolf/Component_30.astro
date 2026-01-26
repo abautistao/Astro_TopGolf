@@ -1,0 +1,43 @@
+---
+// src/components/Component_30.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+import CalloutSection from './elements/CalloutSection.astro';
+import type { Boton } from './elements/Button.astro';
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface Props {
+    titulo: string;
+    contenido: any; // Rich Text
+    Boton: Boton[];
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo, contenido, Boton } = Astro.props;
+
+const placeholderData: Props = {
+    titulo: "¿QUIERES JUGAR TODO EL DÍA, TODOS LOS DÍAS SIN PREOCUPARTE POR LAS HORAS DE JUEGO?",
+    contenido: [{ type: 'paragraph', children: [{ type: 'text', text: "¡Llegaste al lugar correcto!, para eso tenemos nuestras membresías, que te ofrecen una serie de beneficios en juego, alimentos y bebidas. Además podrás traer a tus amigos, familia, colegas o a quien tú quieras para que te acompañen en la diversión. Tenemos cupo limitado cada año. Escríbenos para brindarte más información." }] }],
+    Boton: [],
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+    titulo: titulo || placeholderData.titulo,
+    contenido: stringifyRichText(contenido || placeholderData.contenido),
+};
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "MÁS INFORMACIÓN",
+        url: "#",
+        tipo: "version_3"
+    }
+];
+---
+
+<CalloutSection
+    version="version_1"
+    titulo={dataToRender.titulo}
+    contenido={dataToRender.contenido}
+    botones={componentButtons}
+/>

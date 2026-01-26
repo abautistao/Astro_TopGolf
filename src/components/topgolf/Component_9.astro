@@ -1,0 +1,168 @@
+---
+// src/components/Component_9.astro
+import { stringifyRichText } from '../../lib/strapi.js';
+
+// NOTA: Este script inicializa Alpine.js. Si ya está inicializado en tu layout principal (ej. Layout.astro), puedes eliminar este bloque.
+// Si no estás seguro, déjalo. No causará problemas.
+
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface FaqItem {
+  id: number;
+  pregunta: string;
+  respuesta: any; // Rich Text
+}
+
+export interface Props {
+  titulo_normal: string;
+  titulo_resaltado: string;
+  preguntas: FaqItem[];
+  nota_aclaratoria: any; // Rich Text
+}
+
+// 2. Recibimos las props y definimos placeholders
+const {
+  titulo_normal,
+  titulo_resaltado,
+  preguntas = [],
+  nota_aclaratoria,
+} = Astro.props;
+
+const placeholderFaqItems: FaqItem[] = [
+  { id: 1, pregunta: "¿Cuál es el horario?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Abrimos de Lunes a Domingo de 10am a 10pm.' }] }] },
+  { id: 2, pregunta: "¿Necesito reservación?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'No es necesaria, pero es altamente recomendada, especialmente los fines de semana.' }] }] },
+  { id: 3, pregunta: "¿Hay opciones de comida?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: 'Sí, contamos con un menú completo con opciones para todos.' }] }] },
+  { id: 4, pregunta: "¿Es apto para niños?", respuesta: [{ type: 'paragraph', children: [{ type: 'text', text: '¡Claro! Topgolf es una experiencia para toda la familia.' }] }] },
+];
+
+const itemsToRender = preguntas && preguntas.length > 0 ? preguntas : placeholderFaqItems;
+
+// 3. Dividimos las preguntas en dos columnas automáticamente
+const midpoint = Math.ceil(itemsToRender.length / 2);
+const column1Items = itemsToRender.slice(0, midpoint);
+const column2Items = itemsToRender.slice(midpoint);
+
+const disclaimerHtml = stringifyRichText(nota_aclaratoria);
+const placeholderDisclaimerHtml = `<p><strong>NOTA:</strong> En esta cocina se almacenan productos con alérgenos y gluten. Tenga en cuenta que puede haber contacto cruzado. Se recomienda a los comensales que consideren esta información.</p>`;
+
+// Función para procesar la respuesta de cada item del acordeón
+const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
+---
+<script>
+    import Alpine from 'alpinejs';
+    window.Alpine = Alpine;
+    Alpine.start();
+</script>
+<section class="w-full bg-[var(--neutral-text-inverted)] !py-4 sm:!py-4">
+  <div class="container mx-auto !px-4">
+    <h2 class="text-center text-4xl uppercase mb-10">
+      <div class="inline-block relative font-semibold text-[32px] md:text-5xl leading-none">
+        <span class="font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed)">{titulo_normal || "PREGUNTAS"}</span>
+        <span class="font-normal text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-semibold-condensed)">{titulo_resaltado || "FRECUENTES"}</span>
+        <hr class="w-[10%] border-[var(--brand-interactive-base)] border-t-3 mx-auto" />
+    </div>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Columna 1 -->
+      <div class="space-y-4">
+        {column1Items.map((item) => (
+          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
+            <div @click="open = !open" class="flex items-center justify-between !p-4 cursor-pointer">
+              <h3 class="text-sm md:text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold) mb-0">{item.pregunta}</h3>
+              <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
+                <i
+                  class="text-xs fa-solid fa-plus text-white transition-transform duration-300"
+                  :class="{'rotate-45': open}"
+                ></i>
+              </div>
+              </div>
+            <div x-show="open" x-collapse.duration.300ms class="!px-4 pb-4">
+              <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Columna 2 -->
+      <div class="space-y-4">
+        {column2Items.map((item) => (
+          <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
+            <div @click="open = !open" class="flex items-center justify-between !p-4 cursor-pointer">
+              <h3 class="text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold) mb-0">{item.pregunta}</h3>
+
+              <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
+                <i
+                  class="text-xs fa-solid fa-plus text-white transition-transform duration-300"
+                  :class="{'rotate-45': open}"
+                ></i>
+              </div>
+              </div>
+            <div x-show="open" x-collapse.duration.300ms class="!px-4 pb-4">
+                <div class=" font-(family-name:--font-shields-sans-regular) font-normal prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose strapi-rich-text">
+        <div set:html={disclaimerHtml || placeholderDisclaimerHtml} />
+    </div>
+  </div>
+</section>
+
+<style>
+  /*
+    Estos estilos fuerzan la aparición de los marcadores de lista (bullets y números)
+    dentro del contenido renderizado por la clase .prose en este componente.
+  */
+  .prose :global(ul) {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+  .prose :global(ol) {
+    list-style-type: decimal;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+  .prose :global(li) {
+    padding-left: 0.5rem;
+  }
+  .prose :global(p) {
+    margin-bottom: 0;
+  }
+
+
+  .text-shadow-md {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .strapi-rich-text :global(strong) {
+    color: var(--neutral-background-strong);
+    font-family: var(--font-tee-line-bold-italic);
+    font-weight: bold;
+  }
+
+  .strapi-rich-text :global(u) {
+    text-decoration-color: var(--accent-highlight-secondary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .strapi-rich-text :global(a) {
+     font-weight: bold;
+    color: var(--brand-interactive-base);
+  }
+
+  /* --- Agrega esto aquí --- */
+  .strapi-rich-text :global(li::marker) {
+    /* Usa la variable de color que desees para el punto/número */
+    color: var(--neutral-background-strong);
+
+    /* Opcional: Si quieres que el bullet sea más grande o negrita */
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+</style>

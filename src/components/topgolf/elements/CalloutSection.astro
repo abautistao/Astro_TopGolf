@@ -1,0 +1,99 @@
+---
+// src/components/elements/CalloutSection.astro
+import { Image } from "astro:assets";
+import ButtonGroup from './Button.astro';
+import type { Boton } from './Button.astro';
+import dotsPattern from '../../../assets/Artwork_bg.png';
+import dotsPatternMobile from '../../../assets/Artwork_1.png';
+
+
+export interface Props {
+    titulo: string;
+    contenido: string;
+    botones: Boton[];
+    version: 'version_1' | 'version_2' | 'version_3';
+}
+
+const { titulo, contenido, botones, version } = Astro.props;
+
+// --- 1. Definición de Estilos por Versión ---
+let backgroundClass = '';
+let titleClass = '';
+let contentClass = '';
+let activeDecoration = false; // Nueva variable para el fondo de puntos
+
+switch (version) {
+    case 'version_1':
+        // Componente_30: Fondo blanco, Título y Contenido negros.
+        backgroundClass = 'bg-[var(--neutral-text-inverted)]';
+        titleClass = 'text-[var(--neutral-background-strong)]';
+        contentClass = 'text-[var(--neutral-background-strong)]';
+        activeDecoration = false;
+        break;
+    case 'version_2':
+        // Componente_31: Fondo primario azul, Título  (accent-highlight), Contenido blanco.
+        backgroundClass = 'bg-[var(--surface-brand-primary)]';
+        titleClass = 'text-[var(--accent-highlight-secondary)]';
+        contentClass = 'text-[var(--neutral-text-inverted)]';
+        activeDecoration = true; // Activa el patrón de puntos
+        break;
+    case 'version_3':
+        // Componente_32: Fondo blanco, Título azul (surface-brand-primary), Contenido negro.
+        backgroundClass = 'bg-[var(--neutral-text-inverted)]';
+        titleClass = 'text-[var(--surface-brand-primary)]';
+        contentClass = 'text-[var(--neutral-background-strong)]';
+        activeDecoration = false;
+        break;
+    default:
+        backgroundClass = 'bg-[var(--neutral-text-inverted)]';
+        titleClass = 'text-[var(--neutral-background-strong)]';
+        contentClass = 'text-[var(--neutral-background-strong)]';
+}
+
+const isColorBackground = activeDecoration; // El patrón de puntos solo se usa con fondos de color (version_2)
+---
+
+<section class:list={['relative', isColorBackground ? 'py-20 sm:py-28' : 'py-16 sm:py-12', backgroundClass]}>
+    <div class:list={[
+        'mx-auto',
+        isColorBackground ? 'relative z-10 mx-4 overflow-hidden px-6 py-12 shadow-xl sm:mx-0 sm:px-16 sm:py-20 rounded-2xl' : 'max-w-5xl px-6 text-center lg:px-8'
+    ]}>
+        <div class:list={['mx-auto flex flex-col items-center', isColorBackground ? 'max-w-2xl text-center' : 'text-center']}>
+
+            <h2 class:list={['font-(family-name:--font-shields-sans-condensed) text-[28px] font-bold sm:text-[38px]', titleClass, isColorBackground ? 'uppercase tracking-tight sm:text-4xl' : '']}>
+                {titulo}
+            </h2>
+
+            <!-- Usamos un div genérico para el contenido -->
+            <div class:list={['font-(family-name:--font-shields-sans-regular) mt-6 text-lg prose max-w-none', contentClass, isColorBackground ? 'text-md leading-8' : '']}>
+                <div set:html={contenido}></div>
+            </div>
+
+            <div class="w-full mt-10 inline-block">
+                <ButtonGroup botones={botones} clase="flex flex-col items-center"/>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patrón de Puntos Decorativo (solo si activeDecoration es true) -->
+    {activeDecoration && (
+        <>
+        <Image src={dotsPattern} alt="Patrón de puntos decorativo" class="absolute bottom-8 right-0 z-0 hidden h-auto w-auto sm:block" aria-hidden="true" />
+        <Image src={dotsPatternMobile} alt="Patrón de puntos decorativo" class="absolute bottom-33 right-0 z-0 block translate-y-1/2 sm:hidden" aria-hidden="true" />
+        </>
+    )}
+</section>
+
+<style>
+    /* Estilos globales para el contenido Rich Text */
+    .prose :global(p) {
+        margin: 0;
+    }
+    .prose :global(p + p) {
+        margin-top: 0.5rem;
+    }
+    /* Asegura que el color del texto del prose se herede de la variable */
+    .prose :global(p) {
+        color: inherit;
+    }
+</style>

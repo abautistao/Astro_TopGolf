@@ -1,0 +1,54 @@
+---
+// src/components/Component_4.astro
+import ButtonGroup from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
+
+// 1. Define la interfaz de las props que el componente recibirá desde Strapi
+export interface Props {
+    titulo: string;
+    subtitulo: string;
+    Boton: Boton[];
+}
+
+// 2. Recibe las props desde Astro
+const {
+    titulo,
+    subtitulo,
+    Boton
+} = Astro.props;
+
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
+    {
+        id: 1,
+        texto: "Planea tu visita",
+        url: "#",
+        tipo: "version_3"
+    }
+];
+---
+
+<section class="bg-[var(--neutral-text-inverted)] py-13">
+    <div class="max-w-8xl mx-auto px-4">
+        <div class="flex flex-col items-center gap-8">
+
+            <div class="flex flex-col items-center gap-4 md:flex-row md:gap-x-8">
+                <div class="inline-block bg-[var(--accent-feedback-strong)] transform -rotate-3 shadow-md shrink-0">
+                    <h2 class="text-3xl md:text-5xl font-semibold text-[var(--surface-brand-primary)] py-3 px-8 uppercase tracking-tighter font-(family-name:--font-shields-sans-semibold-condensed)">
+                        {titulo || "¿Listo para jugar?"}
+                    </h2>
+                </div>
+
+                <p class="text-xl text-center md:text-left text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-regular)">
+                {subtitulo || "Arma tu plan y visita Topgolf Monterrey"}
+                </p>
+
+            </div>
+
+            <ButtonGroup
+                botones={componentButtons}
+                clase="w-full flex flex-col items-center gap-4 sm:w-auto sm:flex-row"
+            />
+
+        </div>
+    </div>
+</section>

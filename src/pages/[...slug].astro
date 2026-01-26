@@ -2,27 +2,18 @@
 // ==========================================================================================
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
-import BloqueDeTexto from '../components/BloqueDeTexto.astro';
-import Component_1 from '../components/Component_1.astro';
-import Component_2 from '../components/Component_2.astro'; // <- IMPORTAMOS COMPONENTE 2
-import Layout from '../layouts/Layout.astro'; // Importamos el Layout principal
-import { getAllPages, getPageBySlug } from '../lib/strapi.js';
+import Layout from "../layouts/Layout.astro"; // Importamos el Layout principal
+import { getAllPages, getPageBySlug } from "../lib/strapi.js";
+import RenderBlocks from "../components/RenderBlocks.astro";
 
-// ==========================================================================================
-// SECCIÓN 2: MAPA DE COMPONENTES
-// ==========================================================================================
-const componentsMap = {
-  'secciones.bloque-de-texto': BloqueDeTexto,
-  'secciones.hero-principal': Component_1,
-  'secciones.carrusel': Component_2, // <- CORREGIDO para que coincida con Strapi
-};
+export const prerender = true;
 
 // ==========================================================================================
 // SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
 // ==========================================================================================
 export async function getStaticPaths() {
   const pages = await getAllPages();
-  console.log("Datos recibidos para getStaticPaths:", pages);
+
   if (!pages) {
     return [];
   }
@@ -41,19 +32,17 @@ const pagina = await getPageBySlug(slug);
 if (!pagina) {
   return new Response(null, {
     status: 404,
-    statusText: 'No Encontrado'
+    statusText: "No Encontrado",
   });
 }
 
-const { titulo, ContenidoPagina } = pagina;
+const { titulo, ContenidoPagina, SEO } = pagina;
+
+
 ---
 
-<Layout>
+<Layout seo={SEO}>
   <main class="mx-auto container-full">
-
-    {ContenidoPagina && ContenidoPagina.map(bloque => {
-      const Componente = componentsMap[bloque.__component];
-      return Componente ? <Componente {...bloque} /> : <p>Componente no encontrado: {bloque.__component}</p>;
-    })}
+    <RenderBlocks blocks={ContenidoPagina} />
   </main>
 </Layout>

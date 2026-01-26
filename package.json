@@ -9,8 +9,21 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@alpinejs/collapse": "^3.15.2",
+    "@astrojs/alpinejs": "^0.4.9",
+    "@astrojs/cloudflare": "^12.6.11",
+    "@astrojs/node": "^9.4.6",
+    "@astrojs/sitemap": "^3.6.0",
+    "@awesome.me/kit-ea4a75e062": "^1.0.4",
+    "@fancyapps/ui": "^6.1.7",
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@splidejs/splide": "^4.1.4",
     "@tailwindcss/vite": "^4.1.11",
+    "alpinejs": "^3.15.2",
     "astro": "^5.12.9",
+    "flatpickr": "^4.6.13",
+    "resend": "^6.5.2",
+    "swiper": "^11.2.10",
     "tailwindcss": "^4.1.11"
   }
 }

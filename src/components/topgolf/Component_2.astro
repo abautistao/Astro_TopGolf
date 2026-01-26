@@ -1,0 +1,265 @@
+---
+// src/components/Component_2.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl } from '../../lib/strapi.js';
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+export interface Card {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  etiqueta?: string;
+  alt_imagen: string;
+  imagen: any;
+  Boton: Boton[]; // La tarjeta ahora espera recibir el componente Boton desde Strapi.
+}
+
+export interface Props {
+  identificador: string;
+  tarjetas: Card[];
+}
+
+const { identificador, tarjetas } = Astro.props;
+const carouselId = identificador || "carousel-principal";
+
+// El placeholder ahora también debe simular la nueva estructura del botón.
+const placeholderCard: Card = {
+  id: 0,
+  titulo: "Título de Ejemplo",
+  descripcion: "Esta es una descripción de ejemplo para la tarjeta.",
+  alt_imagen: "Imagen de placeholder",
+  imagen: { data: null },
+  Boton: [
+    {
+      id: 1,
+      texto: "VER MÁS",
+      url: "#",
+      tipo: "version_1",
+    },
+  ],
+};
+
+const cardsToRender =
+  tarjetas && tarjetas.length > 0 ? tarjetas : [placeholderCard];
+---
+
+<section class="w-full py-12 pt-0 font-sans bg-[var(--neutral-text-inverted)]">
+  <div class="relative px-4 mx-auto max-w-8xl sm:px-6">
+    <div
+      id={carouselId}
+      class="pb-8 -mb-8 overflow-x-auto scroll-smooth scrollbar-hide"
+      data-total-cards={cardsToRender.length}
+    >
+      <div class="flex gap-6">
+        {
+          cardsToRender.map((card) => {
+            const imageUrl = getStrapiUrl(card.imagen);
+            const placeholderImageUrl = `https://placehold.co/400x450/2d3748/ffffff?text=${encodeURIComponent(card.titulo)}`;
+
+            const cardButtons: Boton[] = (card.Boton &&
+            !Array.isArray(card.Boton)
+              ? [card.Boton]
+              : card.Boton) || [
+              { id: card.id, texto: "Ver Más", url: "#", tipo: "version_1" },
+            ];
+
+            return (
+              <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
+                <Image
+                  src={imageUrl || placeholderImageUrl}
+                  alt={card.alt_imagen || "Imagen de la tarjeta"}
+                  class="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  inferSize={true}
+                />
+                <div class="absolute inset-0 bg-linear-to-b from-transparent via-black/60 to-black/90" />
+                <div
+                  class="relative z-10 flex flex-col justify-end h-full p-6"
+                  style="font-family: var(--font-shields-sans-semibold); "
+                >
+                  <h3
+                    class="text-3xl font-bold  text-[var(--accent-highlight-primary)]"
+                    style="font-size: 32px; font-family: var(--font-shields-sans-bold); "
+                  >
+                    {card.titulo}
+                  </h3>
+                  <p class="mt-2 text-base font-normal text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular)">
+                    {card.descripcion}
+                  </p>
+
+                  <div class="mt-8">
+                    <ButtonGroup
+                      botones={cardButtons}
+                      clase="flex flex-col items-start"
+                    />
+                  </div>
+                </div>
+                {card.etiqueta && (
+                  <div class="absolute top-4 left-4 bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] text-base px-3 py-1 rounded-md z-20 font-(family-name:--font-shields-sans-semibold-condensed) uppercase">
+                    {card.etiqueta}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mt-8">
+      <div class="flex gap-3">
+        <button
+          id={`prev-btn-${carouselId}`}
+          class="w-10 h-10 bg-[var(--surface-brand-primary)] rounded-full flex items-center justify-center transition-colors disabled:opacity-50 text-[var(--accent-highlight-secondary)]
+                focus-visible:ring-8 focus-visible:ring-[var(--accent-highlight-secondary)] focus-visible:ring-offset-4
+                hover:bg-[var(--surface-brand-primary)]"
+          aria-label="Anterior"
+        >
+          <i class="fa-solid fa-chevron-left fa-xl"></i>
+        </button>
+
+        <button
+          id={`next-btn-${carouselId}`}
+          class="w-10 h-10 bg-[var(--surface-brand-primary)] rounded-full flex items-center justify-center transition-colors text-[var(--accent-highlight-secondary)]
+                focus-visible:ring-8 focus-visible:ring-[var(--accent-highlight-secondary)] focus-visible:ring-offset-4
+                hover:bg-[var(--surface-brand-primary)]"
+          aria-label="Siguiente"
+        >
+          <i class="fa-solid fa-chevron-right fa-xl"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 text-[11px] leading-tight sm:text-sm sm:leading-normal">
+          <i class="fa-solid fa-location-dot fa-lg text-[var(--brand-interactive-base)] shrink-0"></i>
+
+          <span id="topgolf-content-text" class="text-[var(--neutral-background-strong)]">
+              Estás viendo contenido de
+              <strong class="block sm:inline">Topgolf Monterrey</strong>
+          </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="module" define:vars={{ carouselId }}>
+  //import { onThemeChange } from "../lib/theme.js";
+
+  function setupDarkModeHandler() {
+    const topgolfText = document.getElementById("topgolf-content-text");
+    if (!topgolfText) return;
+
+    /* onThemeChange((theme) => {
+      if (theme === "dark") {
+        topgolfText.style.color = "var(--accent-highlight-secondary)";
+      } else {
+        topgolfText.style.color = "var(--neutral-background-strong)";
+      }
+    }); */
+  }
+
+  function setupCarousel(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const prevBtn = document.getElementById(`prev-btn-${containerId}`);
+    const nextBtn = document.getElementById(`next-btn-${containerId}`);
+    const cards = container.querySelectorAll(".carousel-card");
+
+    if (cards.length === 0 || !prevBtn || !nextBtn) return;
+
+    // Función para obtener el ancho de una tarjeta + el gap dinámicamente
+    const getScrollDistance = () => {
+      if (cards.length === 0) return 0;
+      const cardWidth = cards[0].offsetWidth;
+      // Obtiene el gap del contenedor padre (flex)
+      const gap = parseInt(window.getComputedStyle(cards[0].parentElement).gap, 10) || 0;
+      return cardWidth + gap;
+    };
+
+    const updateButtons = () => {
+      if (!container) return;
+
+      // Margen de error pequeño (10px) para cálculos de punto flotante
+      const tolerance = 10;
+
+      // ¿Estamos al principio?
+      prevBtn.disabled = container.scrollLeft <= tolerance;
+
+      // ¿Estamos al final?
+      // scrollWidth = ancho total del contenido
+      // clientWidth = ancho visible
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      nextBtn.disabled = container.scrollLeft >= maxScroll - tolerance;
+    };
+
+    // --- EVENTOS DE BOTONES ---
+
+    nextBtn.addEventListener("click", () => {
+      const distance = getScrollDistance();
+      if (distance === 0) return;
+
+      const currentScroll = container.scrollLeft;
+      // Calculamos en qué índice visual estamos actualmente
+      const currentIndex = Math.round(currentScroll / distance);
+
+      // Saltamos al siguiente (+1)
+      container.scrollTo({
+        left: (currentIndex + 1) * distance,
+        behavior: "smooth",
+      });
+    });
+
+    prevBtn.addEventListener("click", () => {
+      const distance = getScrollDistance();
+      if (distance === 0) return;
+
+      const currentScroll = container.scrollLeft;
+      // Calculamos en qué índice visual estamos actualmente
+      const currentIndex = Math.round(currentScroll / distance);
+
+      // Saltamos al anterior (-1)
+      container.scrollTo({
+        left: (currentIndex - 1) * distance,
+        behavior: "smooth",
+      });
+    });
+
+    // --- LISTENERS GENERALES ---
+
+    // Actualizar estado de botones al hacer scroll (manual o automático)
+    container.addEventListener("scroll", updateButtons, { passive: true });
+
+    // Actualizar botones al cambiar tamaño de ventana
+    window.addEventListener("resize", updateButtons);
+
+    // Inicializar estado de botones
+    updateButtons();
+  }
+
+  // Configuración de carga para Astro ViewTransitions y carga normal
+  document.addEventListener("astro:page-load", () => {
+    setupCarousel(carouselId);
+    setupDarkModeHandler();
+  });
+
+  // Respaldo para carga inicial si astro:page-load no dispara
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+     setupCarousel(carouselId);
+     setupDarkModeHandler();
+  } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      setupCarousel(carouselId);
+      setupDarkModeHandler();
+    });
+  }
+</script>
+
+<style is:global>
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Booking from '../components/topgolf/Booking.astro';
+---
+
+<Layout>
+  <main class="py-12">
+    <!-- 
+      El componente Booking ahora se encargará de leer los parámetros 
+      de la URL en el lado del cliente.
+    -->
+    <Booking />
+  </main>
+</Layout>

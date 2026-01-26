@@ -1,0 +1,149 @@
+---
+// src/components/Component_23.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+
+const FALLBACK_ICON_URL = "https://placehold.co/40x40/4a5568/ffffff?text=!";
+
+// 1. Definimos las interfaces para las props de Strapi
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+}
+
+export interface Tag {
+    id: number;
+    texto: string;
+    color_fondo: string;
+    color_texto: string;
+    informacion_etiqueta: string;
+}
+
+export interface Juego {
+    id: number;
+    titulo: string;
+    descripcion: any; // Rich Text
+    icono: StrapiMedia | null;
+    tags: Tag[] | Tag; // Can be a single object or an array
+}
+
+export interface Props {
+    titulo_seccion: string;
+    descripcion_seccion: any; // Rich Text
+    juegos: Juego[];
+    texto_boton_cargar_mas: string;
+    texto_boton_regresar: string;
+}
+
+// 2. Recibimos las props y definimos placeholders
+const { titulo_seccion, descripcion_seccion, juegos, texto_boton_cargar_mas, texto_boton_regresar } = Astro.props;
+
+const placeholderData: Props = {
+    titulo_seccion: "JUEGOS DISPONIBLES",
+    descripcion_seccion: [{ type: 'paragraph', children: [{ type: 'text', text: "Contenido de ejemplo para la descripción de la sección de juegos." }] }],
+    texto_boton_cargar_mas: "CARGAR MÁS JUEGOS",
+    texto_boton_regresar: "REGRESAR",
+    juegos: [
+        { id: 1, titulo: 'TOPGOLF®', descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Descripción de ejemplo para el juego." }] }], icono: null, tags: [{ id: 1, texto: 'PRINCIPIANTE', color_fondo: 'var(--feedback-positive-dark)', color_texto: 'var(--neutral-text-inverted)', informacion_etiqueta: 'Info' }] },
+        { id: 2, titulo: 'TOP SCRAMBLE', descripcion: [{ type: 'paragraph', children: [{ type: 'text', text: "Descripción de ejemplo para el juego." }] }], icono: null, tags: [{ id: 3, texto: 'INTERMEDIO', color_fondo: 'var(--accent-highlight-primary)', color_texto: 'var(--success-text-default)', informacion_etiqueta: 'Info' }] },
+    ]
+};
+
+// 3. Preparamos los datos para renderizar
+const dataToRender = {
+    titulo_seccion: titulo_seccion || placeholderData.titulo_seccion,
+    descripcion_seccion: stringifyRichText(descripcion_seccion || placeholderData.descripcion_seccion),
+    juegos: juegos && juegos.length > 0 ? juegos : placeholderData.juegos,
+    texto_boton_cargar_mas: texto_boton_cargar_mas || placeholderData.texto_boton_cargar_mas,
+    texto_boton_regresar: texto_boton_regresar || placeholderData.texto_boton_regresar,
+};
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-(family-name:--font-shields-sans-regular)">
+        <div class="text-center">
+            <h2 class="font-(family-name:--font-shields-sans-semibold-condensed) text-[28px] sm:text-[38px] font-semibold text-[var(--neutral-background-strong)] leading-none
+                tracking-[0]">
+                {dataToRender.titulo_seccion}
+            </h2>
+            <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>
+        </div>
+
+        <div id="games-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-2">
+            {dataToRender.juegos.map((game, index) => {
+                const iconUrl = (game.icono
+                    ? getStrapiUrl(game.icono)
+                    : null) || FALLBACK_ICON_URL;
+                const iconAlt = game.icono?.alternativeText || game.titulo;
+                const descripcionHtml = stringifyRichText(game.descripcion);
+
+                return (
+                    <div class:list={[
+                        "bg-[var(--neutral-text-inverted)] rounded-lg border border-[var(--neutral-text-inverted)] p-8 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow duration-300",
+                        { 'hidden extra-game-card': index >= 8 }
+                    ]}>
+                        <div class="w-20 h-20 flex items-center justify-cente">
+                            <Image src={iconUrl} alt={iconAlt} class="h-full w-full" inferSize={true} />
+                        </div>
+                        <h3 class="font-(family-name:--font-shields-sans-black) font-black text-3xl text-[var(--neutral-background-strong)] uppercase" set:html={game.titulo.replace('®', '<sup class="text-xs">®</sup>')}></h3>
+                        <div class="flex flex-wrap items-center justify-center gap-2 mt-4">
+                            {game.tags && (Array.isArray(game.tags) ? game.tags : [game.tags]).map(tag => (
+
+                                <div class="flex flex-row items-center flex-wrap justify-center">
+                                    <span class="whitespace-nowrap text-xs font-semibold px-4 py-1.5" style={`background-color: ${tag.color_fondo}; color: ${tag.color_texto};`}>
+                                        {tag.texto}
+                                    </span>
+
+                                    {tag.informacion_etiqueta && (
+                                        <span class="whitespace-nowrap text-xs px-4 py-1.5 text-[var(--neutral-background-strong)] bg-[var(--neutral-background-subtle)]">
+                                            {tag.informacion_etiqueta}
+                                        </span>
+                                    )}
+
+                                </div>
+                            ))}
+                        </div>
+                        <div class="mt-6 text-sm text-[var(--neutral-background-strong)] flex-grow" set:html={descripcionHtml}>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+
+        {dataToRender.juegos.length > 8 && (
+            <div class="mt-16 text-center">
+                <button id="load-more-button" class="border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] font-bold py-3 px-10 rounded-full hover:bg-[var(--brand-interactive-base)] hover:text-[var(--neutral-text-inverted)] transition-colors duration-300"
+                    data-load-text={dataToRender.texto_boton_cargar_mas}
+                    data-collapse-text={dataToRender.texto_boton_regresar}
+                >
+                    {dataToRender.texto_boton_cargar_mas}
+                </button>
+            </div>
+        )}
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadMoreButton = document.getElementById('load-more-button');
+        const gamesGrid = document.getElementById('games-grid');
+
+        if (loadMoreButton && gamesGrid) {
+            const extraCards = document.querySelectorAll('.extra-game-card');
+            let isShowingAll = false;
+
+            const loadText = loadMoreButton.dataset.loadText || '';
+            const collapseText = loadMoreButton.dataset.collapseText || '';
+
+            loadMoreButton.addEventListener('click', () => {
+                isShowingAll = !isShowingAll;
+                extraCards.forEach(card => card.classList.toggle('hidden'));
+                loadMoreButton.textContent = isShowingAll ? collapseText : loadText;
+                if (!isShowingAll) {
+                    gamesGrid.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    });
+</script>

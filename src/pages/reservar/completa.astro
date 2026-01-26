@@ -1,0 +1,102 @@
+---
+// ==========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+
+import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
+
+export const prerender = true;
+---
+
+<Layout>
+  <main class="mx-auto container-full">
+    <section class="bg-white font-sans">
+      <div class="p-6 sm:p-8 md:p-12 lg:p-16">
+        <span
+          id="status"
+          class={`font-(family-name:--font-shields-sans-regular)  font-bold inline-block text-xs  px-3 py-1 rounded-sm uppercase tracking-wider`}
+        ></span>
+
+        <h1
+          id="process"
+          class="font-(family-name:--font-shields-sans-condensed) text-3xl font-semibold text-[--neutral-background-strong] mt-4 sm:text-4xl"
+        ></h1>
+
+        <p
+          id="messagePlace"
+          class="font-(family-name:--font-shields-sans-regular) font-bold mt-3 text-lg text-[--neutral-background-strong]"
+        ></p>
+
+        <p
+          id="reservacion_id"
+          class="font-(family-name:--font-shields-sans-regular) text-2xl font-bold text-[--neutral-background-strong] my-6 md:text-3xl"
+        ></p>
+
+        <p
+          id="message"
+          class="font-(family-name:--font-shields-sans-regular) font-normal mt-4 text-base text-[--neutral-background-strong] leading-relaxed"
+        ></p>
+
+        <p
+          class="font-(family-name:--font-shields-sans-regular) font-normal mt-6 text-base text-[--neutral-background-strong]"
+        >
+          Si tienes alguna pregunta, no dudes en
+          <a href="#" class="font-bold text-blue-600 hover:text-blue-700">
+            contactarnos
+          </a>.
+        </p>
+
+        <p
+          class="font-(family-name:--font-shields-sans-regular) font-bold mt-8 text-sm text-[--neutral-background-strong]"
+        >
+          Ten presente que tu reservación puede llegar a tener tiempo de espera
+          dependiendo del día y la hora en la que hagas tu reservación, pero
+          haremos nuestro mayor esfuerzo para tener tu bahía lista cuanto antes.
+          En caso de espera, te recomendamos visitar nuestro Sportsbar y Skybar.
+        </p>
+      </div>
+    </section>
+  </main>
+</Layout>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  const reservacion_id = urlParams.get('reservacion_id');
+
+  const message = status === "-1" ? 'Muchas gracias por reservar en Topgolf. Estamos seguros de que la pasarás en grande. Hemos enviado un mensaje a tu correo electrónico con todos los detalles de tu visita.' : 'Parece que hubo un problema al procesar tu pago y la transacción no se realizó correctamente. Te invitamos a revisar que la información de tu tarjeta o método de pago sea correcta, o bien intentar nuevamente con otro método disponible.';
+  const messageStatus = status === "-1" ? "Status de pago: Aprobado" : "Status de pago: Rechazado"
+  const messageProcess = status === "-1" ? "Tu pago se procesó correctamente": "Tu pago no se procesó correctamente"
+  const messagePlace = status === "-1" ? "¡Tu lugar ya está reservado en el lugar más popular de Monterrey!" : " "
+  const statusClassBg = status === "-1" ? "bg-[#0C9D46]" : "bg-[#FFFF00]";
+  const statusClassTxt = status === "-1" ? "text-white" : "text-[--neutral-background-strong]";
+
+  const messageContainer = document.querySelector('#message')
+  const messageReservationContainer = document.querySelector('#reservacion_id')
+  const messageStatusContainer = document.querySelector('#status')
+  const messageProcessContainer = document.querySelector('#process')
+  const messagePlaceContainer = document.querySelector('#messagePlace')
+
+  if(messageContainer) {
+    messageContainer.textContent = message
+  }
+
+  if(messageStatusContainer) {
+    messageStatusContainer.textContent = messageStatus;
+    messageStatusContainer.classList.add(statusClassBg)
+    messageStatusContainer.classList.add(statusClassTxt)
+  }
+
+  if(messageProcessContainer) {
+    messageProcessContainer.textContent = messageProcess
+  }
+
+  if(messagePlaceContainer) {
+    messagePlaceContainer.textContent = messagePlace
+  }
+
+  if(messageReservationContainer) {
+    messageReservationContainer.textContent = reservacion_id
+  }
+
+  
+</script>

@@ -1,0 +1,52 @@
+---
+// src/components/Componente_11.astro
+// Este componente es un wrapper para StepWithContent, que define la orientación
+// 'left_image' y el contenido dinámico 'button'.
+
+import StepWithContent from './elements/StepWithContent.astro';
+import type { Boton } from './elements/Button.astro';
+import type { Props as StepWithContentProps } from './elements/StepWithContent.astro';
+
+// 1. Definimos la interfaz con todas las props de datos que C11 requiere.
+export interface Props extends Omit<StepWithContentProps, 'orientacion' | 'tipo_contenido' | 'aviso_texto' | 'aviso_texto_link' | 'aviso_url_link'> {
+  etiqueta_paso: string;
+  titulo: string;
+  descripcion: any;
+  imagen_principal: any;
+  patron_fondo_escritorio: any;
+  patron_fondo_movil: any;
+  // Props de botón, requeridas para esta versión
+  texto_boton: string;
+  url_boton: string;
+  Boton: Boton[];
+}
+
+// 2. Recibimos todas las props
+const {
+  etiqueta_paso,
+  titulo,
+  descripcion,
+  imagen_principal,
+  patron_fondo_escritorio,
+  patron_fondo_movil,
+  texto_boton,
+  url_boton,
+  Boton,
+} = Astro.props;
+
+// 3. Pasamos las props al componente reutilizable, forzando la orientación y el tipo de contenido.
+---
+
+<StepWithContent
+  etiqueta_paso={etiqueta_paso}
+  titulo={titulo}
+  descripcion={descripcion}
+  imagen_principal={imagen_principal}
+  patron_fondo_escritorio={patron_fondo_escritorio}
+  patron_fondo_movil={patron_fondo_movil}
+  orientacion="left_image"
+  tipo_contenido="button"
+  texto_boton={texto_boton}
+  url_boton={url_boton}
+  Boton={Boton}
+/>

@@ -1,0 +1,55 @@
+---
+// src/components/Componente_13.astro
+// Este componente es un wrapper para StepWithContent, que define la orientación
+// 'right_image' y el contenido dinámico 'alert_card'.
+
+import StepWithContent from "./elements/StepWithContent.astro";
+import type { Props as StepWithContentProps } from "./elements/StepWithContent.astro";
+
+// 1. Definimos la interfaz con todas las props de datos que C13 requiere.
+export interface Props
+    extends Omit<
+        StepWithContentProps,
+        "orientacion" | "tipo_contenido" | "texto_boton" | "url_boton" | "Boton"
+    > {
+    paso: string;
+    titulo: string;
+    descripcion: any;
+    imagen_principal: any;
+    patron_fondo_escritorio: any;
+    patron_fondo_movil: any;
+    // Props de aviso, requeridas para esta versión
+    aviso_texto: string;
+    aviso_texto_link: string;
+    aviso_url_link: string;
+}
+
+// 2. Recibimos todas las props
+const {
+    paso,
+    titulo,
+    descripcion,
+    imagen_principal,
+    patron_fondo_escritorio,
+    patron_fondo_movil,
+    aviso_texto,
+    aviso_texto_link,
+    aviso_url_link,
+} = Astro.props;
+
+// 3. Pasamos las props al componente reutilizable, forzando la orientación y el tipo de contenido.
+---
+
+<StepWithContent
+    etiqueta_paso={paso}
+    titulo={titulo}
+    descripcion={descripcion}
+    imagen_principal={imagen_principal}
+    patron_fondo_escritorio={patron_fondo_escritorio}
+    patron_fondo_movil={patron_fondo_movil}
+    orientacion="right_image"
+    tipo_contenido="alert_card"
+    aviso_texto={aviso_texto}
+    aviso_texto_link={aviso_texto_link}
+    aviso_url_link={aviso_url_link}
+/>
