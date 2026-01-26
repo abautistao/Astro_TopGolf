@@ -2,8 +2,11 @@
 // src/components/toca/Footer.astro
 import { getStrapiUrl } from '../../lib/strapi';
 import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro'; // Aseguramos importar el tipo si es necesario
+import type { Boton } from './elements/Button.astro';
 
+const { data } = Astro.props;
+
+// --- 1. DATOS POR DEFECTO ---
 const defaultData = {
     title: "ARE YOU GAME?",
     locations_title: "LOCATIONS",
@@ -31,35 +34,63 @@ const defaultData = {
     ]
 };
 
-const { data } = Astro.props;
+// --- 2. LÓGICA DINÁMICA ---
+const strapiData = data || {};
+
+const title = strapiData.titulo || defaultData.title;
+
+const rawSocials = strapiData.redes_sociales;
+const socials = (Array.isArray(rawSocials) && rawSocials.length > 0)
+    ? rawSocials.map((social: any) => ({
+        name: social.name,
+        url: social.url,
+        iconHtml: social.icon,
+        iconImage: social.icon_img
+    }))
+    : defaultData.socials;
 
 
-const footerData = data || defaultData;
+// --- C. COLUMNA CENTRAL (LINKS/LOCATIONS) ---
+const rawLinks = strapiData.links || [];
+const dynamicLinkBlock = (Array.isArray(rawLinks) && rawLinks.length > 0) ? rawLinks[0] : null;
 
-const title = footerData.title || defaultData.title;
-const locationsTitle = footerData.locations_title || defaultData.locations_title;
-const newsletterTitle = footerData.newsletter_title || defaultData.newsletter_title;
+const middleColumnTitle = dynamicLinkBlock?.texto || defaultData.locations_title;
+const rawItems = dynamicLinkBlock?.dropdown_items || [];
 
-// Arrays seguros
-const socials = footerData.socials?.length ? footerData.socials : defaultData.socials;
-const locations = footerData.locations?.length ? footerData.locations : defaultData.locations;
-const linksLeft = footerData.bottom_links_left?.length ? footerData.bottom_links_left : defaultData.bottom_links_left;
-const linksRight = footerData.bottom_links_right?.length ? footerData.bottom_links_right : defaultData.bottom_links_right;
+const middleColumnItems = rawItems.length > 0
+    ? rawItems.map((item: any) => ({
+        name: item.titulo,
+        url: item.url || '#',
+        status: item.subtitulo
+    }))
+    : defaultData.locations;
 
 
+// D. Resto de elementos
+const newsletterTitle = defaultData.newsletter_title;
+const linksLeft = defaultData.bottom_links_left;
+const linksRight = defaultData.bottom_links_right;
 const allLinksMobile = [...linksLeft, ...linksRight];
 
-
-const rawButton = Array.isArray(footerData?.Botones2)
-    ? footerData.Botones2[0]
-    : (footerData?.Botones2 || { texto: "SIGN UP", url: "#", tipo: "version_2" });
+const rawButton = Array.isArray(strapiData?.Botones2)
+    ? strapiData.Botones2[0]
+    : (strapiData?.Botones2 || { texto: "SIGN UP", url: "#", tipo: "version_2" });
 
 const newsletterButton: Boton[] = [{
-    id: rawButton.id || 1,
-    texto: rawButton.texto,
-    url: rawButton.url,
-    tipo: rawButton.tipo || 'version_2'
+    id: rawButton?.id || 1,
+    texto: rawButton?.texto || "SIGN UP",
+    url: rawButton?.url || "#",
+    tipo: rawButton?.tipo || 'version_2'
 }];
+
+const extractClassFromIcon = (iconString: string) => {
+    if (!iconString) return 'fa-solid fa-link';
+    if (iconString.includes('class="')) {
+        const match = iconString.match(/class="([^"]*)"/);
+        return match ? match[1] : 'fa-solid fa-link';
+    }
+    return iconString;
+};
 ---
 
 <footer class="trigger-anim-footer w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col">
@@ -69,20 +100,21 @@ const newsletterButton: Boton[] = [{
 
             <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
                 <div class="flex-grow flex items-center">
-                    <h2 class="font-black uppercase text-5xl md:text-6xl xl:text-7xl leading-[0.9] tracking-tighter break-words">
+                    <h2 class="font-black uppercase text-4xl md:text-6xl leading-[0.9] tracking-tighter break-words">
                         {title}
                     </h2>
                 </div>
 
-                <div class="flex items-center gap-6 mt-4">
+                <div class="flex items-center gap-3 mt-4">
                     {socials.map((social: any) => {
-                        const strapiIconUrl = social.icon?.data?.attributes?.url;
+                        const strapiIconUrl = social.iconImage?.data?.attributes?.url;
+                        const iconClass = extractClassFromIcon(social.iconHtml);
                         return (
                             <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
                                 {strapiIconUrl ? (
                                     <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current" />
                                 ) : (
-                                    <i class={`${social.iconClass || 'fa-solid fa-link'} text-2xl md:text-3xl`}></i>
+                                    <i class={`${iconClass} text-2xl md:text-2xl`}></i>
                                 )}
                             </a>
                         );
@@ -91,18 +123,20 @@ const newsletterButton: Boton[] = [{
             </div>
 
             <div class="flex flex-col w-full order-1 lg:order-2 self-start lg:self-center">
-                <h3 class="font-black uppercase text-3xl md:text-4xl tracking-tighter mb-4 text-center lg:text-left w-full">
-                    {locationsTitle}
+                <h3 class="font-bold uppercase text-4xl md:text-2xl tracking-tighter mb-4 text-center lg:text-left w-full">
+                    {middleColumnTitle}
                 </h3>
+
                 <ul class="flex flex-col w-full space-y-3">
-                    {locations.map((loc: any) => (
+                    {middleColumnItems.map((item: any) => (
                         <li>
-                            <a href={loc.url} class="group flex items-end justify-between pb-1 border-b-2 border-black transition-all">
+                            <a href={item.url} class="group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200">
                                 <div class="flex flex-col text-left">
-                                    <span class="font-bold text-lg leading-tight">{loc.name}</span>
-                                    {loc.status && <span class="text-xs font-medium opacity-80 mt-0.5">{loc.status}</span>}
+                                    <span class="font-bold text-base leading-tight">{item.name}</span>
+                                    {item.status && <span class="text-xs font-medium opacity-80 mt-0.5">{item.status}</span>}
                                 </div>
-                                <i class="fa-solid fa-arrow-right text-xl mb-1 transform group-hover:translate-x-2 transition-transform"></i>
+
+                                <i class="fa-solid fa-play text-2xl mb-1 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out"></i>
                             </a>
                         </li>
                     ))}
@@ -149,13 +183,14 @@ const newsletterButton: Boton[] = [{
 
             <div class="flex lg:hidden items-center gap-6">
                 {socials.map((social: any) => {
-                    const strapiIconUrl = social.icon?.data?.attributes?.url;
+                    const strapiIconUrl = social.iconImage?.data?.attributes?.url;
+                    const iconClass = extractClassFromIcon(social.iconHtml);
                     return (
                         <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
                             {strapiIconUrl ? (
                                 <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 object-contain fill-current" />
                             ) : (
-                                <i class={`${social.iconClass || 'fa-solid fa-link'} text-2xl`}></i>
+                                <i class={`${iconClass} text-2xl`}></i>
                             )}
                         </a>
                     );
@@ -190,7 +225,7 @@ const newsletterButton: Boton[] = [{
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 // 10% visible para que arranque (ya que el footer está al final)
+            threshold: 0.1
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
@@ -208,7 +243,6 @@ const newsletterButton: Boton[] = [{
 </script>
 
 <style>
-    /* CAMBIO 5: Lógica de animación */
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -220,19 +254,16 @@ const newsletterButton: Boton[] = [{
         }
     }
 
-    /* Ocultamos ambas partes por defecto */
     .footer-part-1, .footer-part-2 {
         opacity: 0;
     }
 
-    /* Animamos la parte 1 cuando el footer es visible */
     :global(.trigger-anim-footer.is-visible) .footer-part-1 {
         animation: fadeInUp 0.8s ease-out forwards;
     }
 
-    /* Animamos la parte 2 con un pequeño retraso */
     :global(.trigger-anim-footer.is-visible) .footer-part-2 {
         animation: fadeInUp 0.8s ease-out forwards;
-        animation-delay: 0.2s; /* Se carga un poco después de la parte 1 */
+        animation-delay: 0.2s;
     }
 </style>
