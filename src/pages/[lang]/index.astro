@@ -1,0 +1,36 @@
+---
+// =========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
+import { getPageBySlug } from "../../lib/strapi.js";
+import RenderBlocks from "../../components/RenderBlocks.astro";
+
+// export const prerender = true; // Disabled for dynamic [lang] SSR
+
+// ==========================================================================================
+// SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE INICIO
+// ==========================================================================================
+const { lang } = Astro.params;
+const slug = "home"; // Usamos 'home' como el slug para la página de inicio
+const pagina = await getPageBySlug(slug, lang);
+
+// Si la página no se encuentra, mostramos un error 404.
+if (!pagina) {
+  return new Response(
+    'Contenido de la página principal no encontrado en Strapi. Asegúrate de que el slug "home" existe y que la API tiene permisos para acceder.',
+    {
+      status: 404,
+      statusText: "No Encontrado",
+    },
+  );
+}
+
+const { titulo, ContenidoPagina, SEO } = pagina;
+---
+
+<Layout seo={SEO}>
+  <main class="mx-auto container-full">
+    <RenderBlocks blocks={ContenidoPagina} />
+  </main>
+</Layout>

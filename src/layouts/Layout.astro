@@ -1,22 +1,33 @@
 ---
 // Importa los estilos y componentes necesarios.
-import '@awesome.me/kit-ea4a75e062/icons/css/all.css';
-import '../styles/global.css';
-import Header from '../components/shared/SmartHeader.astro';
-import Footer from '../components/shared/SmartFooter.astro';
-import SEO from '../components/shared/SEO.astro';
+import "@awesome.me/kit-ea4a75e062/icons/css/all.css";
+import "../styles/global.css";
+import Header from "../components/shared/SmartHeader.astro";
+import Footer from "../components/shared/SmartFooter.astro";
+import SEO from "../components/shared/SEO.astro";
+import LanguageSwitcher from "../components/shared/LanguageSwitcher.astro";
 // Importa las funciones para obtener datos de configuración y generar fuentes desde Strapi.
-import { getSiteSetup, generateFontFaces, getStrapiUrl } from '../lib/strapi.js';
+import {
+    getSiteSetup,
+    generateFontFaces,
+    getStrapiUrl,
+} from "../lib/strapi.js";
 
 // Obtiene los datos de configuración del sitio.
-const setupData = await getSiteSetup();
-const faviconUrl = setupData?.favicon ? getStrapiUrl(setupData.favicon) : '/favicon.svg';
+const { lang } = Astro.params;
+const locale = lang || "en";
+
+const setupData = await getSiteSetup(locale);
+const faviconUrl = setupData?.favicon
+    ? getStrapiUrl(setupData.favicon)
+    : "/favicon.svg";
 
 // Genera las declaraciones @font-face si los datos de tipografía existen.
 //const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
 
 // Define variables CSS personalizadas y otros estilos basados en los datos de configuración.
-const customStyles = setupData ? `
+const customStyles = setupData
+    ? `
     :root {
         --surface-brand-primary: ${setupData.surface_brand_primary};
         --surface-brand-secondary: ${setupData.surface_brand_secondary};
@@ -35,48 +46,66 @@ const customStyles = setupData ? `
     .bg-custom-gradient {
         background-image: linear-gradient(to right, var(--surface-brand-secondary), var(--brand-interactive-base));
     }
-` : '';
+`
+    : "";
 
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
 const allStyles = customStyles;
 
 const { seo, title } = Astro.props;
 const defaultSeo = {
-  metaTitle: title || "Astro Basics",
-  metaDescription: "Sitio web desarrollado con Astro y Strapi",
+    metaTitle: title || "Astro Basics",
+    metaDescription: "Sitio web desarrollado con Astro y Strapi",
 };
 
 const seoProps = seo || defaultSeo;
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang={locale} class="scroll-smooth">
     <head>
         <meta charset="UTF-8" />
         <link rel="icon" href={faviconUrl} />
         <meta name="generator" content={Astro.generator} />
         <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-K8XNXZM');
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    "gtm.start": new Date().getTime(),
+                    event: "gtm.js",
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != "dataLayer" ? "&l=" + l : "";
+                j.async = true;
+                j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, "script", "dataLayer", "GTM-K8XNXZM");
         </script>
         <!-- End Google Tag Manager -->
         <SEO {...seoProps} />
 
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
-        <style is:global set:html={allStyles} />
+        <style is:global set:html={allStyles}></style>
     </head>
     <body>
         <!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K8XNXZM"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <noscript
+            ><iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-K8XNXZM"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden"></iframe></noscript
+        >
         <!-- End Google Tag Manager (noscript) -->
-        <Header />
+        <Header locale={locale} />
         <!-- El contenido de la página se insertará aquí. -->
         <slot />
-        <Footer />
+        <Footer locale={locale} />
+        <LanguageSwitcher
+            class="fixed bottom-4 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"
+        />
     </body>
 </html>
 

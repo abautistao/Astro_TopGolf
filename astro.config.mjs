@@ -22,10 +22,17 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
+  i18n: {
+    defaultLocale: "en",
+    locales: ["es", "en"],
+    routing: {
+      prefixDefaultLocale: true
+    }
+  },
   integrations: [
     sitemap(),
     alpinejs({
-        entrypoint: '/src/entrypoint.js' // <--- Agrega esto
+      entrypoint: '/src/entrypoint.js' // <--- Agrega esto
     })
   ]
 });

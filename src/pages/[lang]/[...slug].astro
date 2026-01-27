@@ -3,17 +3,17 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
-import { getAllBlogs, getBlogBySlug } from "../../lib/strapi.js";
+import { getAllPages, getPageBySlug } from "../../lib/strapi.js";
 import RenderBlocks from "../../components/RenderBlocks.astro";
 
-export const prerender = true;
+// export const prerender = true;
 
 // ==========================================================================================
 // SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
 // ==========================================================================================
 export async function getStaticPaths() {
-  const pages = await getAllBlogs();
-  console.log("Datos recibidos para getStaticPaths:", pages);
+  const pages = await getAllPages();
+
   if (!pages) {
     return [];
   }
@@ -25,8 +25,8 @@ export async function getStaticPaths() {
 // ==========================================================================================
 // SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
 // ==========================================================================================
-const { slug } = Astro.params;
-const pagina = await getBlogBySlug(slug);
+const { slug, lang } = Astro.params;
+const pagina = await getPageBySlug(slug || "home", lang);
 
 // Si la página no se encuentra, mostramos un error 404.
 if (!pagina) {

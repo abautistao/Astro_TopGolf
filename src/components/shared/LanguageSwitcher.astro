@@ -1,0 +1,36 @@
+---
+const { class: className } = Astro.props;
+const currentPath = Astro.url.pathname;
+const currentLang = Astro.params.lang || "en";
+
+const locales = [
+    { code: "es", label: "Español" },
+    { code: "en", label: "English" },
+];
+
+function getLocalizedPath(targetLang) {
+    // Replace the first path segment (locale) with the target language
+    // Assuming the path starts with /:lang/
+    const segments = currentPath.split("/").filter(Boolean);
+    if (segments.length > 0 && (segments[0] === "es" || segments[0] === "en")) {
+        segments[0] = targetLang;
+    } else {
+        // If no locale in path (e.g. root redirect), prepend it
+        segments.unshift(targetLang);
+    }
+    return "/" + segments.join("/");
+}
+---
+
+<div class={`language-switcher ${className}`}>
+    {
+        locales.map((locale) => (
+            <a
+                href={getLocalizedPath(locale.code)}
+                class={`px-2 py-1 ${currentLang === locale.code ? "font-bold underline" : "opacity-70 hover:opacity-100"}`}
+            >
+                {locale.code.toUpperCase()}
+            </a>
+        ))
+    }
+</div>

@@ -18,45 +18,46 @@ async function fetchAPI(endpoint) {
   }
 }
 
-export async function getSiteSetup() {
-  return await fetchAPI("/setup-site?populate=*");
+export async function getSiteSetup(locale = 'en') {
+  return await fetchAPI(`/setup-site?locale=${locale}&populate=*`);
 }
 
-export async function getPageBySlug(slug) {
+export async function getPageBySlug(slug, locale = 'en') {
   // Usamos 'populate=*' para popular automáticamente todos los niveles de componentes y relaciones.
   // Esto requiere un plugin como '@fourlights/strapi-plugin-deep-populate' en el backend de Strapi.
-  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&populate=*`);
+  // Also filtering by locale
+  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
   return pages?.[0]; // Devuelve el primer elemento o undefined
 }
 
-export async function getAllPages() {
-  return await fetchAPI("/paginas?pagination[pageSize]=100");
+export async function getAllPages(locale = 'en') {
+  return await fetchAPI(`/paginas?locale=${locale}&pagination[pageSize]=100`);
 }
 
-export async function getBlogBySlug(slug) {
-  const pages = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&populate=*`);
+export async function getBlogBySlug(slug, locale = 'en') {
+  const pages = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
   return pages?.[0];
 }
 
-export async function getAllBlogs() {
-  return await fetchAPI("/blogs");
+export async function getAllBlogs(locale = 'en') {
+  return await fetchAPI(`/blogs?locale=${locale}`);
 }
 
-export async function getPromocionBySlug(slug) {
-  const pages = await fetchAPI(`/promociones?filters[slug][$eq]=${slug}&populate=*`);
+export async function getPromocionBySlug(slug, locale = 'en') {
+  const pages = await fetchAPI(`/promociones?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
   return pages?.[0];
 }
 
-export async function getAllPromociones() {
-  return await fetchAPI("/promociones");
+export async function getAllPromociones(locale = 'en') {
+  return await fetchAPI(`/promociones?locale=${locale}`);
 }
 
-export async function getHeaderData() {
-  return await fetchAPI("/header?populate=*");
+export async function getHeaderData(locale = 'en') {
+  return await fetchAPI(`/header?locale=${locale}&populate=*`);
 }
 
-export async function getFooterData() {
-  return await fetchAPI("/footer?populate=*");
+export async function getFooterData(locale = 'en') {
+  return await fetchAPI(`/footer?locale=${locale}&populate=*`);
 }
 
 export const getStrapiUrl = (media) => {
@@ -188,5 +189,18 @@ export const formatUrl = (url) => {
     return `${url}`;
   }
   return `/${url}`;
+};
+
+export const getLocalizedUrl = (url, locale = 'en') => {
+  if (!url) return '#';
+  // Return external links, anchors, etc as is
+  if (url.startsWith('http') || url.startsWith('https') || url.startsWith('#') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+    return url;
+  }
+
+  // Remove leading slash for consistency
+  const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+
+  return `/${locale}/${cleanPath}`;
 };
 

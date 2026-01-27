@@ -1,12 +1,12 @@
 ---
 // src/components/toca/Header.astro
-import { getHeaderData, getStrapiUrl } from "../../lib/strapi";
+import { getHeaderData, getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 import defaultLogoImg from "../../assets/TOCA_Social_One_Color.png";
 import { getIconClass, getLottiePath } from "../../utils/iconMapper";
 
-const { data } = Astro.props;
+const { data, locale = "en" } = Astro.props;
 const headerData = data || (await getHeaderData());
 
 const strapiLogo = getStrapiUrl(headerData?.logo);
@@ -17,35 +17,42 @@ const headerTitle = headerData?.Titulo;
 const multipleLinks = headerData?.links_multiples || [];
 
 // --- Menú Derecho (Links normales) ---
-const links = headerData?.links?.length > 0
-    ? headerData.links.map((link: any) => {
-        const hasDropdown = link.tiene_dropdown;
-        let formattedSubmenu = null;
+const links =
+    headerData?.links?.length > 0
+        ? headerData.links.map((link: any) => {
+              const hasDropdown = link.tiene_dropdown;
+              let formattedSubmenu = null;
 
-        if (hasDropdown && link.dropdown_items && link.dropdown_items.length > 0) {
-            formattedSubmenu = link.dropdown_items.map((item: any) => {
-                const imgUrl = item.imagen ? getStrapiUrl(item.imagen) : null;
-                const finalIcon = getIconClass(item.icono);
-                const finalLottie = getLottiePath(item.icono);
+              if (
+                  hasDropdown &&
+                  link.dropdown_items &&
+                  link.dropdown_items.length > 0
+              ) {
+                  formattedSubmenu = link.dropdown_items.map((item: any) => {
+                      const imgUrl = item.imagen
+                          ? getStrapiUrl(item.imagen)
+                          : null;
+                      const finalIcon = getIconClass(item.icono);
+                      const finalLottie = getLottiePath(item.icono);
 
-                return {
-                    label: item.titulo,
-                    subLabel: item.subtitulo,
-                    url: item.url || "#",
-                    imageUrl: imgUrl,
-                    icon: finalIcon,
-                    lottie: finalLottie,
-                };
-            });
-        }
+                      return {
+                          label: item.titulo,
+                          subLabel: item.subtitulo,
+                          url: item.url || "#",
+                          imageUrl: imgUrl,
+                          icon: finalIcon,
+                          lottie: finalLottie,
+                      };
+                  });
+              }
 
-        return {
-            texto: link.texto,
-            url: link.url,
-            submenu: formattedSubmenu
-        };
-    })
-    : [];
+              return {
+                  texto: link.texto,
+                  url: getLocalizedUrl(link.url, locale),
+                  submenu: formattedSubmenu,
+              };
+          })
+        : [];
 
 // --- Botones (Book Now) desde Strapi ---
 const rawButton = headerData?.boton;
@@ -55,120 +62,206 @@ const ctaButtons: Boton[] = [
         id: rawButton?.id || 1,
         texto: rawButton?.texto || "BOOK NOW",
         url: rawButton?.url || "#",
-        tipo: rawButton?.tipo || "version_1"
-    }
+        tipo: rawButton?.tipo || "version_1",
+    },
 ];
 ---
 
-<header class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)" id="main-header">
-    <div class="relative z-50 bg-[var(--brand-interactive-base)] transition-colors duration-300 shadow-sm border-b border-[var(--surface-brand-primary)] md:border-none">
-        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]">
-
+<header
+    class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)"
+    id="main-header"
+>
+    <div
+        class="relative z-50 bg-[var(--brand-interactive-base)] transition-colors duration-300 shadow-sm border-b border-[var(--surface-brand-primary)] md:border-none"
+    >
+        <div
+            class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]"
+        >
             <div class="flex items-center gap-4 md:gap-8 h-full">
                 <a href="/" class="flex-shrink-0 no-underline">
-                    {headerTitle ? (
-                        <h1 class="text-2xl md:text-4xl font-bold uppercase text-[var(--surface-brand-primary)] tracking-tighter m-0 leading-none">{headerTitle}</h1>
-                    ) : (
-                        <img src={logoUrl} alt="Toca Social" class="h-6 md:h-10 w-auto object-contain brightness-0 md:brightness-100 transition-[filter]" />
-                    )}
+                    {
+                        headerTitle ? (
+                            <h1 class="text-2xl md:text-4xl font-bold uppercase text-[var(--surface-brand-primary)] tracking-tighter m-0 leading-none">
+                                {headerTitle}
+                            </h1>
+                        ) : (
+                            <img
+                                src={logoUrl}
+                                alt="Toca Social"
+                                class="h-6 md:h-10 w-auto object-contain brightness-0 md:brightness-100 transition-[filter]"
+                            />
+                        )
+                    }
                 </a>
 
                 {/* --- LINKS MULTIPLES (Izquierda - Desktop) --- */}
-                {multipleLinks.map((section: any, idx: number) => (
-                    <div class="hidden md:flex items-center h-full static">
-                        <button
-                            type="button"
-                            class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter h-full px-2 focus:outline-none"
-                            data-target={`multi-dropdown-${idx}`}
-                        >
-                            {section.titulo_seccion} <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300"></i>
-                        </button>
+                {
+                    multipleLinks.map((section: any, idx: number) => (
+                        <div class="hidden md:flex items-center h-full static">
+                            <button
+                                type="button"
+                                class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter h-full px-2 focus:outline-none"
+                                data-target={`multi-dropdown-${idx}`}
+                            >
+                                {section.titulo_seccion}{" "}
+                                <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
+                            </button>
 
-                        <div id={`multi-dropdown-${idx}`} class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--brand-interactive-base)] border-b-4 border-[var(--brand-interactive-base)] shadow-lg z-40 py-10">
-                            <div class="max-w-[1920px] mx-auto px-6 ">
-                                <div class="flex flex-col md:flex-row gap-12 lg:gap-32 w-full">
-                                    {section.links_dos && section.links_dos.map((group: any, index: number) => (
-                                        <div class={`${index === 0 ? 'flex-[2]' : 'flex-1'} flex flex-col`}>
-                                            <h3 class="font-bold text-[var(--surface-brand-primary)] text-base uppercase tracking-tighter mb-4">
-                                                {group.texto}
-                                            </h3>
+                            <div
+                                id={`multi-dropdown-${idx}`}
+                                class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--brand-interactive-base)] border-b-4 border-[var(--brand-interactive-base)] shadow-lg z-40 py-10"
+                            >
+                                <div class="max-w-[1920px] mx-auto px-6 ">
+                                    <div class="flex flex-col md:flex-row gap-12 lg:gap-32 w-full">
+                                        {section.links_dos &&
+                                            section.links_dos.map(
+                                                (group: any, index: number) => (
+                                                    <div
+                                                        class={`${index === 0 ? "flex-[2]" : "flex-1"} flex flex-col`}
+                                                    >
+                                                        <h3 class="font-bold text-[var(--surface-brand-primary)] text-base uppercase tracking-tighter mb-4">
+                                                            {group.texto}
+                                                        </h3>
 
-                                            <ul class={`grid gap-x-16 gap-y-2 w-full ${index === 0 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                                                {group.dropdown_items && group.dropdown_items.map((item: any) => (
-                                                    <li class="w-full">
-                                                        <a href={item.url || "#"} class="group block w-full no-underline">
-                                                            <div class="flex items-center justify-between border-b-1 border-[var(--surface-brand-primary)] pb-1 mb-2 transition-all duration-150 group-hover:border-b-3">
+                                                        <ul
+                                                            class={`grid gap-x-16 gap-y-2 w-full ${index === 0 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
+                                                        >
+                                                            {group.dropdown_items &&
+                                                                group.dropdown_items.map(
+                                                                    (
+                                                                        item: any,
+                                                                    ) => (
+                                                                        <li class="w-full">
+                                                                            <a
+                                                                                href={getLocalizedUrl(
+                                                                                    item.url,
+                                                                                    locale,
+                                                                                )}
+                                                                                class="group block w-full no-underline"
+                                                                            >
+                                                                                <div class="flex items-center justify-between border-b-1 border-[var(--surface-brand-primary)] pb-1 mb-2 transition-all duration-150 group-hover:border-b-3">
+                                                                                    <div class="flex items-center gap-3">
+                                                                                        <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center">
+                                                                                            {item.imagen && (
+                                                                                                <img
+                                                                                                    src={getStrapiUrl(
+                                                                                                        item.imagen,
+                                                                                                    )}
+                                                                                                    alt="Badge"
+                                                                                                    class="w-full h-full object-contain"
+                                                                                                />
+                                                                                            )}
+                                                                                        </div>
 
-                                                                <div class="flex items-center gap-3">
-                                                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center">
-                                                                        {item.imagen && (
-                                                                            <img
-                                                                                src={getStrapiUrl(item.imagen)}
-                                                                                alt="Badge"
-                                                                                class="w-full h-full object-contain"
-                                                                            />
-                                                                        )}
-                                                                    </div>
+                                                                                        <span class="font-(family-name:--font-sharp-sans-bold) text-[var(--surface-brand-primary)] font-bold text-base uppercase tracking-tight">
+                                                                                            {item.titulo ||
+                                                                                                item.texto}
+                                                                                        </span>
+                                                                                    </div>
 
-                                                                    <span class="font-(family-name:--font-sharp-sans-bold) text-[var(--surface-brand-primary)] font-bold text-base uppercase tracking-tight">
-                                                                        {item.titulo || item.texto}
-                                                                    </span>
-                                                                </div>
-
-                                                                <i class="fa-solid fa-play text-[var(--surface-brand-primary)] text-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-150 transition-all duration-150"></i>
-                                                            </div>
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ))}
+                                                                                    <i class="fa-solid fa-play text-[var(--surface-brand-primary)] text-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-150 transition-all duration-150" />
+                                                                                </div>
+                                                                            </a>
+                                                                        </li>
+                                                                    ),
+                                                                )}
+                                                        </ul>
+                                                    </div>
+                                                ),
+                                            )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                }
             </div>
 
             {/* DERECHA: Nav Principal + Botones */}
             <div class="flex items-center gap-3 md:gap-8 h-full">
                 <nav class="hidden lg:flex h-full items-center">
                     <ul class="flex items-center gap-8 h-full">
-                        {links.map((link: any, index: number) => (
-                            <li class="h-full flex items-center static">
-                                {link.submenu ? (
-                                    <>
-                                        <button type="button" class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter focus:outline-none" data-target={`menu-${index}`}>
-                                            {link.texto} <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
-                                        </button>
-                                        <div id={`menu-${index}`} class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--surface-brand-primary)]  border-b-4 border-[var(--brand-interactive-base)] shadow-xl z-40 py-5">
-                                            <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-                                                <div class="flex justify-center items-start gap-8 xl:gap-20">
-                                                    {link.submenu.map((subItem: any) => (
-                                                        <a href={subItem.url} class="group flex flex-col items-center gap-4 text-center w-32">
-                                                            <div class="h-24 flex items-center justify-center relative">
-                                                                {subItem.imageUrl ? (
-                                                                    <img src={subItem.imageUrl} alt={subItem.label} class="max-h-20 w-auto object-contain drop-shadow-[0_0_8px_rgba(74,255,194,0.3)]" />
-                                                                ) : subItem.lottie ? (
-                                                                    <div class="js-lottie-anim w-24 h-24" data-path={subItem.lottie} data-loop="true"></div>
-                                                                ) : (
-                                                                    <i class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`} />
-                                                                )}
-                                                            </div>
-                                                            <div class="flex flex-col">
-                                                                <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-xs tracking-wide">{subItem.label}</span>
-                                                            </div>
-                                                        </a>
-                                                    ))}
+                        {
+                            links.map((link: any, index: number) => (
+                                <li class="h-full flex items-center static">
+                                    {link.submenu ? (
+                                        <>
+                                            <button
+                                                type="button"
+                                                class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter focus:outline-none"
+                                                data-target={`menu-${index}`}
+                                            >
+                                                {link.texto}{" "}
+                                                <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
+                                            </button>
+                                            <div
+                                                id={`menu-${index}`}
+                                                class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--surface-brand-primary)]  border-b-4 border-[var(--brand-interactive-base)] shadow-xl z-40 py-5"
+                                            >
+                                                <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+                                                    <div class="flex justify-center items-start gap-8 xl:gap-20">
+                                                        {link.submenu.map(
+                                                            (subItem: any) => (
+                                                                <a
+                                                                    href={getLocalizedUrl(
+                                                                        subItem.url,
+                                                                        locale,
+                                                                    )}
+                                                                    class="group flex flex-col items-center gap-4 text-center w-32"
+                                                                >
+                                                                    <div class="h-24 flex items-center justify-center relative">
+                                                                        {subItem.imageUrl ? (
+                                                                            <img
+                                                                                src={
+                                                                                    subItem.imageUrl
+                                                                                }
+                                                                                alt={
+                                                                                    subItem.label
+                                                                                }
+                                                                                class="max-h-20 w-auto object-contain drop-shadow-[0_0_8px_rgba(74,255,194,0.3)]"
+                                                                            />
+                                                                        ) : subItem.lottie ? (
+                                                                            <div
+                                                                                class="js-lottie-anim w-24 h-24"
+                                                                                data-path={
+                                                                                    subItem.lottie
+                                                                                }
+                                                                                data-loop="true"
+                                                                            />
+                                                                        ) : (
+                                                                            <i
+                                                                                class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                    <div class="flex flex-col">
+                                                                        <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-xs tracking-wide">
+                                                                            {
+                                                                                subItem.label
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </a>
+                                                            ),
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <a href={link.url || "#"} class="font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter ">{link.texto}</a>
-                                )}
-                            </li>
-                        ))}
+                                        </>
+                                    ) : (
+                                        <a
+                                            href={getLocalizedUrl(
+                                                link.url,
+                                                locale,
+                                            )}
+                                            class="font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter "
+                                        >
+                                            {link.texto}
+                                        </a>
+                                    )}
+                                </li>
+                            ))
+                        }
                     </ul>
                 </nav>
 
@@ -180,82 +273,143 @@ const ctaButtons: Boton[] = [
                     <ButtonGroup botones={ctaButtons} />
                 </div>
 
-                <button id="mobile-menu-btn" class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50 transition-colors w-8 h-8 flex items-center justify-center">
-                    <i id="icon-menu" class="fa-solid fa-bars text-[28px] cursor-pointer"></i>
-                    <i id="icon-close" class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"></i>
+                <button
+                    id="mobile-menu-btn"
+                    class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50 transition-colors w-8 h-8 flex items-center justify-center"
+                >
+                    <i
+                        id="icon-menu"
+                        class="fa-solid fa-bars text-[28px] cursor-pointer"></i>
+                    <i
+                        id="icon-close"
+                        class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"
+                    ></i>
                 </button>
             </div>
         </div>
     </div>
 
     {/* MENU MOBILE (Contenido desplegable) */}
-    <div id="mobile-menu" class="hidden fixed top-[65px] left-0 w-full h-[calc(100vh-65px)] bg-[var(--surface-brand-primary)]  z-40 overflow-y-auto transition-all">
+    <div
+        id="mobile-menu"
+        class="hidden fixed top-[65px] left-0 w-full h-[calc(100vh-65px)] bg-[var(--surface-brand-primary)] z-40 overflow-y-auto transition-all"
+    >
         <div class="flex flex-col w-full pb-20">
-
             {/* Iteración dinámica sobre links_multiples (Mobile) */}
-            {multipleLinks.map((section: any) => (
-                <div class="w-full">
-                    <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)]">
-                        <span class="text-xs font-bold uppercase tracking-wide">{section.titulo_seccion}</span>
-                        <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180"></i>
-                    </button>
-                    <div class="accordion-content hidden bg-[var(--surface-brand-primary)]  pb-8 text-center space-y-8 animate-fade-in-down px-4">
-                        {section.links_dos && section.links_dos.map((group: any) => (
-                            <div>
-                                <h4 class="text-[var(--brand-interactive-base)] text-xs font-bold uppercase tracking-widest border-b border-[var(--brand-interactive-base)] inline-block mb-4 pb-1">
-                                    {group.texto}
-                                </h4>
-                                <ul class="space-y-3 pt-2">
-                                    {group.dropdown_items && group.dropdown_items.map((item: any) => (
-                                        <li class="flex items-center justify-center gap-2">
-                                            {item.imagen && <img src={getStrapiUrl(item.imagen)} class="h-5 w-5 object-contain brightness-0 invert"/>}
-                                            <a href={item.url || "#"} class="text-[var(--brand-interactive-base)] text-sm lg:text-sm font-medium">
-                                                {item.titulo || item.texto}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
+            {
+                multipleLinks.map((section: any) => (
+                    <div class="w-full">
+                        <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)]">
+                            <span class="text-xs font-bold uppercase tracking-wide">
+                                {section.titulo_seccion}
+                            </span>
+                            <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180" />
+                        </button>
+                        <div class="accordion-content hidden bg-[var(--surface-brand-primary)]  pb-8 text-center space-y-8 animate-fade-in-down px-4">
+                            {section.links_dos &&
+                                section.links_dos.map((group: any) => (
+                                    <div>
+                                        <h4 class="text-[var(--brand-interactive-base)] text-xs font-bold uppercase tracking-widest border-b border-[var(--brand-interactive-base)] inline-block mb-4 pb-1">
+                                            {group.texto}
+                                        </h4>
+                                        <ul class="space-y-3 pt-2">
+                                            {group.dropdown_items &&
+                                                group.dropdown_items.map(
+                                                    (item: any) => (
+                                                        <li class="flex items-center justify-center gap-2">
+                                                            {item.imagen && (
+                                                                <img
+                                                                    src={getStrapiUrl(
+                                                                        item.imagen,
+                                                                    )}
+                                                                    class="h-5 w-5 object-contain brightness-0 invert"
+                                                                />
+                                                            )}
+                                                            <a
+                                                                href={getLocalizedUrl(
+                                                                    item.url,
+                                                                    locale,
+                                                                )}
+                                                                class="text-[var(--brand-interactive-base)] text-sm lg:text-sm font-medium"
+                                                            >
+                                                                {item.titulo ||
+                                                                    item.texto}
+                                                            </a>
+                                                        </li>
+                                                    ),
+                                                )}
+                                        </ul>
+                                    </div>
+                                ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))
+            }
 
             {/* RESTO DE LINKS MOBILE */}
-            {links.map((link: any) => (
-                <div class="w-full">
-                    {link.submenu ? (
-                        <>
-                            <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)] ">
-                                <span class="text-xs font-bold uppercase tracking-wide">{link.texto}</span>
-                                <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180"></i>
-                            </button>
-                            <div class="accordion-content hidden pb-8 px-6">
-                                <div class="grid grid-cols-2 gap-y-10 gap-x-4">
-                                    {link.submenu.map((sub: any) => (
-                                        <a href={sub.url} class="flex flex-col items-center justify-start text-center group">
-                                            <div class="h-16 mb-2 flex items-center justify-center">
-                                                {sub.imageUrl ? (
-                                                    <img src={sub.imageUrl} alt={sub.label} class="max-h-14 w-auto object-contain" />
-                                                ) : sub.lottie ? (
-                                                    <div class="js-lottie-anim w-16 h-16" data-path={sub.lottie} data-loop="true"></div>
-                                                ) : (
-                                                    <i class={`${sub.icon} text-5xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_5px_rgba(74,255,194,0.5)]`}></i>
+            {
+                links.map((link: any) => (
+                    <div class="w-full">
+                        {link.submenu ? (
+                            <>
+                                <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)] ">
+                                    <span class="text-xs font-bold uppercase tracking-wide">
+                                        {link.texto}
+                                    </span>
+                                    <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180" />
+                                </button>
+                                <div class="accordion-content hidden pb-8 px-6">
+                                    <div class="grid grid-cols-2 gap-y-10 gap-x-4">
+                                        {link.submenu.map((sub: any) => (
+                                            <a
+                                                href={getLocalizedUrl(
+                                                    sub.url,
+                                                    locale,
                                                 )}
-                                            </div>
-                                            <span class="text-[var(--brand-interactive-base)] font-bold uppercase text-xs tracking-wider">{sub.label}</span>
-                                        </a>
-                                    ))}
+                                                class="flex flex-col items-center justify-start text-center group"
+                                            >
+                                                <div class="h-16 mb-2 flex items-center justify-center">
+                                                    {sub.imageUrl ? (
+                                                        <img
+                                                            src={sub.imageUrl}
+                                                            alt={sub.label}
+                                                            class="max-h-14 w-auto object-contain"
+                                                        />
+                                                    ) : sub.lottie ? (
+                                                        <div
+                                                            class="js-lottie-anim w-16 h-16"
+                                                            data-path={
+                                                                sub.lottie
+                                                            }
+                                                            data-loop="true"
+                                                        />
+                                                    ) : (
+                                                        <i
+                                                            class={`${sub.icon} text-5xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_5px_rgba(74,255,194,0.5)]`}
+                                                        />
+                                                    )}
+                                                </div>
+                                                <span class="text-[var(--brand-interactive-base)] font-bold uppercase text-xs tracking-wider">
+                                                    {sub.label}
+                                                </span>
+                                            </a>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        </>
-                    ) : (
-                        <a href={link.url} class="w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)] ">
-                            <span class="text-xs font-bold uppercase tracking-wide">{link.texto}</span>
-                        </a>
-                    )}
-                </div>
-            ))}
+                            </>
+                        ) : (
+                            <a
+                                href={getLocalizedUrl(link.url, locale)}
+                                class="w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)] "
+                            >
+                                <span class="text-xs font-bold uppercase tracking-wide">
+                                    {link.texto}
+                                </span>
+                            </a>
+                        )}
+                    </div>
+                ))
+            }
         </div>
     </div>
 </header>
@@ -264,20 +418,24 @@ const ctaButtons: Boton[] = [
     import lottie from "lottie-web";
 
     // --- SCRIPT PARA LOTTIE HOVER ---
-    const lottieContainers = document.querySelectorAll('.js-lottie-anim');
+    const lottieContainers = document.querySelectorAll(".js-lottie-anim");
     lottieContainers.forEach((container) => {
         const path = (container as HTMLElement).dataset.path;
         if (path) {
             const anim = lottie.loadAnimation({
                 container: container,
-                renderer: 'svg',
+                renderer: "svg",
                 loop: true,
                 autoplay: false,
-                path: path
+                path: path,
             });
-            const triggerElement = container.closest('a') || container;
-            triggerElement.addEventListener('mouseenter', () => { anim.play(); });
-            triggerElement.addEventListener('mouseleave', () => { anim.stop(); });
+            const triggerElement = container.closest("a") || container;
+            triggerElement.addEventListener("mouseenter", () => {
+                anim.play();
+            });
+            triggerElement.addEventListener("mouseleave", () => {
+                anim.stop();
+            });
         }
     });
 
@@ -331,8 +489,10 @@ const ctaButtons: Boton[] = [
         });
     }
 
-    const accordionTriggers = document.querySelectorAll(".mobile-accordion-trigger");
-    accordionTriggers.forEach(trigger => {
+    const accordionTriggers = document.querySelectorAll(
+        ".mobile-accordion-trigger",
+    );
+    accordionTriggers.forEach((trigger) => {
         trigger.addEventListener("click", () => {
             const content = trigger.nextElementSibling;
             const chevron = trigger.querySelector(".accordion-chevron");
