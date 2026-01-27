@@ -6,10 +6,9 @@ import type { Boton } from "./elements/Button.astro";
 
 const { data, locale = "en" } = Astro.props;
 
-// --- 1. OBTENCIÓN DE DATOS ---
+// --- 1. DATOS Y UTILIDADES ---
 const strapiData = data || {};
 
-// --- 2. FUNCIÓN AUXILIAR PARA ICONOS ---
 const formatIconHtml = (input: string) => {
     if (!input) return "";
     if (input.trim().startsWith("<")) {
@@ -18,15 +17,14 @@ const formatIconHtml = (input: string) => {
     return `<i class="${input}"></i>`;
 };
 
-// --- 3. MAPEO DE DATOS ---
+// --- 2. MAPEO DE CAMPOS ---
 
-// A. Textos
 const title = strapiData.titulo || "";
 const locationsTitle = strapiData.columna_central_titulo || "";
 const newsletterTitle = strapiData.newsletter_titulo || "";
 const newsletterDescription = strapiData.newsletter_descripcion || "";
 
-// B. Redes Sociales
+// Redes Sociales
 const rawSocials = strapiData.redes_sociales || [];
 const socials = rawSocials.map((social: any) => ({
     name: social.name,
@@ -35,7 +33,7 @@ const socials = rawSocials.map((social: any) => ({
     iconImage: social.icon_img
 }));
 
-// C. Columna Central (Ubicaciones)
+// Columna Central
 const rawLinksBlock = strapiData.links && strapiData.links.length > 0 ? strapiData.links[0] : null;
 const rawItems = strapiData.ubicaciones || rawLinksBlock?.dropdown_items || [];
 
@@ -45,16 +43,21 @@ const middleColumnItems = rawItems.map((item: any) => ({
     status: item.subtitulo || item.status || "",
 }));
 
-// D. Botón Newsletter
-const rawButton = Array.isArray(strapiData?.Botones2) ? strapiData.Botones2[0] : strapiData?.Botones2;
-const newsletterButton: Boton[] = rawButton ? [{
-    id: rawButton.id,
-    texto: rawButton.texto || "SIGN UP",
-    url: rawButton.url || "#",
-    tipo: rawButton.tipo || "version_2",
-}] : [];
+// --- BOTÓN NEWSLETTER (Ajustado a tu objeto de datos) ---
+// Leemos 'newsletter_boton' directamente
+const rawButton = strapiData.newsletter_boton;
 
-// E. Iconos Extra (FAQs, Careers, etc.)
+// Fallback: Si rawButton es null, usamos valores por defecto. Si url es null, usamos "#"
+const buttonData = rawButton || { texto: "SIGN UP", url: "#", tipo: "version_2", id: "default-btn" };
+
+const newsletterButton: Boton[] = [{
+    id: buttonData.id || "btn-news",
+    texto: buttonData.texto || "SIGN UP",
+    url: buttonData.url || "#", // Protegemos el null que viene en tu data
+    tipo: buttonData.tipo || "version_2",
+}];
+
+// Iconos Extra
 const rawExtraLinks = strapiData.enlaces_iconos || [];
 const extraIconLinks = rawExtraLinks.map((link: any) => ({
     text: link.name || link.texto || "",
@@ -62,12 +65,11 @@ const extraIconLinks = rawExtraLinks.map((link: any) => ({
     iconHtml: formatIconHtml(link.icon),
 }));
 
-// F. Barra Inferior (Lógica Modificada para Default Izquierda)
+// Barra Inferior
 const rawBottomLinks = strapiData.barra_inferior || [];
 
 const linksLeft = rawBottomLinks.filter((l: any) => {
     const pos = l.Posicion?.toLowerCase() || "";
-    // Se incluye si es explícitamente izquierda/left O si está vacío (!pos)
     return pos === "izquierda" || pos === "left" || !pos;
 });
 
@@ -143,7 +145,8 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                 <form class="flex w-full mb-3 gap-2">
                     <input type="email" placeholder="Your email" class="w-full bg-[#F3F4F6] px-3 py-2 border-none focus:outline-none placeholder-gray-500 font-bold text-sm" />
                     <div class="flex-shrink-0">
-                        {newsletterButton.length > 0 && <ButtonGroup botones={newsletterButton} />}
+                        {/* Se renderiza siempre, usando los datos mapeados */}
+                        <ButtonGroup botones={newsletterButton} />
                     </div>
                 </form>
 
