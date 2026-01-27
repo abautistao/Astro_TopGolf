@@ -1,0 +1,146 @@
+---
+// src/components/toca/Component_5.astro
+import EventCard from '../toca/elements/EventCard.astro';
+import EventModal from '../toca/elements/EventModal.astro';
+
+interface CardData {
+    id: number;
+    titulo: string;
+    descripcion: any;
+    imagen: any;
+}
+
+interface Props {
+    titulo_seccion?: string;
+    tarjetas: CardData[];
+}
+
+const {
+    titulo_seccion = "Titulo Sección",
+    tarjetas = []
+} = Astro.props;
+const defaultEvents = [
+    { id: 101, titulo: "Titulo Ejemplo 1", descripcion: "Descripción Ejemplo 1", imagen: null },
+    { id: 102, titulo: "Titulo Ejemplo 2", descripcion: "Descripción Ejemplo 2", imagen: null },
+    { id: 103, titulo: "Titulo Ejemplo 3", descripcion: "Descripción Ejemplo 3", imagen: null }
+];
+
+const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
+---
+
+<section class="trigger-anim-events bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full relative">
+
+    <div class="anim-element flex justify-end md:justify-between items-end mb-6 max-w-[1600px] mx-auto">
+        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]">
+            {titulo_seccion}
+        </h2>
+
+        <div class="flex gap-4 mb-1">
+            <button id="prevBtn" class="text-[var(--brand-interactive-base)] hover:opacity-75 transition-colors focus:outline-none p-1 cursor-pointer">
+                <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
+            </button>
+
+            <button id="nextBtn" class="text-[var(--brand-interactive-base)] hover:opacity-75 transition-colors focus:outline-none p-1 cursor-pointer">
+                <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
+            </button>
+        </div>
+    </div>
+
+    <div
+        id="sliderContainer"
+        class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6
+            md:grid md:grid-cols-5 md:gap-4 md:overflow-visible
+            max-w-[1600px] mx-auto scrollbar-hide"
+        style="--anim-delay: 0.2s;"
+    >
+        {dataToRender.map((evento) => (
+            <div class="min-w-full md:min-w-0 h-full snap-center">
+                <EventCard
+                    evento={evento}
+                    tipo="version_1"
+                />
+            </div>
+        ))}
+    </div>
+
+    <EventModal />
+
+</section>
+
+<script>
+    // Unificamos la lógica en un solo listener
+    document.addEventListener('DOMContentLoaded', () => {
+        initSlider();
+        initObserver();
+    });
+
+    // --- LÓGICA EXISTENTE DEL SLIDER ---
+    function initSlider() {
+        const container = document.getElementById('sliderContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (container && prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const scrollAmount = container.clientWidth;
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            prevBtn.addEventListener('click', () => {
+                const scrollAmount = container.clientWidth;
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+        }
+    }
+
+    // --- CAMBIO 4: LÓGICA DEL OBSERVER PARA ANIMACIÓN ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-events');
+        targets.forEach(target => observer.observe(target));
+    }
+</script>
+
+<style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* --- CAMBIO 5: ESTILOS DE ANIMACIÓN --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Elementos ocultos por defecto */
+    .anim-element {
+        opacity: 0;
+    }
+
+    /* Solo se animan cuando el padre (.trigger-anim-events) tiene la clase .is-visible */
+    :global(.trigger-anim-events.is-visible) .anim-element {
+        animation: fadeInUp 0.8s ease-out forwards;
+        /* Usamos la variable para el delay, o 0s si no existe */
+        animation-delay: var(--anim-delay, 0s);
+    }
+</style>

@@ -1,0 +1,181 @@
+---
+import { stringifyRichText } from "../../lib/strapi";
+import Icono from "../shared/Icono.astro";
+
+interface Props {
+  subtitulo: string;
+  titulo: string;
+  categorias_faq: any[];
+}
+
+const {
+  subtitulo = "TOCA SOCIAL FAQS",
+  titulo = "THE IMPORTANT THINGS",
+  categorias_faq = [],
+} = Astro.props;
+
+const fallbackData = [
+    {
+        label: "BOX BOOKING",
+        faqs: [
+            { pregunta: "How long will my game be?", respuesta: "Your game will last approximately 60 minutes." },
+            { pregunta: "How do I make a booking?", respuesta: "You can book online or call our reservation team." },
+            { pregunta: "Is the price per hour?", respuesta: "Yes, the price is calculated per hour per box." },
+            { pregunta: "What are the prices to play?", respuesta: "Prices vary depending on the day and time." },
+        ]
+    },
+    {
+        label: "FOOD & DRINK",
+        faqs: [
+            { pregunta: "Can I pre-order food?", respuesta: "Yes, you can pre-order food packages." },
+            { pregunta: "Do you have vegan options?", respuesta: "Yes, we have a variety of vegan options." },
+        ]
+    },
+    {
+        label: "EVENTS",
+        faqs: [
+            { pregunta: "Do you host private events?", respuesta: "Absolutely! We specialize in private events." },
+        ]
+    },
+    {
+        label: "VENUE",
+        faqs: [
+            { pregunta: "Is there parking?", respuesta: "There is public parking nearby." },
+        ]
+    }
+];
+
+const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
+---
+
+<section
+    class="trigger-anim-faq w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20"
+    x-data="{ activeTab: 0 }"
+>
+    <div class="anim-fade max-w-[1200px] mx-auto px-4">
+
+        <div class="text-center mb-12">
+            <h3 class="text-white text-sm lg:text-base font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-medium) mb-2 uppercase">
+                {subtitulo}
+            </h3>
+
+            <h2 class="text-white text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">
+                {titulo}
+            </h2>
+        </div>
+
+        <div class="flex flex-wrap border border-[var(--brand-interactive-base)] mb-12">
+            {categories.map((cat: any, index: number) => (
+                <button
+                    class="flex-1 py-3 px-6 text-center text-base lg:text-base font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
+                    :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-white bg-transparent'`}
+                    @click={`activeTab = ${index}`}
+                >
+                    {cat.label}
+                </button>
+            ))}
+        </div>
+
+        <div>
+            {categories.map((cat: any, index: number) => (
+                <div x-show={`activeTab === ${index}`} style="display: none;">
+
+                    <div class="flex flex-col border-t border-[var(--neutral-stroke-weak)] max-w-4xl mx-auto w-full">
+                        {cat.faqs.map((faq: any) => (
+                            <div x-data="{ expanded: false }" class="border-b border-[var(--neutral-stroke-weak)]">
+                                <button
+                                    @click="expanded = !expanded"
+                                    class="w-full py-6 flex items-center justify-between text-left group"
+                                >
+                                    <span
+                                        class="text-[var(--brand-interactive-base)] font-bold text-lg lg:text-xl font-(family-name:--font-sharp-sans-bold) transition-colors group-hover:text-white"
+                                        :class="expanded ? 'text-white' : 'text-[var(--brand-interactive-base)]'"
+                                    >
+                                        {faq.pregunta}
+                                    </span>
+                                    <span
+                                        class="text-[var(--brand-interactive-base)] transition-transform duration-300 transform"
+                                        :class="expanded ? 'rotate-180 text-white' : ''"
+                                    >
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <div
+                                    x-show="expanded"
+                                    x-collapse
+                                    class="pb-6 text-white text-base lg:text-lg opacity-90 font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
+                                >
+                                    {faq.respuesta ? <Fragment set:html={stringifyRichText(faq.respuesta)} /> : <p>{faq.respuesta}</p>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                </div>
+            ))}
+        </div>
+
+    </div>
+</section>
+
+<script>
+    document.addEventListener('astro:page-load', initObserver);
+    document.addEventListener('DOMContentLoaded', initObserver);
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-faq');
+        targets.forEach(target => observer.observe(target));
+    }
+</script>
+
+<style>
+    .border-\[var\(--brand-interactive-base\)\] {
+        border-color: var(--brand-interactive-base);
+    }
+
+    .border-\[var\(--neutral-stroke-weak\)\] {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    div[x-show="true"] {
+        display: block !important;
+    }
+
+    /* Animación Lenta 3s */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0;
+    }
+
+    :global(.trigger-anim-faq.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
+    }
+</style>

@@ -1,0 +1,35 @@
+---
+import { getFooterData } from '../../lib/strapi';
+import TopgolfFooter from '../topgolf/Footer.astro';
+import TocaFooter from '../toca/Footer.astro';
+import BluFooter from '../blu/Footer.astro';
+
+const footerData = await getFooterData();
+
+let Component = TopgolfFooter;
+let props = { data: footerData };
+
+// Logic to detect variant:
+if (footerData?.Variante && Array.isArray(footerData.Variante) && footerData.Variante.length > 0) {
+    const variant = footerData.Variante[0];
+    const componentName = variant.__component;
+
+    if (componentName.includes('toca')) {
+        Component = TocaFooter;
+    } else if (componentName.includes('blu')) {
+        Component = BluFooter;
+    } else if (componentName.includes('topgolf')) {
+        Component = TopgolfFooter;
+    }
+    
+    props = { data: variant };
+} else {
+    console.log("SmartFooter: 'Variante' array not found or empty in footerData.");
+    console.log("Keys available:", Object.keys(footerData || {}));
+    if (footerData) console.log("Full footerData (partial):", JSON.stringify(footerData).substring(0, 200) + "...");
+}
+
+console.log(`SmartFooter rendering: ${Component.name}`);
+---
+
+<Component {...props} />

@@ -1,0 +1,51 @@
+---
+// src/components/toca/Component_10.astro
+import EventCard from '../toca/elements/EventCard.astro';
+import EventModal from '../toca/elements/EventModal.astro';
+
+interface CardData {
+    id: number;
+    titulo: string;
+    descripcion: any;
+    imagen: any;
+}
+
+interface Props {
+    titulo_seccion?: string;
+    tarjetas: CardData[];
+}
+
+const {
+    titulo_seccion = "ALL EVENTS",
+    tarjetas = []
+} = Astro.props;
+const defaultEvents = Array(6).fill({
+    id: 999,
+    titulo: "EVENTO EJEMPLO",
+    descripcion: "Descripción de ejemplo para visualizar el diseño.",
+    imagen: null
+});
+
+const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
+---
+
+<section class="bg-[var(--surface-brand-primary)] py-12 px-4 md:px-12 w-full relative">
+
+    <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-center text-3xl md:text-5xl font-bold uppercase tracking-tighter text-[var(--accent-feedback-strong)] mb-12">
+        {titulo_seccion}
+    </h2>
+
+    <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12 justify-items-center">
+        {dataToRender.map((evento) => (
+            <div class="w-full md:w-[380px]">
+                <EventCard
+                    evento={evento}
+                    tipo="version_2"
+                />
+            </div>
+        ))}
+    </div>
+
+    <EventModal />
+
+</section>

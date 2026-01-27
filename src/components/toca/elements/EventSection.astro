@@ -1,0 +1,90 @@
+---
+// src/components/toca/EventsSection.astro
+import EventCard from '../elements/EventSection.astro';
+import EventModal from '../elements/EventModal.astro';
+
+interface Props {
+    titulo_seccion?: string;
+    tarjetas: any[];
+    layout?: 'grid' | 'slider';
+}
+
+const {
+    titulo_seccion = "WHAT'S ON",
+    tarjetas = [],
+    layout = 'grid'
+} = Astro.props;
+
+const dataToRender = (tarjetas && tarjetas.length > 0) ? tarjetas : Array(4).fill({
+    id: 999,
+    titulo: "EVENTO EJEMPLO",
+    descripcion: "Descripción de relleno.",
+    imagen: null
+});
+
+
+const isSlider = layout === 'slider';
+const cardType = isSlider ? 'version_1' : 'version_2';
+
+
+const sectionClass = isSlider
+    ? "bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full overflow-hidden relative"
+    : "bg-[var(--surface-brand-primary)] py-12 px-4 md:px-12 w-full relative";
+
+const containerClass = isSlider
+    ? "flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 md:grid md:grid-cols-5 md:gap-4 md:overflow-visible max-w-[1600px] mx-auto scrollbar-hide"
+    : "max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12 justify-items-center";
+---
+
+<section class={sectionClass}>
+
+    <div class:list={["mb-12", isSlider ? "flex justify-end md:justify-between items-end max-w-[1600px] mx-auto" : "text-center"]}>
+        <h2 class:list={[
+            "font-bold uppercase tracking-tighter",
+            isSlider ? "hidden md:block text-lg md:text-xl text-[var(--accent-feedback-strong)]" : "text-3xl md:text-5xl text-white font-montserrat"
+        ]}>
+            {titulo_seccion}
+        </h2>
+
+        {isSlider && (
+            <div class="flex gap-4 mb-1">
+                <button id="prevBtn" class="text-[var(--brand-interactive-base)] text-4xl leading-none"><i class="fa-solid fa-caret-left"></i></button>
+                <button id="nextBtn" class="text-[var(--brand-interactive-base)] text-4xl leading-none"><i class="fa-solid fa-caret-right"></i></button>
+            </div>
+        )}
+    </div>
+
+    <div id="cardsContainer" class={containerClass}>
+        {dataToRender.map((evento) => (
+            <div class={isSlider ? "min-w-[60vw] sm:min-w-[30vw] md:min-w-0" : "w-full md:w-[380px]"}>
+                <EventCard evento={evento} tipo={cardType} />
+            </div>
+        ))}
+    </div>
+
+    <EventModal />
+
+</section>
+
+{isSlider && (
+<script>
+    const container = document.getElementById('cardsContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (container && prevBtn && nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const scrollAmount = container.clientWidth * 0.85;
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+        prevBtn.addEventListener('click', () => {
+            const scrollAmount = container.clientWidth * 0.85;
+            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+    }
+</script>
+<style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+)}

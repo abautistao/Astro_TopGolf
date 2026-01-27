@@ -1,0 +1,81 @@
+---
+import { stringifyRichText } from "../../lib/strapi";
+
+interface Props {
+  titulo: string;
+  items: any[];
+}
+
+const {
+  titulo = "KIDS EVENTS FAQS",
+  items = [],
+} = Astro.props;
+
+// Fallback data
+const fallbackItems = [
+    { pregunta: "How old do kids have to be?", respuesta: "Minions must be at least 5 years old to play." },
+    { pregunta: "Can we bring cake?", respuesta: "Yes! You can bring your own cake and balloons." },
+    { pregunta: "What can we wear to play?", respuesta: "Trainers are a must! No open-toed shoes or heels." },
+    { pregunta: "How many people per box?", respuesta: "Each box holds up to 12 players." },
+    { pregunta: "Are you open to under 18s?", respuesta: "Yes, until 4pm daily!" },
+    { pregunta: "Do children need to be with an adult?", respuesta: "Yes, supervision is required." },
+    { pregunta: "How do I cancel my booking (less than 24 guests)?", respuesta: "Check our cancellation policy page." },
+    { pregunta: "How do I cancel my large event booking (more than 25 guests)?", respuesta: "Please contact our events team directly." },
+];
+
+const dataToShow = items.length > 0 ? items : fallbackItems;
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20">
+    <div class="max-w-[1000px] mx-auto px-4">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-[var(--accent-feedback-strong)]  text-3xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) leading-[0.9]">
+                {titulo}
+            </h2>
+        </div>
+
+        <!-- FAQ List -->
+        <div class="flex flex-col border-t border-[var(--neutral-stroke-weak)]">
+            {dataToShow.map((faq: any) => (
+                <div x-data="{ expanded: false }" class="border-b border-[var(--neutral-stroke-weak)]">
+                    <button
+                        @click="expanded = !expanded"
+                        class="w-full py-6 flex items-center justify-between text-left group"
+                    >
+                        <span
+                            class="text-[var(--brand-interactive-base)] font-bold text-lg lg:text-xl font-(family-name:--font-sharp-sans-bold)"
+                            :class="expanded ? 'text-[var(--accent-feedback-strong)]' : 'text-[var(--brand-interactive-base)]'"
+                        >
+                            {faq.pregunta}
+                        </span>
+                        <span
+                            class="text-[var(--brand-interactive-base)] transition-transform duration-300 transform"
+                            :class="expanded ? 'rotate-180 text-[var(--accent-feedback-strong)]' : ''"
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <div
+                        x-show="expanded"
+                        x-collapse
+                        class="pb-6 text-[var(--accent-feedback-strong)] text-base lg:text-lg opacity-90 font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
+                    >
+                        {faq.respuesta ? <Fragment set:html={stringifyRichText(faq.respuesta)} /> : <p>{faq.respuesta}</p>}
+                    </div>
+                </div>
+            ))}
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .border-\[var\(--neutral-stroke-weak\)\] {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+</style>

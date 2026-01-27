@@ -1,0 +1,336 @@
+---
+// src/components/blu/Component_6_Blu.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import Button from "./elements/Button.astro";
+
+interface BotonData {
+    id: number;
+    texto: string;
+    url: string;
+    tipo?: string;
+}
+
+interface ExperienceCard {
+    id: number;
+    titulo: string;
+    imagen: any;
+    beneficios: any; // Cambiado a any para soportar RichText de Strapi
+    precioOferta: string;
+    precioRegular: string;
+    boton?: BotonData; // Objeto de botón reutilizable
+}
+
+interface Props {
+    tituloExperiencias?: string;
+    experiencias?: ExperienceCard[];
+}
+
+const {
+    tituloExperiencias = "Experiencias que Fluyen",
+    experiencias = [
+        {
+            id: 1,
+            titulo: "VIP de Segundo Nivel",
+            imagen: "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo",
+            beneficios: [
+                {
+                    type: "list",
+                    format: "unordered",
+                    children: [
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Cubierta superior privado de relajación y estilo, con vistas panorámicas, camas con sombra y un servicio personalizado y atento.",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Transfer en barco de ida y vuelta.",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Barra libre (marcas nacionales)",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Bebidas y aperitivos ilimitados",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Flotadores y redes para el océano",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Bar flotante de margaritas",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                { type: "text", text: "Tobogán gigante" },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "30 minutos de snorkel con vida marina",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Equipo de snorkel • DJ en vivo",
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            precioOferta: "$1099 MXM",
+            precioRegular: "$1999 MXM",
+            boton: {
+                id: 1,
+                texto: "RESERVA AQUÍ",
+                url: "#",
+                tipo: "version_4",
+            },
+        },
+        {
+            id: 2,
+            titulo: "Blu Platinum",
+            imagen: "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo",
+            beneficios: [
+                {
+                    type: "list",
+                    format: "unordered",
+                    children: [
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Transfer en barco de ida y vuelta.",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Barra libre (marcas nacionales)",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Bebidas y aperitivos ilimitados",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Flotadores y redes para el océano",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Bar flotante de margaritas",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                { type: "text", text: "Tobogán gigante" },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "30 minutos de snorkel con vida marina",
+                                },
+                            ],
+                        },
+                        {
+                            type: "list-item",
+                            children: [
+                                {
+                                    type: "text",
+                                    text: "Equipo de snorkel • DJ en vivo",
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            precioOferta: "$799 MXM",
+            precioRegular: "$1099 MXM",
+            boton: {
+                id: 2,
+                texto: "RESERVA AQUÍ",
+                url: "#",
+                tipo: "version_3",
+            },
+        },
+    ],
+} = Astro.props;
+---
+
+<section class="w-full py-16 md:py-24 px-6 overflow-hidden">
+    <div class="max-w-[1440px] mx-auto">
+        {/* --- SECCIÓN EXPERIENCIAS --- */}
+        <h2
+            class="text-4xl md:text-7xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] text-center mb-16 md:mb-24"
+        >
+            {tituloExperiencias}
+        </h2>
+
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto"
+        >
+            {
+                experiencias.map((exp) => (
+                    <div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-2xl border border-white/10 experience-card-premium group">
+                        <div class="relative h-64 md:h-80 overflow-hidden">
+                            <Image
+                                src={getStrapiUrl(exp.imagen) || exp.imagen}
+                                alt={exp.titulo}
+                                width={800}
+                                height={600}
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                        </div>
+
+                        <div class="p-8 md:p-10 flex flex-col flex-grow">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-3xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-tight">
+                                    {exp.titulo}
+                                </h3>
+                                <div class="bg-[var(--surface-brand-primary)] p-3 rounded-sm flex items-center justify-center text-white">
+                                    <i class="fa-solid fa-chevron-right text-lg" />
+                                </div>
+                            </div>
+
+                            <div class="benefits-rich-text text-sm md:text-base text-[var(--surface-brand-primary)]/80 font-[family-name:var(--font-blu-body)] leading-tight mb-12 flex-grow">
+                                <Fragment
+                                    set:html={stringifyRichText(exp.beneficios)}
+                                />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-8 mb-8 relative">
+                                <div class="absolute left-1/2 top-8 bottom-0 w-px bg-gray-200" />
+                                <div class="text-center">
+                                    <p class="text-[16px] uppercase tracking-widest text-[var(--neutral-background-subtle)] font-black mb-2 font-[family-name:var(--font-blu-body)]">
+                                        PRECIO DE OFERTA
+                                    </p>
+                                    <p class="text-3xl md:text-4xl font-extrabold  text-[var(--neutral-background-subtle)] font-[family-name:var(--font-blu-body)] tracking-tight">
+                                        {exp.precioOferta}
+                                    </p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[16px] uppercase tracking-widest text-[var(--surface-brand-primary)] font-black mb-2 font-[family-name:var(--font-blu-body)]">
+                                        PRECIO REGULAR
+                                    </p>
+                                    <p class="text-2xl md:text-3xl font-extrabold text-[var(--surface-brand-primary)] line-through font-[family-name:var(--font-blu-body)] tracking-tight">
+                                        {exp.precioRegular}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {exp.boton && (
+                                <Button
+                                    botones={
+                                        Array.isArray(exp.boton)
+                                            ? exp.boton
+                                            : [exp.boton]
+                                    }
+                                    clase="w-full [&>a]:w-full [&>a]:py-4 [&>a]:shadow-lg"
+                                />
+                            )}
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .experience-card-premium {
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+    .experience-card-premium:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 50px 80px -20px rgba(1, 43, 73, 0.25);
+    }
+
+    .benefits-rich-text :global(ul) {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .benefits-rich-text :global(li) {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .benefits-rich-text :global(li::before) {
+        content: "•";
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 1.25rem;
+        line-height: 1;
+        color: inherit;
+    }
+</style>

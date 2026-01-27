@@ -1,0 +1,28 @@
+{
+    "collectionName": "components_blu_component_1_blus",
+    "info": {
+        "displayName": "Component 1 Blu",
+        "icon": "layer-group",
+        "description": "Hero section with booking widget"
+    },
+    "options": {},
+    "attributes": {
+        "subtitulo": {
+            "type": "string"
+        },
+        "titulo": {
+            "type": "string"
+        },
+        "descripcion": {
+            "type": "text"
+        },
+        "imagen": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        }
+    }
+}

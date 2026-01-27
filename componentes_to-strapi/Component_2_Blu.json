@@ -1,0 +1,17 @@
+{
+    "collectionName": "components_blu_component_2_blus",
+    "info": {
+        "displayName": "Component 2 Blu",
+        "icon": "align-center",
+        "description": "Introduction section"
+    },
+    "options": {},
+    "attributes": {
+        "titulo": {
+            "type": "string"
+        },
+        "descripcion": {
+            "type": "text"
+        }
+    }
+}

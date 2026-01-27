@@ -64,6 +64,7 @@ export const getStrapiUrl = (media) => {
   // Esta función ahora comprueba ambas estructuras para ser más robusta.
   const url = media?.data?.attributes?.url || media?.url;
   if (url) {
+    if (url.startsWith('http')) return url;
     const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
     // Asegurarse de que no haya dobles barras al unir las URLs
     const cleanStrapiUrl = strapiUrl.endsWith('/') ? strapiUrl.slice(0, -1) : strapiUrl;
@@ -183,7 +184,7 @@ export const formatUrl = (url) => {
   if (!url) return '#';
   if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/')) {
     return url;
-  }else if(url.startsWith('#')) {
+  } else if (url.startsWith('#')) {
     return `${url}`;
   }
   return `/${url}`;

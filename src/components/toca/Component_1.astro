@@ -1,0 +1,210 @@
+---
+// src/components/toca/Component_1.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+import Button from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
+
+interface Props {
+    subtitulo?: string;
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    social: any;
+    boton: Boton | null;
+}
+
+const {
+    subtitulo = "Subtitulo de Ejemplo",
+    titulo,
+    descripcion = "Descripcion de Ejemplo",
+    imagen,
+    social = [
+        {
+            name: "Boton",
+            url: "#",
+            icon: "version_1",
+        },
+    ],
+    boton = null
+} = Astro.props;
+
+const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
+
+const strapiImageUrl = getStrapiUrl(imagen);
+const descripcionHtml = stringifyRichText(descripcion);
+
+const altText =
+    imagen?.data?.attributes?.alternativeText ||
+    tituloMostrar ||
+    "Imagen destacada";
+
+const boton_pricing: Boton[] = boton ? [boton] : [];
+
+// 1. Dividimos el título en PALABRAS
+const palabras = tituloMostrar.split(' ');
+
+// --- CONFIGURACIÓN DE VELOCIDAD ---
+const startDelay = 0.6;       // Tiempo antes de empezar
+const wordInterval = 0.4;     // Tiempo ENTRE cada palabra
+
+// Calculamos cuándo debe aparecer todo el bloque de contenido (descripción + botón + iconos)
+const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.5;
+---
+
+<section
+    class="w-full bg-[var(--surface-brand-primary)] min-h-[700px] lg:h-[95vh] flex items-center justify-center overflow-hidden p-0 lg:pl-4"
+>
+    <div class="flex flex-col lg:flex-row w-full h-full items-stretch 2xl:w-[85%] 2xl:max-w-[1800px]">
+
+        <div class="w-full lg:w-[20%] px-8 md:px-12 lg:pl-10 lg:pr-0 pb-10 lg:pb-12 pt-10 flex flex-col justify-between relative z-30 bg-[var(--surface-brand-primary)]"
+        >
+            <div class="mt-0 lg:mt-4">
+                {subtitulo && (
+                    <span class="block font-bold uppercase tracking-wider text-sm lg:text-sm -mt-5 mb-2 text-[var(--accent-feedback-strong)] font-(family-name:--font-titling-gothic-fb-extended-bold) whitespace-nowrap w-max max-w-none relative z-50">
+                        {subtitulo}
+                    </span>
+                )}
+
+                <h1
+                    class="font-bold uppercase leading-[0.85] tracking-tighter mb-8 flex flex-col text-[var(--accent-feedback-strong)] relative z-40 lg:w-[50vw] min-w-[300px]"
+                >
+                    <span
+                        class="whitespace-pre-line text-3xl lg:text-[64px] font-(family-name:--font-titling-gothic-fb-extended-bold)"
+                        aria-label={tituloMostrar}
+                    >
+                        {palabras.map((palabra, index) => (
+                            <span
+                                class="word-anim inline-block opacity-0"
+                                style={`animation-delay: ${(index * wordInterval) + startDelay}s;`}
+                            >
+                                {palabra}&nbsp;
+                            </span>
+                        ))}
+                    </span>
+                </h1>
+
+                <div
+                    class="text-[var(--surface-brand-secondary)] text-sm lg:text-sm font-bold leading-relaxed strapi-rich-text font-(family-name:--font-sharp-sans-bold) desc-anim opacity-0"
+                    style={`animation-delay: ${delayDescripcion}s;`}
+                >
+                    <Fragment set:html={descripcionHtml} />
+                </div>
+
+                {
+                    boton && (
+                        <div
+                            class="mt-4 w-full lg:w-auto lg:scale-100 desc-anim opacity-0"
+                            style={`animation-delay: ${delayDescripcion}s;`}
+                        >
+                            <Button
+                                botones={boton_pricing}
+                                clase="flex w-full justify-start lg:w-auto lg:justify-start"
+                            />
+                        </div>
+                    )
+                }
+
+            </div>
+
+            <div
+                class="flex items-center gap-5 mt-8 lg:mt-0 desc-anim opacity-0"
+                style={`animation-delay: ${delayDescripcion}s;`}
+            >
+                {
+                    social &&
+                        social.map((social_item: any) => (
+                            <a
+                                href={social_item.url}
+                                target="_blank"
+                                class="text-[var(--brand-interactive-base)] text-lg md:text-xl hover:text-[var(brand-interactive-base)] transition-colors"
+                            >
+                                <Fragment set:html={social_item.icon} />
+                            </a>
+                        ))
+                }
+            </div>
+        </div>
+
+        <div
+            class="w-full lg:w-[80%] h-[400px] lg:h-full relative flex items-center justify-center p-0 lg:pt-15 lg:pb-15 lg:pr-15 lg:pl-0 z-10"
+        >
+            <div class="w-full h-full z-0 relative image-anim opacity-0">
+                <Image
+                    src={strapiImageUrl ||
+                        "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
+                    alt={altText}
+                    class="w-full h-full object-cover object-center"
+                    inferSize={true}
+                    loading="eager"
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* --- ANIMACIÓN DESLIZAR IMAGEN --- */
+    @keyframes slideInFromRight {
+        0% {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .image-anim {
+        animation: slideInFromRight 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* --- ANIMACIÓN FADE IN (ESTILO ANIMATE.CSS) --- */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .word-anim {
+        animation: fadeIn 2s ease-out forwards;
+    }
+
+    /* Animación descripción, botón e iconos */
+    @keyframes fadeInSimple {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .desc-anim {
+        animation: fadeInSimple 1.5s ease-out forwards;
+    }
+
+    h1 {
+        margin-right: -10%;
+    }
+
+    @media (max-width: 1024px) {
+        h1 {
+            margin-right: 0;
+        }
+    }
+    .strapi-rich-text :global(strong) {
+        color: var(--brand-interactive-base);
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        color: var(--brand-interactive-base);
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+</style>

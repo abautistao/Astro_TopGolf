@@ -1,0 +1,235 @@
+---
+// src/components/toca/Component_9.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { Image } from 'astro:assets';
+
+interface TarjetaItem {
+    id: number;
+    titulo: string;
+    descripcion: any;
+    imagen: any;
+    url?: string;
+}
+
+interface TarjetaWrapper {
+    id: number;
+    titulo_seccion: string | null;
+    tarjetas: TarjetaItem[];
+}
+
+interface Props {
+    tarjetas: TarjetaWrapper;
+}
+
+const { tarjetas } = Astro.props;
+
+const tarjetasArray = tarjetas?.tarjetas || [];
+
+const defaultCards = [
+    {
+        titulo: "Ejemplo 1",
+        descripcion: "Description for example card 1 goes here. ",
+        imagen: null,
+        url: "#"
+    },
+    {
+        titulo: "Ejemplo 2",
+        descripcion: "Description for example card 2 goes here. ",
+        imagen: null,
+        url: "#"
+    },
+    {
+        titulo: "Ejemplo 3",
+        descripcion: "Description for example card 3 goes here. ",
+        imagen: null,
+        url: "#"
+    }
+];
+
+const rawData = tarjetasArray.length > 0 ? tarjetasArray : defaultCards;
+
+const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
+    title: card.titulo,
+    desc: typeof card.descripcion === 'string'
+        ? card.descripcion
+        : stringifyRichText(card.descripcion),
+    img: getStrapiUrl(card.imagen),
+    alt: card.titulo || "Toca Social",
+    link: card.url || "#"
+}));
+
+---
+
+<section class="trigger-anim-9 w-full bg-[var(--surface-brand-primary)] py-10 lg:py-16 relative">
+
+    <div class="anim-fade max-w-[1400px] mx-auto px-4 sm:px-6 h-full">
+
+        <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
+
+            {ProcessedTarjetas.map((item, index) => (
+                <div
+                    class={`carousel-item flex flex-col h-full group
+                    ${index === 0 ? 'flex' : 'hidden'} lg:flex
+                    transition-all duration-300 ease-out
+                    cursor-pointer`}
+                    data-index={index}
+                >
+                    <div class="w-full aspect-square relative overflow-hidden mb-6 border-2 border-transparent">
+                        <Image
+                            src={item.img || "https://placehold.co/600x600/2d3748/ffffff?text=Image"}
+                            alt={item.alt}
+                            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                            width={600}
+                            height={600}
+                            inferSize={true}
+                        />
+                    </div>
+
+                    <div class="flex flex-col grow px-1">
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--brand-interactive-base)] text-2xl lg:text-2xl uppercase leading-none tracking-tighter">
+                                {item.title}
+                            </h3>
+
+                            <div class="flex gap-4 lg:hidden shrink-0">
+                                <button class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none">
+                                    <i class="fa-solid fa-caret-left text-3xl"></i>
+                                </button>
+                                <button class="next-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none">
+                                    <i class="fa-solid fa-caret-right text-3xl"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="font-(family-name:--font-sharp-sans-medium) text-[var(--accent-feedback-strong)]  text-base leading-relaxed w-full strapi-rich-text mb-6">
+                            <Fragment set:html={item.desc} />
+                        </div>
+
+                        <a
+                            href={item.link}
+                            class="font-(family-name:--font-sharp-sans-medium) mt-auto text-[var(--surface-brand-secondary)] hover:text-[var(--accent-feedback-strong)] font-bold text-base transition-colors inline-block"
+                        >
+                            Learn More...
+                        </a>
+                    </div>
+                </div>
+            ))}
+
+        </div>
+    </div>
+</section>
+
+<script>
+    // El script se mantiene igual, ya que funciona bien para detectar el scroll
+    document.addEventListener('astro:page-load', initAll);
+    document.addEventListener('DOMContentLoaded', initAll);
+
+    function initAll() {
+        initCarousel();
+        initObserver();
+    }
+
+    // --- LÓGICA DE ANIMACIÓN AL SCROLL ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-9');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    // --- LÓGICA DEL CARRUSEL ---
+    function initCarousel() {
+        const items = document.querySelectorAll('.carousel-item');
+        const prevBtns = document.querySelectorAll('.prev-btn');
+        const nextBtns = document.querySelectorAll('.next-btn');
+        let currentIndex = 0;
+        const totalItems = items.length;
+
+        if(totalItems === 0) return;
+
+        function showItem(index) {
+            items.forEach((item, i) => {
+                item.classList.remove('flex');
+                item.classList.add('hidden');
+
+                if (i === index) {
+                    item.classList.remove('hidden');
+                    item.classList.add('flex');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            showItem(currentIndex);
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+            showItem(currentIndex);
+        }
+
+        nextBtns.forEach(btn => {
+            const newBtn = btn.cloneNode(true);
+            if(btn.parentNode) btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                nextSlide();
+            });
+        });
+
+        prevBtns.forEach(btn => {
+            const newBtn = btn.cloneNode(true);
+            if(btn.parentNode) btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                prevSlide();
+            });
+        });
+    }
+</script>
+
+<style>
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0;
+        color: inherit;
+    }
+
+    /* --- CAMBIO PRINCIPAL: Usamos fadeInUp --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px); /* Empieza 30px más abajo */
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0); /* Termina en su posición original */
+        }
+    }
+
+    .anim-fade {
+        opacity: 0; /* Oculto inicialmente */
+    }
+
+    /* Solo se anima cuando el padre tiene la clase .is-visible detectada por JS */
+    :global(.trigger-anim-9.is-visible) .anim-fade {
+        /* Usamos la nueva animación fadeInUp durante 2 segundos */
+        animation: fadeInUp 2s ease-out forwards;
+    }
+</style>

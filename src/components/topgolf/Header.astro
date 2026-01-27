@@ -11,9 +11,13 @@ interface Promo {
     descripcion: object
 }
 import MobileLocationBar from './elements/MobileLocationBar.astro';
-const headerData = await getHeaderData();
+
+const { data } = Astro.props;
+const headerData = data || await getHeaderData();
+
 const FALLBACK_IMAGE = "https://placehold.co/600x400?text=No+Image";
 const FALLBACK_LOGO = "https://placehold.co/100x50?text=Logo";
+
 
 const logoUrl       = getStrapiUrl(headerData?.logo) || FALLBACK_LOGO;
 const logoUrlMobile = getStrapiUrl(headerData?.logo_mobile) || FALLBACK_LOGO;
@@ -54,7 +58,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
             aria-label="Previous slide"
             aria-controls="splide01-track"
         >
-            
+
             <i class="fa-solid fa-chevron-left fa-md font-bold"></i>
         </button>
         <button
@@ -333,7 +337,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
         gap: 4px;
         flex-wrap: wrap;
         margin: 0 auto !important;
-        text-align: center !important; 
+        text-align: center !important;
     }
 
     #slider-promos .prose :global(p > strong)  {
@@ -359,7 +363,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
     import '@splidejs/splide/css';
     import Splide from '@splidejs/splide';
 
-    
+
 document.addEventListener('DOMContentLoaded', () => {
     new Splide( '.splide', {
         pagination: false,

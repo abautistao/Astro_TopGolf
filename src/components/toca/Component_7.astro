@@ -1,0 +1,173 @@
+---
+// src/components/HowToPlay.astro
+// ... (MANTÉN TODO EL BLOQUE DE IMPORTS Y PROPS IGUAL)
+import { Image } from "astro:assets";
+import { getStrapiUrl } from '../../lib/strapi.js';
+
+interface Props {
+    titulo?: string;
+    video: any;
+    poster?: any;
+}
+
+const {
+    titulo = "Ejemplo de título",
+    video,
+    poster
+} = Astro.props;
+
+const mediaUrl = getStrapiUrl(video);
+const posterUrl = getStrapiUrl(poster);
+
+const PLACEHOLDER_IMG = "https://placehold.co/1920x1080/1a202c/ffffff?text=Video+Placeholder";
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(mediaUrl);
+const finalPoster = posterUrl || PLACEHOLDER_IMG;
+const altText = titulo || "How to play video thumbnail";
+---
+
+<section class="trigger-anim-video w-full bg-[var(--surface-brand-primary)] py-6 px-4 md:px-8 md:py-8">
+
+    <div class="anim-fade max-w-7xl mx-auto">
+
+        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-3xl md:text-6xl font-bold uppercase text-center mb-6">
+            {titulo}
+        </h2>
+
+        <div class="relative w-full aspect-video">
+            {showVideo ? (
+                <>
+                    <video
+                        id="videoPlayer"
+                        class="w-full h-full object-cover"
+                        poster={finalPoster}
+                        playsinline
+                    >
+                        <source src={mediaUrl} type="video/mp4" />
+                        <p class="sr-only">{titulo}</p>
+                    </video>
+
+                    <div
+                        id="playOverlay"
+                        class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all duration-300 cursor-pointer backdrop-blur-[2px]"
+                    >
+                        <button
+                            class="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl flex items-center justify-center hover:scale-110 hover:bg-white/30 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+                            aria-label={`Reproducir video ${titulo}`}
+                        >
+                            <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-2 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <Image
+                    src={mediaUrl || PLACEHOLDER_IMG}
+                    alt={altText}
+                    width={1280}
+                    height={720}
+                    class="w-full h-full object-cover"
+                    inferSize={true}
+                />
+            )}
+        </div>
+    </div>
+</section>
+
+<script>
+    // El SCRIPT sigue igual
+    document.addEventListener('astro:page-load', initAll);
+    document.addEventListener('DOMContentLoaded', initAll);
+
+    function initAll() {
+        initVideoPlayer();
+        initObserver();
+    }
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-video');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    function initVideoPlayer() {
+        const video = document.getElementById('videoPlayer') as HTMLVideoElement;
+        const overlay = document.getElementById('playOverlay');
+
+        if (video && overlay) {
+            const newOverlay = overlay.cloneNode(true);
+            if (overlay.parentNode) overlay.parentNode.replaceChild(newOverlay, overlay);
+
+            const activeOverlay = document.getElementById('playOverlay');
+
+            if(activeOverlay) {
+                activeOverlay.addEventListener('click', () => {
+                    if (video.paused) {
+                        video.play();
+                        activeOverlay.classList.add('opacity-0', 'pointer-events-none');
+                        video.controls = true;
+                    } else {
+                        video.pause();
+                    }
+                });
+            }
+
+            video.addEventListener('ended', () => {
+                const currentOverlay = document.getElementById('playOverlay');
+                if(currentOverlay) currentOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                video.controls = false;
+                video.load();
+            });
+        }
+    }
+</script>
+
+<style>
+    /* --- CAMBIO EN LA VELOCIDAD DE ANIMACIÓN --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0;
+    }
+
+    /* Aumentamos el tiempo a 3s para que sea mucho más lento */
+    :global(.trigger-anim-video.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
+    }
+</style>

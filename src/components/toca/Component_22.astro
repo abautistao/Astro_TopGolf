@@ -1,0 +1,116 @@
+---
+// src/components/toca/Component_22.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl } from "../../lib/strapi";
+
+interface OpeningHour {
+    id: number;
+    dia: string;
+    rango: string;
+}
+
+interface Props {
+    titulo?: string;
+    mapa?: any;
+    direccion?: string;
+    google_maps_url?: string;
+    titulo_horarios?: string;
+    horarios?: OpeningHour[];
+}
+
+const {
+    titulo = "WHERE WE ARE",
+    mapa,
+    direccion = "TOCA SOCIAL, THE BIRMINGHAM BULLRING, 11 ST MARTIN'S WALK, BIRMINGHAM B5 4BU",
+    google_maps_url = "https://maps.google.com",
+    titulo_horarios = "OPENING TIMES",
+    horarios = [
+        { id: 1, dia: "MON-WED", rango: "12PM - 11PM" },
+        { id: 2, dia: "THURSDAY", rango: "12PM - 12PM" },
+        { id: 3, dia: "FRIDAY", rango: "11PM - 1PM" },
+        { id: 4, dia: "SATURDAY", rango: "9PM - 1PM" },
+        { id: 5, dia: "SUNDAY", rango: "9PM - 11PM" },
+    ],
+} = Astro.props;
+
+const mapaUrl = getStrapiUrl(mapa);
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 lg:py-24">
+    <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+        <!-- Main Title (Mobile/Desktop) -->
+        <h2
+            class="text-white text-5xl lg:text-7xl font-bold uppercase text-center mb-12 lg:mb-20 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-none"
+        >
+            {titulo}
+        </h2>
+
+        <div
+            class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start"
+        >
+            <!-- Left: Map -->
+            <div
+                class="w-full aspect-[4/3] lg:aspect-square relative rounded-sm overflow-hidden border border-white/10"
+            >
+                {
+                    mapaUrl ? (
+                        <Image
+                            src={mapaUrl}
+                            alt="Map Location"
+                            inferSize={true}
+                            class="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div class="w-full h-full bg-gray-800 flex items-center justify-center text-white/20 italic">
+                            [ Map Image Placeholder ]
+                        </div>
+                    )
+                }
+            </div>
+
+            <!-- Right: Content -->
+            <div class="flex flex-col space-y-12 lg:space-y-16">
+                <!-- Address & Link -->
+                <div>
+                    <p
+                        class="text-[var(--brand-interactive-base)] text-base lg:text-base font-bold uppercase mb-4 font-(family-name:--font-sharp-sans-bold) leading-tight max-w-md"
+                    >
+                        {direccion}
+                    </p>
+                    <a
+                        href={google_maps_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-white text-sm lg:text-sm font-bold underline hover:opacity-80 transition-opacity font-(family-name:--font-sharp-sans-medium)"
+                    >
+                        Open directions in Google Maps
+                    </a>
+                </div>
+
+                <!-- Opening Times -->
+                <div>
+                    <h3
+                        class="text-white text-xl lg:text-xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold)"
+                    >
+                        {titulo_horarios}
+                    </h3>
+
+                    <div class="space-y-6 lg:space-y-8">
+                        {
+                            horarios.map((item) => (
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-4">
+                                    <span class="text-[var(--surface-brand-secondary)] text-sm lg:text-sm font-bold uppercase font-(family-name:--font-sharp-sans-bold) min-w-[150px]">
+                                        {item.dia}
+                                    </span>
+                                    <span class="text-[var(--brand-interactive-base)] text-sm lg:text-sm font-bold uppercase font-(family-name:--font-sharp-sans-bold)">
+                                        {item.rango}
+                                    </span>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

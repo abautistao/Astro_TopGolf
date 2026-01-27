@@ -1,0 +1,177 @@
+---
+import { getStrapiUrl } from "../../lib/strapi";
+import { Image } from "astro:assets";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+interface Props {
+    imagenes: any;
+}
+
+const { imagenes } = Astro.props;
+
+const imagesList = imagenes || [];
+---
+
+<section class="trigger-anim-slider w-full bg-[var(--surface-brand-primary)] py-8 lg:py-16">
+
+    <div class="anim-fade max-w-[1400px] mx-auto px-4 md:px-8 relative group">
+        <div
+            class="swiper mySwiper w-full rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]"
+        >
+            <div class="swiper-wrapper">
+                {
+                    imagesList.length > 0
+                        ? imagesList.map((img: any) => {
+                              const imgUrl = getStrapiUrl(img);
+                              // Safe fallback for alt text
+                              const alt =
+                                  img?.attributes?.alternativeText ||
+                                  "Slider Image";
+
+                              return (
+                                  <div class="swiper-slide relative w-full h-full bg-gray-900">
+                                      <Image
+                                          src={imgUrl || ""}
+                                          alt={alt}
+                                          inferSize={true}
+                                          class="w-full h-full object-cover"
+                                          loading="eager"
+                                      />
+                                  </div>
+                              );
+                          })
+                        : [1, 2, 3].map((i) => (
+                              <div class="swiper-slide relative w-full h-full bg-gray-900">
+                                  <img
+                                      src="https://placehold.co/600x400?text=No+Image"
+                                      alt="No Image Available"
+                                      class="w-full h-full object-cover opacity-50"
+                                  />
+                              </div>
+                          ))
+                }
+            </div>
+
+            <div class="swiper-pagination !bottom-6"></div>
+        </div>
+
+        <div
+            class="swiper-button-prev !hidden md:!flex !text-white hover:scale-110 transition-transform after:!text-2xl !w-12 !h-12 bg-black/20 hover:bg-black/40 rounded-full backdrop-blur-sm justify-center items-center"
+        >
+        </div>
+        <div
+            class="swiper-button-next !hidden md:!flex !text-white hover:scale-110 transition-transform after:!text-2xl !w-12 !h-12 bg-black/20 hover:bg-black/40 rounded-full backdrop-blur-sm justify-center items-center"
+        >
+        </div>
+    </div>
+</section>
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination, Autoplay } from "swiper/modules";
+
+    // CAMBIO 3: Unificamos la inicialización (Slider + Observer)
+    const initAll = () => {
+        initSlider();
+        initObserver();
+    };
+
+    // Lógica del Swiper
+    const initSlider = () => {
+        const mw = document.querySelector(".mySwiper") as any;
+        if (mw && mw.swiper) mw.swiper.destroy();
+
+        new Swiper(".mySwiper", {
+            modules: [Navigation, Pagination, Autoplay],
+            loop: true,
+            speed: 800,
+            autoplay: {
+                delay: 5000,
+                pauseOnMouseEnter: true,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            slidesPerView: 1,
+            spaceBetween: 0,
+            grabCursor: true,
+        });
+    };
+
+    // CAMBIO 4: Lógica de la animación (Intersection Observer)
+    const initObserver = () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Se activa cuando el 20% es visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-slider');
+        targets.forEach(target => observer.observe(target));
+    };
+
+    // Ejecutar en carga inicial y navegación de Astro
+    document.addEventListener("DOMContentLoaded", initAll);
+    document.addEventListener("astro:page-load", initAll);
+</script>
+
+<style>
+    /* Customize Swiper Dots */
+    :global(.swiper-pagination-bullet) {
+        width: 10px;
+        height: 10px;
+        background: var(--accent-feedback-strong);
+        opacity: 0.4;
+        margin: 0 6px !important;
+        transition: all 0.3s ease;
+    }
+
+    :global(.swiper-pagination-bullet-active) {
+        background: var(--brand-interactive-base);
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        color: var(--accent-feedback-strong);
+    }
+
+    /* --- CAMBIO 5: ESTILOS DE ANIMACIÓN FADEINUP --- */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px); /* Empieza desplazado hacia abajo */
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);    /* Termina en su posición original */
+        }
+    }
+
+    .anim-fade {
+        opacity: 0; /* Oculto inicialmente */
+    }
+
+    /* Solo se anima cuando JS agrega la clase .is-visible */
+    :global(.trigger-anim-slider.is-visible) .anim-fade {
+        animation: fadeInUp 2.5s ease-out forwards; /* Animación lenta y suave */
+    }
+</style>

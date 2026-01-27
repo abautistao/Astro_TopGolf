@@ -8,7 +8,8 @@ import type { Boton } from './elements/Button.astro';
 
 // Iconos de redes sociales (Esta parte ya estaba correcta)
 
-const footerData = await getFooterData();
+const { data } = Astro.props;
+const footerData = data || await getFooterData();
 
 const titulo_1 = footerData?.columna_1 || 'Lorem Ipsum';
 const titulo_2 = footerData?.columna_2 || 'Lorem Ipsum ';

@@ -1,0 +1,42 @@
+---
+import { getHeaderData } from '../../lib/strapi';
+import TopgolfHeader from '../topgolf/Header.astro';
+import TocaHeader from '../toca/Header.astro';
+import BluHeader from '../blu/Header.astro';
+
+// Fetch data directly here
+const headerData = await getHeaderData();
+
+// Determine which component to render
+// We expect headerData to potentially contain a Dynamic Zone, e.g., 'configuracion' or just 'blocks'
+// For now, let's assume the Single Type returns an object. 
+// If the user implements a Dynamic Zone, the API response might look different depending on how they structure it.
+// Case A: The Single Type HAS a Dynamic Zone field called 'variante'
+// Case B: The attributes directly match Topgolf (legacy)
+
+let Component = TopgolfHeader;
+let props = { data: headerData };
+
+// Logic to detect variant:
+if (headerData?.Variante && Array.isArray(headerData.Variante) && headerData.Variante.length > 0) {
+    const variant = headerData.Variante[0];
+    const componentName = variant.__component;
+
+    if (componentName.includes('toca')) {
+        Component = TocaHeader;
+    } else if (componentName.includes('blu')) {
+        Component = BluHeader;
+    } else if (componentName.includes('topgolf')) {
+        Component = TopgolfHeader;
+    }
+    
+    // Pass the variant data as 'data' to the specific component
+    props = { data: variant };
+} else {
+    // console.log("SmartHeader: 'Variante' array not found or empty in headerData.");
+}
+
+console.log(`SmartHeader rendering: ${Component.name}`);
+---
+
+<Component {...props} />

@@ -1,0 +1,87 @@
+---
+import { stringifyRichText } from "../../lib/strapi";
+
+interface Props {
+    titulo?: string;
+    descripcion?: any;
+}
+
+const {
+    titulo = "UP TO 24 PLAYERS, IN 3 EASY STEPS",
+    descripcion = "We love a party at TOCA Social and we would be thrilled for you to choose us as the venue for your special day. Follow the steps below to unlock the ultimate birthday party experience at TOCA Social.\n\nPlease note: Groups of 13-24 guests will be booked in a double box (two adjacent boxes). To guarantee your group is placed together, both boxes must be booked in a single booking. We regret that we cannot adjust separately booked boxes to be next to each other.",
+} = Astro.props;
+
+const descripcionHtml = stringifyRichText(descripcion);
+---
+
+<section class="trigger-anim-text w-full bg-[var(--surface-brand-primary)] py-12 lg:py-24 px-4">
+
+    <div class="anim-fade max-w-4xl mx-auto text-center">
+        <h2
+            class="text-white text-3xl lg:text-3xl font-bold uppercase mb-8 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight tracking-wide"
+        >
+            {titulo}
+        </h2>
+
+        <div
+            class="text-white text-base lg:text-lg font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 space-y-6 strapi-rich-text"
+        >
+            <Fragment set:html={descripcionHtml} />
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('astro:page-load', initObserver);
+    document.addEventListener('DOMContentLoaded', initObserver);
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Se activa cuando el 20% es visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-text');
+        targets.forEach(target => observer.observe(target));
+    }
+</script>
+
+<style>
+    /* Rich text styling adjustments if needed */
+    .strapi-rich-text p {
+        margin-bottom: 1.5rem;
+    }
+    .strapi-rich-text p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* --- CAMBIO 4: ESTILOS DE ANIMACIÓN (3s Lento) --- */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0; /* Oculto inicialmente */
+    }
+
+    :global(.trigger-anim-text.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
+    }
+</style>

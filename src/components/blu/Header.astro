@@ -1,0 +1,190 @@
+---
+// src/components/blu/Header.astro
+import { getHeaderData, getStrapiUrl, formatUrl } from "../../lib/strapi";
+import { Image } from "astro:assets";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface Props {
+    data?: any;
+}
+
+const { data } = Astro.props;
+const headerData = data || (await getHeaderData());
+const logoUrl = getStrapiUrl(headerData?.logo) || "/assets/blu-logo-white.png";
+
+const links = headerData?.links || [
+    { texto: "HOME", url: "/" },
+    { texto: "PRODUCTOS", url: "/productos" },
+    { texto: "GALERÍA", url: "/galeria" },
+    { texto: "CONTACTO", url: "/contacto" },
+];
+
+const ctaButtonRaw = headerData?.Boton || {
+    id: 999,
+    texto: "RESERVAR",
+    url: "/reservar",
+};
+
+const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
+---
+
+<header
+    class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out"
+    id="blu-header"
+>
+    <div
+        class="max-w-[1440px] mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
+    >
+        <!-- Logo -->
+        <a href="/" class="flex-shrink-0">
+            {
+                logoUrl && (
+                    <Image
+                        src={logoUrl}
+                        alt="Blu Ocean Club"
+                        width={150}
+                        height={60}
+                        class="h-10 md:h-14 w-auto object-contain"
+                    />
+                )
+            }
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-12">
+            {
+                links.map((link: any) => (
+                    <a
+                        href={link.url}
+                        class="text-white font-medium text-xs tracking-[0.2em] hover:text-[var(--neutral-background-subtle)] transition-colors uppercase font-[family-name:var(--font-blu-body)]"
+                    >
+                        {link.texto}
+                    </a>
+                ))
+            }
+        </nav>
+
+        <!-- CTA Button & Mobile Toggle -->
+        <div class="flex items-center gap-4">
+            <Button botones={buttons} clase="hidden md:block" />
+
+            <button
+                id="mobile-menu-toggle"
+                class="md:hidden text-white p-2 focus:outline-none"
+            >
+                <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
+                <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden"
+                ></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div
+        id="mobile-menu"
+        class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
+    >
+        <nav class="flex flex-col space-y-8">
+            {
+                links.map((link: any) => (
+                    <a
+                        href={link.url}
+                        class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase font-[family-name:var(--font-blu-title)]"
+                    >
+                        {link.texto}
+                    </a>
+                ))
+            }
+            <div class="pt-4">
+                <Button
+                    botones={buttons}
+                    clase="w-full py-5 text-center text-xl"
+                />
+            </div>
+        </nav>
+    </div>
+</header>
+
+<style>
+    /* Default Mobile Background: Solid Blue */
+    #blu-header {
+        background-color: var(--surface-brand-primary);
+    }
+
+    /* Desktop Background: Vertical Gradient */
+    @media (min-width: 768px) {
+        #blu-header {
+            background-color: transparent;
+            background-image: linear-gradient(
+                to bottom,
+                var(--surface-brand-primary),
+                transparent
+            );
+        }
+    }
+
+    /* Transición suave para el encabezado al hacer scroll */
+    .header-scrolled {
+        background-color: var(--surface-brand-primary) !important;
+        background-image: none !important; /* Kill gradient */
+        position: fixed !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: slideInDown 0.5s ease;
+    }
+
+    /* Estado cuando el menú móvil está abierto: Fondo sólido forzado */
+    .is-menu-open {
+        background-color: var(--surface-brand-primary) !important;
+        background-image: none !important;
+    }
+
+    .header-scrolled > div {
+        height: 70px !important;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    const header = document.getElementById("blu-header");
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    const menuIcon = document.getElementById("menu-icon");
+    const closeIcon = document.getElementById("close-icon");
+
+    // Manejador de scroll para el header
+    window.addEventListener("scroll", () => {
+        // En mobile el fondo ya es sólido, pero aplicamos fixed y min-height igual
+        if (window.scrollY > 50) {
+            header?.classList.add("header-scrolled");
+        } else {
+            header?.classList.remove("header-scrolled");
+        }
+    });
+
+    // Toggle del menú móvil
+    toggle?.addEventListener("click", () => {
+        const isHidden = menu?.classList.contains("hidden");
+        if (isHidden) {
+            menu?.classList.remove("hidden");
+            header?.classList.add("is-menu-open"); // Force solid background
+            menuIcon?.classList.add("hidden");
+            closeIcon?.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        } else {
+            menu?.classList.add("hidden");
+            header?.classList.remove("is-menu-open"); // Remove solid background force
+            menuIcon?.classList.remove("hidden");
+            closeIcon?.classList.add("hidden");
+            document.body.style.overflow = "";
+        }
+    });
+</script>

@@ -1,0 +1,209 @@
+---
+// src/components/toca/Component_3.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { Image } from 'astro:assets';
+
+interface TarjetaData {
+    id: number;
+    titulo: string;
+    descripcion: any;
+    imagen: any;
+}
+interface Props {
+    Tarjetas: TarjetaData[];
+}
+
+const { Tarjetas = [] } = Astro.props;
+
+const defaultCards = [
+    {
+        titulo: "Titulo Ejemplo 1",
+        descripcion: "Descripción de ejemplo para el titulo 1...",
+        imagen: null
+    },
+    {
+        titulo: "Titulo Ejemplo 2",
+        descripcion: "Descripción de ejemplo para el titulo 2...",
+        imagen: null
+    },
+    {
+        titulo: "Titulo Ejemplo 3",
+        descripcion: "Descripción de ejemplo para el titulo 3...",
+        imagen: null
+    }
+];
+
+const rawData = Tarjetas.length > 0 ? Tarjetas : defaultCards;
+
+const ProcessedTarjetas = rawData.map((card) => ({
+    title: card.titulo,
+    desc: typeof card.descripcion === 'string'
+        ? card.descripcion
+        : stringifyRichText(card.descripcion),
+    img: getStrapiUrl(card.imagen),
+    alt: card.titulo || "Toca Social Image"
+}));
+---
+
+<section class="trigger-anim-cards w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 relative">
+
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full fade-in-up">
+
+        <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
+
+            {ProcessedTarjetas.map((item, index) => (
+                    <div
+                        class={`carousel-item flex-col h-full group
+                        ${index === 0 ? 'flex' : 'hidden'} lg:flex
+                        transition-all duration-300 ease-out
+                        hover:-translate-y-3 hover:scale-[1.01]
+                        cursor-pointer`}
+                        data-index={index}
+                    >
+                    <div class="mb-6">
+                        <div class="flex justify-between items-start gap-2 mb-1">
+                            <h3 class="w-full lg:w-[40%] min-w-0 font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--accent-feedback-strong)] text-2xl lg:text-xl uppercase leading-[0.9] tracking-tighter break-words line-clamp-2 text-ellipsis overflow-hidden">
+                                {item.title}
+                            </h3>
+
+                            <div class="flex gap-4 lg:hidden shrink-0 pt-2">
+                                <button class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
+                                    <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
+                                </button>
+
+                                <button class="next-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
+                                    <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="font-(family-name:--font-sharp-sans-bold) text-[var(--brand-interactive-base)] text-base lg:text-base font-bold leading-tight w-full strapi-rich-text">
+                            <Fragment set:html={item.desc} />
+                        </div>
+                    </div>
+
+                    <div class="w-full aspect-[430/560] lg:aspect-square relative overflow-hidden shadow-lg border-2 border-transparent mt-auto">
+                        <Image
+                            src={item.img || "https://placehold.co/600x600/2d3748/ffffff?text=Image"}
+                            alt={item.alt}
+                            class="w-full h-full object-cover object-center"
+                            width={600}
+                            height={600}
+                        />
+                    </div>
+                </div>
+            ))}
+
+        </div>
+    </div>
+</section>
+
+<script>
+
+    function initAll() {
+        initCarousel();
+        initObserver();
+    }
+
+    document.addEventListener('astro:page-load', initAll);
+    document.addEventListener('DOMContentLoaded', initAll);
+
+    // --- LÓGICA DE ANIMACIÓN AL SCROLL ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-cards');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    // --- LÓGICA DE CARRUSEL (EXISTENTE) ---
+    function initCarousel() {
+        const items = document.querySelectorAll('.carousel-item');
+        const prevBtns = document.querySelectorAll('.prev-btn');
+        const nextBtns = document.querySelectorAll('.next-btn');
+        let currentIndex = 0;
+        const totalItems = items.length;
+
+        if(totalItems === 0) return;
+
+        function showItem(index) {
+            items.forEach((item, i) => {
+                item.classList.remove('flex');
+                item.classList.add('hidden');
+
+                if (i === index) {
+                    item.classList.remove('hidden');
+                    item.classList.add('flex');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            showItem(currentIndex);
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+            showItem(currentIndex);
+        }
+        nextBtns.forEach(btn => {
+            // Un pequeño truco para limpiar listeners viejos: cloneNode
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                nextSlide();
+            });
+        });
+
+        prevBtns.forEach(btn => {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                prevSlide();
+            });
+        });
+    }
+</script>
+
+<style>
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0;
+        color: inherit;
+    }
+
+
+    .fade-in-up {
+        opacity: 0;
+    }
+
+    :global(.trigger-anim-cards.is-visible) .fade-in-up {
+        animation: fadeInUp 1.5s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 40px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>

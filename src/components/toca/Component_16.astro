@@ -1,0 +1,240 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+import "swiper/css";
+import "swiper/css/navigation";
+
+// Fallback data
+const fallbackItems = [
+    {
+        titulo: "PACKAGES FOR THE SQUAD",
+        descripcion: "Fuel your game with our pre-ordered food & drink packages. The perfect way to kick things off, and make sure you stay 'hydrated'.",
+        imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
+        Boton: [{
+            id: 1,
+            texto: "PACKAGES MENU",
+            url: "#",
+            tipo: "version_1"
+        }]
+    },
+    {
+        titulo: "HYDRATION MENU",
+        descripcion: "Our menu includes iced teas, coffees, Matchas, and milkshakes – the perfect mix for catching up, cooling down, and keeping the vibes high.",
+        imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
+        Boton: [{
+            id: 2,
+            texto: "HYDRATION MENU",
+            url: "#",
+            tipo: "version_1"
+        }]
+    },
+    {
+        titulo: "HAPPIEST MEALS",
+        descripcion: "Our Little Ballers food and drink menu is the perfect way to fuel, delight, and keep our younger players energised, crafted exclusively with them in mind.",
+        imagen: { data: { attributes: { url: "https://placehold.co/600x600" } } },
+        Boton: [{
+            id: 3,
+            texto: "KID'S MENU",
+            url: "#",
+            tipo: "version_1"
+        }]
+    }
+];
+
+interface Props {
+    items: any[];
+}
+
+const { items = [] } = Astro.props;
+const dataToShow = items.length > 0 ? items : fallbackItems;
+---
+
+<section class="trigger-anim-pack w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
+
+    <div class="anim-fade max-w-[1440px] mx-auto px-4 md:px-8">
+
+        <div class="swiper swiper-component-16 relative">
+            <div class="swiper-wrapper lg:grid lg:grid-cols-3 lg:gap-8">
+                {dataToShow.map((item, index) => {
+                    const imageUrl = getStrapiUrl(item.imagen);
+                    const descripcionHtml = stringifyRichText(item.descripcion);
+                    const botones = item.Boton ? (Array.isArray(item.Boton) ? item.Boton : [item.Boton]) : [];
+
+                    return (
+                    <div class="swiper-slide h-auto lg:h-full flex flex-col">
+                        <div class="flex flex-col h-full w-full justify-between">
+
+                            <div>
+                                <div class="text-center mb-6 lg:mb-8 flex-grow-0">
+                                    <h3 class="text-white text-2xl lg:text-3xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c16-title">
+                                        {item.titulo}
+                                    </h3>
+                                    <div class="text-[var(--brand-interactive-base)] text-sm lg:text-base font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 flex items-start justify-center js-c16-desc">
+                                            <Fragment set:html={descripcionHtml} />
+                                    </div>
+                                </div>
+
+                                <div class="w-full aspect-square relative overflow-hidden mb-6 lg:mb-8 shrink-0">
+                                    <Image
+                                        src={imageUrl || "https://placehold.co/600x600"}
+                                        alt={item.titulo}
+                                        inferSize={true}
+                                        class="w-full h-full object-cover"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="mt-auto w-full flex justify-center">
+                                <Button
+                                    botones={botones}
+                                    clase="block w-full text-center  text-black font-bold uppercase py-3 text-lg lg:text-xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+                    )
+                })}
+            </div>
+
+            <div class="flex lg:hidden justify-end items-center gap-4 mt-8">
+                <button class="swiper-button-prev-c16 text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button class="swiper-button-next-c16 text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation } from "swiper/modules";
+
+    // CAMBIO 3: Unificamos inicialización
+    document.addEventListener("astro:page-load", initAll);
+    document.addEventListener("DOMContentLoaded", initAll);
+
+    function initAll() {
+        initSwiper();
+        initEqualHeights();
+        initObserver();
+    }
+
+    // --- LÓGICA DE ANIMACIÓN (FadeInUp) ---
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-pack');
+        targets.forEach(target => observer.observe(target));
+    }
+
+    // --- LÓGICA EXISTENTE ---
+    // Recalculate on resize
+    window.addEventListener('resize', () => {
+        initEqualHeights();
+    });
+
+    function initSwiper() {
+        const existingSwiper = document.querySelector('.swiper-component-16')?.swiper;
+        if (existingSwiper) existingSwiper.destroy();
+
+        const swiperEl = document.querySelector(".swiper-component-16");
+        if (!swiperEl) return;
+
+        new Swiper(swiperEl, {
+            modules: [Navigation],
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            navigation: {
+                nextEl: ".swiper-button-next-c16",
+                prevEl: ".swiper-button-prev-c16",
+            },
+            breakpoints: {
+                1024: {
+                    enabled: false,
+                    slidesPerView: 3,
+                    spaceBetween: 0
+                }
+            }
+        });
+    }
+
+    function initEqualHeights() {
+        const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+        const titles = document.querySelectorAll('.js-c16-title');
+        const descs = document.querySelectorAll('.js-c16-desc');
+
+        titles.forEach(el => (el as HTMLElement).style.height = 'auto');
+        descs.forEach(el => (el as HTMLElement).style.height = 'auto');
+
+        if (!isDesktop) return;
+
+        equalize(titles);
+        equalize(descs);
+    }
+
+    function equalize(elements: NodeListOf<Element>) {
+        let maxH = 0;
+        elements.forEach(el => {
+            const h = (el as HTMLElement).offsetHeight;
+            if (h > maxH) maxH = h;
+        });
+        elements.forEach(el => (el as HTMLElement).style.height = `${maxH}px`);
+    }
+</script>
+
+<style>
+    @media (min-width: 1024px) {
+        .swiper-wrapper {
+            display: grid !important;
+            transform: none !important;
+            width: 100% !important;
+        }
+        .swiper-slide {
+            width: auto !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    /* --- CAMBIO 4: ESTILOS DE ANIMACIÓN --- */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-fade {
+        opacity: 0;
+    }
+
+    :global(.trigger-anim-pack.is-visible) .anim-fade {
+        animation: fadeInUp 3s ease-out forwards;
+    }
+</style>

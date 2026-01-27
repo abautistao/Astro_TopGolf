@@ -1,0 +1,85 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi";
+import SplitSection from "./elements/SplitSection.astro";
+import Component_4 from "./Component_4.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface Props {
+    titulo: string;
+    descripcion: any;
+    imagen: any;
+    precio_titulo?: string;
+    precio_subtitulo?: string;
+    precio_descripcion?: any;
+    Boton: Boton | null;
+}
+
+const {
+    titulo,
+    descripcion,
+    imagen,
+    precio_titulo = "PRICING",
+    precio_subtitulo = "FROM £12.50 PER PERSON",
+    precio_descripcion,
+    Boton = null,
+} = Astro.props;
+
+// 1. Data SplitSection
+const tituloMostrar = titulo || "BOOT ROOM";
+const strapiImageUrl = getStrapiUrl(imagen);
+const altText = imagen?.data?.attributes?.alternativeText || tituloMostrar;
+const descripcionHtml = stringifyRichText(
+    descripcion || "Whether you turn up in flipflops, high heels or barefoot (!?), we've got you covered with our boots! Don't worry, they are far nicer than the smelly old pair from the bowling alley."
+);
+
+// 2. Data Component_4
+const defaultPricingDesc = [
+    {
+        type: "paragraph",
+        children: [
+        {
+            type: "text",
+            text: "For the most up-to-date pricing, including variations by venue or time, please check the Book Now section.",
+        },
+        ],
+    },
+    ];
+const descripcionPricing = precio_descripcion || defaultPricingDesc;
+
+const botonPricing = Boton
+    ? Boton
+    : {
+        id: 1,
+        texto: "BOOK NOW",
+        url: "#",
+        tipo: "version_1",
+        };
+---
+
+<div class="flex flex-col w-full bg-[var(--surface-brand-primary)]">
+
+    <div class="relative z-0">
+        <SplitSection
+            titulo={tituloMostrar}
+            htmlContent={descripcionHtml}
+            imgUrl={strapiImageUrl}
+            imgAlt={altText}
+            botonData={null}
+            tipo="version_2"
+        />
+    </div>
+
+    <div class="relative z-10 w-full pointer-events-none -mt-16 md:-mt-24 lg:-mt-32 pb-16">
+        <div class="pointer-events-auto">
+        <Component_4
+            titulo_header={precio_titulo}
+            precio={precio_subtitulo}
+            descripcion={descripcionPricing}
+            button={botonPricing}
+            titulo_seccion=""
+            claseSection="py-0"
+        />
+        </div>
+    </div>
+
+</div>

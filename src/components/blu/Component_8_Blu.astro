@@ -1,0 +1,140 @@
+---
+// src/components/blu/Component_8_Blu.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface Props {
+    subtitulo?: string;
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    boton: Boton | null;
+}
+console.log(Astro.props);
+const { subtitulo, titulo, descripcion, imagen, boton = null } = Astro.props;
+
+const strapiImageUrl =
+    getStrapiUrl(imagen) ||
+    "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
+const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
+
+const buttons: Boton[] = Array.isArray(boton) ? boton : boton ? [boton] : [];
+
+// Check if we have any content to show
+const hasContent = titulo || subtitulo || descripcion;
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(strapiImageUrl);
+---
+
+<section
+    class="relative w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end justify-center overflow-hidden"
+>
+    <!-- Background Image or Video -->
+    <div class="absolute inset-0 z-0">
+        {
+            showVideo ? (
+                <video
+                    src={strapiImageUrl}
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    class="w-full h-full object-cover"
+                />
+            ) : (
+                <Image
+                    src={strapiImageUrl}
+                    alt={titulo || "Blu Ocean Club"}
+                    width={1920}
+                    height={1080}
+                    class="w-full h-full object-cover"
+                />
+            )
+        }
+        <!-- Overlay (Mobile: Gradient from bottom, Desktop: Full dark overlay) -->
+        {
+            hasContent && (
+                <>
+                    <div class="absolute inset-0 bg-[#012b49]/20 hidden md:block" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#012b49]/90 via-transparent to-transparent" />
+                </>
+            )
+        }
+    </div>
+
+    <!-- Content -->
+    {
+        hasContent && (
+            <div class="relative z-10 w-full max-w-[1440px] px-6 pb-16 md:pb-32 text-left text-white">
+                {/* Mobile Layout: Bottom Left. Desktop Layout: Bottom Left */}
+                {subtitulo && (
+                    <span class="block text-xl md:text-3xl font-normal md:font-medium tracking-normal md:tracking-[0.1em] font-[family-name:var(--font-blu-body)] mb-0 md:mb-4">
+                        {subtitulo}
+                    </span>
+                )}
+                {titulo && (
+                    <h1 class="text-5xl md:text-8xl font-[family-name:var(--font-blu-title)] leading-[0.9] md:leading-tight mb-3 md:mb-6">
+                        {titulo}
+                    </h1>
+                )}
+                {descripcionHtml && (
+                    <div class="text-sm md:text-xl font-medium md:font-light tracking-wide md:tracking-widest opacity-90 font-[family-name:var(--font-blu-body)] max-w-2xl">
+                        <Fragment set:html={descripcionHtml} />
+                    </div>
+                )}
+                {boton && (
+                    <div class="mt-6 md:mt-8 animate-fade-in-up delay-300">
+                        <Button botones={buttons} />
+                    </div>
+                )}
+            </div>
+        )
+    }
+
+    <!-- Scroll Down Icon (Hidden on Mobile) -->
+    <div
+        class="hidden md:block absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce opacity-50"
+    >
+        <i class="fa-solid fa-chevron-down text-xl"></i>
+    </div>
+</section>
+
+<style>
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fade-in-up 0.8s ease-out forwards;
+    }
+
+    .delay-100 {
+        animation-delay: 0.1s;
+    }
+    .delay-200 {
+        animation-delay: 0.2s;
+    }
+    .delay-300 {
+        animation-delay: 0.3s;
+    }
+</style>

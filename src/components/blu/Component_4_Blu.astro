@@ -1,0 +1,125 @@
+---
+// src/components/blu/Component_4_Blu.astro
+import { stringifyRichText } from "../../lib/strapi.js";
+
+interface Props {
+    contenido: any;
+}
+
+const {
+    contenido = [
+        {
+            type: "paragraph",
+            children: [
+                {
+                    text: "Somos creadores de aventuras marinas que combinan relajación, sabor local y diversión al estilo mexicano, con un servicio auténtico, cercano y cálido.",
+                },
+            ],
+        },
+        {
+            type: "paragraph",
+            children: [
+                {
+                    text: "Cada detalle desde nuestros snacks elaborados por chefs hasta la música que suena en el club está pensado para que vivas una experiencia única que hable de nuestro origen, nuestra cultura y la personalidad vibrante del Caribe.",
+                },
+            ],
+        },
+    ],
+} = Astro.props;
+
+const contenidoHtml = contenido ? stringifyRichText(contenido) : "";
+---
+
+<section class="w-full py-8 md:py-10 px-6 relative overflow-hidden">
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+        <div
+            class="rich-text-container font-[family-name:var(--font-blu-body)] text-[var(--surface-brand-primary)]"
+        >
+            <Fragment set:html={contenidoHtml} />
+        </div>
+    </div>
+</section>
+
+<style is:global>
+    /* Estilos para el Rich Text de Strapi */
+    .rich-text-container {
+        font-size: 1.125rem;
+        line-height: 1.7;
+        letter-spacing: -0.01em;
+    }
+
+    @media (min-width: 768px) {
+        .rich-text-container {
+            font-size: 1.25rem;
+        }
+    }
+
+    .rich-text-container p {
+        margin-bottom: 1.5rem;
+    }
+
+    .rich-text-container p:last-child {
+        margin-bottom: 0;
+    }
+
+    .rich-text-container strong {
+        font-weight: 700;
+    }
+
+    .rich-text-container em {
+        font-style: italic;
+    }
+
+    .rich-text-container ul {
+        list-style-type: disc;
+        margin: 1.5rem auto;
+        padding-left: 1.5rem;
+        display: inline-block;
+        text-align: left;
+    }
+
+    .rich-text-container ol {
+        list-style-type: decimal;
+        margin: 1.5rem auto;
+        padding-left: 1.5rem;
+        display: inline-block;
+        text-align: left;
+    }
+
+    .rich-text-container li {
+        margin-bottom: 0.5rem;
+    }
+
+    .rich-text-container h1,
+    .rich-text-container h2,
+    .rich-text-container h3,
+    .rich-text-container h4 {
+        font-family: var(--font-blu-title);
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.2;
+    }
+
+    .rich-text-container h1 {
+        font-size: 3rem;
+    }
+    .rich-text-container h2 {
+        font-size: 2.5rem;
+    }
+    .rich-text-container h3 {
+        font-size: 2rem;
+    }
+    .rich-text-container h4 {
+        font-size: 1.5rem;
+    }
+
+    .rich-text-container a {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        transition: opacity 0.2s;
+    }
+
+    .rich-text-container a:hover {
+        opacity: 0.7;
+    }
+</style>
