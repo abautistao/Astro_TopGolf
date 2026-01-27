@@ -36,10 +36,27 @@ if (!pagina) {
   });
 }
 
-const { titulo, ContenidoPagina, SEO } = pagina;
+const { titulo, ContenidoPagina, SEO, localizations } = pagina;
+
+const alternateLinks = {};
+if (localizations && localizations.data) {
+  localizations.data.forEach((loc) => {
+    const attributes = loc.attributes || loc;
+    const localeCode = attributes.locale;
+    const locSlug = attributes.slug;
+
+    if (localeCode && locSlug) {
+      alternateLinks[localeCode] = `/${localeCode}/${locSlug}`;
+    }
+  });
+}
+
+console.log(`[Page] Loaded '${slug}' (Lang: ${lang}).`);
+console.log("Localizations raw:", JSON.stringify(localizations, null, 2));
+console.log("Alternate Links calculated:", alternateLinks);
 ---
 
-<Layout seo={SEO}>
+<Layout seo={SEO} alternateLinks={alternateLinks}>
   <main class="mx-auto container-full">
     <RenderBlocks blocks={ContenidoPagina} />
   </main>

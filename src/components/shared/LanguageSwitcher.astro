@@ -1,5 +1,5 @@
 ---
-const { class: className } = Astro.props;
+const { class: className, alternateLinks = {} } = Astro.props;
 const currentPath = Astro.url.pathname;
 const currentLang = Astro.params.lang || "en";
 
@@ -9,13 +9,17 @@ const locales = [
 ];
 
 function getLocalizedPath(targetLang) {
-    // Replace the first path segment (locale) with the target language
-    // Assuming the path starts with /:lang/
+    // 1. Check if we have an explicit alternate link for this language
+    // console.log('LanguageSwitcher target:', targetLang, 'Alternates:', alternateLinks);
+    if (alternateLinks[targetLang]) {
+        return alternateLinks[targetLang];
+    }
+
+    // 2. Fallback: Replace the first path segment
     const segments = currentPath.split("/").filter(Boolean);
     if (segments.length > 0 && (segments[0] === "es" || segments[0] === "en")) {
         segments[0] = targetLang;
     } else {
-        // If no locale in path (e.g. root redirect), prepend it
         segments.unshift(targetLang);
     }
     return "/" + segments.join("/");

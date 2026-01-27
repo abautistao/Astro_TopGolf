@@ -36,10 +36,28 @@ if (!pagina) {
   });
 }
 
-const { titulo, ContenidoPagina, SEO } = pagina;
+const { titulo, ContenidoPagina, SEO, localizations } = pagina;
+
+const alternateLinks = {};
+if (localizations && localizations.data) {
+  localizations.data.forEach((loc) => {
+    const attributes = loc.attributes || loc;
+    const localeCode = attributes.locale;
+    const locSlug = attributes.slug;
+
+    if (localeCode && locSlug) {
+      alternateLinks[localeCode] = `/${localeCode}/promociones/${locSlug}`;
+    }
+  });
+}
+
+console.log(
+  `[Promocion] Loaded '${slug}' (Lang: ${lang}). Alternate Links:`,
+  alternateLinks,
+);
 ---
 
-<Layout seo={SEO}>
+<Layout seo={SEO} alternateLinks={alternateLinks}>
   <main class="mx-auto container-full">
     <RenderBlocks blocks={ContenidoPagina} />
   </main>

@@ -1,135 +1,227 @@
 ---
 // 1. Importa el logo, igual que en el Header
 import { Image } from "astro:assets";
-import { getFooterData, getStrapiUrl,stringifyRichText, formatUrl } from '../../lib/strapi';
-import logo from '../../assets/logo-TopGolf.png';
-import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro';
+import {
+    getFooterData,
+    getStrapiUrl,
+    stringifyRichText,
+    formatUrl,
+    getLocalizedUrl,
+} from "../../lib/strapi";
+import logo from "../../assets/logo-TopGolf.png";
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 
 // Iconos de redes sociales (Esta parte ya estaba correcta)
 
-const { data } = Astro.props;
-const footerData = data || await getFooterData();
+const { data, locale = "en" } = Astro.props;
+const footerData = data || (await getFooterData());
 
-const titulo_1 = footerData?.columna_1 || 'Lorem Ipsum';
-const titulo_2 = footerData?.columna_2 || 'Lorem Ipsum ';
-const titulo_3 = footerData?.columna_3 || 'Lorem Ipsum';
+const titulo_1 = footerData?.columna_1 || "Lorem Ipsum";
+const titulo_2 = footerData?.columna_2 || "Lorem Ipsum ";
+const titulo_3 = footerData?.columna_3 || "Lorem Ipsum";
 const links_1 = footerData?.links_columna_1 || [];
 const links_2 = footerData?.links_columna_2 || [];
 const socialIcons = footerData?.social || [];
 const FALLBACK_LOGO = "https://placehold.co/100x50?text=Logo";
 const logoUrl = getStrapiUrl(footerData?.logo) || FALLBACK_LOGO;
-const descripcion_columna_3 = stringifyRichText(footerData?.descripcion_columna_3 || 'Lorem Ipsum');
-const terminos_and_conditions = stringifyRichText(footerData?.terminos_and_conditions || 'Lorem Ipsum');
-const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Boton3) ? [footerData.Boton3] : footerData.Boton3) || [
+const descripcion_columna_3 = stringifyRichText(
+    footerData?.descripcion_columna_3 || "Lorem Ipsum",
+);
+const terminos_and_conditions = stringifyRichText(
+    footerData?.terminos_and_conditions || "Lorem Ipsum",
+);
+const buttonBanner: Boton[] = (footerData.Boton3 &&
+!Array.isArray(footerData.Boton3)
+    ? [footerData.Boton3]
+    : footerData.Boton3) || [
     {
         id: 1,
         texto: "Reserva Ahora",
         url: "#",
-        tipo: "version_1"
-    }
+        tipo: "version_1",
+    },
 ];
 ---
 
-<footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) ">
+<footer
+    class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular)"
+>
     <div class="!px-6 !py-12 lg:!px-20 overflow-hidden">
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-8">
             <div class="grid grid-cols-2 gap-4 md:gap-10">
                 <div>
-                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl mb-0">{titulo_1}</h3>
+                    <h3
+                        class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl mb-0"
+                    >
+                        {titulo_1}
+                    </h3>
                     <ul class="mt-4 space-y-3 text-sm md:text-base mb-0">
-                        {links_1.map(link => (
-                            <li><a href={formatUrl(link.url)} class="hover:underline text-white">{link.texto}</a></li>
-                        ))}
+                        {
+                            links_1.map((link) => (
+                                <li>
+                                    <a
+                                        href={getLocalizedUrl(link.url, locale)}
+                                        class="hover:underline text-white"
+                                    >
+                                        {link.texto}
+                                    </a>
+                                </li>
+                            ))
+                        }
                     </ul>
                 </div>
                 <div>
-                    <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_2}</h3>
+                    <h3
+                        class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl"
+                    >
+                        {titulo_2}
+                    </h3>
                     <ul class="mt-4 space-y-3 text-sm md:text-base mb-0">
-                        {links_2.map(link => (
-                            <li><a href={formatUrl(link.url)} class="hover:underline text-white">{link.texto}</a></li>
-                        ))}
+                        {
+                            links_2.map((link) => (
+                                <li>
+                                    <a
+                                        href={getLocalizedUrl(link.url, locale)}
+                                        class="hover:underline text-white"
+                                    >
+                                        {link.texto}
+                                    </a>
+                                </li>
+                            ))
+                        }
                     </ul>
                 </div>
             </div>
 
-            <div class="flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-20">
-                <h3 class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl">{titulo_3}</h3>
-                <div class="mt-4 my-2 text-sm md:text-base text-left" set:html={descripcion_columna_3}></div>
+            <div
+                class="flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-20"
+            >
+                <h3
+                    class="font-(family-name:--font-shields-sans-black) font-black tracking-wider text-[var(--accent-highlight-secondary)] uppercase text-sm md:text-xl"
+                >
+                    {titulo_3}
+                </h3>
+                <div
+                    class="mt-4 my-2 text-sm md:text-base text-left"
+                    set:html={descripcion_columna_3}
+                />
 
                 <ButtonGroup botones={buttonBanner} />
 
-                <div class="mt-4 flex items-center justify-center lg:justify-start space-x-2 hidden">
-                    <div id="contrast-switcher" class="relative w-6 h-6 cursor-pointer rounded-full overflow-hidden border-2 border-[var(--accent-highlight-secondary)] shadow-sm">
+                <div
+                    class="mt-4 flex items-center justify-center lg:justify-start space-x-2 hidden"
+                >
+                    <div
+                        id="contrast-switcher"
+                        class="relative w-6 h-6 cursor-pointer rounded-full overflow-hidden border-2 border-[var(--accent-highlight-secondary)] shadow-sm"
+                    >
+                        <div
+                            class="absolute inset-0 bg-[var(--accent-highlight-secondary)]"
+                        >
+                        </div>
 
-                        <div class="absolute inset-0 bg-[var(--accent-highlight-secondary)]"></div>
+                        <div
+                            class="absolute inset-0 bg-[var(--surface-brand-primary)]"
+                            style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);"
+                        >
+                        </div>
 
-                        <div class="absolute inset-0 bg-[var(--surface-brand-primary)]" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);"></div>
-
-                        <div class="absolute inset-y-0 left-1/2 w-[1px] -ml-[0.5px] bg-[var(--accent-highlight-secondary)]"></div>
-
+                        <div
+                            class="absolute inset-y-0 left-1/2 w-[1px] -ml-[0.5px] bg-[var(--accent-highlight-secondary)]"
+                        >
+                        </div>
                     </div>
                     <span class="text-xs">Cambiar el contraste</span>
                 </div>
             </div>
         </div>
 
-        <div class="flex w-full justify-between items-center mt-12 mb-6 sm:hidden">
-            {socialIcons.map(icon => (
-                <a
-                    href={formatUrl(icon.url)}
-                    title={icon.name}
-                    class="text-[var(--accent-highlight-secondary)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
-                >
-                    <span class="text-2xl" set:html={icon.icon}></span>
-                </a>
-            ))}
+        <div
+            class="flex w-full justify-between items-center mt-12 mb-6 sm:hidden"
+        >
+            {
+                socialIcons.map((icon) => (
+                    <a
+                        href={formatUrl(icon.url)}
+                        title={icon.name}
+                        class="text-[var(--accent-highlight-secondary)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
+                    >
+                        <span class="text-2xl" set:html={icon.icon} />
+                    </a>
+                ))
+            }
         </div>
 
-        <hr class="-mx-6 lg:mx-0 my-6 border-t-[2px] border-[var(--neutral-text-inverted)]/50" />
+        <hr
+            class="-mx-6 lg:mx-0 my-6 border-t-[2px] border-[var(--neutral-text-inverted)]/50"
+        />
 
-        <div class="flex flex-col items-center gap-6 sm:flex-row sm:justify-between lg:mx-8">
-
+        <div
+            class="flex flex-col items-center gap-6 sm:flex-row sm:justify-between lg:mx-8"
+        >
             <div class="order-1 sm:order-1">
                 <a href="/">
-                    <Image src={logoUrl} alt="Logo de TopGolf Monterrey" class="h-16 w-auto sm:h-20" width={200} height={80} />
+                    <Image
+                        src={logoUrl}
+                        alt="Logo de TopGolf Monterrey"
+                        class="h-16 w-auto sm:h-20"
+                        width={200}
+                        height={80}
+                    />
                 </a>
             </div>
             <div
                 id="terms-conditions"
                 class="order-2 sm:order-2 text-[10px] sm:text-sm whitespace-nowrap text-center sm:text-left"
                 set:html={terminos_and_conditions}
-            ></div>
+            />
             <div class="hidden sm:flex order-3 items-center space-x-4">
-                {socialIcons.map(icon => (
-                    <a
-                        href={formatUrl(icon.url)}
-                        title={icon.name}
-                        class="sm:text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
-                    >
-                        <span class="text-2xl" set:html={icon.icon}></span>
-                    </a>
-                ))}
+                {
+                    socialIcons.map((icon) => (
+                        <a
+                            href={formatUrl(icon.url)}
+                            title={icon.name}
+                            class="sm:text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]/80 transition-opacity"
+                        >
+                            <span class="text-2xl" set:html={icon.icon} />
+                        </a>
+                    ))
+                }
             </div>
         </div>
-        <hr class="-mx-6 lg:mx-0 my-6 border-t-[2px] border-[var(--neutral-text-inverted)]/50" />
-
+        <hr
+            class="-mx-6 lg:mx-0 my-6 border-t-[2px] border-[var(--neutral-text-inverted)]/50"
+        />
     </div>
     <script type="text/javascript">
-            _linkedin_partner_id = "7730356";
-            window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-            window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-            </script><script type="text/javascript">
-            (function(l) {
-            if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
-            window.lintrk.q=[]}
+        _linkedin_partner_id = "7730356";
+        window._linkedin_data_partner_ids =
+            window._linkedin_data_partner_ids || [];
+        window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+    </script><script type="text/javascript">
+        (function (l) {
+            if (!l) {
+                window.lintrk = function (a, b) {
+                    window.lintrk.q.push([a, b]);
+                };
+                window.lintrk.q = [];
+            }
             var s = document.getElementsByTagName("script")[0];
             var b = document.createElement("script");
-            b.type = "text/javascript";b.async = true;
+            b.type = "text/javascript";
+            b.async = true;
             b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-            s.parentNode.insertBefore(b, s);})(window.lintrk);
-        </script>
-        <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=7730356&fmt=gif" />
+            s.parentNode.insertBefore(b, s);
+        })(window.lintrk);
+    </script>
+    <img
+        height="1"
+        width="1"
+        style="display:none;"
+        alt=""
+        src="https://px.ads.linkedin.com/collect/?pid=7730356&fmt=gif"
+    />
 </footer>
 <style>
     :root {
@@ -138,7 +230,9 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 
     footer a {
         text-decoration-color: transparent;
-        transition: text-decoration-color 0.3s ease, color 0.3s ease;
+        transition:
+            text-decoration-color 0.3s ease,
+            color 0.3s ease;
     }
 
     footer a:hover {
@@ -160,38 +254,40 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
     }
 </style>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const switcher = document.getElementById('contrast-switcher');
+    document.addEventListener("DOMContentLoaded", () => {
+        const switcher = document.getElementById("contrast-switcher");
         const body = document.body;
 
         const dispatchThemeChangeEvent = (theme) => {
-            const event = new CustomEvent('theme-changed', { detail: { theme } });
+            const event = new CustomEvent("theme-changed", {
+                detail: { theme },
+            });
             document.dispatchEvent(event);
         };
 
         const activateDarkMode = () => {
-            body.classList.add('dark-mode');
-            switcher.classList.add('active');
-            localStorage.setItem('theme', 'dark');
-            dispatchThemeChangeEvent('dark');
+            body.classList.add("dark-mode");
+            switcher.classList.add("active");
+            localStorage.setItem("theme", "dark");
+            dispatchThemeChangeEvent("dark");
         };
 
         const deactivateDarkMode = () => {
-            body.classList.remove('dark-mode');
-            switcher.classList.remove('active');
-            localStorage.removeItem('theme');
-            dispatchThemeChangeEvent('light');
+            body.classList.remove("dark-mode");
+            switcher.classList.remove("active");
+            localStorage.removeItem("theme");
+            dispatchThemeChangeEvent("light");
         };
 
-        if (localStorage.getItem('theme') === 'dark') {
+        if (localStorage.getItem("theme") === "dark") {
             activateDarkMode();
         } else {
             // Dispatch initial theme for components that load after this script
-            dispatchThemeChangeEvent('light');
+            dispatchThemeChangeEvent("light");
         }
 
-        switcher.addEventListener('click', () => {
-            if (body.classList.contains('dark-mode')) {
+        switcher.addEventListener("click", () => {
+            if (body.classList.contains("dark-mode")) {
                 deactivateDarkMode();
             } else {
                 activateDarkMode();

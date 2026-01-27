@@ -52,7 +52,7 @@ const customStyles = setupData
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
 const allStyles = customStyles;
 
-const { seo, title } = Astro.props;
+const { seo, title, alternateLinks } = Astro.props;
 const defaultSeo = {
     metaTitle: title || "Astro Basics",
     metaDescription: "Sitio web desarrollado con Astro y Strapi",
@@ -104,6 +104,7 @@ const seoProps = seo || defaultSeo;
         <slot />
         <Footer locale={locale} />
         <LanguageSwitcher
+            alternateLinks={alternateLinks}
             class="fixed bottom-4 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"
         />
     </body>

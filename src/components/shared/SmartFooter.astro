@@ -8,7 +8,7 @@ const { locale = "en" } = Astro.props;
 const footerData = await getFooterData(locale);
 
 let Component = TopgolfFooter;
-let props = { data: footerData };
+let props = { data: footerData, locale: locale };
 
 // Logic to detect variant:
 if (
@@ -27,7 +27,7 @@ if (
         Component = TopgolfFooter;
     }
 
-    props = { data: variant };
+    props = { data: variant, locale: locale };
 } else {
     console.log(
         "SmartFooter: 'Variante' array not found or empty in footerData.",

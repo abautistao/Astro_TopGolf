@@ -1,10 +1,10 @@
 ---
 // src/components/toca/Footer.astro
-import { getStrapiUrl } from '../../lib/strapi';
-import ButtonGroup from './elements/Button.astro';
-import type { Boton } from './elements/Button.astro';
+import { getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 
-const { data } = Astro.props;
+const { data, locale = "en" } = Astro.props;
 
 // --- 1. DATOS POR DEFECTO ---
 const defaultData = {
@@ -16,22 +16,22 @@ const defaultData = {
         { name: "instagram", url: "#", iconClass: "fa-brands fa-instagram" },
         { name: "twitter", url: "#", iconClass: "fa-brands fa-twitter" },
         { name: "youtube", url: "#", iconClass: "fa-brands fa-youtube" },
-        { name: "tiktok", url: "#", iconClass: "fa-brands fa-tiktok" }
+        { name: "tiktok", url: "#", iconClass: "fa-brands fa-tiktok" },
     ],
     locations: [
         { name: "The O2, London", url: "#", status: "" },
         { name: "Birmingham - Bullring", url: "#", status: "(Coming Soon)" },
-        { name: "Westfield - London", url: "#", status: "(Coming Soon)" }
+        { name: "Westfield - London", url: "#", status: "(Coming Soon)" },
     ],
     bottom_links_left: [
         { text: "Contact Us", url: "#" },
         { text: "TOCA Social Store", url: "#" },
-        { text: "TOCA in the community", url: "#" }
+        { text: "TOCA in the community", url: "#" },
     ],
     bottom_links_right: [
         { text: "Privacy Policy", url: "#" },
-        { text: "Terms of Service", url: "#" }
-    ]
+        { text: "Terms of Service", url: "#" },
+    ],
 };
 
 // --- 2. LÓGICA DINÁMICA ---
@@ -40,31 +40,33 @@ const strapiData = data || {};
 const title = strapiData.titulo || defaultData.title;
 
 const rawSocials = strapiData.redes_sociales;
-const socials = (Array.isArray(rawSocials) && rawSocials.length > 0)
-    ? rawSocials.map((social: any) => ({
-        name: social.name,
-        url: social.url,
-        iconHtml: social.icon,
-        iconImage: social.icon_img
-    }))
-    : defaultData.socials;
-
+const socials =
+    Array.isArray(rawSocials) && rawSocials.length > 0
+        ? rawSocials.map((social: any) => ({
+              name: social.name,
+              url: social.url,
+              iconHtml: social.icon,
+              iconImage: social.icon_img,
+          }))
+        : defaultData.socials;
 
 // --- C. COLUMNA CENTRAL (LINKS/LOCATIONS) ---
 const rawLinks = strapiData.links || [];
-const dynamicLinkBlock = (Array.isArray(rawLinks) && rawLinks.length > 0) ? rawLinks[0] : null;
+const dynamicLinkBlock =
+    Array.isArray(rawLinks) && rawLinks.length > 0 ? rawLinks[0] : null;
 
-const middleColumnTitle = dynamicLinkBlock?.texto || defaultData.locations_title;
+const middleColumnTitle =
+    dynamicLinkBlock?.texto || defaultData.locations_title;
 const rawItems = dynamicLinkBlock?.dropdown_items || [];
 
-const middleColumnItems = rawItems.length > 0
-    ? rawItems.map((item: any) => ({
-        name: item.titulo,
-        url: item.url || '#',
-        status: item.subtitulo
-    }))
-    : defaultData.locations;
-
+const middleColumnItems =
+    rawItems.length > 0
+        ? rawItems.map((item: any) => ({
+              name: item.titulo,
+              url: getLocalizedUrl(item.url || "#", locale),
+              status: item.subtitulo,
+          }))
+        : defaultData.locations;
 
 // D. Resto de elementos
 const newsletterTitle = defaultData.newsletter_title;
@@ -74,77 +76,122 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 
 const rawButton = Array.isArray(strapiData?.Botones2)
     ? strapiData.Botones2[0]
-    : (strapiData?.Botones2 || { texto: "SIGN UP", url: "#", tipo: "version_2" });
+    : strapiData?.Botones2 || { texto: "SIGN UP", url: "#", tipo: "version_2" };
 
-const newsletterButton: Boton[] = [{
-    id: rawButton?.id || 1,
-    texto: rawButton?.texto || "SIGN UP",
-    url: rawButton?.url || "#",
-    tipo: rawButton?.tipo || 'version_2'
-}];
+const newsletterButton: Boton[] = [
+    {
+        id: rawButton?.id || 1,
+        texto: rawButton?.texto || "SIGN UP",
+        url: rawButton?.url || "#",
+        tipo: rawButton?.tipo || "version_2",
+    },
+];
 
 const extractClassFromIcon = (iconString: string) => {
-    if (!iconString) return 'fa-solid fa-link';
+    if (!iconString) return "fa-solid fa-link";
     if (iconString.includes('class="')) {
         const match = iconString.match(/class="([^"]*)"/);
-        return match ? match[1] : 'fa-solid fa-link';
+        return match ? match[1] : "fa-solid fa-link";
     }
     return iconString;
 };
 ---
 
-<footer class="trigger-anim-footer w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col">
-
-    <div class="font-(family-name:--font-titling-gothic-fb-extended-bold) footer-part-1 bg-[var(--surface-brand-secondary)] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center">
-        <div class="max-w-[1920px] mx-auto w-full flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-12 items-start lg:items-center">
-
-            <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
+<footer
+    class="trigger-anim-footer w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col"
+>
+    <div
+        class="font-(family-name:--font-titling-gothic-fb-extended-bold) footer-part-1 bg-[var(--surface-brand-secondary)] py-10 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto min-h-[574px] lg:min-h-[268px] flex flex-col justify-center"
+    >
+        <div
+            class="max-w-[1920px] mx-auto w-full flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-12 items-start lg:items-center"
+        >
+            <div
+                class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch"
+            >
                 <div class="flex-grow flex items-center">
-                    <h2 class=" font-bold uppercase text-4xl md:text-4xl leading-[0.9] tracking-tighter break-words">
+                    <h2
+                        class="font-bold uppercase text-4xl md:text-4xl leading-[0.9] tracking-tighter break-words"
+                    >
                         {title}
                     </h2>
                 </div>
 
                 <div class="flex items-center gap-3 mt-4">
-                    {socials.map((social: any) => {
-                        const strapiIconUrl = social.iconImage?.data?.attributes?.url;
-                        const iconClass = extractClassFromIcon(social.iconHtml);
-                        return (
-                            <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
-                                {strapiIconUrl ? (
-                                    <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current" />
-                                ) : (
-                                    <i class={`${iconClass} text-2xl md:text-2xl`}></i>
-                                )}
-                            </a>
-                        );
-                    })}
+                    {
+                        socials.map((social: any) => {
+                            const strapiIconUrl =
+                                social.iconImage?.data?.attributes?.url;
+                            const iconClass = extractClassFromIcon(
+                                social.iconHtml,
+                            );
+                            return (
+                                <a
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block"
+                                >
+                                    {strapiIconUrl ? (
+                                        <img
+                                            src={getStrapiUrl(strapiIconUrl)}
+                                            alt={social.name}
+                                            class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current"
+                                        />
+                                    ) : (
+                                        <i
+                                            class={`${iconClass} text-2xl md:text-2xl`}
+                                        />
+                                    )}
+                                </a>
+                            );
+                        })
+                    }
                 </div>
             </div>
 
-            <div class="flex flex-col w-full order-1 lg:order-2 self-start lg:self-center">
-                <h3 class="font-bold uppercase text-4xl md:text-2xl tracking-tighter mb-4 text-center lg:text-left w-full">
+            <div
+                class="flex flex-col w-full order-1 lg:order-2 self-start lg:self-center"
+            >
+                <h3
+                    class="font-bold uppercase text-4xl md:text-2xl tracking-tighter mb-4 text-center lg:text-left w-full"
+                >
                     {middleColumnTitle}
                 </h3>
 
                 <ul class="flex flex-col w-full space-y-3">
-                    {middleColumnItems.map((item: any) => (
-                        <li>
-                            <a href={item.url} class="group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200">
-                                <div class="flex flex-col text-left">
-                                    <span class="font-(family-name:--font-sharp-sans-bold) font-bold text-base leading-tight">{item.name}</span>
-                                    {item.status && <span class="font-(family-name:--font-sharp-sans-bold) text-base font-bold opacity-80 mt-0.5">{item.status}</span>}
-                                </div>
+                    {
+                        middleColumnItems.map((item: any) => (
+                            <li>
+                                <a
+                                    href={getLocalizedUrl(item.url, locale)}
+                                    class="group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200"
+                                >
+                                    <div class="flex flex-col text-left">
+                                        <span class="font-(family-name:--font-sharp-sans-bold) font-bold text-base leading-tight">
+                                            {item.name}
+                                        </span>
+                                        {item.status && (
+                                            <span class="font-(family-name:--font-sharp-sans-bold) text-base font-bold opacity-80 mt-0.5">
+                                                {item.status}
+                                            </span>
+                                        )}
+                                    </div>
 
-                                <i class="fa-solid fa-play text-2xl mb-1 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out"></i>
-                            </a>
-                        </li>
-                    ))}
+                                    <i class="fa-solid fa-play text-2xl mb-1 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out" />
+                                </a>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
 
-            <div class="flex flex-col w-full order-2 lg:order-3 text-center lg:text-left self-start lg:self-center">
-                <h3 class="font-black uppercase text-3xl md:text-4xl tracking-tighter mb-4 mt-4 lg:mt-0">
+            <div
+                class="flex flex-col w-full order-2 lg:order-3 text-center lg:text-left self-start lg:self-center"
+            >
+                <h3
+                    class="font-black uppercase text-3xl md:text-4xl tracking-tighter mb-4 mt-4 lg:mt-0"
+                >
                     {newsletterTitle}
                 </h3>
 
@@ -159,86 +206,140 @@ const extractClassFromIcon = (iconString: string) => {
                     </div>
                 </form>
 
-                <p class="font-(family-name:--font-sharp-sans-bold) text-sm md:text-base font-bold mb-6 leading-tight opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none">
-                    By clicking ‘Sign Up’ you accept our Privacy Policy and Terms and conditions.
+                <p
+                    class="font-(family-name:--font-sharp-sans-bold) text-sm md:text-base font-bold mb-6 leading-tight opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none"
+                >
+                    By clicking ‘Sign Up’ you accept our Privacy Policy and
+                    Terms and conditions.
                 </p>
 
-                <div class="font-(family-name:--font-sharp-sans-bold) flex items-center justify-center lg:justify-start gap-6 mt-auto">
+                <div
+                    class="font-(family-name:--font-sharp-sans-bold) flex items-center justify-center lg:justify-start gap-6 mt-auto"
+                >
                     <a href="#" class="flex items-center gap-2 group">
-                        <div class="text-base font-bold tracking-tighter leading-none">???</div>
-                        <span class="font-bold uppercase text-base tracking-tighter underline decoration-solid decoration-black">FAQs</span>
+                        <div
+                            class="text-base font-bold tracking-tighter leading-none"
+                        >
+                            ???
+                        </div>
+                        <span
+                            class="font-bold uppercase text-base tracking-tighter underline decoration-solid decoration-black"
+                            >FAQs</span
+                        >
                     </a>
 
                     <a href="#" class="flex items-center gap-2 group">
-                        <i class="fa-solid fa-shirt text-base text-[var(--surface-brand-primary)]"></i>
-                        <span class="font-bold uppercase text-base tracking-tighter underline decoration-solid decoration-black">CAREERS</span>
+                        <i
+                            class="fa-solid fa-shirt text-base text-[var(--surface-brand-primary)]"
+                        ></i>
+                        <span
+                            class="font-bold uppercase text-base tracking-tighter underline decoration-solid decoration-black"
+                            >CAREERS</span
+                        >
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="font-(family-name:--font-sharp-sans-bold) footer-part-2 bg-[var(--brand-interactive-base)] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
-        <div class="max-w-[1920px] mx-auto w-full flex flex-col justify-center items-center gap-4 text-sm font-bold">
-
+    <div
+        class="font-(family-name:--font-sharp-sans-bold) footer-part-2 bg-[var(--brand-interactive-base)] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center"
+    >
+        <div
+            class="max-w-[1920px] mx-auto w-full flex flex-col justify-center items-center gap-4 text-sm font-bold"
+        >
             <div class="flex lg:hidden items-center gap-6">
-                {socials.map((social: any) => {
-                    const strapiIconUrl = social.iconImage?.data?.attributes?.url;
-                    const iconClass = extractClassFromIcon(social.iconHtml);
-                    return (
-                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
-                            {strapiIconUrl ? (
-                                <img src={getStrapiUrl(strapiIconUrl)} alt={social.name} class="w-6 h-6 object-contain fill-current" />
-                            ) : (
-                                <i class={`${iconClass} text-2xl`}></i>
-                            )}
+                {
+                    socials.map((social: any) => {
+                        const strapiIconUrl =
+                            social.iconImage?.data?.attributes?.url;
+                        const iconClass = extractClassFromIcon(social.iconHtml);
+                        return (
+                            <a
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block"
+                            >
+                                {strapiIconUrl ? (
+                                    <img
+                                        src={getStrapiUrl(strapiIconUrl)}
+                                        alt={social.name}
+                                        class="w-6 h-6 object-contain fill-current"
+                                    />
+                                ) : (
+                                    <i class={`${iconClass} text-2xl`} />
+                                )}
+                            </a>
+                        );
+                    })
+                }
+            </div>
+
+            <div
+                class="hidden lg:flex w-full flex-row justify-between items-center h-full"
+            >
+                <div
+                    class="flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3"
+                >
+                    {
+                        linksLeft.map((link: any) => (
+                            <a href={getLocalizedUrl(link.url, locale)}>
+                                {link.text}
+                            </a>
+                        ))
+                    }
+                </div>
+                <div
+                    class="flex flex-wrap justify-end gap-6 underline decoration-2 underline-offset-3"
+                >
+                    {
+                        linksRight.map((link: any) => (
+                            <a href={getLocalizedUrl(link.url, locale)}>
+                                {link.text}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <div
+                class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-3 px-2"
+            >
+                {
+                    allLinksMobile.map((link: any) => (
+                        <a
+                            href={getLocalizedUrl(link.url, locale)}
+                            class=" whitespace-nowrap text-xs"
+                        >
+                            {link.text}
                         </a>
-                    );
-                })}
+                    ))
+                }
             </div>
-
-            <div class="hidden lg:flex w-full flex-row justify-between items-center h-full">
-                <div class="flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3">
-                    {linksLeft.map((link: any) => (
-                        <a href={link.url}>{link.text}</a>
-                    ))}
-                </div>
-                <div class="flex flex-wrap justify-end gap-6 underline decoration-2 underline-offset-3">
-                    {linksRight.map((link: any) => (
-                        <a href={link.url}>{link.text}</a>
-                    ))}
-                </div>
-            </div>
-
-            <div class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-3 px-2">
-                {allLinksMobile.map((link: any) => (
-                    <a href={link.url} class=" whitespace-nowrap text-xs">{link.text}</a>
-                ))}
-            </div>
-
         </div>
     </div>
 </footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("DOMContentLoaded", () => {
         const observerOptions = {
             root: null,
-            rootMargin: '0px',
-            threshold: 0.1
+            rootMargin: "0px",
+            threshold: 0.1,
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
+                    entry.target.classList.add("is-visible");
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        const targets = document.querySelectorAll('.trigger-anim-footer');
-        targets.forEach(target => observer.observe(target));
+        const targets = document.querySelectorAll(".trigger-anim-footer");
+        targets.forEach((target) => observer.observe(target));
     });
 </script>
 
@@ -254,7 +355,8 @@ const extractClassFromIcon = (iconString: string) => {
         }
     }
 
-    .footer-part-1, .footer-part-2 {
+    .footer-part-1,
+    .footer-part-2 {
         opacity: 0;
     }
 
