@@ -1,0 +1,149 @@
+---
+// src/components/blu/Component_10_Blu.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+    imagen?: {
+        url: string;
+        mime: string;
+        width?: number;
+        height?: number;
+    };
+    boton?: Boton | null;
+}
+
+const {
+    titulo = "Exactamente como debería sentirse el Caribe",
+    descripcion = "La combinación perfecta entre mar, música y buena vibra. Todo se siente cuidado, relajado y simplemente inolvidable.",
+    imagen,
+    boton = null,
+} = Astro.props;
+
+const strapiImageUrl = imagen
+    ? getStrapiUrl(imagen)
+    : "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
+
+const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
+const buttons: Boton[] = Array.isArray(boton) ? boton : boton ? [boton] : [];
+
+// Placeholders for local dev if no button provided
+if (buttons.length === 0) {
+    buttons.push({
+        texto: "RESERVA TU LUGAR",
+        url: "#",
+        estilo: "primary", // Ajustar según estilos disponibles
+    });
+}
+---
+
+<section class="w-full bg-[#f4f0ec] py-16 md:py-24 overflow-hidden relative">
+    <!-- Decorative Pattern Background (Subtle A/Logo watermark if needed, or simple texture) -->
+    <!-- For now, plain beige background as base -->
+
+    <div class="max-w-[1440px] mx-auto px-6 relative">
+        <div class="flex flex-col md:flex-row items-center relative">
+            <!-- Text Card Container -->
+            <div
+                class="w-full md:w-1/2 relative z-20 md:-mr-20 order-1 md:order-1 mb-6 md:mb-0"
+            >
+                <div class="bg-white p-8 md:p-16 shadow-sm relative">
+                    <!-- Top Left Quote Icon -->
+                    <div class="absolute top-8 left-8 text-[#98a2b3]">
+                        <i
+                            class="fa-solid fa-quote-left text-4xl md:text-5xl opacity-80"
+                        ></i>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="pt-8 md:pt-4">
+                        <h2
+                            class="text-3xl md:text-5xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-tight mb-6"
+                        >
+                            {titulo}
+                        </h2>
+
+                        <div
+                            class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-base md:text-lg leading-relaxed opacity-80 mb-8 max-w-md"
+                        >
+                            <Fragment set:html={descripcionHtml} />
+                        </div>
+
+                        <!-- Bottom Right Quote Icon -->
+                        <div class="flex justify-end mb-8 md:mb-0">
+                            <i
+                                class="fa-solid fa-quote-right text-4xl md:text-5xl text-[#98a2b3] opacity-80"
+                            ></i>
+                        </div>
+
+                        <!-- Button -->
+                        <div class="mt-8 flex justify-center md:justify-start">
+                            <Button botones={buttons} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Container -->
+            <div
+                class="w-full md:w-2/3 h-[400px] md:h-[600px] relative order-2 md:order-2"
+            >
+                <!-- Dot Pattern Decoration (Bottom Left of Image) -->
+                <div
+                    class="absolute -bottom-6 -left-6 md:-bottom-12 md:-left-12 z-0 hidden md:block"
+                >
+                    <svg
+                        width="200"
+                        height="200"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <defs>
+                            <pattern
+                                id="dot-pattern"
+                                x="0"
+                                y="0"
+                                width="20"
+                                height="20"
+                                patternUnits="userSpaceOnUse"
+                            >
+                                <circle
+                                    cx="2"
+                                    cy="2"
+                                    r="2"
+                                    class="text-[#d0c9c0]"
+                                    fill="currentColor"></circle>
+                            </pattern>
+                        </defs>
+                        <rect width="200" height="200" fill="url(#dot-pattern)"
+                        ></rect>
+                    </svg>
+                </div>
+
+                <div class="relative w-full h-full z-10 overflow-hidden">
+                    {
+                        imagen ? (
+                            <Image
+                                src={strapiImageUrl}
+                                alt={titulo}
+                                width={1200}
+                                height={800}
+                                class="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <img
+                                src={strapiImageUrl}
+                                alt={titulo}
+                                class="w-full h-full object-cover"
+                            />
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

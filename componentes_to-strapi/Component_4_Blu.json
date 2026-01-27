@@ -1,0 +1,19 @@
+{
+    "collectionName": "components_blu_component_4_blus",
+    "info": {
+        "displayName": "Component 4 Blu",
+        "icon": "list-ul",
+        "description": "Experiences container"
+    },
+    "options": {},
+    "attributes": {
+        "titulo": {
+            "type": "string"
+        },
+        "experiencias": {
+            "type": "component",
+            "repeatable": true,
+            "component": "blu.component-5-blu"
+        }
+    }
+}

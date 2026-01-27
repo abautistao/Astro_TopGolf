@@ -1,0 +1,16 @@
+{
+    "collectionName": "components_blu_component_3_blus",
+    "info": {
+        "displayName": "Component 3 Blu",
+        "icon": "images",
+        "description": "Gallery mosaic"
+    },
+    "options": {},
+    "attributes": {
+        "galeria": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.gallery-item"
+        }
+    }
+}

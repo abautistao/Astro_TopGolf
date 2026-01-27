@@ -1,9 +1,150 @@
 ---
+// src/components/blu/Footer.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi";
+import { Image } from "astro:assets";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+import localLogo from "../../assets/blu/logo-blu-white.png";
+import vectorB from "../../assets/blu/footer-vector.png";
+
+interface Props {
+    data?: any;
+}
+
 const { data } = Astro.props;
-const copyright = data?.copyright || "© 2024 Blu";
+
+const logoUrl = getStrapiUrl(data?.logo) || localLogo;
+
+const year = new Date().getFullYear();
 ---
-<footer class="bg-cyan-800 text-white p-8 mt-8">
-    <div class="container mx-auto text-center">
-        <p>{copyright}</p>
+
+<footer
+    class="w-full font-[family-name:var(--font-blu-body)] bg-[var(--neutral-background-strong)] p-0 text-white overflow-hidden relative"
+>
+    <div class="absolute bottom-0 left-0 w-full h-[50%] pointer-events-none z-0 block md:hidden">
+        <Image
+            src={vectorB}
+            alt=""
+            class="w-full h-full object-cover object-top opacity-60"
+        />
+    </div>
+
+    <div class="flex flex-col-reverse md:flex-row w-full relative z-10">
+
+        <div class="w-full md:w-[30%] flex flex-col items-center justify-center gap-4 p-4 relative z-10">
+            {
+                logoUrl && (
+                    <Image
+                        src={logoUrl}
+                        alt="Blu Ocean Club"
+                        width={300}
+                        height={300}
+                        class="w-30 h-30 aspect-square object-contain"
+                    />
+                )
+            }
+
+            <div class="hidden md:flex gap-2 justify-center">
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-facebook-f text-xs"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-instagram text-xs"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-tiktok text-xs"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-whatsapp text-xs"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="w-full md:w-[80%] bg-[var(--surface-brand-primary)] text-white md:rounded-bl-[80px] rounded-bl-[30px] flex flex-col items-center justify-center gap-2 px-4 pb-4 pt-12 md:px-6 md:pb-6 md:pt-14 relative overflow-hidden">
+
+            <div class="absolute top-0 right-0 bottom-0 w-[50%] md:w-[30%] pointer-events-none z-0 opacity-100 hidden md:block">
+                <Image
+                    src={vectorB}
+                    alt=""
+                    class="w-full h-full object-contain object-right"
+                />
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start mb-2 w-full max-w-[1100px] px-4 md:px-8 relative z-10">
+
+                <div class="lg:col-span-5 flex flex-row justify-between md:justify-start gap-12 md:gap-16 order-1 pt-2">
+                    <div>
+                        <h4 class="text-base font-bold mb-4 text-[#75C5DB]">
+                            Nosotros
+                        </h4>
+                        <ul class="space-y-1 text-sm opacity-80">
+                            <li><a href="#" class="hover:text-[var(--neutral-background-subtle)] transition-colors">Home</a></li>
+                            <li><a href="#" class="hover:text-[var(--neutral-background-subtle)] transition-colors">Booking</a></li>
+                            <li><a href="#" class="hover:text-[var(--neutral-background-subtle)] transition-colors">Contacto</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-base font-bold mb-4 text-[#75C5DB]">
+                            Nuestros Productos
+                        </h4>
+                        <ul class="space-y-1 text-sm opacity-80">
+                            <li><a href="#" class="hover:text-[var(--neutral-background-subtle)] transition-colors">Productos</a></li>
+                            <li><a href="#" class="hover:text-[var(--neutral-background-subtle)] transition-colors">Galería de Fotos</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 w-full order-2">
+                    <div class="bg-[#2C5F7E]/60 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex flex-col items-center text-center max-w-md mx-auto md:mx-0 lg:-ml-20">
+                        <h4 class="text-sm md:text-base font-bold text-[#75C5DB] uppercase mb-1">
+                            REGÍSTRATE PARA RECIBIR OFERTAS
+                        </h4>
+                        <p class="text-[10px] md:text-xs opacity-70 mb-2 leading-relaxed">
+                            Regístrate con tu correo y recibe nuestras mejores ofertas y novedades antes que nadie.
+                        </p>
+                        <div class="flex flex-col gap-2 w-full items-center">
+                            <Button
+                                botones={[{ id: 1, texto: "SUSCRÍBETE", url: "#", tipo: "version_5" }]}
+                                clase="w-full md:w-auto min-w-[160px] py-1 text-xs"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-white/10 pt-3 pb-3 flex flex-col md:flex-row justify-between items-center gap-2 text-[10px] opacity-60 w-full max-w-[1100px] px-4 md:px-8 relative z-10">
+                <p>© {year} Blu Ocean Club all rights reserved</p>
+                <div class="flex gap-4 md:gap-6">
+                    <a href="#" class="hover:opacity-100">Privacy Policy</a>
+                    <a href="#" class="hover:opacity-100">Cookie Policy</a>
+                </div>
+            </div>
+
+            <div class="flex md:hidden gap-3 justify-center mt-1 pb-4 relative z-10">
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-facebook-f text-xs"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-instagram text-xs"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-tiktok text-xs"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all">
+                    <i class="fa-brands fa-whatsapp text-xs"></i>
+                </a>
+            </div>
+        </div>
     </div>
 </footer>
+
+<style>
+    :global(.flex .w-full > a) {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+</style>

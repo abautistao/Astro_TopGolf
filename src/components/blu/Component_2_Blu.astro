@@ -1,0 +1,20 @@
+---
+// src/components/blu/Component_2_Blu.astro
+import BookingWidgetBlu from "./elements/BookingWidgetBlu.astro";
+
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+}
+
+const { titulo, descripcion } = Astro.props;
+---
+
+<section
+    class="w-full px-6 font-[family-name:var(--font-blu-body)] relative z-30"
+>
+    <div class="max-w-[1440px] mx-auto relative z-50 -mt-13 md:-mt-32 mb-20">
+        <!-- Booking Widget (Floating Overlap) -->
+        <BookingWidgetBlu className="relative z-20 max-w-6xl mx-auto" />
+    </div>
+</section>

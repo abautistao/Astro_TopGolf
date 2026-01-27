@@ -1,0 +1,40 @@
+{
+    "collectionName": "components_blu_component_5_blus",
+    "info": {
+        "displayName": "Component 5 Blu",
+        "icon": "ticket-alt",
+        "description": "Experience card"
+    },
+    "options": {},
+    "attributes": {
+        "titulo": {
+            "type": "string"
+        },
+        "imagen": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "beneficios": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.list-item"
+        },
+        "precioOferta": {
+            "type": "string"
+        },
+        "precioRegular": {
+            "type": "string"
+        },
+        "tipo": {
+            "type": "enumeration",
+            "enum": [
+                "navy",
+                "cyan"
+            ]
+        }
+    }
+}

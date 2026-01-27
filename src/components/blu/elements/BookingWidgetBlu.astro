@@ -1,0 +1,138 @@
+---
+// src/components/blu/elements/BookingWidgetBlu.astro
+interface Props {
+    className?: string;
+}
+
+const { className = "" } = Astro.props;
+---
+
+<div
+    class:list={[
+        "relative rounded-[2rem] bg-[var(--surface-brand-primary)] px-6 py-8 md:px-12 md:py-8 shadow-2xl border border-white/10 overflow-hidden",
+        className,
+    ]}
+>
+    <!-- Background Watermark (Optional: "Blu" logo opacity) -->
+    <div class="absolute left-0 bottom-0 z-0 pointer-events-none select-none">
+        <img
+            src="/SVG/Blu.svg"
+            alt="Blu"
+            class="h-[70px] md:h-[140px] w-auto mb-[-10px] ml-[-10px]"
+        />
+    </div>
+
+    <!-- Right Background Watermark -->
+    <div class="absolute right-0 bottom-0 z-0 pointer-events-none select-none">
+        <img
+            src="/SVG/Blu_Vectores.svg"
+            alt="Blu"
+            class="h-[70px] md:h-[140px] w-auto mb-[-10px] mr-[-10px]"
+        />
+    </div>
+
+    <!-- Content Wrapper -->
+    <div
+        class="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8"
+    >
+        <!-- Input Group: Producto -->
+        <div class="w-full md:flex-[1.5] relative group">
+            <label
+                class="absolute -top-2.5 left-6 bg-[var(--surface-brand-primary)] px-2 text-[10px] font-bold tracking-widest text-white uppercase z-10"
+            >
+                Producto
+            </label>
+            <div
+                class="relative w-full h-[50px] md:h-[60px] border border-[var(--neutral-background-subtle)] rounded-full flex items-center px-6 hover:shadow-[0_0_10px_rgba(29,145,180,0.3)] transition-shadow"
+            >
+                <select
+                    class="w-full bg-transparent text-white font-medium text-sm focus:outline-none appearance-none cursor-pointer"
+                >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >Seleccionar Experiencia</option
+                    >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >Día de Playa</option
+                    >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >Sunset Party</option
+                    >
+                </select>
+                <i
+                    class="fa-solid fa-chevron-down absolute right-6 text-[var(--neutral-background-subtle)] text-sm pointer-events-none"
+                ></i>
+            </div>
+        </div>
+
+        <!-- Input Group: Fecha -->
+        <div class="w-full md:flex-1 relative group">
+            <label
+                class="absolute -top-2.5 left-6 bg-[var(--surface-brand-primary)] px-2 text-[10px] font-bold tracking-widest text-white uppercase z-10"
+            >
+                Fecha
+            </label>
+            <div
+                class="relative w-full h-[50px] md:h-[60px] border border-[var(--neutral-background-subtle)] rounded-full flex items-center px-6 hover:shadow-[0_0_10px_rgba(29,145,180,0.3)] transition-shadow"
+            >
+                <select
+                    class="w-full bg-transparent text-white font-medium text-sm focus:outline-none appearance-none cursor-pointer"
+                >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >Elegir Fecha</option
+                    >
+                </select>
+                <i
+                    class="fa-solid fa-chevron-down absolute right-6 text-[var(--neutral-background-subtle)] text-sm pointer-events-none"
+                ></i>
+            </div>
+        </div>
+
+        <!-- Input Group: Pasajeros -->
+        <div class="w-full md:flex-1 relative group">
+            <label
+                class="absolute -top-2.5 left-6 bg-[var(--surface-brand-primary)] px-2 text-[10px] font-bold tracking-widest text-white uppercase z-10"
+            >
+                Pasajeros
+            </label>
+            <div
+                class="relative w-full h-[50px] md:h-[60px] border border-[var(--neutral-background-subtle)] rounded-full flex items-center px-6 hover:shadow-[0_0_10px_rgba(29,145,180,0.3)] transition-shadow"
+            >
+                <select
+                    class="w-full bg-transparent text-white font-medium text-sm focus:outline-none appearance-none cursor-pointer"
+                >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >2 Pax</option
+                    >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >3 Pax</option
+                    >
+                    <option class="bg-[var(--surface-brand-primary)]"
+                        >4+ Pax</option
+                    >
+                </select>
+                <i
+                    class="fa-solid fa-chevron-down absolute right-6 text-[var(--neutral-background-subtle)] text-sm pointer-events-none"
+                ></i>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="w-full md:w-auto">
+            <button
+                class="w-full md:w-auto bg-[#1d91b4] hover:bg-[#5bbcd6] text-white font-bold h-[50px] md:h-[60px] px-8 rounded-full tracking-[0.1em] uppercase transition-all text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap border border-white/20"
+            >
+                Reserva Ahora
+            </button>
+        </div>
+    </div>
+
+    <!-- Help Text -->
+    <div class="text-center mt-6 relative z-10">
+        <p class="text-[10px] opacity-90 text-white font-light tracking-wide">
+            <span class="font-bold">¿Necesitas ayuda?</span>
+            <a href="#" class="hover:underline hover:text-[#75C5DB]"
+                >Consulta nuestras preguntas frecuentes</a
+            > o descubre como funciona.
+        </p>
+    </div>
+</div>

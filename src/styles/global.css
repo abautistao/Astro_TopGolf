@@ -122,6 +122,57 @@
     font-display: swap;
 }
 
+/* Satoshi */
+@font-face {
+    font-family: 'Satoshi-Regular';
+    src: url('/fonts/Satoshi/Satoshi-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Satoshi-Medium';
+    src: url('/fonts/Satoshi/Satoshi-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Satoshi-Bold';
+    src: url('/fonts/Satoshi/Satoshi-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Scheherazade New */
+@font-face {
+    font-family: 'Scheherazade New';
+    src: url('/fonts/Scheherazade_New/ScheherazadeNew-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Scheherazade New';
+    src: url('/fonts/Scheherazade_New/ScheherazadeNew-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Tenor Sans */
+@font-face {
+    font-family: 'Tenor Sans';
+    src: url('/fonts/Tenor_Sans/TenorSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --font-shields-sans-regular: 'ShieldSans-Regular', sans-serif;
     --font-shields-sans-condensed: 'ShieldSans-Condensed', sans-serif;
@@ -136,6 +187,17 @@
     --font-sharp-sans-bold: 'SharpSans-Bold', sans-serif;
     --font-sharp-sans-bold-italic: 'SharpSans-BoldItalic', sans-serif;
     --font-sharp-sans-medium: 'SharpSans-Medium', sans-serif;
+
+    /* Blu Brand Colors */
+    --surface-brand-primary: #012b49;
+    --surface-brand-secondary: #eae7e2;
+    --brand-interactive-base: #f9f9f9;
+    --neutral-background-strong: #215270;
+    --neutral-background-subtle: #1d91b4;
+
+    /* Blu Typography */
+    --font-blu-title: 'Tenor Sans', sans-serif;
+    --font-blu-body: 'Satoshi-Regular', sans-serif;
 }
 
 @import "tailwindcss";
