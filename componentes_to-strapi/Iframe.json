@@ -1,0 +1,15 @@
+{
+    "collectionName": "components_shared_iframes",
+    "info": {
+        "displayName": "Iframe",
+        "icon": "code",
+        "description": "Render an iframe block"
+    },
+    "options": {},
+    "attributes": {
+        "codigo": {
+            "type": "text",
+            "required": true
+        }
+    }
+}
