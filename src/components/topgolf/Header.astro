@@ -363,7 +363,8 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 document.addEventListener('DOMContentLoaded', () => {
     new Splide( '.splide', {
         pagination: false,
-        autoplay: true
+        autoplay: true, 
+        rewind: true
     } ).mount();
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenuClose = document.getElementById('mobile-menu-close');
