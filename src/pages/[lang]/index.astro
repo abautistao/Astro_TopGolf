@@ -23,7 +23,7 @@ export async function getStaticPaths(page) {
     params: { lang: page.locale ?? 'en', slug: page.slug },
   }];
 }
-const pagina = await getPageBySlug(slug, lang);
+const pagina = await getPageBySlug('home', lang);
 
 // Si la página no se encuentra, mostramos un error 404.
 if (!pagina) {
