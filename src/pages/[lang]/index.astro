@@ -5,14 +5,24 @@
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
 import { getPageBySlug } from "../../lib/strapi.js";
 import RenderBlocks from "../../components/RenderBlocks.astro";
-
+import { getAllPages } from "../../lib/strapi.js";
 // export const prerender = true; // Disabled for dynamic [lang] SSR
 
 // ==========================================================================================
 // SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE INICIO
 // ==========================================================================================
 const { lang } = Astro.params;
-const slug = "home"; // Usamos 'home' como el slug para la página de inicio
+export async function getStaticPaths(page) {
+  
+  const pages = await getAllPages();
+
+  if (!pages) {
+    return [];
+  }
+  return [{
+    params: { lang: page.locale ?? 'en', slug: page.slug },
+  }];
+}
 const pagina = await getPageBySlug(slug, lang);
 
 // Si la página no se encuentra, mostramos un error 404.

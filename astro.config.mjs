@@ -9,7 +9,7 @@ import alpinejs from '@astrojs/alpinejs';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static', // Changed to server for SSR support with Cloudflare
+  output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
   site: 'http://localhost:4321', // URL para pruebas locales.
 
