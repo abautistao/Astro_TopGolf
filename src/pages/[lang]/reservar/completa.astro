@@ -4,8 +4,20 @@
 // ==========================================================================================
 
 import Layout from "../../../layouts/Layout.astro"; // Importamos el Layout principal
-
+import { getAllPages } from "../../../lib/strapi.js";
 export const prerender = true;
+
+export async function getStaticPaths() {
+  const pages = await getAllPages();
+
+  if (!pages) {
+    return [];
+  }
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "en" } },
+  ];
+}
 ---
 
 <Layout>
