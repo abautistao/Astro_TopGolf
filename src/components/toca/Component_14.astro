@@ -55,11 +55,11 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
     <div class="anim-fade max-w-[1200px] mx-auto px-4">
 
         <div class="text-center mb-12">
-            <h3 class="text-white text-sm lg:text-base font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-medium) mb-2 uppercase">
+            <h3 class="text-[var(--accent-feedback-strong)] text-sm lg:text-sm font-bold tracking-[0.2em] font-(family-name:--font-titling-gothic-fb-extended-bold) mb-2 uppercase">
                 {subtitulo}
             </h3>
 
-            <h2 class="text-white text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">
+            <h2 class="text-[var(--accent-feedback-strong)] text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">
                 {titulo}
             </h2>
         </div>
@@ -67,8 +67,8 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
         <div class="flex flex-wrap border border-[var(--brand-interactive-base)] mb-12">
             {categories.map((cat: any, index: number) => (
                 <button
-                    class="flex-1 py-3 px-6 text-center text-base lg:text-base font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
-                    :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-white bg-transparent'`}
+                    class="flex-1 py-3 px-6 text-center text-base lg:text-[32px] font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
+                    :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-[var(--accent-feedback-strong)] bg-transparent'`}
                     @click={`activeTab = ${index}`}
                 >
                     {cat.label}
@@ -88,14 +88,14 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
                                     class="w-full py-6 flex items-center justify-between text-left group"
                                 >
                                     <span
-                                        class="text-[var(--brand-interactive-base)] font-bold text-lg lg:text-xl font-(family-name:--font-sharp-sans-bold) transition-colors group-hover:text-white"
-                                        :class="expanded ? 'text-white' : 'text-[var(--brand-interactive-base)]'"
+                                        class="text-[var(--brand-interactive-base)] font-bold text-lg lg:text-xl font-(family-name:--font-sharp-sans-bold) transition-colors group-hover:text-[var(--accent-feedback-strong)]"
+                                        :class="expanded ? 'text-[var(--accent-feedback-strong)]' : 'text-[var(--brand-interactive-base)]'"
                                     >
                                         {faq.pregunta}
                                     </span>
                                     <span
                                         class="text-[var(--brand-interactive-base)] transition-transform duration-300 transform"
-                                        :class="expanded ? 'rotate-180 text-white' : ''"
+                                        :class="expanded ? 'rotate-180 text-[var(--accent-feedback-strong)]' : ''"
                                     >
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -106,7 +106,7 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
                                 <div
                                     x-show="expanded"
                                     x-collapse
-                                    class="pb-6 text-white text-base lg:text-lg opacity-90 font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
+                                    class="pb-6 text-[var(--accent-feedback-strong)] text-base lg:text-lg opacity-90 font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
                                 >
                                     {faq.respuesta ? <Fragment set:html={stringifyRichText(faq.respuesta)} /> : <p>{faq.respuesta}</p>}
                                 </div>

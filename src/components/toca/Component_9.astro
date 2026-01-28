@@ -3,6 +3,7 @@
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
 
+// 1. Interfaces ajustadas exactamente a tu JSON
 interface TarjetaItem {
     id: number;
     titulo: string;
@@ -23,24 +24,25 @@ interface Props {
 
 const { tarjetas } = Astro.props;
 
+const sectionTitle = tarjetas?.titulo_seccion;
 const tarjetasArray = tarjetas?.tarjetas || [];
 
 const defaultCards = [
     {
         titulo: "Ejemplo 1",
-        descripcion: "Description for example card 1 goes here. ",
+        descripcion: "Description for example card 1 goes here.",
         imagen: null,
         url: "#"
     },
     {
         titulo: "Ejemplo 2",
-        descripcion: "Description for example card 2 goes here. ",
+        descripcion: "Description for example card 2 goes here.",
         imagen: null,
         url: "#"
     },
     {
         titulo: "Ejemplo 3",
-        descripcion: "Description for example card 3 goes here. ",
+        descripcion: "Description for example card 3 goes here.",
         imagen: null,
         url: "#"
     }
@@ -63,6 +65,12 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
 <section class="trigger-anim-9 w-full bg-[var(--surface-brand-primary)] py-10 lg:py-16 relative">
 
     <div class="anim-fade max-w-[1400px] mx-auto px-4 sm:px-6 h-full">
+
+        {sectionTitle && (
+            <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-center text-2xl md:text-2xl font-bold uppercase tracking-tighter mb-8 lg:mb-12 leading-none">
+                {sectionTitle}
+            </h2>
+        )}
 
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
@@ -87,7 +95,7 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
 
                     <div class="flex flex-col grow px-1">
                         <div class="flex justify-between items-start gap-2 mb-3">
-                            <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--brand-interactive-base)] text-2xl lg:text-2xl uppercase leading-none tracking-tighter">
+                            <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--brand-interactive-base)] text-base lg:text-base uppercase leading-none tracking-tighter">
                                 {item.title}
                             </h3>
 
@@ -101,7 +109,7 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
                             </div>
                         </div>
 
-                        <div class="font-(family-name:--font-sharp-sans-medium) text-[var(--accent-feedback-strong)]  text-base leading-relaxed w-full strapi-rich-text mb-6">
+                        <div class="font-(family-name:--font-sharp-sans-medium) text-[var(--accent-feedback-strong)] text-base leading-relaxed w-full strapi-rich-text mb-6">
                             <Fragment set:html={item.desc} />
                         </div>
 
@@ -120,7 +128,6 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
 </section>
 
 <script>
-    // El script se mantiene igual, ya que funciona bien para detectar el scroll
     document.addEventListener('astro:page-load', initAll);
     document.addEventListener('DOMContentLoaded', initAll);
 
@@ -129,7 +136,7 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
         initObserver();
     }
 
-    // --- LÓGICA DE ANIMACIÓN AL SCROLL ---
+    // Animación de entrada (Fade In Up)
     function initObserver() {
         const observerOptions = {
             root: null,
@@ -150,7 +157,7 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
         targets.forEach(target => observer.observe(target));
     }
 
-    // --- LÓGICA DEL CARRUSEL ---
+    // Funcionalidad del Carrusel Móvil
     function initCarousel() {
         const items = document.querySelectorAll('.carousel-item');
         const prevBtns = document.querySelectorAll('.prev-btn');
@@ -210,26 +217,22 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
         color: inherit;
     }
 
-    /* --- CAMBIO PRINCIPAL: Usamos fadeInUp --- */
-
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px); /* Empieza 30px más abajo */
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
-            transform: translateY(0); /* Termina en su posición original */
+            transform: translateY(0);
         }
     }
 
     .anim-fade {
-        opacity: 0; /* Oculto inicialmente */
+        opacity: 0;
     }
 
-    /* Solo se anima cuando el padre tiene la clase .is-visible detectada por JS */
     :global(.trigger-anim-9.is-visible) .anim-fade {
-        /* Usamos la nueva animación fadeInUp durante 2 segundos */
         animation: fadeInUp 2s ease-out forwards;
     }
 </style>

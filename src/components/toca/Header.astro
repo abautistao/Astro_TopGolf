@@ -4,7 +4,7 @@ import { getHeaderData, getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 import defaultLogoImg from "../../assets/TOCA_Social_One_Color.png";
-import { getIconClass, getLottiePath } from "../../utils/iconMapper";
+import { getLottiePath } from "../../utils/iconMapper";
 
 const { data, locale = "en" } = Astro.props;
 const headerData = data || (await getHeaderData());
@@ -20,38 +20,36 @@ const multipleLinks = headerData?.links_multiples || [];
 const links =
     headerData?.links?.length > 0
         ? headerData.links.map((link: any) => {
-              const hasDropdown = link.tiene_dropdown;
-              let formattedSubmenu = null;
+            const hasDropdown = link.tiene_dropdown;
+            let formattedSubmenu = null;
 
-              if (
-                  hasDropdown &&
-                  link.dropdown_items &&
-                  link.dropdown_items.length > 0
-              ) {
-                  formattedSubmenu = link.dropdown_items.map((item: any) => {
-                      const imgUrl = item.imagen
-                          ? getStrapiUrl(item.imagen)
-                          : null;
-                      const finalIcon = getIconClass(item.icono);
-                      const finalLottie = getLottiePath(item.icono);
+            if (
+                hasDropdown &&
+                link.dropdown_items &&
+                link.dropdown_items.length > 0
+            ) {
+                formattedSubmenu = link.dropdown_items.map((item: any) => {
+                    const imgUrl = item.imagen
+                        ? getStrapiUrl(item.imagen)
+                        : null;
+                    const finalLottie = getLottiePath(item.icono);
 
-                      return {
-                          label: item.titulo,
-                          subLabel: item.subtitulo,
-                          url: item.url || "#",
-                          imageUrl: imgUrl,
-                          icon: finalIcon,
-                          lottie: finalLottie,
-                      };
-                  });
-              }
+                    return {
+                        label: item.titulo,
+                        subLabel: item.subtitulo,
+                        url: item.url || "#",
+                        imageUrl: imgUrl,
+                        lottie: finalLottie,
+                    };
+                });
+            }
 
-              return {
-                  texto: link.texto,
-                  url: getLocalizedUrl(link.url, locale),
-                  submenu: formattedSubmenu,
-              };
-          })
+            return {
+                texto: link.texto,
+                url: getLocalizedUrl(link.url, locale),
+                submenu: formattedSubmenu,
+            };
+        })
         : [];
 
 // --- Botones (Book Now) desde Strapi ---
@@ -266,7 +264,7 @@ const ctaButtons: Boton[] = [
                 </nav>
 
                 <div class="hidden md:block">
-                    <ButtonGroup botones={ctaButtons} />
+                    <ButtonGroup botones={ctaButtons} tamanoTexto="text-sm md:text-base">
                 </div>
 
                 <div class="md:hidden mr-1">
@@ -417,31 +415,40 @@ const ctaButtons: Boton[] = [
 <script>
     import lottie from "lottie-web";
 
-    // --- SCRIPT PARA LOTTIE HOVER ---
     const lottieContainers = document.querySelectorAll(".js-lottie-anim");
+
     lottieContainers.forEach((container) => {
-        const path = (container as HTMLElement).dataset.path;
+        const el = container as HTMLElement;
+        const path = el.dataset.path;
+
         if (path) {
+            const isFestive = path.toLowerCase().includes("festive");
+
             const anim = lottie.loadAnimation({
                 container: container,
                 renderer: "svg",
                 loop: true,
-                autoplay: false,
+                autoplay: isFestive,
                 path: path,
             });
-            const triggerElement = container.closest("a") || container;
-            triggerElement.addEventListener("mouseenter", () => {
-                anim.play();
-            });
-            triggerElement.addEventListener("mouseleave", () => {
-                anim.stop();
-            });
+
+            if (!isFestive) {
+                const triggerElement = container.closest("a") || container;
+
+                triggerElement.addEventListener("mouseenter", () => {
+                    anim.play();
+                });
+
+                triggerElement.addEventListener("mouseleave", () => {
+                    anim.stop();
+                });
+            }
         }
     });
 
-    // --- MENUS ---
     const triggers = document.querySelectorAll(".menu-trigger");
     const allMenus = document.querySelectorAll(".mega-menu");
+
     const closeAllMenus = () => {
         allMenus.forEach((menu) => menu.classList.add("hidden"));
         triggers.forEach((trigger) => {
@@ -449,27 +456,33 @@ const ctaButtons: Boton[] = [
             if (chevron) chevron.classList.remove("rotate-180");
         });
     };
+
     triggers.forEach((trigger) => {
         trigger.addEventListener("click", (e) => {
             e.stopPropagation();
             const targetId = (trigger as HTMLElement).dataset.target;
             const targetMenu = document.getElementById(targetId || "");
             const chevron = trigger.querySelector(".chevron");
+
             if (targetMenu && !targetMenu.classList.contains("hidden")) {
                 closeAllMenus();
                 return;
             }
+
             closeAllMenus();
+
             if (targetMenu) {
                 targetMenu.classList.remove("hidden");
                 if (chevron) chevron.classList.add("rotate-180");
             }
         });
     });
+
     document.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         const isClickInsideMenu = target.closest(".mega-menu");
         const isClickInsideTrigger = target.closest(".menu-trigger");
+
         if (!isClickInsideMenu && !isClickInsideTrigger) {
             closeAllMenus();
         }

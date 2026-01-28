@@ -61,7 +61,15 @@ const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.5;
         >
             <div class="mt-0 lg:mt-4">
                 {subtitulo && (
-                    <span class="block font-bold uppercase tracking-wider text-sm lg:text-sm -mt-5 mb-2 text-[var(--accent-feedback-strong)] font-(family-name:--font-titling-gothic-fb-extended-bold) whitespace-nowrap w-max max-w-none relative z-50">
+                    <span class="block font-bold uppercase tracking-wider
+                    text-[10px] sm:text-xs lg:text-sm
+                    -mt-5 mb-2
+                    text-[var(--accent-feedback-strong)]
+                    font-(family-name:--font-titling-gothic-fb-extended-bold)
+                    whitespace-normal md:whitespace-nowrap
+                    w-auto md:w-max
+                    max-w-full md:max-w-none
+                    relative z-50">
                         {subtitulo}
                     </span>
                 )}
@@ -99,7 +107,7 @@ const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.5;
                         >
                             <Button
                                 botones={boton_pricing}
-                                clase="flex w-full justify-start lg:w-auto lg:justify-start"
+                                clase="flex justify-start w-fit lg:justify-start"
                             />
                         </div>
                     )

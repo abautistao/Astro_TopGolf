@@ -51,7 +51,7 @@ const { items = [] } = Astro.props;
 const dataToShow = items.length > 0 ? items : fallbackItems;
 ---
 
-<section class="trigger-anim-pack w-full bg-[var(--surface-brand-primary)] py-12 lg:py-20 overflow-hidden">
+<section class="trigger-anim-pack w-full bg-[var(--surface-brand-primary)] py-10 lg:py-10 overflow-hidden">
 
     <div class="anim-fade max-w-[1440px] mx-auto px-4 md:px-8">
 
@@ -68,7 +68,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 
                             <div>
                                 <div class="text-center mb-6 lg:mb-8 flex-grow-0">
-                                    <h3 class="text-white text-2xl lg:text-3xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c16-title">
+                                    <h3 class="text-[var(--accent-feedback-strong)] text-xl lg:text-xl font-bold uppercase mb-4 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-tight flex items-center justify-center js-c16-title">
                                         {item.titulo}
                                     </h3>
                                     <div class="text-[var(--brand-interactive-base)] text-sm lg:text-base font-(family-name:--font-sharp-sans-medium) leading-relaxed opacity-90 flex items-start justify-center js-c16-desc">
@@ -89,7 +89,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
                             <div class="mt-auto w-full flex justify-center">
                                 <Button
                                     botones={botones}
-                                    clase="block w-full text-center  text-black font-bold uppercase py-3 text-lg lg:text-xl font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity"
+                                    clase="block w-full text-center  font-(family-name:--font-titling-gothic-fb-extended-bold) hover:opacity-90 transition-opacity"
                                 />
                             </div>
 

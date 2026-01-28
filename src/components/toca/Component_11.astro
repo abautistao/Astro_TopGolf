@@ -7,16 +7,28 @@ import "swiper/css/pagination";
 
 interface Props {
     imagenes: any;
+    titulo_seccion?: string; // Nuevo: Opcional
 }
 
-const { imagenes } = Astro.props;
+const {
+    imagenes,
+    titulo_seccion
+} = Astro.props;
 
 const imagesList = imagenes || [];
+console.log(Astro.props);
 ---
 
 <section class="trigger-anim-slider w-full bg-[var(--surface-brand-primary)] py-8 lg:py-16">
 
     <div class="anim-fade max-w-[1400px] mx-auto px-4 md:px-8 relative group">
+
+        {titulo_seccion && (
+            <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-center text-2xl md:text-2xl font-bold uppercase tracking-tighter mb-8 lg:mb-10 leading-none">
+                {titulo_seccion}
+            </h2>
+        )}
+
         <div
             class="swiper mySwiper w-full rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]"
         >
@@ -24,33 +36,32 @@ const imagesList = imagenes || [];
                 {
                     imagesList.length > 0
                         ? imagesList.map((img: any) => {
-                              const imgUrl = getStrapiUrl(img);
-                              // Safe fallback for alt text
-                              const alt =
-                                  img?.attributes?.alternativeText ||
-                                  "Slider Image";
+                            const imgUrl = getStrapiUrl(img);
+                            const alt =
+                                img?.attributes?.alternativeText ||
+                                "Slider Image";
 
-                              return (
-                                  <div class="swiper-slide relative w-full h-full bg-gray-900">
-                                      <Image
-                                          src={imgUrl || ""}
-                                          alt={alt}
-                                          inferSize={true}
-                                          class="w-full h-full object-cover"
-                                          loading="eager"
-                                      />
-                                  </div>
-                              );
-                          })
-                        : [1, 2, 3].map((i) => (
-                              <div class="swiper-slide relative w-full h-full bg-gray-900">
-                                  <img
-                                      src="https://placehold.co/600x400?text=No+Image"
-                                      alt="No Image Available"
-                                      class="w-full h-full object-cover opacity-50"
-                                  />
-                              </div>
-                          ))
+                            return (
+                                <div class="swiper-slide relative w-full h-full bg-gray-900">
+                                    <Image
+                                        src={imgUrl || ""}
+                                        alt={alt}
+                                        inferSize={true}
+                                        class="w-full h-full object-cover"
+                                        loading="eager"
+                                    />
+                                </div>
+                            );
+                        })
+                    : [1, 2, 3].map((i) => (
+                            <div class="swiper-slide relative w-full h-full bg-gray-900">
+                                <img
+                                    src="https://placehold.co/600x400?text=No+Image"
+                                    alt="No Image Available"
+                                    class="w-full h-full object-cover opacity-50"
+                                />
+                            </div>
+                        ))
                 }
             </div>
 
@@ -72,7 +83,6 @@ const imagesList = imagenes || [];
     import Swiper from "swiper";
     import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
-    // CAMBIO 3: Unificamos la inicialización (Slider + Observer)
     const initAll = () => {
         initSlider();
         initObserver();
@@ -105,12 +115,12 @@ const imagesList = imagenes || [];
         });
     };
 
-    // CAMBIO 4: Lógica de la animación (Intersection Observer)
+    // Lógica de la animación
     const initObserver = () => {
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.2 // Se activa cuando el 20% es visible
+            threshold: 0.2
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
@@ -126,7 +136,6 @@ const imagesList = imagenes || [];
         targets.forEach(target => observer.observe(target));
     };
 
-    // Ejecutar en carga inicial y navegación de Astro
     document.addEventListener("DOMContentLoaded", initAll);
     document.addEventListener("astro:page-load", initAll);
 </script>
@@ -152,26 +161,22 @@ const imagesList = imagenes || [];
     .swiper-button-next {
         color: var(--accent-feedback-strong);
     }
-
-    /* --- CAMBIO 5: ESTILOS DE ANIMACIÓN FADEINUP --- */
-
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px); /* Empieza desplazado hacia abajo */
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
-            transform: translateY(0);    /* Termina en su posición original */
+            transform: translateY(0);
         }
     }
 
     .anim-fade {
-        opacity: 0; /* Oculto inicialmente */
+        opacity: 0;
     }
 
-    /* Solo se anima cuando JS agrega la clase .is-visible */
     :global(.trigger-anim-slider.is-visible) .anim-fade {
-        animation: fadeInUp 2.5s ease-out forwards; /* Animación lenta y suave */
+        animation: fadeInUp 2.5s ease-out forwards;
     }
 </style>

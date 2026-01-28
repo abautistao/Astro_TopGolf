@@ -59,7 +59,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
 
                     let titleColorClass = "text-[var(--accent-feedback-strong)]";
                     if (index % 3 === 1) titleColorClass = "text-[var(--brand-interactive-base)]";
-                    if (index % 3 === 2) titleColorClass = "text-[var(--accent-feedback-strong)]";
+                    if (index % 3 === 2) titleColorClass = "text-[var(--surface-brand-secondary)]";
 
                     return (
                         <div class="swiper-slide h-auto lg:h-full flex flex-col">
@@ -147,8 +147,6 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
         targets.forEach(target => observer.observe(target));
     }
 
-    // --- LÓGICA DEL CARRUSEL (EXISTENTE) ---
-    // Recalculate on resize
     window.addEventListener('resize', () => {
         initEqualHeights();
     });
@@ -217,7 +215,6 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
         }
     }
 
-    /* --- CAMBIO 4: ESTILOS DE ANIMACIÓN --- */
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -230,7 +227,7 @@ const dataToShow = items.length > 0 ? items : fallbackItems;
     }
 
     .anim-fade {
-        opacity: 0; /* Oculto inicialmente */
+        opacity: 0;
     }
 
     :global(.trigger-anim-18.is-visible) .anim-fade {

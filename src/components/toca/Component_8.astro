@@ -6,20 +6,20 @@ import SplitSection from './elements/SplitSection.astro';
 interface BotonStrapi { id?: number; texto: string; url: string | null; tipo?: string; }
 
 interface Props {
-  id?: number;
-  titulo?: string;
-  descripcion?: any[];
-  boton?: BotonStrapi | null;
-  imagen: any;
-  tipo?: string;
+    id?: number;
+    titulo?: string;
+    descripcion?: any[];
+    boton?: BotonStrapi | null;
+    imagen: any;
+    tipo?: string;
 }
 
 const {
-  titulo = "Ejemplo Título",
-  descripcion = [],
-  boton = null,
-  imagen,
-  tipo = "version_1",
+    titulo = "Ejemplo Título",
+    descripcion = [],
+    boton = null,
+    imagen,
+    tipo = "version_1",
 } = Astro.props;
 
 const descHtml = stringifyRichText(descripcion) || "<p>Descripción por defecto...</p>";
@@ -27,10 +27,10 @@ const strapiImageUrl = getStrapiUrl(imagen);
 const altText = imagen?.data?.attributes?.alternativeText || titulo;
 
 const botonData = boton ? [{
-  id: boton.id || 0,
-  texto: boton.texto || "BOOK NOW",
-  url: boton.url || "#",
-  tipo: (boton.tipo as any) || 'version_3'
+    id: boton.id || 0,
+    texto: boton.texto || "BOOK NOW",
+    url: boton.url || "#",
+    tipo: (boton.tipo as any) || 'version_3'
 }] : null;
 
 const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
@@ -39,12 +39,12 @@ const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
 <div class="trigger-anim-8 w-full">
     <div class="anim-fade">
         <SplitSection
-          titulo={titulo}
-          htmlContent={descHtml}
-          imgUrl={strapiImageUrl}
-          imgAlt={altText}
-          botonData={botonData}
-          tipo={versionFinal}
+            titulo={titulo}
+            htmlContent={descHtml}
+            imgUrl={strapiImageUrl}
+            imgAlt={altText}
+            botonData={botonData}
+            tipo={versionFinal}
         />
     </div>
 </div>
@@ -57,7 +57,7 @@ const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.2 // Se activa cuando el 20% es visible
+            threshold: 0.2
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
@@ -78,19 +78,18 @@ const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px); /* Empieza desplazado hacia abajo */
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
-            transform: translateY(0);    /* Termina en su posición original */
+            transform: translateY(0);
         }
     }
 
     .anim-fade {
-        opacity: 0; /* Oculto por defecto */
+        opacity: 0;
     }
 
-    /* La animación se ejecuta SOLO cuando el padre (.trigger-anim-8) tiene la clase .is-visible */
     :global(.trigger-anim-8.is-visible) .anim-fade {
         animation: fadeInUp 3s ease-out forwards;
     }
