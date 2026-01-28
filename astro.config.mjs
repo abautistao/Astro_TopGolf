@@ -32,7 +32,7 @@ export default defineConfig({
   integrations: [
     sitemap(),
     alpinejs({
-      entrypoint: '/src/entrypoint.js' // <--- Agrega esto
+        entrypoint: '/src/entrypoint.js' // <--- Agrega esto
     })
   ]
 });

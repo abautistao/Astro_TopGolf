@@ -7,16 +7,16 @@ import Layout from "../../../layouts/Layout.astro"; // Importamos el Layout prin
 import { getAllPages } from "../../../lib/strapi.js";
 export const prerender = true;
 
-export async function getStaticPaths() {
+export async function getStaticPaths(page) {
+  
   const pages = await getAllPages();
 
   if (!pages) {
     return [];
   }
-  return [
-    { params: { lang: "es" } },
-    { params: { lang: "en" } },
-  ];
+  return [{
+    params: { lang: page.locale ?? 'en', slug: page.slug },
+  }];
 }
 ---
 
