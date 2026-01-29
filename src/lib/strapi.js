@@ -4,6 +4,7 @@ async function fetchAPI(endpoint) {
   // Asegurarse de que el endpoint no tenga una barra inicial para evitar dobles barras
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
   const url = new URL(cleanEndpoint, STRAPI_API_URL);
+  console.log(url.toString())
   try {
     const response = await fetch(url.toString());
     if (!response.ok) {
