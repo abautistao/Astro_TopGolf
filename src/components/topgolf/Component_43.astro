@@ -21,6 +21,7 @@ export interface Props {
     imagen_decorativa_mobile?: any;
     alt_imagen_decorativa_mobile?: string;
     Boton: Boton[];
+    imagen_mobile?: any;
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -38,6 +39,7 @@ const {
     imagen_decorativa_mobile,
     alt_imagen_decorativa_mobile,
     Boton,
+    imagen_mobile
 } = Astro.props;
 
 const placeholder = {
@@ -83,6 +85,8 @@ const decorativeMobileUrl =
 const descriptionHtml = stringifyRichText(
     descripcion || placeholder.descripcion,
 );
+const heroBackgroundUrlMobile =
+    getStrapiUrl(imagen_mobile) || getStrapiUrl(imagen_fondo) || placeholder.imagen_fondo_url;
 
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
     ? [Boton]
@@ -102,7 +106,14 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
     <Image
         src={heroBackgroundUrl}
         alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
-        class="absolute inset-0 object-cover w-full h-[40%] md:h-full object-[35%_top] md:object-top"
+        class="absolute inset-0 object-cover w-full h-[40%] md:h-full object-[35%_top] md:object-top hidden md:block"
+        inferSize={true}
+    />
+
+    <Image
+        src={heroBackgroundUrlMobile}
+        alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
+        class="absolute inset-0 object-cover w-full h-[40%] md:h-full object-[35%_top] md:object-top block md:hidden"
         inferSize={true}
     />
     
