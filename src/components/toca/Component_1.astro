@@ -34,6 +34,12 @@ const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
 const strapiImageUrl = getStrapiUrl(imagen);
 const descripcionHtml = stringifyRichText(descripcion);
 
+// --- LÓGICA DE DETECCIÓN DE VIDEO ---
+// Obtenemos la extensión del archivo o el tipo mime desde Strapi
+const mime = imagen?.data?.attributes?.mime || "";
+const ext = imagen?.data?.attributes?.ext || "";
+const isVideo = mime.startsWith("video/") || ext === ".mp4" || strapiImageUrl?.endsWith(".mp4");
+
 const altText =
     imagen?.data?.attributes?.alternativeText ||
     tituloMostrar ||
@@ -138,14 +144,26 @@ const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.5;
             class="w-full lg:w-[80%] h-[400px] lg:h-full relative flex items-center justify-center p-0 lg:pt-15 lg:pb-15 lg:pr-15 lg:pl-0 z-10"
         >
             <div class="w-full h-full z-0 relative image-anim opacity-0">
-                <Image
-                    src={strapiImageUrl ||
-                        "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
-                    alt={altText}
-                    class="w-full h-full object-cover object-center"
-                    inferSize={true}
-                    loading="eager"
-                />
+                {/* LOGICA CONDICIONAL: VIDEO VS IMAGEN */}
+                {isVideo ? (
+                    <video
+                        src={strapiImageUrl}
+                        class="w-full h-full object-cover object-center"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                    ></video>
+                ) : (
+                    <Image
+                        src={strapiImageUrl ||
+                            "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo"}
+                        alt={altText}
+                        class="w-full h-full object-cover object-center"
+                        inferSize={true}
+                        loading="eager"
+                    />
+                )}
             </div>
         </div>
     </div>
