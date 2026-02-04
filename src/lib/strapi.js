@@ -4,7 +4,7 @@ async function fetchAPI(endpoint) {
   // Asegurarse de que el endpoint no tenga una barra inicial para evitar dobles barras
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
   const url = new URL(cleanEndpoint, STRAPI_API_URL);
-  
+
   try {
     const response = await fetch(url.toString());
     if (!response.ok) {
@@ -201,6 +201,13 @@ export const getLocalizedUrl = (url, locale = 'en') => {
 
   // Remove leading slash for consistency
   const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+
+  // Check multi-language config
+  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== 'false'; // Default to true if not set
+
+  if (!isMultiLanguage) {
+    return `/${cleanPath}`;
+  }
 
   return `/${locale}/${cleanPath}`;
 };

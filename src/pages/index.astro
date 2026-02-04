@@ -1,4 +1,34 @@
 ---
-export const prerender = false;
-return Astro.redirect("/en");
+// src/pages/index.astro
+import Layout from "../layouts/Layout.astro";
+import { getPageBySlug } from "../lib/strapi.js";
+import RenderBlocks from "../components/RenderBlocks.astro";
+
+// Environment Configuration
+const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+// LOGIC 1: Multi-language Mode enabled -> Redirect to /{defaultLocale}
+if (isMultiLanguage) {
+    return Astro.redirect(`/${defaultLocale}`);
+}
+
+// LOGIC 2: Single-language Mode -> Render Home Page directly at root (/)
+// Fetch home page content
+const pagina = await getPageBySlug("home", defaultLocale);
+
+if (!pagina) {
+    return new Response(
+        'Contenido de la página principal no encontrado en Strapi. Asegúrate de que el slug "home" existe y que la API tiene permisos para acceder.',
+        { status: 404, statusText: "No Encontrado" },
+    );
+}
+
+const { titulo, ContenidoPagina, SEO } = pagina;
 ---
+
+<Layout seo={SEO}>
+    <main class="mx-auto container-full">
+        <RenderBlocks blocks={ContenidoPagina} />
+    </main>
+</Layout>

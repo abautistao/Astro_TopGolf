@@ -1,0 +1,64 @@
+---
+// src/pages/[...slug].astro
+// This file handles dynamic routes at the ROOT level (e.g. /about, /contact)
+// specifically for Single-Language mode where we don't want /es/ or /en/ prefixes.
+
+import Layout from "../layouts/Layout.astro";
+import { getAllPages, getPageBySlug } from "../lib/strapi.js";
+import RenderBlocks from "../components/RenderBlocks.astro";
+
+// 1. Get configuration
+const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+// 2. Static Paths (for SSG)
+// Only generate these paths if SINGLE LANGUAGE mode is active.
+// If multi-lang is active, return empty array so this file doesn't generate conflicting routes.
+export async function getStaticPaths() {
+    const isMulti = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+    if (isMulti) {
+        return []; // Don't generate root routes in multi-lang mode
+    }
+
+    // Fetch all pages for the default locale
+    const locale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+    const pages = await getAllPages(locale);
+
+    if (!pages) return [];
+
+    return pages.map((page) => ({
+        params: { slug: page.slug },
+        props: { page },
+    }));
+}
+
+// 3. Runtime Logic
+// If we hit this page but are in Multi-language mode (in SSR/Dev), we should likely 404
+// or redirect to filtered route. But StaticPaths handling effectively disables it for build.
+if (isMultiLanguage) {
+    return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const { slug } = Astro.params;
+let page = Astro.props.page;
+
+// Fallback fetch if not passed via props (SSR scenario or dev cache)
+if (!page) {
+    page = await getPageBySlug(slug, defaultLocale);
+}
+
+if (!page) {
+    return new Response(null, {
+        status: 404,
+        statusText: "Prop not found",
+    });
+}
+
+const { titulo, ContenidoPagina, SEO } = page;
+---
+
+<Layout seo={SEO}>
+    <main class="mx-auto container-full">
+        <RenderBlocks blocks={ContenidoPagina} />
+    </main>
+</Layout>

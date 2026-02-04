@@ -3,6 +3,12 @@ const { class: className, alternateLinks = {} } = Astro.props;
 const currentPath = Astro.url.pathname;
 const currentLang = Astro.params.lang || "en";
 
+// Environment Check
+const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+if (!isMultiLanguage) {
+    return; // Don't render switcher if single language
+}
+
 const locales = [
     { code: "es", label: "Español" },
     { code: "en", label: "English" },
