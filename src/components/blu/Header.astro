@@ -32,7 +32,13 @@ const ctaButtonRaw = headerData?.Boton || {
     url: "/reservar",
 };
 
-const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
+// Ensure the CTA button URL is localized
+const ctaButtonLocalized = {
+    ...ctaButtonRaw,
+    url: getLocalizedUrl(ctaButtonRaw.url, locale)
+};
+
+const buttons: Boton[] = [ctaButtonLocalized];
 ---
 
 <header
