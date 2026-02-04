@@ -1,0 +1,165 @@
+---
+// src/components/blu/Component_16_Blu.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText, getBlogBySlug } from "../../lib/strapi.js";
+
+interface Noticia {
+    id: number;
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    slug?: string;
+    enlace?: string;
+}
+
+interface Props {
+    titulo?: string;
+    blogs?: Noticia[] | { data: any[] }; // Support Array or Strapi Relation
+    fondoImagen?: any;
+    codigoColorFondo?: string;
+    filas?: number; // New prop for number of rows
+}
+
+const {
+    titulo = "MÁS NOTICIAS",
+    blogs: rawNoticias,
+    fondoImagen,
+    codigoColorFondo = "#EBE5DE",
+    filas = 2, // Default to 2 rows
+} = Astro.props;
+
+// Normalize 'noticias' from either direct array or Strapi relation
+let noticias: Noticia[] = [];
+
+if (rawNoticias) {
+    const dataList = Array.isArray(rawNoticias) ? rawNoticias : (rawNoticias.data || []);
+    
+    // Async map to hydration full data if needed
+    noticias = await Promise.all(dataList.map(async (item: any) => {
+        // Basic attr extraction
+        let attr = item.attributes || item; 
+        const id = item.id || attr.id;
+        const slug = attr.slug;
+
+        // HYDRATION STRATEGY: 
+        if (slug && !attr.SEO && !attr.imagen?.data) {
+             const fullBlog = await getBlogBySlug(slug);
+             if (fullBlog) {
+                 attr = fullBlog.attributes || fullBlog; // Update attributes with full data
+             }
+        }
+        
+        // SEO Fallbacks
+        const seo = attr.SEO || {};
+        
+        return {
+            id: id,
+            titulo: attr.titulo || seo.metaTitle || "Sin Título",
+            descripcion: attr.descripcion || attr.description || attr.resumen || attr.summary || seo.metaDescription || "", 
+            imagen: attr.imagen || attr.MainImage || attr.image || attr.imagen_destacada || attr.cover || seo.metaImage, 
+            slug: attr.slug,
+            enlace: attr.enlace
+        };
+    }));
+}
+
+// Fallback data if empty
+if (noticias.length === 0) {
+    noticias = [
+        {
+            id: 1,
+            titulo: "COMO VIVIR LO MEJOR EL MAR CARIBE",
+            descripcion: "Lorem ipsum dolor sit amet consectetur. Diam sed aliquet arcu eget nisl turpis amet. Vestibulum imperdiet molestie euismod dui arcu amet elit.",
+            imagen: "https://placehold.co/600x600/e2e8f0/1e293b?text=News+1",
+            slug: "blog-post-1"
+        },
+        {
+             id: 2,
+             titulo: "EXPERIENCIAS QUE FLUYEN CON EL VIENTO",
+             descripcion: "Quis quam viverra vulputate pretium morbi lobortis. Leo eu diam in id mi. Ut eget blandit velit quisque tellus neque faucibus.",
+             imagen: "https://placehold.co/600x600/e2e8f0/1e293b?text=News+2",
+             slug: "blog-post-2"
+        },
+        {
+             id: 3,
+             titulo: "LA MAGIA DE UN ATARDECER EN BLU",
+             descripcion: "Non ultrices id adipiscing ut. Eleifend faucibus urna sed enim volutpat feugiat aenean amet sed. Tortor massa facilisis at viverra facilisi.",
+             imagen: "https://placehold.co/600x600/e2e8f0/1e293b?text=News+3",
+             slug: "blog-post-3"
+        }
+    ];
+}
+
+// Filter logic: limit items based on rows * 3 columns
+const itemsToShow = filas * 3;
+const displayedNoticias = noticias.slice(0, itemsToShow);
+
+// Background Logic
+const bgUrl = fondoImagen ? getStrapiUrl(fondoImagen) : null;
+const bgColor = codigoColorFondo;
+
+const styleAttribute = bgUrl 
+  ? `background-image: url('${bgUrl}'); background-size: cover; background-position: center;` 
+  : `background-color: ${bgColor};`;
+
+---
+
+<section class="w-full py-16 md:py-24 overflow-hidden relative" style={styleAttribute}>
+    <div class="max-w-[1440px] mx-auto px-6">
+        
+        <!-- Header -->
+        <h2 class="text-3xl md:text-5xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] uppercase text-center mb-12 md:mb-16">
+            {titulo}
+        </h2>
+
+        <!-- Grid Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            {displayedNoticias.map((item) => (
+                <div class="w-full flex-shrink-0">
+                    <div class="flex flex-col h-full group">
+                        <!-- Image -->
+                        <div class="w-full h-64 md:h-80 overflow-hidden mb-6 relative">
+                            {(() => {
+                                const imgSrc = getStrapiUrl(item.imagen) || item.imagen;
+                                const finalSrc = imgSrc || "https://placehold.co/600x600/e2e8f0/1e293b?text=No+Image";
+                                
+                                return (
+                                    <Image
+                                        src={finalSrc}
+                                        alt={item.titulo}
+                                        width={600}
+                                        height={600}
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                );
+                            })()}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex flex-col flex-grow">
+                            <h3 class="text-xl md:text-2xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] uppercase leading-tight mb-4">
+                                {item.titulo}
+                            </h3>
+                            
+                            <div class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-sm md:text-base leading-relaxed opacity-80 mb-4 line-clamp-4">
+                                {
+                                    item.descripcion && item.descripcion.includes('<') 
+                                    ? <Fragment set:html={stringifyRichText(item.descripcion)} />
+                                    : <p>{item.descripcion}</p>
+                                }
+                            </div>
+                            
+                            <a 
+                                href={item.enlace || `/${Astro.params.lang || 'en'}/blog/${item.slug}`} 
+                                class="text-[#1D91B4] font-bold font-[family-name:var(--font-blu-body)] text-sm md:text-base hover:opacity-80 mt-auto inline-block"
+                            >
+                                Read More...
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+    </div>
+</section>
