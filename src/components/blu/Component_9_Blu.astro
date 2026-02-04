@@ -57,40 +57,41 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
     }
     <!-- Header -->
     <div class="max-w-[1440px] mx-auto mb-8 relative z-10 md:px-0">
-        <div
-            class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] md:items-end gap-4"
-        >
-            <!-- Left: Subtitulo Superior -->
-            <div class="text-left order-2 md:order-1">
-                {
-                    subtitulo_superior && (
-                        <span class="block text-xl md:text-2xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] opacity-50 ">
-                            {subtitulo_superior}
-                        </span>
-                    )
-                }
-            </div>
-
-            <!-- Center: Title -->
-            <div class="text-center order-1 md:order-2">
+        <div class="flex flex-col gap-4 md:gap-8">
+            <!-- Row 1: Center Title -->
+            <div class="text-center w-full">
                 {
                     titulo && (
-                        <h2 class="text-4xl md:text-6xl font-[family-name:var(--font-blu-title)] md:mb-30 text-[var(--surface-brand-primary)] leading-none uppercase">
+                        <h2 class="text-4xl md:text-6xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-none uppercase">
                             {titulo}
                         </h2>
                     )
                 }
             </div>
 
-            <!-- Right: Subtitulo Inferior -->
-            <div class="text-right order-3 md:order-3">
-                {
-                    subtitulo_inferior && (
-                        <span class="block text-xl md:text-2xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] opacity-50">
-                            {subtitulo_inferior}
-                        </span>
-                    )
-                }
+            <!-- Row 2: Subtitles (Left - Right) -->
+            <div class="grid grid-cols-2 items-center w-full">
+                <!-- Left: Subtitulo Superior -->
+                <div class="text-left">
+                    {
+                        subtitulo_superior && (
+                            <span class="block text-xl md:text-2xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] opacity-50">
+                                {subtitulo_superior}
+                            </span>
+                        )
+                    }
+                </div>
+
+                <!-- Right: Subtitulo Inferior -->
+                <div class="text-right">
+                    {
+                        subtitulo_inferior && (
+                            <span class="block text-md md:text-2xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] opacity-50">
+                                {subtitulo_inferior}
+                            </span>
+                        )
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -262,12 +263,19 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                     </div>
                                 </div>
                                 {/* Mobile backup for items 2-5 (Hidden on Desktop) */}
-                                <div class="md:hidden grid grid-cols-2 gap-4 h-48 mt-4">
-                                    {group.slice(1, 4).map((item) => (
+                                {/* Mobile backup for items 2-5 (Hidden on Desktop) */}
+                                <div class="md:hidden grid grid-cols-2 gap-4 mt-4">
+                                    {group.slice(1, 5).map((item, i, arr) => (
                                         <a
                                             href={getStrapiUrl(item)}
                                             data-fancybox={componentId}
-                                            class="relative overflow-hidden rounded-xl h-full w-full"
+                                            class:list={[
+                                                "relative overflow-hidden rounded-xl h-40 w-full",
+                                                arr.length % 2 !== 0 &&
+                                                i === arr.length - 1
+                                                    ? "col-span-2"
+                                                    : "",
+                                            ]}
                                         >
                                             {isVideo(item.mime) ? (
                                                 <video
