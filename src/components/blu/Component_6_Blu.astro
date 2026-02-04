@@ -18,6 +18,8 @@ interface ExperienceCard {
     beneficios: any; // Cambiado a any para soportar RichText de Strapi
     precioOferta: string;
     precioRegular: string;
+    LabelPrecioOferta: string;
+    LabelPrecioRegular: string;
     boton?: BotonData; // Objeto de botón reutilizable
 }
 
@@ -121,6 +123,8 @@ const {
             ],
             precioOferta: "$1099 MXM",
             precioRegular: "$1999 MXM",
+            LabelPrecioOferta: "Precio Oferta",
+            LabelPrecioRegular: "Precio Regular",
             boton: {
                 id: 1,
                 texto: "RESERVA AQUÍ",
@@ -211,6 +215,8 @@ const {
             ],
             precioOferta: "$799 MXM",
             precioRegular: "$1099 MXM",
+            LabelPrecioOferta: "Precio Oferta",
+            LabelPrecioRegular: "Precio Regular",
             boton: {
                 id: 2,
                 texto: "RESERVA AQUÍ",
@@ -222,11 +228,11 @@ const {
 } = Astro.props;
 ---
 
-<section class="w-full py-16 md:py-24 px-6 overflow-hidden">
+<section class="w-full py-5 md:py-24 px-6 overflow-hidden">
     <div class="max-w-[1440px] mx-auto">
         {/* --- SECCIÓN EXPERIENCIAS --- */}
         <h2
-            class="text-4xl md:text-7xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] text-center mb-16 md:mb-24 uppercase"
+            class="text-4xl md:text-7xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] text-center mb-15 md:mb-24 uppercase"
         >
             {tituloExperiencias}
         </h2>
@@ -266,18 +272,18 @@ const {
                             <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-8 mb-8 relative">
                                 <div class="absolute left-1/2 top-8 bottom-0 w-px bg-gray-200" />
                                 <div class="text-center">
-                                    <p class="text-[16px] uppercase tracking-widest text-[var(--neutral-background-subtle)] font-black mb-2 font-[family-name:var(--font-blu-body)]">
-                                        PRECIO DE OFERTA
+                                    <p class="text-[15px] uppercase tracking-widest text-[var(--neutral-background-subtle)] font-black mb-2 font-[family-name:var(--font-blu-body)]">
+                                        {exp.LabelPrecioOferta}
                                     </p>
-                                    <p class="text-3xl md:text-4xl font-extrabold  text-[var(--neutral-background-subtle)] font-[family-name:var(--font-blu-body)] tracking-tight">
+                                    <p class="text-2xl md:text-4xl font-extrabold  text-[var(--neutral-background-subtle)] font-[family-name:var(--font-blu-body)] tracking-tight">
                                         {exp.precioOferta}
                                     </p>
                                 </div>
                                 <div class="text-center">
-                                    <p class="text-[16px] uppercase tracking-widest text-[var(--surface-brand-primary)] font-black mb-2 font-[family-name:var(--font-blu-body)]">
-                                        PRECIO REGULAR
+                                    <p class="text-[15px] uppercase tracking-widest text-[var(--surface-brand-primary)] font-black mb-2 font-[family-name:var(--font-blu-body)]">
+                                        {exp.LabelPrecioRegular}
                                     </p>
-                                    <p class="text-2xl md:text-3xl font-extrabold text-[var(--surface-brand-primary)] line-through font-[family-name:var(--font-blu-body)] tracking-tight">
+                                    <p class="text-2xl md:text-4xl font-extrabold text-[var(--surface-brand-primary)] line-through font-[family-name:var(--font-blu-body)] tracking-tight">
                                         {exp.precioRegular}
                                     </p>
                                 </div>
