@@ -164,7 +164,7 @@ const styleAttribute = bgUrl
                                 </div>
                                 
                                 <a 
-                                    href={item.enlace || `/blog/${item.slug}`} 
+                                    href={item.enlace || `/${Astro.params.lang || 'en'}/blog/${item.slug}`} 
                                     class="text-[#1D91B4] font-bold font-[family-name:var(--font-blu-body)] text-sm md:text-base hover:opacity-80 mt-auto inline-block"
                                 >
                                     Read More...
