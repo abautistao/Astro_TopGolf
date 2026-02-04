@@ -25,6 +25,26 @@ const {
     social_tiktok = "#",
     social_whatsapp = "#",
 } = Astro.props;
+
+// Localization Logic
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEn = currentLang === 'en';
+
+const t = {
+    placeholder_nombre: isEn ? "Full Name" : "Tu Nombre Completo",
+    placeholder_email: "Email",
+    placeholder_telefono: isEn ? "Phone Number" : "Número de Teléfono",
+    placeholder_sujeto: isEn ? "Subject" : "Sujeto",
+    placeholder_mensaje: isEn ? "Message" : "Mensaje",
+    boton_enviar: isEn ? "Send Message" : "Enviar Mensaje",
+    label_ubicacion: isEn ? "Location" : "Nos ubicamos en:",
+    label_contacto: isEn ? "Contact" : "Contacto:",
+    label_horario: isEn ? "Hours" : "Horario:",
+    label_conocenos: isEn ? "Get to know us" : "Conócenos a través de:",
+    label_phone: isEn ? "Phone" : "Teléfono"
+};
 ---
 
 <section class="w-full bg-[#eeeadd] py-12 md:py-24 relative overflow-hidden">
@@ -67,7 +87,7 @@ const {
                     <div>
                         <input
                             type="text"
-                            placeholder="Tu Nombre Completo"
+                            placeholder={t.placeholder_nombre}
                             class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
                         />
                     </div>
@@ -76,12 +96,12 @@ const {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <input
                             type="email"
-                            placeholder="Email"
+                            placeholder={t.placeholder_email}
                             class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
                         />
                         <input
                             type="tel"
-                            placeholder="Número de Teléfono"
+                            placeholder={t.placeholder_telefono}
                             class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
                         />
                     </div>
@@ -90,7 +110,7 @@ const {
                     <div>
                         <input
                             type="text"
-                            placeholder="Sujeto"
+                            placeholder={t.placeholder_sujeto}
                             class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
                         />
                     </div>
@@ -99,7 +119,7 @@ const {
                     <div>
                         <textarea
                             rows="6"
-                            placeholder="Mensaje"
+                            placeholder={t.placeholder_mensaje}
                             class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all resize-none"
                         ></textarea>
                     </div>
@@ -110,7 +130,7 @@ const {
                             type="submit"
                             class="bg-[var(--surface-brand-primary)] text-white font-[family-name:var(--font-blu-body)] font-medium md:font-semibold text-lg px-8 py-3 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2"
                         >
-                            Enviar Mensaje
+                            {t.boton_enviar}
                             <i
                                 class="fa-solid fa-arrow-right text-sm hidden md:inline-block"
                             ></i>
@@ -132,7 +152,7 @@ const {
                             <h3
                                 class="text-white text-lg font-normal mb-2 opacity-90"
                             >
-                                Nos ubicamos en:
+                                {t.label_ubicacion}
                             </h3>
                             <p class="text-white/80 leading-relaxed max-w-xs">
                                 {direccion}
@@ -144,10 +164,10 @@ const {
                             <h3
                                 class="text-white text-lg font-normal mb-2 opacity-90"
                             >
-                                Contacto:
+                                {t.label_contacto}
                             </h3>
                             <div class="space-y-1 text-white/80">
-                                <p>Phone: {telefono_contacto}</p>
+                                <p>{t.label_phone}: {telefono_contacto}</p>
                                 <p>Email: {email_contacto}</p>
                             </div>
                         </div>
@@ -157,10 +177,10 @@ const {
                             <h3
                                 class="text-white text-lg font-normal mb-2 opacity-90"
                             >
-                                Horario:
+                                {t.label_horario}
                             </h3>
                             <div class="space-y-1 text-white/80">
-                                <p>Phone: {telefono_horario}</p>
+                                <p>{t.label_phone}: {telefono_horario}</p>
                                 <p>{horario_dias}</p>
                             </div>
                         </div>
@@ -170,7 +190,7 @@ const {
                             <h3
                                 class="text-white text-lg font-normal mb-6 opacity-90"
                             >
-                                Conócenos a través de:
+                                {t.label_conocenos}
                             </h3>
                             <div class="flex items-center gap-4">
                                 {
