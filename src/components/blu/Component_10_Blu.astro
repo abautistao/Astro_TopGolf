@@ -34,9 +34,10 @@ const buttons: Boton[] = Array.isArray(boton) ? boton : boton ? [boton] : [];
 // Placeholders for local dev if no button provided
 if (buttons.length === 0) {
     buttons.push({
+        id: 0,
         texto: "RESERVA TU LUGAR",
         url: "#",
-        estilo: "primary", // Ajustar según estilos disponibles
+        tipo: "version_4", // Dark Blue Background
     });
 }
 ---
@@ -46,12 +47,14 @@ if (buttons.length === 0) {
     <!-- For now, plain beige background as base -->
 
     <div class="max-w-[1440px] mx-auto px-6 relative">
-        <div class="flex flex-col md:flex-row items-center relative">
+        <div
+            class="flex flex-col md:flex-row items-center relative bg-transparent md:bg-white shadow-none md:shadow-sm"
+        >
             <!-- Text Card Container -->
             <div
-                class="w-full md:w-1/2 relative z-20 md:-mr-20 order-1 md:order-1 mb-6 md:mb-0"
+                class="w-full md:w-1/2 relative z-20 md:-mr-20 order-1 md:order-1 mb-0 md:mb-0 bg-white md:bg-transparent shadow-sm md:shadow-none"
             >
-                <div class="bg-white p-8 md:p-16 shadow-sm relative">
+                <div class="p-8 md:p-16 relative">
                     <!-- Top Left Quote Icon -->
                     <div class="absolute top-8 left-8 text-[#98a2b3]">
                         <i
@@ -62,13 +65,13 @@ if (buttons.length === 0) {
                     <!-- Content -->
                     <div class="pt-8 md:pt-4">
                         <h2
-                            class="text-3xl md:text-5xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-tight mb-6"
+                            class="text-3xl md:text-5xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] leading-tight mb-6 text-center md:text-left"
                         >
                             {titulo}
                         </h2>
 
                         <div
-                            class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-base md:text-lg leading-relaxed opacity-80 mb-8 max-w-md"
+                            class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-base md:text-lg leading-relaxed opacity-80 mb-8 max-w-md mx-auto md:mx-0 text-center md:text-left"
                         >
                             <Fragment set:html={descripcionHtml} />
                         </div>
@@ -90,40 +93,8 @@ if (buttons.length === 0) {
 
             <!-- Image Container -->
             <div
-                class="w-full md:w-2/3 h-[400px] md:h-[600px] relative order-2 md:order-2"
+                class="w-full md:w-2/3 h-[400px] md:h-[600px] relative order-2 md:order-2 md:-mt-16 md:-mr-10"
             >
-                <!-- Dot Pattern Decoration (Bottom Left of Image) -->
-                <div
-                    class="absolute -bottom-6 -left-6 md:-bottom-12 md:-left-12 z-0 hidden md:block"
-                >
-                    <svg
-                        width="200"
-                        height="200"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <defs>
-                            <pattern
-                                id="dot-pattern"
-                                x="0"
-                                y="0"
-                                width="20"
-                                height="20"
-                                patternUnits="userSpaceOnUse"
-                            >
-                                <circle
-                                    cx="2"
-                                    cy="2"
-                                    r="2"
-                                    class="text-[#d0c9c0]"
-                                    fill="currentColor"></circle>
-                            </pattern>
-                        </defs>
-                        <rect width="200" height="200" fill="url(#dot-pattern)"
-                        ></rect>
-                    </svg>
-                </div>
-
                 <div class="relative w-full h-full z-10 overflow-hidden">
                     {
                         imagen ? (
