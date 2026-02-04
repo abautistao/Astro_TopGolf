@@ -91,6 +91,7 @@ const gridClasses = [
                                     alt={item.titulo}
                                     width={index === 0 ? 1000 : 500}
                                     height={index === 1 ? 1000 : 500}
+                                    loading="eager"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                             )}
@@ -133,6 +134,7 @@ const gridClasses = [
                                 alt={items[0].titulo}
                                 width={800}
                                 height={600}
+                                loading="eager"
                                 class="w-full h-full object-cover"
                             />
                         )}

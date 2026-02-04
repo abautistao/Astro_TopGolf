@@ -40,22 +40,33 @@ const desktopUrl = getStrapiUrl(fondoDesktop);
 const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
 ---
 
-<section
-    class:list={[
-        "relative z-30 w-full overflow-visible bg-cover bg-center flex flex-col",
-        fondoFijo ? "bg-fixed" : "bg-scroll",
-    ]}
-    style={desktopUrl ? `background-image: url('${desktopUrl}');` : ""}
->
-    {/* Estilos específicos para el cambio de imagen y fix de mobile */}
-    <style define:vars={{ desktopUrl, mobileUrl }}>
-        section {
-            background-image: url(var(--desktopUrl));
+<section class="relative z-30 w-full overflow-visible flex flex-col">
+    {/* Fondo separado optimizado */}
+    <div
+        class:list={[
+            "top-0 left-0 bg-cover bg-center bg-no-repeat pointer-events-none -z-10 custom-background-layer",
+            fondoFijo
+                ? "fixed w-screen h-screen will-change-transform"
+                : "absolute w-full h-full",
+        ]}
+        style={{
+            "--bg-desktop": `url('${desktopUrl}')`,
+            "--bg-mobile": `url('${mobileUrl}')`,
+        }}
+    >
+    </div>
+
+    <style>
+        .custom-background-layer {
+            background-image: var(--bg-desktop);
         }
         @media (max-width: 768px) {
-            section {
-                background-image: url(var(--mobileUrl));
-                background-attachment: scroll !important;
+            .custom-background-layer {
+                background-image: var(--bg-mobile);
+                /* En móvil forzamos scroll normal para mejor rendimiento y UX */
+                position: absolute !important;
+                width: 100% !important;
+                height: 100% !important;
             }
         }
     </style>
