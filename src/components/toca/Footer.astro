@@ -88,7 +88,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
             <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
                 <div class="flex-grow flex items-center">
                     {title && (
-                        <h2 class="font-bold uppercase text-4xl md:text-4xl leading-[0.9] tracking-tighter break-words">
+                        <h2 class="font-bold uppercase text-4xl md:text-4xl  break-words">
                             {title}
                         </h2>
                     )}
@@ -109,7 +109,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 
             <div class="flex flex-col w-full order-1 lg:order-2 self-start lg:self-center">
                 {locationsTitle && (
-                    <h3 class="font-bold uppercase text-4xl md:text-2xl tracking-tighter mb-4 text-center lg:text-left w-full">
+                    <h3 class="font-bold uppercase text-4xl md:text-2xl  mb-4 text-center lg:text-left w-full">
                         {locationsTitle}
                     </h3>
                 )}
@@ -119,11 +119,11 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                         <li>
                             <a href={item.url} class="group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200">
                                 <div class="flex flex-col text-left">
-                                    <span class="font-(family-name:--font-sharp-sans-bold) font-bold text-base leading-tight">
+                                    <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base ">
                                         {item.name}
                                     </span>
                                     {item.status && (
-                                        <span class="font-(family-name:--font-sharp-sans-bold) text-base font-bold opacity-80 mt-0.5">
+                                        <span class="font-(family-name:--font-sharp-sans-medium) text-base font-bold">
                                             {item.status}
                                         </span>
                                     )}
@@ -137,7 +137,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 
             <div class="flex flex-col w-full order-2 lg:order-3 text-center lg:text-left self-start lg:self-center">
                 {newsletterTitle && (
-                    <h3 class="font-black uppercase text-3xl md:text-4xl tracking-tighter mb-4 mt-4 lg:mt-0">
+                    <h3 class="font-black uppercase text-base md:text-base  mb-4 mt-4 lg:mt-0">
                         {newsletterTitle}
                     </h3>
                 )}
@@ -145,13 +145,12 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                 <form class="flex w-full mb-3 gap-2">
                     <input type="email" placeholder="Your email" class="w-full bg-[#F3F4F6] px-3 py-2 border-none focus:outline-none placeholder-gray-500 font-bold text-sm" />
                     <div class="flex-shrink-0">
-                        {/* Se renderiza siempre, usando los datos mapeados */}
                         <ButtonGroup botones={newsletterButton} />
                     </div>
                 </form>
 
                 {newsletterDescription && (
-                    <p class="font-(family-name:--font-sharp-sans-medium) text-sm md:text-sm font-medium mb-6 leading-tight opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none">
+                    <p class="font-(family-name:--font-sharp-sans-medium) text-sm md:text-sm font-medium mb-6  opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none">
                         {newsletterDescription}
                     </p>
                 )}
@@ -160,7 +159,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                     {extraIconLinks.map((link: any) => (
                         <a href={link.url} class="text-base flex items-center gap-2 group">
                             <span class="text-base text-[var(--surface-brand-primary)] flex items-center" set:html={link.iconHtml}></span>
-                            <span class="font-bold uppercase text-base tracking-tighter underline decoration-solid decoration-black">
+                            <span class="font-bold uppercase text-base  underline decoration-solid decoration-black">
                                 {link.text}
                             </span>
                         </a>
@@ -186,7 +185,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
             </div>
 
             <div class="hidden lg:flex w-full flex-row justify-between items-center h-full">
-                <div class="flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3">
+                <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3">
                     {linksLeft.map((link: any) => (
                         <a href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
                     ))}

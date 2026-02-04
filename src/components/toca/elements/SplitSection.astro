@@ -28,34 +28,38 @@ const finalImgAlt = imgAlt || "Imagen por defecto";
 
 const configs = {
     version_1: {
-    // (Rosa)
-    bg:         'bg-[var(--surface-brand-secondary)]',
-    textTitle:  'text-[var(--surface-brand-primary)]',
-    textContent:'text-[var(--surface-brand-primary)]',
-    direction:  'md:flex-row',
-    textPadding:'md:pl-16 md:pr-8',
-    showDecoration: true
+        // (Rosa - Imagen Derecha)
+        bg:         'bg-[var(--surface-brand-secondary)]',
+        textTitle:  'text-[var(--surface-brand-primary)]',
+        textContent:'text-[var(--surface-brand-primary)]',
+        direction:  'md:flex-row',
+        textPadding:'md:pl-16 md:pr-8',
+        showDecoration: true, // Esta propiedad ya no se usa, pero se puede dejar
+        // Si la imagen está a la derecha, queremos margen a la derecha (20px)
+        imageMargin: 'md:mr-[20px]'
     },
     version_2: {
-        // (Azul)
+        // (Azul - Imagen Izquierda)
         bg:         'bg-[var(--surface-brand-primary)]',
         textTitle:  'text-[var(--accent-feedback-strong)]',
         textContent:'text-[var(--accent-feedback-strong)]',
         direction:  'md:flex-row-reverse',
         textPadding:'md:pr-16 md:pl-8',
-        showDecoration: false
+        showDecoration: false,
+        // Si la imagen está a la izquierda, queremos margen a la izquierda (20px)
+        imageMargin: 'md:ml-[20px]'
     }
 };
 
 const currentStyle = configs[tipo] || configs.version_1;
 ---
 
-<section class={`flex flex-col w-full min-h-[450px] md:min-h-[550px] overflow-hidden ${currentStyle.direction} ${currentStyle.bg}`}>
+<section class={`flex flex-col w-full min-h-[450px] md:min-h-[550px] overflow-visible ${currentStyle.direction} ${currentStyle.bg}`}>
 
   {/* LADO DE TEXTO */}
     <div class={`w-full md:w-1/2 flex flex-col justify-center md:justify-start items-start pt-10 pb-0 md:pt-20 md:pb-10 px-6 z-10 ${currentStyle.textPadding}`}>
 
-        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium uppercase text-xl md:text-xl leading-none mb-5 tracking-wide`}>
+        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium uppercase text-xl md:text-4xl leading-none mb-5 tracking-wide`}>
             {titulo}
         </h2>
 
@@ -72,19 +76,15 @@ const currentStyle = configs[tipo] || configs.version_1;
     </div>
 
   {/* LADO DE IMAGEN */}
-    <div class="w-full md:w-1/2 flex justify-center items-center md:items-start px-6 pb-6 pt-4 md:pt-20 md:px-8 relative">
+    <div class={`w-full md:w-1/2 flex justify-center items-center md:items-start px-6 pb-6 pt-4 md:pt-20 relative ${currentStyle.imageMargin}`}>
 
         <div class="relative w-full max-w-2xl">
 
-            {currentStyle.showDecoration && (
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 flex items-center justify-center pointer-events-none">
-                <img
-                    src="https://media.graphassets.com/D9j8kF5sRny1q7gXwZ0A"
-                    alt="Decoration"
-                    class="w-[140%] max-w-none h-auto animate-[spin_10s_linear_infinite] opacity-80 mix-blend-screen"
-                />
-                </div>
-            )}
+            {/* 1. SLOT PARA EL SVG (ARE YOU GAME?) */}
+            <slot name="image-overlay" />
+
+            {/* SE HA ELIMINADO LA IMAGEN DE FONDO QUE GIRABA */}
+
             <Image
                 src={finalImgUrl}
                 alt={finalImgAlt}
@@ -95,22 +95,17 @@ const currentStyle = configs[tipo] || configs.version_1;
     </div>
 
 </section>
+
 <style>
-    .strapi-rich-text :global(p) {
-        margin-bottom: 0;
-    }
+    .strapi-rich-text :global(p) { margin-bottom: 0; }
     .strapi-rich-text :global(strong) {
-        color: var(--accent-feedback-strong) !important;
-        font-weight: bold;
+        color: var(--accent-feedback-strong) !important; font-weight: bold;
     }
     .strapi-rich-text :global(u) {
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
+        text-decoration-thickness: 2px; text-underline-offset: 3px;
     }
     .strapi-rich-text :global(a) {
         color: var(--accent-feedback-strong) !important;
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
+        text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px;
     }
 </style>

@@ -1,4 +1,5 @@
 ---
+// src/components/toca/Component_13.astro
 import { getStrapiUrl, stringifyRichText } from "../../lib/strapi";
 import SplitSection from "./elements/SplitSection.astro";
 import Component_4 from "./Component_4.astro";
@@ -12,6 +13,7 @@ interface Props {
     precio_subtitulo?: string;
     precio_descripcion?: any;
     Boton: Boton | null;
+    animacion?: boolean; // Nuevo prop
 }
 
 const {
@@ -22,6 +24,7 @@ const {
     precio_subtitulo = "FROM £12.50 PER PERSON",
     precio_descripcion,
     Boton = null,
+    animacion = false,
 } = Astro.props;
 
 // 1. Data SplitSection
@@ -43,7 +46,7 @@ const defaultPricingDesc = [
         },
         ],
     },
-    ];
+];
 const descripcionPricing = precio_descripcion || defaultPricingDesc;
 
 const botonPricing = Boton
@@ -53,7 +56,8 @@ const botonPricing = Boton
         texto: "BOOK NOW",
         url: "#",
         tipo: "version_1",
-        };
+    };
+const svgPositionClass = '-left-12 -top-12';
 ---
 
 <div class="flex flex-col w-full bg-[var(--surface-brand-primary)]">
@@ -66,7 +70,23 @@ const botonPricing = Boton
             imgAlt={altText}
             botonData={null}
             tipo="version_2"
-        />
+        >
+            {/* SLOT DEL SVG ANIMADO (ARE YOU GAME?) */}
+            {animacion && (
+                <div slot="image-overlay" class={`absolute z-0 pointer-events-none ${svgPositionClass}`}>
+                    <div class="svg-decoration">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <path id="textCirclePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" fill="none"/>
+                            <text class="svg-text-style">
+                                <textPath xlink:href="#textCirclePath" startOffset="0%">
+                                ARE YOU GAME? &nbsp; ARE YOU GAME? &nbsp; ARE YOU GAME? &nbsp;
+                                </textPath>
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            )}
+        </SplitSection>
     </div>
 
     <div class="relative z-10 w-full pointer-events-none -mt-16 md:-mt-24 lg:-mt-32 pb-16">
@@ -83,3 +103,26 @@ const botonPricing = Boton
     </div>
 
 </div>
+
+<style>
+    /* ESTILOS SVG (Copiados de Component_8) */
+    .svg-decoration {
+        width: 180px;
+        height: 180px;
+        animation: rotate-left 20s linear infinite;
+    }
+
+    .svg-text-style {
+        fill: white;
+        font-family: 'Titling Gothic FB Extended', sans-serif;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 13.5px;
+        letter-spacing: 2px;
+    }
+
+    @keyframes rotate-left {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(-360deg); }
+    }
+</style>

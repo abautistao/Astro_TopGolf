@@ -414,41 +414,63 @@ const getOptions = (optionsStr?: string) => {
         });
     });
 </script>
-
 <style>
-    /* Styling for the radio inputs to look premium */
+    /* Styling for the radio inputs and checkboxes to look premium */
     input[type="radio"],
     input[type="checkbox"] {
         appearance: none;
-        border: 2px solid [var(--accent-feedback-strong)] ;
-        background-color: transparent;
+        -webkit-appearance: none; /* Soporte Safari */
         cursor: pointer;
         position: relative;
+        /* CORRECCIÓN: Quitamos los [] y usamos background sólido para que se vea siempre */
+        border: 2px solid var(--accent-feedback-strong);
+        background-color: var(--accent-feedback-strong);
+        transition: all 0.2s ease-in-out;
     }
+
+    /* --- RADIO BUTTONS --- */
     input[type="radio"] {
-        border-radius: 9999px;
+        border-radius: 50%;
     }
+
+    /* Estado seleccionado del Radio (punto interior) */
+    input[type="radio"]:checked {
+        background-color: var(--surface-brand-primary); /* Fondo oscuro */
+        border-color: var(--accent-feedback-strong);    /* Borde claro */
+    }
+
     input[type="radio"]:checked::after {
         content: "";
         position: absolute;
-        top: 2px;
-        left: 2px;
-        right: 2px;
-        bottom: 2px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60%;
+        height: 60%;
         background-color: var(--accent-feedback-strong);
-        border-radius: 9999px;
+        border-radius: 50%;
     }
+
+    /* --- CHECKBOXES --- */
+    input[type="checkbox"] {
+        border-radius: 2px; /* Ligeramente redondeado */
+    }
+
+    /* Estado seleccionado del Checkbox */
+    input[type="checkbox"]:checked {
+        background-color: var(--accent-feedback-strong);
+        border-color: var(--accent-feedback-strong);
+    }
+
     input[type="checkbox"]:checked::after {
         content: "✓";
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: black;
-        font-weight: bold;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--surface-brand-primary);
+        font-weight: 900;
+        font-size: 0.8rem;
+        line-height: 1;
     }
 </style>

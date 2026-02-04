@@ -12,6 +12,7 @@ interface Props {
     boton?: BotonStrapi | null;
     imagen: any;
     tipo?: string;
+    animacion?: boolean; // Nuevo prop para controlar el SVG
 }
 
 const {
@@ -20,6 +21,7 @@ const {
     boton = null,
     imagen,
     tipo = "version_1",
+    animacion = false, // Por defecto false, o true según prefieras
 } = Astro.props;
 
 const descHtml = stringifyRichText(descripcion) || "<p>Descripción por defecto...</p>";
@@ -34,6 +36,12 @@ const botonData = boton ? [{
 }] : null;
 
 const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
+
+// LOGICA DE POSICION:
+const svgPositionClass = versionFinal === 'version_2'
+    ? '-left-12 -top-12'   // Posición para Version 2 (Izq)
+    : '-right-12 -top-12'; // Posición para Version 1 (Der)
+
 ---
 
 <div class="trigger-anim-8 w-full">
@@ -45,7 +53,23 @@ const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
             imgAlt={altText}
             botonData={botonData}
             tipo={versionFinal}
-        />
+        >
+            {/* CONDICIONAL: Solo muestra el SVG si animacion es true */}
+            {animacion && (
+                <div slot="image-overlay" class={`absolute z-0 pointer-events-none ${svgPositionClass}`}>
+                    <div class="svg-decoration">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <path id="textCirclePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" fill="none"/>
+                            <text class="svg-text-style">
+                                <textPath xlink:href="#textCirclePath" startOffset="0%">
+                                ARE YOU GAME? &nbsp; ARE YOU GAME? &nbsp; ARE YOU GAME? &nbsp;
+                                </textPath>
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            )}
+        </SplitSection>
     </div>
 </div>
 
@@ -76,21 +100,34 @@ const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
 
 <style>
     @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .anim-fade {
-        opacity: 0;
-    }
+    .anim-fade { opacity: 0; }
 
     :global(.trigger-anim-8.is-visible) .anim-fade {
         animation: fadeInUp 3s ease-out forwards;
+    }
+
+    /* ESTILOS SVG */
+    .svg-decoration {
+        width: 180px;
+        height: 180px;
+        animation: rotate-left 20s linear infinite;
+    }
+
+    .svg-text-style {
+        fill: white;
+        font-family: 'Titling Gothic FB Extended', sans-serif;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 13.5px;
+        letter-spacing: 2px;
+    }
+
+    @keyframes rotate-left {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(-360deg); }
     }
 </style>
