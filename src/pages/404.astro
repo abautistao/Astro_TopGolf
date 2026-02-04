@@ -1,9 +1,71 @@
 ---
-export const prerender = true;
+// src/pages/404.astro
 import Layout from "../layouts/Layout.astro";
-import Component404 from "../components/errors/Component_404.astro";
+import Header from "../components/blu/Header.astro";
+import Footer from "../components/blu/Footer.astro";
+import { getHeaderData, getFooterData } from "../lib/strapi.js";
+
+const currentPath = Astro.url.pathname;
+const lang = currentPath.startsWith("/es") ? "es" : "en";
+
+const headerData = await getHeaderData(lang); // Fetch based on current request URL if SSR, if static this is build time.
+const footerData = await getFooterData(lang);
+
+// Translations
+const i18n = {
+    en: {
+        eyebrow: "404 Error",
+        title: "Page Not Found",
+        desc: "It seems you've got lost in the vastness of the ocean. The page you are looking for does not exist.",
+        btn: "Back to Home",
+        link: "/en",
+    },
+    es: {
+        eyebrow: "Error 404",
+        title: "Página No Encontrada",
+        desc: "Parece que te has perdido en la inmensidad del océano. La página que buscas no existe o ha cambiado de marea.",
+        btn: "Volver al Inicio",
+        link: "/es",
+    },
+};
+
+const t = i18n[lang];
 ---
 
-<Layout title="404: Página no encontrada">
-    <Component404 />
+<Layout title={`${t.title} - Blu Ocean Club`}>
+    <Header data={headerData} />
+
+    <main
+        class="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#e1d3c4]"
+    >
+        <!-- Content -->
+        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <p
+                class="text-[var(--surface-brand-primary)] text-lg md:text-xl font-[family-name:var(--font-blu-title)] uppercase tracking-[0.2em] mb-4"
+            >
+                {t.eyebrow}
+            </p>
+
+            <h1
+                class="text-6xl md:text-8xl lg:text-9xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] uppercase leading-none mb-8"
+            >
+                {t.title}
+            </h1>
+
+            <p
+                class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-lg md:text-2xl font-light mb-12 max-w-2xl mx-auto leading-relaxed"
+            >
+                {t.desc}
+            </p>
+
+            <a
+                href={t.link}
+                class="inline-block px-10 py-4 border border-[var(--surface-brand-primary)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-title)] text-lg uppercase tracking-widest hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all duration-300"
+            >
+                {t.btn}
+            </a>
+        </div>
+    </main>
+
+    <Footer data={footerData} />
 </Layout>
