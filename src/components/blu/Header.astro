@@ -85,32 +85,29 @@ const buttons: Boton[] = ctaButtonRaw ? [ctaButtonRaw] : [];
             </button>
         </div>
     </div>
-
-    <!-- Mobile Menu Overlay -->
-    <div
-        id="mobile-menu"
-        class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
-    >
-        <nav class="flex flex-col space-y-8">
-            {
-                links.map((link: any) => (
-                    <a
-                        href={getLocalizedUrl(link.url, locale)}
-                        class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase font-[family-name:var(--font-blu-title)]"
-                    >
-                        {link.texto}
-                    </a>
-                ))
-            }
-            <div class="pt-4">
-                <Button
-                    botones={buttons}
-                    clase="w-full py-5 text-center text-xl"
-                />
-            </div>
-        </nav>
-    </div>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div
+    id="mobile-menu"
+    class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
+>
+    <nav class="flex flex-col space-y-8">
+        {
+            links.map((link: any) => (
+                <a
+                    href={getLocalizedUrl(link.url, locale)}
+                    class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase font-[family-name:var(--font-blu-title)]"
+                >
+                    {link.texto}
+                </a>
+            ))
+        }
+        <div class="pt-4">
+            <Button botones={buttons} clase="w-full py-5 text-center text-xl" />
+        </div>
+    </nav>
+</div>
 
 <style>
     /* Default Mobile Background: Solid Blue */
