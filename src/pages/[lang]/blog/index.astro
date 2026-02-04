@@ -1,0 +1,50 @@
+---
+// src/pages/[lang]/blog/index.astro
+// ==========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+import Layout from "../../../layouts/Layout.astro";
+import { getPageBySlug } from "../../../lib/strapi.js";
+import RenderBlocks from "../../../components/RenderBlocks.astro";
+
+// ==========================================================================================
+// SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE BLOG
+// ==========================================================================================
+const { lang } = Astro.params;
+
+// Fetch the page with slug 'blog' from Strapi (Collection Type: Pages)
+const pagina = await getPageBySlug("blog", lang);
+
+// Si la página no se encuentra, mostramos un error 404.
+if (!pagina) {
+    return new Response(null, {
+        status: 404,
+        statusText: "No Encontrado",
+    });
+}
+
+const { titulo, ContenidoPagina, SEO, localizations } = pagina;
+
+const alternateLinks = {};
+if (localizations && localizations.data) {
+    localizations.data.forEach((loc) => {
+        const attributes = loc.attributes || loc;
+        const localeCode = attributes.locale;
+        // Assuming the localized slug is also 'blog' or 'blog-es', strict mapping might be needed
+        // But since this is a hardcoded 'blog' index route, we might just link to /{locale}/blog
+        // effectively. However, if the slug is translated (e.g. 'noticias'), this routing structure
+        // (hardcoded /blog folder) forces the URL to be /blog.
+        // If the Strapi page has a different slug, we rely on the folders here.
+        // Ideally, we link to /{locale}/blog if the page exists there.
+        if (localeCode) {
+            alternateLinks[localeCode] = `/${localeCode}/blog`;
+        }
+    });
+}
+---
+
+<Layout seo={SEO} alternateLinks={alternateLinks}>
+    <main class="mx-auto container-full">
+        <RenderBlocks blocks={ContenidoPagina} />
+    </main>
+</Layout>

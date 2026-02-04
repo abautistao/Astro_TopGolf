@@ -1,0 +1,103 @@
+---
+// src/components/blu/Component_14_Blu.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    titulo?: string;
+    descripcion?: string; // Rich text from Strapi
+    imagen?: {
+        url: string;
+        mime: string;
+        width?: number;
+        height?: number;
+    };
+    posicion_imagen?: "izquierda" | "derecha";
+    fondoImagen?: {
+        url: string;
+        mime: string;
+        width?: number;
+        height?: number;
+    };
+    codigoColorFondo?: string; // Hex color e.g. #f4f0ec
+}
+
+const {
+    titulo = "EXPERIENCIAS QUE FLUYEN",
+    descripcion = "<p>Lorem ipsum dolor sit amet consectetur. Diam sed aliquet arcu eget nisl turpis amet. Vestibulum imperdiet molestie euismod dui arcu amet elit. Quis quam viverra vulputate pretium morbi lobortis.</p>",
+    imagen,
+    posicion_imagen = "derecha", // Default to Image Right (Variant 1)
+    fondoImagen,
+    codigoColorFondo,
+} = Astro.props;
+
+// Fallback image if none provided
+const strapiImageUrl = imagen
+    ? getStrapiUrl(imagen)
+    : "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
+
+const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
+const isImageRight = posicion_imagen === "derecha";
+
+// Background Logic
+const bgUrl = fondoImagen ? getStrapiUrl(fondoImagen) : null;
+const bgColor = codigoColorFondo ? codigoColorFondo : "#f4f0ec"; // Default original color
+const styleAttribute = bgUrl
+    ? `background-image: url('${bgUrl}'); background-size: cover; background-position: center;`
+    : `background-color: ${bgColor};`;
+---
+
+<section class="w-full overflow-hidden" style={styleAttribute}>
+    <!-- Flex Container for the split layout -->
+    <div class="flex flex-col md:flex-row w-full min-h-[600px] md:h-auto">
+        <!-- Text Section -->
+        <div
+            class:list={[
+                "w-full md:w-1/2 flex flex-col justify-center px-4 py-8 md:px-16 lg:px-20 bg-transparent z-10",
+                { "md:order-1": isImageRight, "md:order-2": !isImageRight },
+            ]}
+        >
+            <div class="max-w-xl mx-auto md:mx-0">
+                <h2
+                    class="text-2xl md:text-4xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] uppercase leading-tight mb-8"
+                >
+                    {titulo}
+                </h2>
+
+                <div
+                    class="prose prose-lg text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] font-light leading-relaxed opacity-90 text-justify md:text-left"
+                >
+                    <Fragment set:html={descripcionHtml} />
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div
+            class:list={[
+                "w-full md:w-1/2 relative min-h-[400px] md:min-h-full px-5 py-20",
+                { "md:order-2": isImageRight, "md:order-1": !isImageRight },
+            ]}
+        >
+            <div class="relative w-full h-full overflow-hidden">
+                {
+                    imagen ? (
+                        <Image
+                            src={strapiImageUrl}
+                            alt={titulo}
+                            width={1200}
+                            height={800}
+                            class="absolute inset-0 w-full h-full object-cover"
+                        />
+                    ) : (
+                        <img
+                            src={strapiImageUrl}
+                            alt={titulo}
+                            class="absolute inset-0 w-full h-full object-cover"
+                        />
+                    )
+                }
+            </div>
+        </div>
+    </div>
+</section>
