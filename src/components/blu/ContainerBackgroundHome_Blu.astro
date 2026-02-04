@@ -45,9 +45,8 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
     <div
         class:list={[
             "top-0 left-0 bg-cover bg-center bg-no-repeat pointer-events-none -z-10 custom-background-layer",
-            fondoFijo
-                ? "fixed w-screen h-screen will-change-transform"
-                : "absolute w-full h-full",
+            /* Usamos siempre absolute para evitar problemas de rendering con fixed/will-change */
+            "absolute w-full h-full",
         ]}
         style={{
             "--bg-desktop": `url('${desktopUrl}')`,
@@ -63,10 +62,6 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
         @media (max-width: 768px) {
             .custom-background-layer {
                 background-image: var(--bg-mobile);
-                /* En móvil forzamos scroll normal para mejor rendimiento y UX */
-                position: absolute !important;
-                width: 100% !important;
-                height: 100% !important;
             }
         }
     </style>
