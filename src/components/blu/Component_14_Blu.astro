@@ -53,7 +53,7 @@ const styleAttribute = bgUrl
         <!-- Text Section -->
         <div
             class:list={[
-                "w-full md:w-1/2 flex flex-col justify-center px-4 py-8 md:px-16 lg:px-20 bg-transparent z-10",
+                "w-full md:w-1/2 flex flex-col justify-center px-4 py-8 md:px-16 lg:px-20 bg-transparent z-10 order-2",
                 { "md:order-1": isImageRight, "md:order-2": !isImageRight },
             ]}
         >
@@ -75,11 +75,11 @@ const styleAttribute = bgUrl
         <!-- Image Section -->
         <div
             class:list={[
-                "w-full md:w-1/2 relative min-h-[400px] md:min-h-full px-5 py-20",
+                "w-full md:w-1/2 relative min-h-[400px] md:min-h-full px-5 md:px-15 py-10 md:py-20 flex flex-col order-1",
                 { "md:order-2": isImageRight, "md:order-1": !isImageRight },
             ]}
         >
-            <div class="relative w-full h-full overflow-hidden">
+            <div class="relative w-full flex-grow overflow-hidden shadow-sm">
                 {
                     imagen ? (
                         <Image
