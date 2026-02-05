@@ -18,7 +18,7 @@ export async function getStaticPaths() {
     return [];
   }
   return pages.map((page) => ({
-    params: { lang: page.locale ?? 'en', slug: page.slug },
+    params: { lang: page.locale ?? "en", slug: page.slug },
   }));
 }
 
@@ -26,6 +26,7 @@ export async function getStaticPaths() {
 // SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
 // ==========================================================================================
 const { slug, lang } = Astro.params;
+
 const pagina = await getPageBySlug(slug || "home", lang);
 
 // Si la página no se encuentra, mostramos un error 404.
@@ -37,7 +38,7 @@ if (!pagina) {
 }
 
 const { titulo, ContenidoPagina, SEO, localizations } = pagina;
-
+console.log("ContenidoPagina", ContenidoPagina);
 const alternateLinks = {};
 if (localizations && localizations.data) {
   localizations.data.forEach((loc) => {

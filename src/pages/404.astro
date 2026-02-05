@@ -1,15 +1,9 @@
 ---
 // src/pages/404.astro
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/blu/Header.astro";
-import Footer from "../components/blu/Footer.astro";
-import { getHeaderData, getFooterData } from "../lib/strapi.js";
 
 const currentPath = Astro.url.pathname;
 const lang = currentPath.startsWith("/es") ? "es" : "en";
-
-const headerData = await getHeaderData(lang); // Fetch based on current request URL if SSR, if static this is build time.
-const footerData = await getFooterData(lang);
 
 // Translations
 const i18n = {
@@ -33,8 +27,6 @@ const t = i18n[lang];
 ---
 
 <Layout title={`${t.title} - Blu Ocean Club`}>
-    <Header data={headerData} />
-
     <main
         class="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#e1d3c4]"
     >
@@ -66,6 +58,4 @@ const t = i18n[lang];
             </a>
         </div>
     </main>
-
-    <Footer data={footerData} />
 </Layout>

@@ -1,7 +1,7 @@
 ---
 // src/components/blu/Component_15_Blu.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText, getBlogBySlug } from "../../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, getBlogBySlugIndividual } from "../../lib/strapi.js";
 
 
 interface Noticia {
@@ -42,12 +42,10 @@ if (rawNoticias) {
         const slug = attr.slug;
 
         // HYDRATION STRATEGY: 
-        // If we have a slug but missing deep data (like SEO or Image nested objects), 
-        // fetch the full blog post locally to ensure we have everything.
-        // We assume if 'SEO' is missing, we probably need to fetch.
         if (slug && !attr.SEO && !attr.imagen?.data) {
-             console.log(`Hydrating blog data for slug: ${slug}`);
-             const fullBlog = await getBlogBySlug(slug);
+             const lang = Astro.params.lang || 'en';
+             // Only fetch image and SEO, avoiding deep populate=* which causes loops
+             const fullBlog = await getBlogBySlugIndividual(slug, lang, "populate[imagen]=*&populate[SEO]=*");
              if (fullBlog) {
                  attr = fullBlog.attributes || fullBlog; // Update attributes with full data
              }

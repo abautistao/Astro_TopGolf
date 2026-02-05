@@ -1,7 +1,7 @@
 ---
 // src/components/blu/Component_16_Blu.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText, getBlogBySlug } from "../../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, getBlogBySlugIndividual } from "../../lib/strapi.js";
 
 interface Noticia {
     id: number;
@@ -43,7 +43,10 @@ if (rawNoticias) {
 
         // HYDRATION STRATEGY: 
         if (slug && !attr.SEO && !attr.imagen?.data) {
-             const fullBlog = await getBlogBySlug(slug);
+             const lang = Astro.params.lang || 'en';
+             // Only fetch image and SEO, avoiding deep populate=* which causes loops
+          
+             const fullBlog = await getBlogBySlugIndividual(slug, lang, "populate[imagen]=*&populate[SEO]=*");
              if (fullBlog) {
                  attr = fullBlog.attributes || fullBlog; // Update attributes with full data
              }
