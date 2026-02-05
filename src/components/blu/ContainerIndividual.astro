@@ -1,0 +1,66 @@
+---
+// src/components/blu/ContainerIndividual.astro
+import { getStrapiUrl } from "../../lib/strapi.js";
+import Component_3_Blu from "./Component_3_Blu.astro";
+import Component_17_Blu from "./Component_17_Blu.astro";
+import Booking from "../topgolf/Booking.astro";
+
+interface Props {
+    fondoDesktop?: any;
+    fondoMovil?: any;
+    fondoFijo?: boolean;
+    // Props para los componentes hijos
+    componente_3?: any; // Component_3_Blu (Título/Subtítulo)
+    componente_17?: any; // Component_17_Blu (Galería + Info)
+    booking?: any; // Booking Widget
+}
+
+const {
+    fondoDesktop,
+    fondoMovil,
+    fondoFijo = false,
+    componente_3,
+    componente_17,
+    booking,
+} = Astro.props;
+
+const desktopUrl = getStrapiUrl(fondoDesktop);
+const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
+---
+
+<section class="relative z-30 w-full overflow-visible flex flex-col">
+    {/* Fondo separado optimizado */}
+    <div
+        class:list={[
+            "top-0 left-0 bg-cover bg-center bg-no-repeat pointer-events-none -z-10 custom-background-layer",
+            /* Usamos siempre absolute para evitar problemas de rendering con fixed/will-change */
+            "absolute w-full h-full",
+        ]}
+        style={{
+            "--bg-desktop": `url('${desktopUrl}')`,
+            "--bg-mobile": `url('${mobileUrl}')`,
+        }}
+    >
+    </div>
+
+    <style>
+        .custom-background-layer {
+            background-image: var(--bg-desktop);
+        }
+        @media (max-width: 768px) {
+            .custom-background-layer {
+                background-image: var(--bg-mobile);
+            }
+        }
+    </style>
+
+    {/* --- RENDERIZADO DE COMPONENTES --- */}
+    <div class="relative z-10 w-full">
+        {componente_3 && <Component_3_Blu {...componente_3} />}
+        {componente_17 && <Component_17_Blu {...componente_17} />}
+        {booking && <Booking {...booking} />}
+
+        {/* Slot por si se usa de forma manual en el código */}
+        <slot />
+    </div>
+</section>
