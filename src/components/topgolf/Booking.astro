@@ -35,7 +35,7 @@ const defaults = {
 
 // 2. Fusionamos con las props que llegan
 const rawParams = {...Astro.props };
-const vmgPluginUrl = import.meta.env.VMG_PLUGIN_URL;
+const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
 const paramsLimpios: { [key: string]: any } = {};
 
 for (const [key, value] of Object.entries(rawParams)) {
