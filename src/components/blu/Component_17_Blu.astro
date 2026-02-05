@@ -1,0 +1,194 @@
+---
+// src/components/blu/Component_17_Blu.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+interface Props {
+    titulo?: string;
+    descripcion?: string; // Rich Text for the right side
+    info_extra?: string; // Rich Text for the left side below gallery (Duration, etc.)
+    galeria?: any;
+    fondoImagen?: any;
+    codigoColorFondo?: string;
+}
+
+const {
+    titulo,
+    descripcion,
+    info_extra,
+    galeria,
+    fondoImagen,
+    codigoColorFondo = "#FFFFFF",
+} = Astro.props;
+
+// Process Gallery Images (Normalize for Strapi 4 and Strapi 5)
+const rawImages = galeria?.data || (Array.isArray(galeria) ? galeria : []);
+const images = rawImages.map((img: any) => ({
+    url: getStrapiUrl(img),
+    alt: img?.attributes?.alternativeText || img?.alternativeText || "",
+}));
+
+// Background Logic
+const bgUrl = fondoImagen ? getStrapiUrl(fondoImagen) : null;
+const styleAttribute = bgUrl
+    ? `background-image: url('${bgUrl}'); background-size: cover; background-position: center;`
+    : `background-color: ${codigoColorFondo};`;
+---
+
+<section class="w-full py-12 md:py-24 relative" style={styleAttribute}>
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12">
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start"
+        >
+            <!-- Left Column: Gallery & Info -->
+            <div class="w-full flex flex-col gap-6">
+                <!-- Gallery Container -->
+                <div class="gallery-container w-full">
+                    <!-- Main Display -->
+                    <div
+                        class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200 relative mb-4"
+                    >
+                        {
+                            images.map((img, index) => {
+                                return (
+                                    <img
+                                        src={img.url}
+                                        alt={img.alt}
+                                        class={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 gallery-main-img ${index === 0 ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+                                        data-index={index}
+                                    />
+                                );
+                            })
+                        }
+                    </div>
+
+                    <!-- Thumbnails -->
+                    {
+                        images.length > 1 && (
+                            <div class="grid grid-cols-4 gap-2 md:gap-4">
+                                {images.map((img, index) => {
+                                    return (
+                                        <button
+                                            class={`relative aspect-[4/3] overflow-hidden rounded cursor-pointer transition-all hover:opacity-100 gallery-thumb ${index === 0 ? "ring-2 ring-[var(--surface-brand-primary)] opacity-100" : "opacity-60 hover:opacity-80"}`}
+                                            data-target={index}
+                                            aria-label={`Show image ${index + 1}`}
+                                        >
+                                            <img
+                                                src={img.url}
+                                                alt=""
+                                                class="w-full h-full object-cover"
+                                            />
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )
+                    }
+                </div>
+
+                <!-- Info Extra (Duration, Level, etc.) -->
+                {
+                    info_extra && (
+                        <div class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-base leading-relaxed rich-text-content">
+                            <Fragment
+                                set:html={stringifyRichText(info_extra)}
+                            />
+                        </div>
+                    )
+                }
+            </div>
+
+            <!-- Right Column: Content -->
+            <div class="w-full flex flex-col">
+                {
+                    titulo && (
+                        <h2 class="text-3xl md:text-5xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] italic mb-8">
+                            {titulo}
+                        </h2>
+                    )
+                }
+
+                <div
+                    class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-base md:text-lg leading-relaxed space-y-4 rich-text-content"
+                >
+                    {
+                        descripcion ? (
+                            <Fragment
+                                set:html={stringifyRichText(descripcion)}
+                            />
+                        ) : null
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Styling for Rich Text internally if needed */
+    .rich-text-content p {
+        margin-bottom: 1em;
+    }
+    .rich-text-content ul {
+        list-style-type: disc;
+        padding-left: 1.5em;
+        margin-bottom: 1em;
+    }
+    .rich-text-content h3 {
+        font-family: var(--font-blu-title);
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+    }
+</style>
+
+<script>
+    // Gallery Logic
+    function initGallery() {
+        const galleries = document.querySelectorAll(".gallery-container");
+
+        galleries.forEach((gallery) => {
+            const mainImages = gallery.querySelectorAll(".gallery-main-img");
+            const thumbs = gallery.querySelectorAll(".gallery-thumb");
+
+            thumbs.forEach((thumb) => {
+                thumb.addEventListener("click", () => {
+                    const targetIndex = thumb.getAttribute("data-target");
+
+                    // Update Main Images
+                    mainImages.forEach((img) => {
+                        if (img.getAttribute("data-index") === targetIndex) {
+                            img.classList.remove("opacity-0", "z-0");
+                            img.classList.add("opacity-100", "z-10");
+                        } else {
+                            img.classList.remove("opacity-100", "z-10");
+                            img.classList.add("opacity-0", "z-0");
+                        }
+                    });
+
+                    // Update Thumbs active state
+                    thumbs.forEach((t) => {
+                        if (t === thumb) {
+                            t.classList.remove("opacity-60");
+                            t.classList.add(
+                                "ring-2",
+                                "ring-[var(--surface-brand-primary)]",
+                                "opacity-100",
+                            );
+                        } else {
+                            t.classList.remove(
+                                "ring-2",
+                                "ring-[var(--surface-brand-primary)]",
+                                "opacity-100",
+                            );
+                            t.classList.add("opacity-60");
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    // Initialize
+    initGallery();
+    document.addEventListener("astro:page-load", initGallery);
+</script>
