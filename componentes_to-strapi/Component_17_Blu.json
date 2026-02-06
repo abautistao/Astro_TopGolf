@@ -1,0 +1,40 @@
+{
+    "collectionName": "components_blu_component_17_blus",
+    "info": {
+        "displayName": "Component 17 Blu",
+        "icon": "images",
+        "description": "Galería con información extra y descripción"
+    },
+    "options": {},
+    "attributes": {
+        "titulo": {
+            "type": "string"
+        },
+        "descripcion": {
+            "type": "blocks"
+        },
+        "info_extra": {
+            "type": "blocks"
+        },
+        "galeria": {
+            "type": "media",
+            "multiple": true,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "fondoImagen": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "codigoColorFondo": {
+            "type": "string",
+            "default": "#FFFFFF"
+        }
+    }
+}

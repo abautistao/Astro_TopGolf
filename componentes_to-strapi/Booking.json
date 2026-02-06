@@ -1,0 +1,41 @@
+{
+    "collectionName": "components_topgolf_bookings",
+    "info": {
+        "displayName": "Booking",
+        "icon": "calendar",
+        "description": "Widget de reservas Topgolf"
+    },
+    "options": {},
+    "attributes": {
+        "plugin_id": {
+            "type": "string"
+        },
+        "user_language": {
+            "type": "string"
+        },
+        "producto_id": {
+            "type": "string"
+        },
+        "set_producto_id": {
+            "type": "string"
+        },
+        "promocode": {
+            "type": "string"
+        },
+        "set_promocode": {
+            "type": "string"
+        },
+        "pax_min": {
+            "type": "integer"
+        },
+        "pax_max": {
+            "type": "integer"
+        },
+        "reservacion_fecha": {
+            "type": "string"
+        },
+        "vendedor_id": {
+            "type": "string"
+        }
+    }
+}

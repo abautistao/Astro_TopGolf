@@ -1,0 +1,52 @@
+{
+    "collectionName": "components_blu_container_individuals",
+    "info": {
+        "displayName": "Container Individual",
+        "icon": "layout",
+        "description": "Contenedor con fondo para componentes individuales (Blu 3, Blu 17, Booking)"
+    },
+    "options": {},
+    "attributes": {
+        "fondoDesktop": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images",
+                "files",
+                "videos",
+                "audios"
+            ]
+        },
+        "fondoMovil": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images",
+                "files",
+                "videos",
+                "audios"
+            ]
+        },
+        "fondoFijo": {
+            "type": "boolean",
+            "default": false
+        },
+        "componente_3": {
+            "type": "component",
+            "repeatable": false,
+            "component": "blu.component-3-blu"
+        },
+        "componente_17": {
+            "type": "component",
+            "repeatable": false,
+            "component": "blu.component-17-blu"
+        },
+        "booking": {
+            "type": "component",
+            "repeatable": false,
+            "component": "topgolf.booking"
+        }
+    }
+}
