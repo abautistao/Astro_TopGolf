@@ -55,25 +55,34 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
     <div class="anim-fade max-w-[1200px] mx-auto px-4">
 
         <div class="text-center mb-12">
-            <h3 class="text-[var(--accent-feedback-strong)] text-sm lg:text-sm font-bold tracking-[0.2em] font-(family-name:--font-titling-gothic-fb-extended-bold) mb-2 uppercase">
-                {subtitulo}
-            </h3>
+            { subtitulo && (
+                <h3 class="text-[var(--accent-feedback-strong)] text-sm lg:text-sm font-bold tracking-[0.2em] font-(family-name:--font-titling-gothic-fb-extended-bold) mb-2 uppercase">
+                    {subtitulo}
+                </h3>
+            )}
 
-            <h2 class="text-[var(--accent-feedback-strong)] text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">
-                {titulo}
-            </h2>
+            {titulo && (
+                <h2 class="text-[var(--accent-feedback-strong)] text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">
+                    {titulo}
+                </h2>
+            )}
         </div>
 
-        <div class="flex flex-wrap border border-[var(--brand-interactive-base)] mb-12">
-            {categories.map((cat: any, index: number) => (
-                <button
-                    class="flex-1 py-3 px-6 text-center text-base lg:text-xl font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
-                    :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-[var(--accent-feedback-strong)] bg-transparent'`}
-                    @click={`activeTab = ${index}`}
-                >
-                    {cat.label}
-                </button>
-            ))}
+        <div class:list={[
+            subtitulo ? "flex flex-wrap border border-[var(--brand-interactive-base)] mb-12" : "none"
+        ]}>
+            {categories.map((cat: any, index: number) => {
+                if(cat.label)
+                    return (
+                        <button
+                            class="flex-1 py-3 px-6 text-center text-base lg:text-xl font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-[var(--brand-interactive-base)] last:border-r-0 hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)]"
+                            :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-[var(--accent-feedback-strong)] bg-transparent'`}
+                            @click={`activeTab = ${index}`}
+                        >
+                            {cat.label}
+                        </button>
+                    )
+            })}
         </div>
 
         <div>
