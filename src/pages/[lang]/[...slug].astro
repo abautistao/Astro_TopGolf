@@ -25,9 +25,22 @@ export async function getStaticPaths() {
 // ==========================================================================================
 // SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
 // ==========================================================================================
+const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
 const { slug, lang } = Astro.params;
 
-const pagina = await getPageBySlug(slug || "home", lang);
+let pagina;
+
+if (isMultiLanguage) {
+  // Multi-language: /es/about -> Page 'about' in 'es'
+  pagina = await getPageBySlug(slug || "home", lang);
+} else {
+  // Single-language: /about/team -> Page 'about/team' in Default Locale
+  // 'lang' is first segment ('about'), 'slug' is rest ('team')
+  const fullSlug = slug ? `${lang}/${slug}` : lang;
+  pagina = await getPageBySlug(fullSlug, defaultLocale);
+}
 
 // Si la página no se encuentra, mostramos un error 404.
 if (!pagina) {

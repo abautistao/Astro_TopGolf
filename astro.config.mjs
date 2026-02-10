@@ -6,9 +6,14 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
+import { loadEnv } from 'vite';
 
-// https://astro.build/config
-export default defineConfig({
+const { PUBLIC_MULTILANGUAGE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
+
+const isMultiLanguage = PUBLIC_MULTILANGUAGE !== "false";
+
+/** @type {import('astro/config').AstroUserConfig} */
+const config = {
   output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
   site: 'http://localhost:4321', // URL para pruebas locales.
@@ -22,17 +27,23 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  i18n: {
+  integrations: [
+    sitemap(),
+    alpinejs({
+      entrypoint: '/src/entrypoint.js' // <--- Agrega esto
+    })
+  ]
+};
+
+if (isMultiLanguage) {
+  config.i18n = {
     defaultLocale: "en",
     locales: ["es", "en"],
     routing: {
       prefixDefaultLocale: true
     }
-  },
-  integrations: [
-    sitemap(),
-    alpinejs({
-        entrypoint: '/src/entrypoint.js' // <--- Agrega esto
-    })
-  ]
-});
+  };
+}
+
+// https://astro.build/config
+export default defineConfig(config);

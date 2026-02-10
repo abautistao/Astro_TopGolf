@@ -5,10 +5,6 @@ const currentLang = Astro.params.lang || "en";
 
 // Environment Check
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
-if (!isMultiLanguage) {
-    return; // Don't render switcher if single language
-}
-
 const locales = [
     { code: "es", label: "Español" },
     { code: "en", label: "English" },
@@ -32,27 +28,29 @@ function getLocalizedPath(targetLang) {
 }
 ---
 
-<div class={`language-switcher flex flex-col gap-2 ${className}`}>
-    {
-        locales.map((locale) => {
-            const flagUrl =
-                locale.code === "es"
-                    ? "https://flagcdn.com/w40/mx.png" // Spanish -> Mexico Flag
-                    : "https://flagcdn.com/w40/us.png"; // English -> USA Flag
+{
+    isMultiLanguage && (
+        <div class={`language-switcher flex flex-col gap-2 ${className}`}>
+            {locales.map((locale) => {
+                const flagUrl =
+                    locale.code === "es"
+                        ? "https://flagcdn.com/w40/mx.png" // Spanish -> Mexico Flag
+                        : "https://flagcdn.com/w40/us.png"; // English -> USA Flag
 
-            return (
-                <a
-                    href={getLocalizedPath(locale.code)}
-                    class={`flex items-center gap-2 px-2 py-1 ${currentLang === locale.code ? "font-bold bg-gray-100 rounded" : "opacity-70 hover:opacity-100"}`}
-                >
-                    <img
-                        src={flagUrl}
-                        alt={locale.label}
-                        class="w-5 h-auto rounded-sm border border-gray-300"
-                    />
-                    <span class="text-xs uppercase">{locale.code}</span>
-                </a>
-            );
-        })
-    }
-</div>
+                return (
+                    <a
+                        href={getLocalizedPath(locale.code)}
+                        class={`flex items-center gap-2 px-2 py-1 ${currentLang === locale.code ? "font-bold bg-gray-100 rounded" : "opacity-70 hover:opacity-100"}`}
+                    >
+                        <img
+                            src={flagUrl}
+                            alt={locale.label}
+                            class="w-5 h-auto rounded-sm border border-gray-300"
+                        />
+                        <span class="text-xs uppercase">{locale.code}</span>
+                    </a>
+                );
+            })}
+        </div>
+    )
+}
