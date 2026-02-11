@@ -2,18 +2,22 @@
 // src/components/HowToPlay.astro
 // ... (MANTÉN TODO EL BLOQUE DE IMPORTS Y PROPS IGUAL)
 import { Image } from "astro:assets";
-import { getStrapiUrl } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 
 interface Props {
     titulo?: string;
     video: any;
     poster?: any;
+    is_youtube: boolean;
+    youtube_embed_url: string;
 }
 
 const {
     titulo = "Ejemplo de título",
     video,
-    poster
+    poster,
+    is_youtube,
+    youtube_embed_url
 } = Astro.props;
 
 const mediaUrl = getStrapiUrl(video);
@@ -41,12 +45,16 @@ const altText = titulo || "How to play video thumbnail";
 
     <div class="anim-fade max-w-7xl mx-auto">
 
-        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-3xl md:text-6xl font-bold uppercase text-center mb-6">
+        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[var(--accent-feedback-strong)] text-3xl md:text-4xl font-bold uppercase text-center mb-6">
             {titulo}
         </h2>
 
         <div class="relative w-full aspect-video">
-            {showVideo ? (
+            {is_youtube ? (
+                <div class="w-full p-0 relative pt-[56.15%]">
+                    <iframe class="absolute top-0 left-0 w-full h-full" width="560" height="315" src={youtube_embed_url} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            ) : showVideo ? (
                 <>
                     <video
                         id="videoPlayer"
