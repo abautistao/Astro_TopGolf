@@ -8,6 +8,7 @@ interface CardData {
     titulo: string;
     descripcion: any;
     imagen: any;
+    link: string
 }
 
 interface Props {
@@ -22,11 +23,11 @@ const {
 
 
 const defaultEvents = [
-    { id: 101, titulo: "Titulo Ejemplo 1", descripcion: "Descripción Ejemplo 1", imagen: null },
-    { id: 102, titulo: "Titulo Ejemplo 2", descripcion: "Descripción Ejemplo 2", imagen: null },
-    { id: 103, titulo: "Titulo Ejemplo 3", descripcion: "Descripción Ejemplo 3", imagen: null },
-    { id: 104, titulo: "Titulo Ejemplo 4", descripcion: "Descripción Ejemplo 4", imagen: null },
-    { id: 105, titulo: "Titulo Ejemplo 5", descripcion: "Descripción Ejemplo 5 (Extra)", imagen: null }
+    { id: 101, titulo: "Titulo Ejemplo 1", descripcion: "Descripción Ejemplo 1", imagen: null, link: "#" },
+    { id: 102, titulo: "Titulo Ejemplo 2", descripcion: "Descripción Ejemplo 2", imagen: null, link: "#" },
+    { id: 103, titulo: "Titulo Ejemplo 3", descripcion: "Descripción Ejemplo 3", imagen: null, link: "#" },
+    { id: 104, titulo: "Titulo Ejemplo 4", descripcion: "Descripción Ejemplo 4", imagen: null, link: "#" },
+    { id: 105, titulo: "Titulo Ejemplo 5", descripcion: "Descripción Ejemplo 5 (Extra)", imagen: null, link: "#" }
 ];
 
 const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;

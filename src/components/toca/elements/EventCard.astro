@@ -1,6 +1,6 @@
 ---
 // src/components/toca/elements/EventCard.astro
-import { getStrapiUrl, stringifyRichText } from '../../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getLocalizedUrl } from '../../../lib/strapi.js';
 
 export interface Props {
     evento: any;
@@ -17,7 +17,7 @@ const descHtml = typeof evento.descripcion === 'string'
 const finalImgUrl = getStrapiUrl(evento.imagen) || PLACEHOLDER_IMG;
 
 // Definir la URL de destino.
-const eventLink = evento.slug ? `/eventos/${evento.slug}` : '#';
+const eventLink = evento.slug ? `/eventos/${evento.slug}` : evento.link;
 
 const theme = {
     v1: { text: 'text-[var(--surface-brand-secondary)]', bg: 'bg-[var(--surface-brand-primary)]' },
@@ -27,7 +27,7 @@ const currentTheme = tipo === 'version_1' ? theme.v1 : theme.v2;
 ---
 
 <article class="snap-center flex flex-col h-full group w-full">
-    <a href={eventLink} class:list={[
+    <a href={getLocalizedUrl(eventLink, 'en')} class:list={[
         "block w-full relative overflow-hidden mb-2",
         currentTheme.bg,
         tipo === 'version_1' ? 'aspect-[4/5]' : 'aspect-[3/2]',
@@ -51,7 +51,7 @@ const currentTheme = tipo === 'version_1' ? theme.v1 : theme.v2;
             <span set:html={descHtml} />
         </div>
         <a
-            href={eventLink}
+            href={getLocalizedUrl(eventLink,'en')}
             class:list={["text-base font-medium self-start text-left transition-colors font-(family-name:--font-sharp-sans-medium) hover:underline", currentTheme.text]}
         >
             Leer más...

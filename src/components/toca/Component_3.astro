@@ -8,6 +8,7 @@ interface TarjetaData {
     titulo: string;
     descripcion: any;
     imagen: any;
+    link: string
 }
 interface Props {
     Tarjetas: TarjetaData[];
@@ -19,17 +20,20 @@ const defaultCards = [
     {
         titulo: "Titulo Ejemplo 1",
         descripcion: "Descripción de ejemplo para el titulo 1...",
-        imagen: null
+        imagen: null,
+        link: '#'
     },
     {
         titulo: "Titulo Ejemplo 2",
         descripcion: "Descripción de ejemplo para el titulo 2...",
-        imagen: null
+        imagen: null,
+        link: '#'
     },
     {
         titulo: "Titulo Ejemplo 3",
         descripcion: "Descripción de ejemplo para el titulo 3...",
-        imagen: null
+        imagen: null,
+        link: '#'
     }
 ];
 
@@ -41,7 +45,8 @@ const ProcessedTarjetas = rawData.map((card) => ({
         ? card.descripcion
         : stringifyRichText(card.descripcion),
     img: getStrapiUrl(card.imagen),
-    alt: card.titulo || "Toca Social Image"
+    alt: card.titulo || "Toca Social Image",
+    link: card.link || "#"
 }));
 ---
 
@@ -52,6 +57,8 @@ const ProcessedTarjetas = rawData.map((card) => ({
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
             {ProcessedTarjetas.map((item, index) => (
+                <a href={item.link}>
+                            
                     <div
                         class={`carousel-item flex-col h-full group
                         ${index === 0 ? 'flex' : 'hidden'} lg:flex
@@ -60,6 +67,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
                         cursor-pointer`}
                         data-index={index}
                     >
+                        
                     <div class="mb-6">
                         <div class="flex justify-between items-start gap-2 mb-1">
                             <h3 class="w-full lg:w-[55%] min-w-0 font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--accent-feedback-strong)] text-base lg:text-lg tracking-tighter break-words text-ellipsis overflow-hidden">
@@ -92,6 +100,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
                         />
                     </div>
                 </div>
+                </a>
             ))}
 
         </div>
