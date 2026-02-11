@@ -1,6 +1,6 @@
 ---
 // src/components/toca/Component_9.astro
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getLocalizedUrl} from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
 
 // 1. Interfaces ajustadas exactamente a tu JSON
@@ -9,7 +9,7 @@ interface TarjetaItem {
     titulo: string;
     descripcion: any;
     imagen: any;
-    url?: string;
+    link?: string;
 }
 
 interface TarjetaWrapper {
@@ -32,19 +32,19 @@ const defaultCards = [
         titulo: "Ejemplo 1",
         descripcion: "Description for example card 1 goes here.",
         imagen: null,
-        url: "#"
+        link: "#"
     },
     {
         titulo: "Ejemplo 2",
         descripcion: "Description for example card 2 goes here.",
         imagen: null,
-        url: "#"
+        link: "#"
     },
     {
         titulo: "Ejemplo 3",
         descripcion: "Description for example card 3 goes here.",
         imagen: null,
-        url: "#"
+        link: "#"
     }
 ];
 
@@ -57,7 +57,7 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
         : stringifyRichText(card.descripcion),
     img: getStrapiUrl(card.imagen),
     alt: card.titulo || "Toca Social",
-    link: card.url || "#"
+    link: card.link || "#"
 }));
 
 ---
