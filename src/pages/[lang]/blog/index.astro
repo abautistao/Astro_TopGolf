@@ -11,6 +11,14 @@ import RenderBlocks from "../../../components/RenderBlocks.astro";
 // SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE BLOG
 // ==========================================================================================
 const { lang } = Astro.params;
+const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+
+if (!isMultiLanguage) {
+    return new Response(null, {
+        status: 404,
+        statusText: "Not Found",
+    });
+}
 
 // Fetch the page with slug 'blog' from Strapi (Collection Type: Pages)
 const pagina = await getPageBySlug("blog", lang);

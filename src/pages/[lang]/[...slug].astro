@@ -3,7 +3,7 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
-import { getAllPages, getPageBySlug } from "../../lib/strapi.js";
+import { getAllPages, getPageBySlug, getBlogBySlug } from "../../lib/strapi.js";
 import RenderBlocks from "../../components/RenderBlocks.astro";
 
 // export const prerender = true;
@@ -38,8 +38,15 @@ if (isMultiLanguage) {
 } else {
   // Single-language: /about/team -> Page 'about/team' in Default Locale
   // 'lang' is first segment ('about'), 'slug' is rest ('team')
-  const fullSlug = slug ? `${lang}/${slug}` : lang;
-  pagina = await getPageBySlug(fullSlug, defaultLocale);
+
+  // Special case for Blog in Single Language Mode
+  if (lang === "blog" && slug) {
+    // Route: /blog/my-post
+    pagina = await getBlogBySlug(slug, defaultLocale);
+  } else {
+    const fullSlug = slug ? `${lang}/${slug}` : lang;
+    pagina = await getPageBySlug(fullSlug, defaultLocale);
+  }
 }
 
 // Si la página no se encuentra, mostramos un error 404.

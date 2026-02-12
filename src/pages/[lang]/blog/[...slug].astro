@@ -26,6 +26,14 @@ export async function getStaticPaths() {
 // SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
 // ==========================================================================================
 const { slug, lang } = Astro.params;
+
+const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+if (!isMultiLanguage) {
+  return new Response(null, {
+    status: 404,
+    statusText: "Not Found",
+  });
+}
 const pagina = await getBlogBySlug(slug, lang);
 
 // Si la página no se encuentra, mostramos un error 404.
