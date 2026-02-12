@@ -14,14 +14,18 @@ import {
 } from "../lib/strapi.js";
 
 // Obtiene los datos de configuración del sitio.
+// Obtiene los datos de configuración del sitio.
+const { lang: paramsLang } = Astro.params;
+const { lang: propsLang, seo, title, alternateLinks } = Astro.props;
+
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
-const { lang } = Astro.params;
 
-let locale = lang || defaultLocale;
+let locale = propsLang || paramsLang || defaultLocale;
 if (!isMultiLanguage) {
     locale = defaultLocale;
 }
+console.log('Layout Locale:', locale);
 
 const setupData = await getSiteSetup(locale);
 const faviconUrl = setupData?.favicon
@@ -58,7 +62,6 @@ const customStyles = setupData
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
 const allStyles = customStyles;
 
-const { seo, title, alternateLinks } = Astro.props;
 const defaultSeo = {
     metaTitle: title || "Astro Basics",
     metaDescription: "Sitio web desarrollado con Astro y Strapi",

@@ -3,9 +3,12 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
-import { getPageBySlug } from "../../lib/strapi.js";
+import { getPageBySlug, getAllPages } from "../../lib/strapi.js";
 import RenderBlocks from "../../components/RenderBlocks.astro";
-import { getAllPages } from "../../lib/strapi.js";
+import Blu_404 from "../../components/errors/Blu_404.astro";
+import Toca_404 from "../../components/errors/Toca_404.astro";
+import Component_404 from "../../components/errors/Component_404.astro";
+
 // export const prerender = true; // Disabled for dynamic [lang] SSR
 
 // ==========================================================================================
@@ -13,6 +16,7 @@ import { getAllPages } from "../../lib/strapi.js";
 // ==========================================================================================
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const theme = import.meta.env.PUBLIC_THEME || "toca";
 
 const { lang } = Astro.params;
 export async function getStaticPaths(page) {
@@ -39,22 +43,32 @@ if (isMultiLanguage) {
   pagina = await getPageBySlug(lang, defaultLocale);
 }
 
-// Si la página no se encuentra, mostramos un error 404.
-if (!pagina) {
-  return new Response(
-    'Contenido de la página principal no encontrado en Strapi. Asegúrate de que el slug "home" existe y que la API tiene permisos para acceder.',
-    {
-      status: 404,
-      statusText: "No Encontrado",
-    },
-  );
+const notFound = !pagina;
+if (notFound) {
+  Astro.response.status = 404;
 }
 
-const { titulo, ContenidoPagina, SEO } = pagina;
+const { titulo, ContenidoPagina, SEO } = pagina || {};
 ---
 
-<Layout seo={SEO}>
-  <main class="mx-auto container-full">
-    <RenderBlocks blocks={ContenidoPagina} />
-  </main>
+<Layout
+  seo={SEO}
+  lang={lang || defaultLocale}
+  title={notFound ? "Page Not Found" : titulo}
+>
+  {
+    notFound ? (
+      theme === "blu" ? (
+        <Blu_404 lang={lang} />
+      ) : theme === "toca" ? (
+        <Toca_404 lang={lang} />
+      ) : (
+        <Component_404 />
+      )
+    ) : (
+      <main class="mx-auto container-full">
+        <RenderBlocks blocks={ContenidoPagina} />
+      </main>
+    )
+  }
 </Layout>

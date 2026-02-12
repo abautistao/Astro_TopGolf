@@ -1,0 +1,101 @@
+---
+// src/components/errors/Toca_404.astro
+const { lang } = Astro.props;
+
+// Toca Social Brand Colors (from provided palette)
+const colors = {
+    primary: "#0A0037", // Dark Blue
+    secondary: "#FABCFF", // Pink
+    interactive: "#59FFC6", // Mint Green
+    text: "#F7F8FC", // White-ish
+};
+
+// Translations
+const i18n = {
+    en: {
+        title: "OFF TARGET!",
+        subtitle: "404 - Page Not Found",
+        desc: "It looks like you've missed the goal. This page doesn't exist.",
+        btn: "Back to Pitch",
+        link: "/en",
+    },
+    es: {
+        title: "¡FUERA DE JUEGO!",
+        subtitle: "404 - Página no encontrada",
+        desc: "Parece que fallaste el tiro. Esta página no existe.",
+        btn: "Volver a la Cancha",
+        link: "/", // Single language mode defaults to root
+    },
+};
+
+// Adjust link for Multilanguage if needed, but for now specific to current setup
+const currentLang = lang || "es";
+const t = i18n[currentLang] || i18n.es;
+---
+
+<section
+    class="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden py-20"
+    style={`background-color: ${colors.primary}; color: ${colors.text};`}
+>
+    <!-- Geometric Background Accents -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+        <div
+            class="absolute top-[-10%] right-[-5%] w-[50vh] h-[50vh] rounded-full blur-[80px] opacity-40 mix-blend-screen"
+            style={`background-color: ${colors.secondary};`}
+        >
+        </div>
+        <div
+            class="absolute bottom-[-10%] left-[-10%] w-[60vh] h-[60vh] rounded-full blur-[100px] opacity-30 mix-blend-screen"
+            style={`background-color: ${colors.interactive};`}
+        >
+        </div>
+    </div>
+
+    <div
+        class="relative z-10 container mx-auto px-6 text-center flex flex-col items-center justify-center h-full"
+    >
+        <!-- Big Number with Brand Gradient Effect -->
+        <h1
+            class="text-[120px] md:text-[220px] font-black leading-none tracking-tighter select-none mb-4 font-[family-name:var(--font-titling-gothic-fb-extended-bold)]"
+            style={`
+                background: linear-gradient(135deg, ${colors.interactive} 0%, ${colors.secondary} 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                filter: drop-shadow(0 0 20px rgba(89, 255, 198, 0.3));
+            `}
+        >
+            404
+        </h1>
+
+        <h2
+            class="text-3xl md:text-5xl font-bold uppercase tracking-wide mb-6 font-[family-name:var(--font-tee-line-bold)]"
+        >
+            {t.title}
+        </h2>
+
+        <p
+            class="text-lg md:text-xl max-w-lg mx-auto mb-10 opacity-90 leading-relaxed font-[family-name:var(--font-sharp-sans-medium)]"
+        >
+            {t.desc}
+        </p>
+
+        <a
+            href={t.link}
+            class="group relative inline-flex items-center justify-center px-8 py-4 uppercase tracking-wider text-[#0A0037] transition-all duration-300 transform hover:scale-105 font-[family-name:var(--font-sharp-sans-bold)]"
+            style={`background-color: ${colors.interactive};`}
+        >
+            <span class="relative z-10">{t.btn}</span>
+            <div
+                class="absolute inset-0 w-full h-full transition-all duration-300 opacity-0 group-hover:opacity-100 mix-blend-overlay"
+                style="background-color: white;"
+            >
+            </div>
+            <!-- Button Shadow/Depth -->
+            <div
+                class="absolute top-2 left-2 w-full h-full -z-10 transition-all duration-300 group-hover:top-1 group-hover:left-1"
+                style={`background-color: ${colors.secondary};`}
+            >
+            </div>
+        </a>
+    </div>
+</section>

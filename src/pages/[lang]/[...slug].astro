@@ -5,6 +5,9 @@
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
 import { getAllPages, getPageBySlug, getBlogBySlug } from "../../lib/strapi.js";
 import RenderBlocks from "../../components/RenderBlocks.astro";
+import Blu_404 from "../../components/errors/Blu_404.astro";
+import Toca_404 from "../../components/errors/Toca_404.astro";
+import Component_404 from "../../components/errors/Component_404.astro";
 
 // export const prerender = true;
 
@@ -27,6 +30,7 @@ export async function getStaticPaths() {
 // ==========================================================================================
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const theme = import.meta.env.PUBLIC_THEME || "toca";
 
 const { slug, lang } = Astro.params;
 
@@ -49,16 +53,14 @@ if (isMultiLanguage) {
   }
 }
 
-// Si la página no se encuentra, mostramos un error 404.
-if (!pagina) {
-  return new Response(null, {
-    status: 404,
-    statusText: "No Encontrado",
-  });
+const notFound = !pagina;
+if (notFound) {
+  Astro.response.status = 404;
+  Astro.response.statusText = "Not Found";
 }
 
-const { titulo, ContenidoPagina, SEO, localizations } = pagina;
-console.log("ContenidoPagina", ContenidoPagina);
+const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
+
 const alternateLinks = {};
 if (localizations && localizations.data) {
   localizations.data.forEach((loc) => {
@@ -71,14 +73,27 @@ if (localizations && localizations.data) {
     }
   });
 }
-
-console.log(`[Page] Loaded '${slug}' (Lang: ${lang}).`);
-console.log("Localizations raw:", JSON.stringify(localizations, null, 2));
-console.log("Alternate Links calculated:", alternateLinks);
 ---
 
-<Layout seo={SEO} alternateLinks={alternateLinks}>
-  <main class="mx-auto container-full">
-    <RenderBlocks blocks={ContenidoPagina} />
-  </main>
+<Layout
+  seo={SEO}
+  alternateLinks={alternateLinks}
+  lang={lang || defaultLocale}
+  title={notFound ? "Page Not Found" : titulo}
+>
+  {
+    notFound ? (
+      theme === "blu" ? (
+        <Blu_404 lang={lang} />
+      ) : theme === "toca" ? (
+        <Toca_404 lang={lang} />
+      ) : (
+        <Component_404 />
+      )
+    ) : (
+      <main class="mx-auto container-full">
+        <RenderBlocks blocks={ContenidoPagina} />
+      </main>
+    )
+  }
 </Layout>

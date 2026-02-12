@@ -1,61 +1,35 @@
 ---
 // src/pages/404.astro
 import Layout from "../layouts/Layout.astro";
+import Blu_404 from "../components/errors/Blu_404.astro";
+import Component_404 from "../components/errors/Component_404.astro";
+import Toca_404 from "../components/errors/Toca_404.astro";
 
 const currentPath = Astro.url.pathname;
 const lang = currentPath.startsWith("/es") ? "es" : "en";
 
-// Translations
-const i18n = {
-    en: {
-        eyebrow: "404 Error",
-        title: "Page Not Found",
-        desc: "It seems you've got lost in the vastness of the ocean. The page you are looking for does not exist.",
-        btn: "Back to Home",
-        link: "/en",
-    },
-    es: {
-        eyebrow: "Error 404",
-        title: "Página No Encontrada",
-        desc: "Parece que te has perdido en la inmensidad del océano. La página que buscas no existe o ha cambiado de marea.",
-        btn: "Volver al Inicio",
-        link: "/es",
-    },
+// Get theme from environment variable
+const theme = import.meta.env.PUBLIC_THEME || "toca";
+
+// Title map
+const titles = {
+    blu: "Página No Encontrada - Blu Ocean Club",
+    toca: "Página No Encontrada - Toca Social",
+    topgolf: "404 - Page Not Found",
+    default: "404 - Page Not Found",
 };
 
-const t = i18n[lang];
+const pageTitle = titles[theme] || titles.default;
 ---
 
-<Layout title={`${t.title} - Blu Ocean Club`}>
-    <main
-        class="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#e1d3c4]"
-    >
-        <!-- Content -->
-        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
-            <p
-                class="text-[var(--surface-brand-primary)] text-lg md:text-xl font-[family-name:var(--font-blu-title)] uppercase tracking-[0.2em] mb-4"
-            >
-                {t.eyebrow}
-            </p>
-
-            <h1
-                class="text-6xl md:text-8xl lg:text-9xl font-[family-name:var(--font-blu-title)] text-[var(--surface-brand-primary)] uppercase leading-none mb-8"
-            >
-                {t.title}
-            </h1>
-
-            <p
-                class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-body)] text-lg md:text-2xl font-light mb-12 max-w-2xl mx-auto leading-relaxed"
-            >
-                {t.desc}
-            </p>
-
-            <a
-                href={t.link}
-                class="inline-block px-10 py-4 border border-[var(--surface-brand-primary)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-blu-title)] text-lg uppercase tracking-widest hover:bg-[var(--surface-brand-primary)] hover:text-white transition-all duration-300"
-            >
-                {t.btn}
-            </a>
-        </div>
-    </main>
+<Layout title={pageTitle} lang={lang}>
+    {
+        theme === "blu" ? (
+            <Blu_404 lang={lang} />
+        ) : theme === "toca" ? (
+            <Toca_404 lang={lang} />
+        ) : (
+            <Component_404 />
+        )
+    }
 </Layout>
