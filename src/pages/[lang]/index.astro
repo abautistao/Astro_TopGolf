@@ -8,6 +8,7 @@ import RenderBlocks from "../../components/RenderBlocks.astro";
 import Blu_404 from "../../components/errors/Blu_404.astro";
 import Toca_404 from "../../components/errors/Toca_404.astro";
 import Component_404 from "../../components/errors/Component_404.astro";
+import Generic_404 from "../../components/errors/Generic_404.astro";
 
 // export const prerender = true; // Disabled for dynamic [lang] SSR
 
@@ -62,8 +63,10 @@ const { titulo, ContenidoPagina, SEO } = pagina || {};
         <Blu_404 lang={lang} />
       ) : theme === "toca" ? (
         <Toca_404 lang={lang} />
-      ) : (
+      ) : theme === "topgolf" ? (
         <Component_404 />
+      ) : (
+        <Generic_404 lang={lang} />
       )
     ) : (
       <main class="mx-auto container-full">

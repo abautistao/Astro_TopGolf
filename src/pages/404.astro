@@ -4,18 +4,20 @@ import Layout from "../layouts/Layout.astro";
 import Blu_404 from "../components/errors/Blu_404.astro";
 import Component_404 from "../components/errors/Component_404.astro";
 import Toca_404 from "../components/errors/Toca_404.astro";
+import Generic_404 from "../components/errors/Generic_404.astro";
 
 const currentPath = Astro.url.pathname;
 const lang = currentPath.startsWith("/es") ? "es" : "en";
 
 // Get theme from environment variable
-const theme = import.meta.env.PUBLIC_THEME || "toca";
+const theme = import.meta.env.PUBLIC_THEME || "generic";
 
 // Title map
 const titles = {
     blu: "Página No Encontrada - Blu Ocean Club",
     toca: "Página No Encontrada - Toca Social",
-    topgolf: "404 - Page Not Found",
+    topgolf: "404 - Page Not Found - Topgolf",
+    generic: "404 - Page Not Found",
     default: "404 - Page Not Found",
 };
 
@@ -28,8 +30,10 @@ const pageTitle = titles[theme] || titles.default;
             <Blu_404 lang={lang} />
         ) : theme === "toca" ? (
             <Toca_404 lang={lang} />
-        ) : (
+        ) : theme === "topgolf" ? (
             <Component_404 />
+        ) : (
+            <Generic_404 lang={lang} />
         )
     }
 </Layout>

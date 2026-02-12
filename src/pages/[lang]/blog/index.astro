@@ -9,6 +9,7 @@ import RenderBlocks from "../../../components/RenderBlocks.astro";
 import Blu_404 from "../../../components/errors/Blu_404.astro";
 import Toca_404 from "../../../components/errors/Toca_404.astro";
 import Component_404 from "../../../components/errors/Component_404.astro";
+import Generic_404 from "../../../components/errors/Generic_404.astro";
 
 // ==========================================================================================
 // SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE BLOG
@@ -16,6 +17,7 @@ import Component_404 from "../../../components/errors/Component_404.astro";
 const { lang } = Astro.params;
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const theme = import.meta.env.PUBLIC_THEME || "toca";
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
 
 let notFound = false;
 
@@ -62,8 +64,10 @@ if (pagina && localizations && localizations.data) {
                 <Blu_404 lang={lang} />
             ) : theme === "toca" ? (
                 <Toca_404 lang={lang} />
-            ) : (
+            ) : theme === "topgolf" ? (
                 <Component_404 />
+            ) : (
+                <Generic_404 lang={lang} />
             )
         ) : (
             <main class="mx-auto container-full">
