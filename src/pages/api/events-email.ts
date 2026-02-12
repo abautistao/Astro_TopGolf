@@ -9,6 +9,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // En Cloudflare production, las variables viven en locals.runtime.env
     const runtime = locals.runtime;
     const RESEND_KEY = runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
+    const EMAILS = runtime?.env?.EMAIL_RECIPIENTS || import.meta.env.EMAIL_RECIPIENTS;
+    const EMAILS_BCC = runtime?.env?.EMAIL_BCC || import.meta.env.EMAIL_BCC;
+    const FROM_EMAIL = runtime?.env?.FROM_EMAIL || import.meta.env.FROM_EMAIL;
+    const FROM_NAME = runtime?.env?.FROM_NAME || import.meta.env.FROM_NAME;
 
     if (!RESEND_KEY) {
         return new Response(JSON.stringify({ message: "Error de configuración: Falta API Key" }), { status: 500 });
@@ -22,6 +26,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const userEmailEntry = entries.find(([key]) => key.toLowerCase().includes('correo') || key.toLowerCase().includes('email'));
     const userEmail = userEmailEntry ? userEmailEntry[1].toString() : null;
+    const recipients = EMAILS.split(",");
+    const bcc = EMAILS_BCC.split(",");
 
     const formFields = entries.map(([key, value]) => {
         // Opcional: Omitir campos técnicos como tokens de captcha o el checkbox de aceptación si no aporta valor visual
@@ -38,9 +44,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     try {
         const { data: emailData, error } = await resend.emails.send({
-            from: "Contacto Topgolf <contacto@topgolf.com.mx>", // TODO: Update with your verified domain
-            to: ["ventas_mty@topgolf.com.mx","agonzalez@topgolf.com.mx","apuente@topgolf.com.mx"],
-            bcc: ["abautista@venturae.com.mx"],
+            from: `${FROM_NAME} <${FROM_EMAIL}>`, // TODO: Update with your verified domain
+            to: recipients,
+            bcc: bcc,
             subject: `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`,
             html: `
         <h1>Nuevo registro</h1>
