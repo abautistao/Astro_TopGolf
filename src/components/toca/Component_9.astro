@@ -1,6 +1,6 @@
 ---
 // src/components/toca/Component_9.astro
-import { getStrapiUrl, stringifyRichText, getLocalizedUrl} from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText} from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
 
 // 1. Interfaces ajustadas exactamente a tu JSON
@@ -82,7 +82,8 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
                     cursor-pointer`}
                     data-index={index}
                 >
-                    <div class="w-full aspect-square relative overflow-hidden mb-6 border-2 border-transparent">
+                    <a href={item.link}>
+                        <div class="w-full aspect-square relative overflow-hidden mb-6 border-2 border-transparent">
                         <Image
                             src={item.img || "https://placehold.co/600x600/2d3748/ffffff?text=Image"}
                             alt={item.alt}
@@ -120,6 +121,8 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
                             Leer más...
                         </a>
                     </div>
+                    </a>
+                    
                 </div>
             ))}
 
