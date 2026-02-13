@@ -10,6 +10,7 @@ interface TarjetaItem {
     descripcion: any;
     imagen: any;
     link?: string;
+    label_link?: string
 }
 
 interface TarjetaWrapper {
@@ -32,19 +33,22 @@ const defaultCards = [
         titulo: "Ejemplo 1",
         descripcion: "Description for example card 1 goes here.",
         imagen: null,
-        link: "#"
+        link: "#",
+        label_link: "Leer más..."
     },
     {
         titulo: "Ejemplo 2",
         descripcion: "Description for example card 2 goes here.",
         imagen: null,
-        link: "#"
+        link: "#",
+        label_link: "Leer más..."
     },
     {
         titulo: "Ejemplo 3",
         descripcion: "Description for example card 3 goes here.",
         imagen: null,
-        link: "#"
+        link: "#",
+        label_link: "Leer más..."
     }
 ];
 
@@ -57,7 +61,8 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
         : stringifyRichText(card.descripcion),
     img: getStrapiUrl(card.imagen),
     alt: card.titulo || "Toca Social",
-    link: card.link || "#"
+    link: card.link || "#",
+    label_link: card.label_link || "Leer más..."
 }));
 
 ---
@@ -118,7 +123,7 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
                             href={item.link}
                             class="font-(family-name:--font-sharp-sans-medium) mt-auto text-[var(--surface-brand-secondary)] hover:text-[var(--accent-feedback-strong)] font-bold text-base transition-colors inline-block"
                         >
-                            Leer más...
+                            {item.label_link ? item.label_link : 'Leer más'}
                         </a>
                     </div>
                     </a>
