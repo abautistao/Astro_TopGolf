@@ -22,7 +22,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     const data = await request.formData();
     const entries = [...data.entries()];
+    const file = data.get("CV") as File;
     
+    let attachments = [];
+
+    // Validar si el archivo existe y tiene contenido
+    if (file && file.size > 0) {
+        const arrayBuffer = await file.arrayBuffer();
+        // Convertimos el ArrayBuffer a Buffer (compatible con Resend)
+        const buffer = Buffer.from(arrayBuffer);
+        
+        attachments.push({
+            content: buffer,
+            filename: file.name, // El navegador ya suele incluir la extensión
+        });
+        
+        console.log(`Archivo procesado: ${file.name}`);
+    }
 
     const userEmailEntry = entries.find(([key]) => key.toLowerCase().includes('correo') || key.toLowerCase().includes('email'));
     const userEmail = userEmailEntry ? userEmailEntry[1].toString() : null;
@@ -32,6 +48,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const formFields = entries.map(([key, value]) => {
         // Opcional: Omitir campos técnicos como tokens de captcha o el checkbox de aceptación si no aporta valor visual
         if (key === 'cf-turnstile-response') return ''; 
+        if(key === 'CV') return;
         let fieldValue = value
         if(key === 'Acepto solicitud') {
             fieldValue = value ? "Sí" : "No"
@@ -42,17 +59,21 @@ export const POST: APIRoute = async ({ request, locals }) => {
         `;
     }).join('');
 
+    const subjectData = attachments.length > 0 ? `Nueva postulación: Bolsa de Trabajo` : 
+        `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`;
+        
     try {
         const { data: emailData, error } = await resend.emails.send({
             from: `${FROM_NAME} <${FROM_EMAIL}>`, // TODO: Update with your verified domain
             to: recipients,
             bcc: bcc,
-            subject: `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`,
+            subject: subjectData,
             html: `
-        <h1>Nuevo registro</h1>
-        ${formFields}
-      `,
-        });
+                <h1>Nuevo registro</h1>
+                ${formFields}
+            `,
+            attachments: attachments.length > 0 ? attachments : undefined,
+        },);
 
         if (error) {
             return new Response(
