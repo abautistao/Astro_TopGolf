@@ -1,0 +1,120 @@
+---
+// src/components/Countdown.astro
+interface Props {
+  title?: string
+  color_title?: string
+  card_background: string
+  background: string
+  color_label: string
+  color_number: string
+  date: Date
+}
+
+const { title, background, color_label, date, color_title, card_background, color_number } = Astro.props;
+---
+
+
+<section id="countdown" class="bg-[var(--surface-brand-secondary)] py-6">
+    <div class="container mx-auto px-4 md:px-0">
+        { title && (
+          <h2 id="countdown-title" class="text-center font-(family-name:--font-bebas-neue) font-bold text-[var(--accent-feedback-strong)] text-4xl lg:text-5xl uppercase leading-none mb-3">{title}</h2>
+        )}
+        <div 
+          id="countdown-timer" 
+          data-deadline={date}
+          class="grid grid-cols-4 gap-1 md:gap-4"
+        >
+          {['dias', 'horas', 'minutos', 'segundos'].map((label) => (
+            <div id="countdown-card" class="bg-[var(--surface-brand-primary)] p-4 rounded-xl text-center shadow-lg">
+              <div id={label} class="text-4xl md:text-5xl font-black tabular-nums tracking-tighter">
+                00
+              </div>
+              <div id="countdown-label" class="text-[10px] uppercase font-bold tracking-widest text-[var(--brand-interactive-base)] mt-1">
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+    </div>
+</section>
+
+<style define:vars={{ color_title, background, card_background, color_label, color_number }}>
+#countdown {
+  background-color: var(--background);
+}
+
+#countdown-title {
+  color: var(--color_title);
+}
+
+#countdown-card {
+  background-color: var(--card_background);
+}
+
+#countdown-label {
+  color: var(--color_label);
+}
+
+.tracking-tighter {
+  color: var(--color_number);
+}
+</style>
+
+
+<script>
+  function initCountdown() {
+    const timerElement = document.getElementById('countdown-timer');
+    if (!timerElement) return;
+
+    // Obtenemos la fecha del atributo data
+    const deadlineString = timerElement.dataset.deadline;
+    if (!deadlineString) return;
+
+    const targetDate = new Date(deadlineString).getTime();
+
+    // Referencias al DOM
+    const displays = {
+      dias: document.getElementById('dias'),
+      horas: document.getElementById('horas'),
+      minutos: document.getElementById('minutos'),
+      segundos: document.getElementById('segundos')
+    };
+
+    const update = () => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        timerElement.innerHTML = `<div class="col-span-4 text-center p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-500 font-bold uppercase tracking-widest text-sm">El evento ha finalizado</div>`;
+        return;
+      }
+
+      // Cálculos
+      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Actualización eficiente con padStart para el formato 00
+      if (displays.dias) displays.dias.innerText = d.toString().padStart(2, '0');
+      if (displays.horas) displays.horas.innerText = h.toString().padStart(2, '0');
+      if (displays.minutos) displays.minutos.innerText = m.toString().padStart(2, '0');
+      if (displays.segundos) displays.segundos.innerText = s.toString().padStart(2, '0');
+    };
+
+    // Ejecutar inmediatamente y luego cada segundo
+    update();
+    setInterval(update, 1000);
+  }
+
+  // Soporte para carga inicial y navegación entre páginas de Astro
+  initCountdown();
+  document.addEventListener('astro:after-swap', initCountdown);
+</script>
+
+<style>
+  /* 'tabular-nums' en Tailwind asegura que los números no se muevan al cambiar */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+</style>
