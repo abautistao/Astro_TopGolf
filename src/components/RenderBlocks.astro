@@ -109,7 +109,7 @@ const { blocks } = Astro.props;
 // ==========================================================================================
 // SECCIÓN 2: MAPA DE COMPONENTES
 // ==========================================================================================
-const componentsMap = {
+const componentsMap: any = {
     "secciones.booking": Booking,
     "secciones.bloque-de-texto": BloqueDeTexto,
     "secciones.hero-principal": Component_1,
@@ -205,13 +205,14 @@ const componentsMap = {
     "secciones.container-individual": ContainerIndividual,
     "shared.iframe": Iframe,
     "secciones.countdown": Countdown,
+    "secciones.banner-image-blu": BannerImage,
 };
 ---
 
 {
     blocks &&
-        blocks.map((bloque) => {
-            const Componente = componentsMap[bloque.__component];
+        blocks.map((bloque: any) => {
+            const Componente = componentsMap[bloque.__component] as any;
             return Componente ? (
                 <Componente {...bloque} />
             ) : (
