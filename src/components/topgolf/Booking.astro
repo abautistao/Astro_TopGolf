@@ -63,7 +63,7 @@ for (const [key, value] of Object.entries(rawParams)) {
 
 		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
 			"use strict";
-			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2.php`;
+			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2dolphin.php`;
 			var params = {
                 ...paramsVMG,
 				'plugin_id': vmg_plugin_id
