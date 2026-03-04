@@ -7,11 +7,13 @@ import Layout from "../../layouts/Layout.astro"; // Importamos el Layout princip
 
 export const prerender = true;
 
-export async function getStaticPaths(page: any) {
-  
-  return [{
-    params: { lang: page.locale ?? 'en', slug: page.slug },
-  }];
+export async function getStaticPaths() {
+  // Aquí debes retornar los idiomas que soportas. 
+  // Si los traes de Strapi, haz el fetch aquí.
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'es' } }
+  ];
 }
 
 const { lang } = Astro.params;
