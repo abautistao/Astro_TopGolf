@@ -43,7 +43,10 @@ const t = {
     label_contacto: isEn ? "Contact" : "Contacto:",
     label_horario: isEn ? "Hours" : "Horario:",
     label_conocenos: isEn ? "Get to know us" : "Conócenos a través de:",
-    label_phone: isEn ? "Phone" : "Teléfono"
+    label_phone: isEn ? "Phone" : "Teléfono",
+    message_success: isEn ? "THANK YOU! THE FORM HAS BEEN SUBMITTED." : "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.",
+    message_error: isEn ? "REQUIRED FIELDS ARE MISSING." : "FALTAN CAMPOS REQUERIDOS",
+    message_try: isEn ? "There was a problem submitting the form. Please try again." : "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
 };
 ---
 
@@ -253,7 +256,7 @@ const t = {
         </div>
     </div>
 </section>
-<script>
+<script define:vars={{ t }}>
     
         const form = document.getElementById("blu-contact-form");
         const feedback = document.getElementById("form-feedback");
@@ -284,14 +287,14 @@ const t = {
     
                     if (response.ok) {
                         feedback.textContent =
-                            "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.";
+                            t.message_success;
                         feedback.classList.remove("hidden");
                         feedback.classList.add("bg-green-100", "text-green-800");
                         form.reset();
                     } else {
                         const error = await response.json();
                         throw new Error(
-                            error.message ||
+                            error.message = t.message_error ||
                                 "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
                         );
                     }
