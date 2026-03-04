@@ -9,6 +9,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // En Cloudflare production, las variables viven en locals.runtime.env
     const runtime = locals.runtime;
     const RESEND_KEY = runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
+    const EMAILS = runtime?.env?.EMAIL_RECIPIENTS || import.meta.env.EMAIL_RECIPIENTS;
+    const EMAILS_BCC = runtime?.env?.EMAIL_BCC || import.meta.env.EMAIL_BCC;
+    const FROM_EMAIL = runtime?.env?.FROM_EMAIL || import.meta.env.FROM_EMAIL;
+    const FROM_NAME = runtime?.env?.FROM_NAME || import.meta.env.FROM_NAME;
 
     if (!RESEND_KEY) {
         return new Response(JSON.stringify({ message: "Error de configuración: Falta API Key" }), { status: 500 });
@@ -17,14 +21,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const resend = new Resend(RESEND_KEY);
     
     const data = await request.formData();
-    const nombre = data.get("nombre");
-    const apellido = data.get("apellido");
-    const correo = data.get("correo");
-    const telefono = data.get("telefono");
-    const estado = data.get("estado");
-    const aceptacion = data.get("aceptacion");
+    const nombre = data.get("Nombre");
+    const correo = data.get("Correo");
+    const telefono = data.get("Telefono");
+    const asunto = data.get("Asunto");
+    const mensaje = data.get("Mensaje");
 
-    if (!nombre || !apellido || !correo || !telefono || !estado || !aceptacion) {
+    const recipients = EMAILS.split(",");
+    const bcc = EMAILS_BCC.split(",");
+
+    if (!nombre || !asunto || !correo || !telefono || !mensaje) {
         return new Response(
             JSON.stringify({
                 message: "Faltan campos requeridos",
@@ -35,18 +41,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     try {
         const { data: emailData, error } = await resend.emails.send({
-            from: "Contacto Toca <contacto@tocasocial.com.mx>", // TODO: Update with your verified domain
-            to: ["abautista@venturae.com.mx"], // TODO: Update with the recipient email
-            bcc: ["abautista@venturae.com.mx"],
+            from: `${FROM_NAME} <${FROM_EMAIL}>`,
+            to: recipients,
+            bcc: bcc,
             subject: "Nuevo registro",
             html: `
         <h1>Nuevo registro</h1>
         <p><strong>Nombre:</strong> ${nombre}</p>
-        <p><strong>Apellido:</strong> ${apellido}</p>
         <p><strong>Correo:</strong> ${correo}</p>
         <p><strong>Teléfono:</strong> ${telefono}</p>
-        <p><strong>Estado:</strong> ${estado}</p>
-        <p><strong>Aceptó términos:</strong> ${aceptacion ? "Sí" : "No"}</p>
+        <p><strong>Asunto:</strong> ${asunto}</p>
+        <p><strong>Mensaje:</strong> ${mensaje}</p>
       `,
         });
 
