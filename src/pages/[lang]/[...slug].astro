@@ -21,7 +21,7 @@ export async function getStaticPaths() {
   if (!pages) {
     return [];
   }
-  return pages.map((page) => ({
+  return pages.map((page: any) => ({
     params: { lang: page.locale ?? "en", slug: page.slug },
   }));
 }
@@ -62,9 +62,9 @@ if (notFound) {
 
 const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
 
-const alternateLinks = {};
+const alternateLinks: any = {};
 if (localizations && localizations.data) {
-  localizations.data.forEach((loc) => {
+  localizations.data.forEach((loc: any) => {
     const attributes = loc.attributes || loc;
     const localeCode = attributes.locale;
     const locSlug = attributes.slug;

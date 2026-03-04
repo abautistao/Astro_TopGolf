@@ -36,6 +36,7 @@ const defaults = {
 // 2. Fusionamos con las props que llegan
 const rawParams = {...Astro.props };
 const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
+const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
 
 for (const [key, value] of Object.entries(rawParams)) {
@@ -50,6 +51,7 @@ for (const [key, value] of Object.entries(rawParams)) {
     <!-- El contenido se generará dinámicamente por el script -->
     <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
     <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
+    <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
     
     <div  id="pluginContainer" class="container"></div>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
@@ -59,11 +61,12 @@ for (const [key, value] of Object.entries(rawParams)) {
 	jQuery(document).ready(function($){
 		var vmg_plugin_id = $('#vmg_plugin_id').val();
 		var vmg_plugin_url = $('#vmg_plugin_url').val();
+		var vmg_plugin_version = $('#vmg_plugin_version').val();
         var paramsVMG = paramsLimpios;
 
 		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
 			"use strict";
-			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2dolphin.php`;
+			$.pluginUrl = `https://${vmg_plugin_url}/${vmg_plugin_version}.php`;
 			var params = {
                 ...paramsVMG,
 				'plugin_id': vmg_plugin_id
