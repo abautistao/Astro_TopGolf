@@ -47,6 +47,7 @@ const t = {
     message_success: isEn ? "THANK YOU! THE FORM HAS BEEN SUBMITTED." : "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.",
     message_error: isEn ? "REQUIRED FIELDS ARE MISSING." : "FALTAN CAMPOS REQUERIDOS",
     message_try: isEn ? "There was a problem submitting the form. Please try again." : "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
+    sending: isEn ? "Sending..." : "Enviando...",
 };
 ---
 
@@ -270,7 +271,7 @@ const t = {
                 // Loading state
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.textContent = "Enviando...";
+                    submitBtn.textContent = t.sending;
                 }
     
                 feedback.classList.add("hidden");
@@ -305,7 +306,7 @@ const t = {
                 } finally {
                     if (submitBtn) {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = "ENVIAR";
+                        submitBtn.textContent = t.boton_enviar;
                     }
                 }
             });
