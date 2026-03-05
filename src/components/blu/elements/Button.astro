@@ -26,22 +26,22 @@ const { botones, clase = "" } = Astro.props;
                         "inline-block px-8 py-3 font-bold text-xs tracking-[0.2em] transition-all uppercase font-[family-name:var(--font-blu-body)] text-center",
                         // Version 1: Outline White (from Image 0)
                         {
-                            "border border-white text-white hover:bg-white hover:text-[var(--surface-brand-primary)] rounded-full":
+                            "border border-white text-white hover:bg-white hover:!text-[var(--surface-brand-primary)] rounded-full":
                                 boton.tipo === "version_1" || !boton.tipo,
                         },
                         // Version 2: Cyan Background (from Image 1)
                         {
-                            "bg-[var(--neutral-background-subtle)] text-white hover:bg-[var(--neutral-background-subtle)]/90 rounded-full":
+                            "bg-[var(--neutral-background-subtle)] !text-white hover:bg-[var(--neutral-background-subtle)]/90 rounded-full":
                                 boton.tipo === "version_2",
                         },
                         // Version 3: Medium Blue Background (from Image 2)
                         {
-                            "bg-[var(--neutral-background-strong)] text-white hover:bg-[var(--neutral-background-strong)]/90 rounded-sm":
+                            "bg-[var(--neutral-background-strong)] !text-white hover:bg-[var(--neutral-background-strong)]/90 rounded-sm":
                                 boton.tipo === "version_3",
                         },
                         // Version 4: Dark Blue Background (from Image 3)
                         {
-                            "bg-[var(--surface-brand-primary)] text-white hover:bg-[var(--surface-brand-primary)]/90 rounded-sm":
+                            "bg-[var(--surface-brand-primary)] !text-white hover:bg-[var(--surface-brand-primary)]/90 rounded-sm":
                                 boton.tipo === "version_4",
                         },
                         // Version 5: White Background (from Image 4)

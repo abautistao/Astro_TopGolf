@@ -44,6 +44,17 @@ const buttonBanner: Boton[] = (footerData?.Boton3 && !Array.isArray(footerData.B
 ];
 
 const year = new Date().getFullYear();
+
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEn = currentLang === 'en';
+
+const t = {
+    privacy: isEn ? "Privacy policy" : "Aviso de privacidad",
+    terms: isEn ? "Terms and conditions" : "Términos y condiciones",
+    rights: isEn ? "all rights reserved" : "Todos los derechos reservados"
+};
 ---
 
 <footer
@@ -180,10 +191,10 @@ const year = new Date().getFullYear();
             <div
                 class="border-t border-white/10 pt-3 pb-3 flex flex-col md:flex-row justify-between items-center gap-2 text-[10px] opacity-60 w-full max-w-[1100px] px-4 md:px-8 relative z-10"
             >
-                <p>© {year} Blu Ocean Club all rights reserved</p>
-                <div class="flex gap-4 md:gap-6">
-                    <a href="#" class="hover:opacity-100">Privacy Policy</a>
-                    <a href="#" class="hover:opacity-100">Cookie Policy</a>
+                <p>© {year} Blu Ocean Club {t.rights}</p>
+                <div class="flex gap-4 md:gap-6 ">
+                    <a href="#" class="hover:!opacity-100 !text-white">{t.privacy}</a>
+                    <a href="#" class="hover:!opacity-100 !text-white">{t.terms}</a>
                 </div>
             </div>
 
