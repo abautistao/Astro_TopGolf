@@ -1,58 +1,47 @@
 ---
-// src/components/Icono.astro
+// src/components/shared/Icono.astro
 import { icon as getIconData } from '@fortawesome/fontawesome-svg-core';
 
-// Importamos TODAS las definiciones de iconos desde tu paquete de Kit.
-// ADVERTENCIA: Esto es muy conveniente, pero puede impactar el tamaño final de tu JavaScript
-// porque todos los iconos se incluyen en el "bundle". Para una optimización máxima en un 
-// proyecto en producción, podrías considerar importar solo los iconos que necesitas.
-import * as allIcons from '@awesome.me/kit-ea4a75e062';
+// Importamos los iconos gratuitos (Solid y Brands)
+import * as solidIcons from '@fortawesome/free-solid-svg-icons';
+import * as brandIcons from '@fortawesome/free-brands-svg-icons';
 
 export interface Props {
-  /** El nombre del icono en kebab-case, ej: 'circle-user' */
   name: string;
-  /** El paquete de estilo del icono. Por defecto es 'solid'. */
-  pack?: 'solid' | 'regular' | 'light' | 'thin' | 'duotone';
-  /** Clases de CSS adicionales para aplicar al SVG del icono. */
+  pack?: 'solid' | 'brands'; // Cambiamos los packs disponibles a los gratuitos
   class?: string;
 }
 
 const { name, pack = 'solid', class: className } = Astro.props;
 
-// Mapeo de prefijos de Font Awesome: s=solid, r=regular, l=light, t=thin, d=duotone
-const packPrefix = {
-    solid: 's',
-    regular: 'r',
-    light: 'l',
-    thin: 't',
-    duotone: 'd',
-}[pack];
+// Combinamos los diccionarios de iconos según el pack
+const allIcons = pack === 'brands' ? brandIcons : solidIcons;
 
-// Convierte el nombre del icono de kebab-case a CamelCase
-// Ejemplo: 'circle-user' -> 'CircleUser'
-const camelCaseName = name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+// Convierte 'golf-ball' -> 'GolfBall'
+const camelCaseName = name
+  .split('-')
+  .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+  .join('');
 
-// Construye el nombre con el que el icono es exportado por Font Awesome
-// Ejemplo: 'fasCircleUser'
-const iconExportName = `fa${packPrefix}${camelCaseName}`;
+// En la versión gratuita, el export es simplemente 'fa' + 'Nombre' (ej: faGolfBall)
+const iconExportName = `fa${camelCaseName}`;
 
 const iconObject = allIcons[iconExportName];
 let iconHtml = '';
 
 if (iconObject) {
-  // Si encontramos el icono, generamos su SVG
   const iconData = getIconData(iconObject, { classes: className });
-  iconHtml = iconData.html[0];
+  // FontAwesome devuelve un array de strings en .html, tomamos el primero
+  iconHtml = Array.isArray(iconData.html) ? iconData.html[0] : iconData.html;
 } else {
-  // Si no se encuentra, muestra una advertencia en la consola y un icono de interrogación
-  console.warn(`[Icono.astro] Icono "${name}" del paquete "${pack}" no fue encontrado. (Se buscó el export "${iconExportName}")`);
+  console.warn(`[Icono.astro] Icono "${name}" no encontrado en pack "${pack}".`);
   
-  // Usamos un icono de respaldo. Asegúrate de que 'question' esté en tu Kit.
-  const fallbackIconObject = allIcons['fasQuestion']; // Usando 'fasQuestion' como fallback
-  if (fallbackIconObject) {
-    const fallbackIconData = getIconData(fallbackIconObject, { classes: className });
-    iconHtml = fallbackIconData.html[0];
-  } 
+  // Fallback al icono de pregunta (si existe en el pack solid)
+  const fallback = solidIcons['faQuestion'];
+  if (fallback) {
+    const fallbackData = getIconData(fallback, { classes: className });
+    iconHtml = Array.isArray(fallbackData.html) ? fallbackData.html[0] : fallbackData.html;
+  }
 }
 ---
 <Fragment set:html={iconHtml} />

@@ -1,6 +1,5 @@
 ---
 // Importa los estilos y componentes necesarios.
-import '@awesome.me/kit-ea4a75e062/icons/css/all.css';
 import '../styles/global.css';
 import Header from '../components/topgolf/Header.astro';
 import Footer from '../components/topgolf/Footer.astro';
@@ -63,8 +62,9 @@ const seoProps = seo || defaultSeo;
         })(window,document,'script','dataLayer','GTM-K8XNXZM');
         </script>
         <!-- End Google Tag Manager -->
+        
         <SEO {...seoProps} />
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
         <style is:global set:html={allStyles} />
     </head>
