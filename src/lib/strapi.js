@@ -1,4 +1,4 @@
-const STRAPI_API_URL = import.meta.env.STRAPI_API_URL;
+const STRAPI_API_URL = import.meta.env.PUBLIC_STRAPI_API_URL;
 
 async function fetchAPI(endpoint) {
   // Asegurarse de que el endpoint no tenga una barra inicial para evitar dobles barras
