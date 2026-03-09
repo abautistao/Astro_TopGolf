@@ -26,18 +26,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     let attachments = [];
 
-    // Validar si el archivo existe y tiene contenido
+    let base64File = "";
     if (file && file.size > 0) {
         const arrayBuffer = await file.arrayBuffer();
-        // Convertimos el ArrayBuffer a Buffer (compatible con Resend)
-        const buffer = Buffer.from(arrayBuffer);
-        
-        attachments.push({
-            content: buffer,
-            filename: file.name, // El navegador ya suele incluir la extensión
-        });
-        
-        console.log(`Archivo procesado: ${file.name}`);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        let binary = "";
+        uint8Array.forEach(byte => binary += String.fromCharCode(byte));
+        base64File = btoa(binary);
     }
 
     const recipients = EMAILS.split(",");
@@ -70,7 +65,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 <h1>Nuevo registro</h1>
                 ${formFields}
             `,
-            attachments: attachments.length > 0 ? attachments : undefined,
+            attachments: base64File ? [{
+                    content: base64File,
+                    filename: file.name
+                }] : []
         },);
 
         if (error) {
