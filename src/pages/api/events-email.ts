@@ -26,7 +26,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     let attachments = [];
 
-    let base64File = "";
+    let base64File = null;
     if (file && file.size > 0) {
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         `;
     }).join('');
 
-    const subjectData = attachments.length > 0 ? `Nueva postulación: Bolsa de Trabajo` : 
+    const subjectData = base64File ? `Nueva postulación: Bolsa de Trabajo` : 
         `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`;
         
     try {
