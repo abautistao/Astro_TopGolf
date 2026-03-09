@@ -13,8 +13,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const EMAILS_BCC = runtime?.env?.EMAIL_BCC || import.meta.env.EMAIL_BCC;
     const FROM_EMAIL = runtime?.env?.FROM_EMAIL || import.meta.env.FROM_EMAIL;
     const FROM_NAME = runtime?.env?.FROM_NAME || import.meta.env.FROM_NAME;
-    const GOOGLE_SHEETS_URL = runtime?.env?.GOOGLE_SHEETS_URL || import.meta.env.GOOGLE_SHEETS_URL;
-    const referer = request.headers.get('referer') || 'Directo/Desconocido';
 
     if (!RESEND_KEY) {
         return new Response(JSON.stringify({ message: "Error de configuración: Falta API Key" }), { status: 500 });
@@ -23,28 +21,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const resend = new Resend(RESEND_KEY);
     
     const data = await request.formData();
-
-    // --- LÓGICA PARA GOOGLE SHEETS ---
-    const sheetData = Object.fromEntries(data.entries());
-    // Eliminamos datos binarios o pesados antes de enviar a la hoja
-    delete sheetData.CV; 
-    delete sheetData['cf-turnstile-response'];
-    // AGREGAMOS EL REFERER AL OBJETO DE SHEETS
-    sheetData.Referer = referer;
-
-    let sheetError = null;
-    if (GOOGLE_SHEETS_URL) {
-        try {
-            await fetch(GOOGLE_SHEETS_URL, {
-                method: "POST",
-                body: JSON.stringify(sheetData),
-                headers: { "Content-Type": "application/json" }
-            });
-        } catch (e) {
-            console.error("Error guardando en Sheets:", e);
-            sheetError = "Error al registrar en la base de datos";
-        }
-    }
 
     const nombre = data.get("Nombre");
     const correo = data.get("Correo");
