@@ -39,8 +39,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
 ];
 // Fallback data
 const data = {
-    titulo_principal: titulo_principal || "DJ EN VIVO",
-    titulo_secundario: titulo_secundario || "Y por si fuera poco",
+    titulo_principal: titulo_principal || "",
+    titulo_secundario: titulo_secundario || "",
     descripcion:
         descripcionHtml ||
         "Y lo mejor... ¡disfruta de DJ en vivo todos los viernes y sábados desde las 8 PM!",
@@ -68,11 +68,6 @@ const data = {
                     class="w-full h-full object-cover object-center opacity-90 hover:scale-105 transition-transform duration-700"
                     inferSize={true}
                 />
-                <!-- Degradado sutil -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-r from-[#0000EE]/30 to-transparent mix-blend-multiply"
-                >
-                </div>
             </div>
         </div>
 
@@ -98,10 +93,12 @@ const data = {
             </div>
 
             <div class="mt-5">
-                <ButtonGroup
-                    botones={componentButtons}
-                    clase="flex flex-col items-start"
-                />
+                {Boton && (
+                    <ButtonGroup
+                        botones={componentButtons}
+                        clase="flex flex-col items-start"
+                    />
+                )}
             </div>
         </div>
     </div>
