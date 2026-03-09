@@ -8,6 +8,7 @@ import Component_4_Blu from "./Component_4_Blu.astro";
 import Component_5_Blu from "./Component_5_Blu.astro";
 import Component_6_Blu from "./Component_6_Blu.astro";
 import Component_13_Blu from "./Component_13_Blu.astro";
+import Spacer from "./Spacer.astro";
 
 interface Props {
     fondoDesktop?: any;
@@ -70,6 +71,7 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
 
     {/* --- RENDERIZADO DE COMPONENTES POR SLOTS --- */}
     <div class="relative z-10 w-full">
+        <Spacer height="150px" />
         {componente_1 && <Component_1_Blu {...componente_1} />}
         {componente_2 && <Component_2_Blu {...componente_2} />}
         {componente_3 && <Component_3_Blu {...componente_3} />}
