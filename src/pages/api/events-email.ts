@@ -40,8 +40,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
         console.log(`Archivo procesado: ${file.name}`);
     }
 
-    const userEmailEntry = entries.find(([key]) => key.toLowerCase().includes('correo') || key.toLowerCase().includes('email'));
-    const userEmail = userEmailEntry ? userEmailEntry[1].toString() : null;
     const recipients = EMAILS.split(",");
     const bcc = EMAILS_BCC.split(",");
 
