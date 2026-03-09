@@ -21,6 +21,7 @@ interface Props {
     componente_5?: any;
     componente_6?: any;
     componente_13?: any;
+    padding_top?: string;
 }
 
 const {
@@ -34,13 +35,14 @@ const {
     componente_5,
     componente_6,
     componente_13,
+    padding_top,
 } = Astro.props;
 
 const desktopUrl = getStrapiUrl(fondoDesktop);
 const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
 ---
 
-<section class="relative z-30 w-full overflow-visible flex flex-col">
+<section id="container-widget-background" class="relative z-30 w-full overflow-visible flex flex-col">
     {/* Fondo separado optimizado */}
     <div
         class:list={[
@@ -80,3 +82,8 @@ const mobileUrl = getStrapiUrl(fondoMovil) || desktopUrl;
         <slot />
     </div>
 </section>
+<style define:vars={{ padding_top }}>
+    #container-widget-background {
+        padding-top: var(--padding_top);
+    }
+</style>
