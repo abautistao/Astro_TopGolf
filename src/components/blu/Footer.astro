@@ -29,7 +29,7 @@ const links_1 = footerData?.links_columna_1 || [];
 const titulo_2 = footerData?.columna_2 || "Our Products";
 const links_2 = footerData?.links_columna_2 || [];
 const titulo_3 = footerData?.columna_3 || "SIGN UP FOR OFFERS";
-const descripcion_columna_3 = stringifyRichText(footerData?.descripcion_columna_3) || "Sign up with your email and receive our best offers and news before anyone else.";
+const descripcion_columna_3 = stringifyRichText(footerData?.descripcion_columna_3) || "";
 const socialIcons = footerData?.social || [];
 
 const buttonBanner: Boton[] = (footerData?.Boton3 && !Array.isArray(footerData.Boton3)
@@ -53,7 +53,9 @@ const isEn = currentLang === 'en';
 const t = {
     privacy: isEn ? "Privacy notice" : "Aviso de privacidad",
     terms: isEn ? "Terms and conditions" : "Términos y condiciones",
-    rights: isEn ? "all rights reserved" : "Todos los derechos reservados"
+    rights: isEn ? "all rights reserved" : "Todos los derechos reservados",
+    link_privacy: isEn ? "/en/privacy-notice" : "/es/aviso-de-privacidad",
+    link_terms: isEn ? "/en/terms-and-conditions" : "/es/terminos-y-condiciones",
 };
 ---
 
@@ -193,8 +195,8 @@ const t = {
             >
                 <p>© {year} Blu Ocean Club {t.rights}</p>
                 <div class="flex gap-4 md:gap-6 ">
-                    <a href="#" class="hover:opacity-100! text-white!">{t.privacy}</a>
-                    <a href="#" class="hover:opacity-100! text-white!">{t.terms}</a>
+                    <a href={t.link_privacy} class="hover:opacity-100! text-white!">{t.privacy}</a>
+                    <a href={t.link_terms} class="hover:opacity-100! text-white!">{t.terms}</a>
                 </div>
             </div>
 
