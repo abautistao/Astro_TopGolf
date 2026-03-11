@@ -32,9 +32,10 @@ interface Props {
     fields?: FormField[];
     submitUrl?: string;
     submitButton?: Boton;
+    id_form: string;
 }
 
-const { subtitulo, titulo, fields, submitUrl, submitButton } = Astro.props;
+const { subtitulo, titulo, fields, submitUrl, submitButton, id_form } = Astro.props;
 const mockFields: FormField[] = [
     {
         id: 1,
@@ -177,6 +178,7 @@ const data = {
     fields: fields || mockFields,
     submitUrl: submitUrl || "/api/events-email",
     button: submitButton || mockButton,
+    id_form: id_form || 'form'
 };
 const botonesFormulario: Boton[] = data.button
     ? [data.button]
@@ -214,7 +216,7 @@ const getOptions = (optionsStr?: string) => {
         <!-- Form -->
         <form
             class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6"
-            id="toca-enquire-form"
+            id={data.id_form}
             enctype="multipart/form-data"
         >
             {
