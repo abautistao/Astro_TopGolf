@@ -11,6 +11,7 @@ import { loadEnv } from 'vite';
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
 const isMultiLanguage = PUBLIC_MULTILANGUAGE !== "false";
+const defaultLang = PUBLIC_DEFAULT_LOCALE || "en";
 
 /** @type {import('astro/config').AstroUserConfig} */
 const config = {
@@ -27,6 +28,16 @@ const config = {
     plugins: [tailwindcss()]
   },
 
+  i18n: {
+    defaultLocale: defaultLang,
+    // Si no es multi-idioma, solo cargamos el default para que mapee la carpeta
+    locales: isMultiLanguage ? ["es", "en"] : [defaultLang],
+    routing: {
+      // ESTA ES LA CLAVE: 'false' hace que /es/ se convierta en /
+      prefixDefaultLocale: isMultiLanguage ? true : false 
+    }
+  },
+
   integrations: [
     sitemap({
       i18n: {
@@ -40,18 +51,9 @@ const config = {
     alpinejs({
       entrypoint: '/src/entrypoint.js' // <--- Agrega esto
     })
-  ]
+  ],
+  
 };
-
-if (isMultiLanguage) {
-  config.i18n = {
-    defaultLocale: "en",
-    locales: ["es", "en"],
-    routing: {
-      prefixDefaultLocale: true
-    }
-  };
-}
 
 // https://astro.build/config
 export default defineConfig(config);
