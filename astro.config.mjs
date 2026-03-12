@@ -39,15 +39,7 @@ const config = {
   },
 
   integrations: [
-    sitemap({
-      i18n: {
-        defaultLocale: PUBLIC_DEFAULT_LOCALE, // All urls that don't contain `es` or `fr` after `https://example.com/` will be treated as default locale, i.e. `en`
-        locales: {
-          en: 'en-US',
-          es: 'es-MX',
-        },
-      }
-    }),
+    sitemap(),
     alpinejs({
       entrypoint: '/src/entrypoint.js' // <--- Agrega esto
     })
