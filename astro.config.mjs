@@ -8,7 +8,7 @@ import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
 
-const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
+const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
 const isMultiLanguage = PUBLIC_MULTILANGUAGE !== "false";
 
@@ -28,7 +28,15 @@ const config = {
   },
 
   integrations: [
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: PUBLIC_DEFAULT_LOCALE, // All urls that don't contain `es` or `fr` after `https://example.com/` will be treated as default locale, i.e. `en`
+        locales: {
+          en: 'en-US',
+          es: 'es-MX',
+        },
+      }
+    }),
     alpinejs({
       entrypoint: '/src/entrypoint.js' // <--- Agrega esto
     })
