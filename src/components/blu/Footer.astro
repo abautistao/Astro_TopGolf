@@ -89,7 +89,7 @@ const t = {
             }
 
             <div class="hidden md:flex gap-2 justify-center">
-                {socialIcons.length > 0 ? (
+                {socialIcons.length > 0 && (
                     socialIcons.map((icon: any) => (
                         <a
                             href={formatUrl(icon.url)}
@@ -100,13 +100,6 @@ const t = {
                             <span class="flex items-center justify-center text-xs" set:html={icon.icon} />
                         </a>
                     ))
-                ) : (
-                    <div class="flex gap-2">
-                        <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"><i class="fa-brands fa-facebook-f text-xs"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"><i class="fa-brands fa-instagram text-xs"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"><i class="fa-brands fa-tiktok text-xs"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"><i class="fa-brands fa-whatsapp text-xs"></i></a>
-                    </div>
                 )}
             </div>
         </div>
