@@ -28,6 +28,6 @@
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
-    "tinyexec": "^1.0.3"
+    "tinyexec": "^1.0.4"
   }
 }
