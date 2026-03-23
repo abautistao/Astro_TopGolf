@@ -5,6 +5,7 @@
 
 import StepWithContent from "./elements/StepWithContent.astro";
 import type { Props as StepWithContentProps } from "./elements/StepWithContent.astro";
+import type { Boton } from './elements/Button.astro';
 
 // 1. Definimos la interfaz con todas las props de datos que C13 requiere.
 export interface Props
@@ -22,6 +23,7 @@ export interface Props
     aviso_texto: string;
     aviso_texto_link: string;
     aviso_url_link: string;
+    Boton: Boton[];
 }
 
 // 2. Recibimos todas las props
@@ -35,6 +37,7 @@ const {
     aviso_texto,
     aviso_texto_link,
     aviso_url_link,
+    Boton
 } = Astro.props;
 
 // 3. Pasamos las props al componente reutilizable, forzando la orientación y el tipo de contenido.
@@ -52,4 +55,5 @@ const {
     aviso_texto={aviso_texto}
     aviso_texto_link={aviso_texto_link}
     aviso_url_link={aviso_url_link}
+    Boton={Boton}
 />

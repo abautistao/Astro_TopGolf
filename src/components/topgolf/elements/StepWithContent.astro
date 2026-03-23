@@ -190,7 +190,7 @@ const stepLabelPositionClasses = isLeftOrientation
 
         {/* --- Elemento Dinámico Controlado por 'tipo_contenido' --- */}
         {
-          Boton && tipo_contenido === "button" && (
+          Boton && (
             <div class="w-full mr-auto">
               <ButtonGroup
                 botones={componentButtons}
@@ -201,7 +201,7 @@ const stepLabelPositionClasses = isLeftOrientation
         }
 
         {
-          aviso_texto && tipo_contenido === "alert_card" && (
+          aviso_texto && tipo_contenido === "alert_card" && !Boton && (
             <div class="relative mt-8 hidden md:block font-(family-name:--font-shields-sans-regular)">
               <div class="border-2 border-[var(--accent-highlight-secondary)] p-4 text-center rounded-md">
                 <p class="text-[var(--neutral-background-strong)]">
