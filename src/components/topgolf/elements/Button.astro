@@ -16,28 +16,12 @@ const {
     botones,
     clase = "w-full flex flex-col items-center gap-4 sm:w-auto sm:flex-row"
 } = Astro.props;
-
-// Generador de aria-label para textos genéricos detectados por Lighthouse
-const generateAriaLabel = (texto: string, url: string) => {
-    if (!texto || !url || url === '#') return texto;
-    const genericTexts = ['mas informacion', 'más información', 'ver mas', 'ver más', 'leer mas'];
-    const textLower = texto.toLowerCase().trim();
-    
-    if (genericTexts.includes(textLower)) {
-        const destination = url.split('/').filter(Boolean).pop()?.replace(/-/g, ' ');
-        if (destination) {
-            return `${texto} sobre ${destination}`;
-        }
-    }
-    return texto; // Si no es genérico, retorna null para no sobreescribir innecesariamente
-};
 ---
 
 <div class={clase}>
     {botones.map(boton => (
         <a
             href={formatUrl(boton.url)}
-            aria-label={generateAriaLabel(boton.texto, boton.url)}
             class:list={[
                 'transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)',
                 'w-[80%] sm:w-auto',
