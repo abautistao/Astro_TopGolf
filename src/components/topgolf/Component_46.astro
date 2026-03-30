@@ -58,9 +58,10 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
                 if(gallery.is_video) {
                     return (
                         <a href={gallery.is_youtube ? gallery.youtube_url : getStrapiUrl(gallery.image)} data-fancybox="gallery" data-caption={gallery.title} class="relative">
-                            <img
-                                src={getStrapiUrl(gallery.cover)}
+                            <Image
+                                src={getStrapiUrl(gallery.cover) || placeholderImage}
                                 alt={gallery.title}
+                                inferSize={true}
                             />
                             <!-- BOTÓN DE PLAY -->
                             <button

@@ -165,7 +165,7 @@ export const stringifyRichText = (richText) => {
         return `<pre><code>${processChildren(block.children)}</code></pre>`;
       case 'image':
         const imageUrl = getStrapiUrl({ data: { attributes: block.image } });
-        return `<img src="${imageUrl}" alt="${block.image.alternativeText || ''}" />`;
+        return `<img src="${imageUrl}" alt="${block.image.alternativeText || ''}" loading="lazy" />`;
       default:
         // Fallback for unknown block types
         return `<p>${processChildren(block.children)}</p>`;

@@ -64,7 +64,11 @@ const seoProps = seo || defaultSeo;
         <!-- End Google Tag Manager -->
         
         <SEO {...seoProps} />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" /></noscript>
+        <!-- Preload critical fonts -->
+        <link rel="preload" href="/fonts/Shield-Sans/ShieldSans-Bold.otf" as="font" type="font/otf" crossorigin>
+        <link rel="preload" href="/fonts/Shield-Sans/ShieldSans-Regular.otf" as="font" type="font/otf" crossorigin>
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
         <style is:global set:html={allStyles} />
     </head>
