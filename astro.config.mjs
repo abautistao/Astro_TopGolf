@@ -12,6 +12,9 @@ export default defineConfig({
   output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
   site: 'https://topgolf.com.mx', // URL para pruebas locales.
+  build: {
+    inlineStylesheets: 'always'
+  },
 
   image: {
     domains: ['localhost', '127.0.0.1'],
