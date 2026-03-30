@@ -84,6 +84,8 @@ const showVideo = isVideo(heroBackgroundUrl);
                 alt={alt_imagen_fondo || "Imagen de fondo de placeholder"}
                 class="absolute inset-0 object-cover w-full h-full"
                 inferSize={true}
+                loading="eager"
+                fetchpriority="high"
             />
         )
     }

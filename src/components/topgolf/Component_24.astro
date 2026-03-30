@@ -66,7 +66,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 
         <div class="relative lg:flex lg:items-center lg:justify-start lg:min-h-[500px] xl:min-h-[600px]">
             <div class="lg:absolute lg:-top-10 lg:-right-40 lg:w-4/5 lg:h-full">
-                <Image src={mainImageUrl} alt={mainImageAlt} class="w-full object-cover shadow-xl" inferSize={true} />
+                <Image src={mainImageUrl} alt={mainImageAlt} class="w-full object-cover shadow-xl" inferSize={true} loading="eager" fetchpriority="high" />
             </div>
             <div class="relative w-[90%] mx-auto -mt-[20px] lg:w-[calc(1/2*80%)] lg:mx-0 lg:mt-0 z-10">
                 <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-9 text-[var(--neutral-text-inverted)]  shadow-2xl lg:text-left">
