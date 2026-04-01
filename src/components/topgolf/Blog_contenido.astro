@@ -1,0 +1,111 @@
+---
+// src/components/toca/Component_8.astro
+import { getStrapiUrl, stringifyRichText,  } from '../../lib/strapi.js';
+import { Image } from 'astro:assets';
+
+interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+}
+
+interface Props {
+    id?: number;
+    titulo?: string;
+    descripcion?: any[];
+    imagen: StrapiMedia;
+    tipo?: string;
+}
+
+const {
+    titulo = "Ejemplo Título",
+    descripcion = [],
+    imagen,
+    tipo = "version_1",
+} = Astro.props;
+
+
+const DEFAULT_IMAGE = "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo";
+
+const finalImgUrl = imagen;
+const finalImgAlt = imagen;
+
+console.log(finalImgUrl)
+
+const configs: any = {
+    version_1: {
+        // (Rosa - Imagen Derecha)
+        bg:         'bg-[var(--neutral-text-inverted)]',
+        textTitle:  'text-[var(--surface-brand-primary)]',
+        textContent:'text-[var(--surface-brand-primary)]',
+        direction:  'md:flex-row',
+        textPadding:'md:pl-16 md:pr-8',
+        showDecoration: true, // Esta propiedad ya no se usa, pero se puede dejar
+        // Si la imagen está a la derecha, queremos margen a la derecha (20px)
+        imageMargin: 'md:mr-[20px]'
+    },
+    version_2: {
+        // (Azul - Imagen Izquierda)
+        bg:         'bg-[var(--surface-brand-primary)]',
+        textTitle:  'text-[var(--accent-feedback-strong)]',
+        textContent:'text-[var(--accent-feedback-strong)]',
+        direction:  'md:flex-row-reverse',
+        textPadding:'md:pr-16 md:pl-8',
+        showDecoration: false,
+        // Si la imagen está a la izquierda, queremos margen a la izquierda (20px)
+        imageMargin: 'md:ml-[20px]'
+    }
+};
+
+const currentStyle: any = configs[tipo] || configs.version_1;
+---
+
+<section class={`flex flex-col w-full min-h-112.5 md:min-h-137.5 overflow-visible ${currentStyle.direction} ${currentStyle.bg}`}>
+
+  {/* LADO DE TEXTO */}
+    <div class={`w-full md:w-1/2 flex flex-col justify-center md:justify-start items-start pt-10 pb-0 md:pt-20 md:pb-10 px-6 z-10 ${currentStyle.textPadding}`}>
+
+        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium uppercase text-3xl md:text-4xl leading-none mb-5 tracking-wide`}>
+            {titulo}
+        </h2>
+
+        <div class={`${currentStyle.textContent} strapi-rich-text font-(family-name:--font-sharp-sans-medium) w-full text-base font-medium leading-relaxed mb-8 [&>p]:mb-4 [&>p:last-child]:mb-0`}>
+            <Fragment set:html={stringifyRichText(descripcion)} />
+        </div>
+
+    </div>
+
+  {/* LADO DE IMAGEN */}
+    <div class={`w-full md:w-1/2 flex justify-center items-center md:items-start px-6 pb-6 pt-4 md:pt-20 relative ${currentStyle.imageMargin}`}>
+
+        <div class="relative w-full max-w-2xl">
+
+            {/* 1. SLOT PARA EL SVG (ARE YOU GAME?) */}
+            <slot name="image-overlay" />
+
+            {/* SE HA ELIMINADO LA IMAGEN DE FONDO QUE GIRABA */}
+
+            <Image
+                src={getStrapiUrl(finalImgUrl)}
+                alt={finalImgAlt}
+                class="w-full aspect-3/2 object-cover relative z-10 shadow-lg"
+                inferSize={true}
+            />
+        </div>
+    </div>
+
+</section>
+
+<style>
+    .strapi-rich-text :global(p) { margin-bottom: 0; }
+    .strapi-rich-text :global(strong) {
+        color: var(--accent-feedback-strong) !important; font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-thickness: 2px; text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        color: var(--accent-feedback-strong) !important;
+        text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px;
+    }
+</style>

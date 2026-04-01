@@ -3,8 +3,9 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
-import { getAllBlogs, getBlogBySlug } from "../../lib/strapi.js";
+import { getAllBlogs, getBlogBySlug, stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
 import RenderBlocks from "../../components/RenderBlocks.astro";
+import { Image } from "astro:assets";
 
 export const prerender = true;
 
@@ -17,7 +18,7 @@ export async function getStaticPaths() {
   if (!pages) {
     return [];
   }
-  return pages.map((page) => ({
+  return pages.map((page: any) => ({
     params: { slug: page.slug },
   }));
 }
@@ -27,6 +28,8 @@ export async function getStaticPaths() {
 // ==========================================================================================
 const { slug } = Astro.params;
 const pagina = await getBlogBySlug(slug);
+const FALLBACK_IMAGE_URL =
+    "https://placehold.co/600x400/4a5568/ffffff?text=Promoción";
 
 // Si la página no se encuentra, mostramos un error 404.
 if (!pagina) {
@@ -36,11 +39,74 @@ if (!pagina) {
   });
 }
 
-const { titulo, ContenidoPagina, SEO } = pagina;
+const { titulo, extract, image, image_mobile, ContenidoPagina,SEO } = pagina;
+
+console.log(pagina)
+
+const imageUrl = (image
+    ? getStrapiUrl(image)
+    : null) || FALLBACK_IMAGE_URL;
+
+const imageAlt =
+    image?.alternativeText || titulo;
+
+
+const imageUrlMobile = (image_mobile
+    ? getStrapiUrl(image_mobile)
+    : null) || FALLBACK_IMAGE_URL;
+
+const imageAltMobile =
+    image_mobile?.alternativeText || titulo;
+
+
+console.log(ContenidoPagina)
 ---
 
 <Layout seo={SEO}>
   <main class="mx-auto container-full">
+    <section class="w-full text-(--neutral-text-inverted) bg-custom-gradient">
+      <div class="max-w-7xl mx-auto px-6 sm:px-8 py-20">
+          <div
+              class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10"
+          >
+              <div class="relative mb-4">
+                  <Image
+                      src={imageUrl}
+                      alt={imageAlt}
+                      class="w-full group-hover:scale-105 transition-transform duration-300 ease-in-out hidden md:block"
+                      inferSize={true}
+                  />
+
+                  <Image
+                      src={imageUrlMobile}
+                      alt={imageAltMobile}
+                      class="w-full group-hover:scale-105 transition-transform duration-300 ease-in-out block md:hidden"
+                      inferSize={true}
+                  />
+              </div>
+
+              <div>
+                <div
+                    class="text-left max-w-lg font-(family-name:--font-shields-sans-bold)"
+                >
+                    <h1
+                        class="font-(family-name:--font-shields-sans-semibold-condensed) text-[40px] md:text-[80px] uppercase leading-none
+                    tracking-[0]"
+                    >
+                        {titulo}
+                    </h1>
+                </div>
+  
+                <div class="flex flex-col items-start">
+                    <div
+                        class="font-(family-name:--font-shields-sans-regular) text-base font-normal text-left prose strapi-rich-text"
+                        set:html={stringifyRichText(extract)}
+                    />
+                </div>
+              </div>
+          </div>
+      </div>
+    </section>
     <RenderBlocks blocks={ContenidoPagina} />
   </main>
 </Layout>
