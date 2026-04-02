@@ -1,0 +1,112 @@
+---
+import { Image } from "astro:assets";
+import Button from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+
+interface Props {
+  id: string;
+  titulo: string;
+  descripcion: string;
+  boton: Boton
+  image: string;
+  delay?: number; // Tiempo en milisegundos para aparecer
+}
+
+const { id, image, titulo, descripcion, boton, delay = 3000 } = Astro.props;
+
+const imageModal = getStrapiUrl(image) || "https://cms.tocasocial.com.mx/uploads/JERSEY_TOCA_MONTERREY_82590e28ce.jpg";
+---
+
+<dialog
+  id={id}
+  data-delay={delay}
+  class="fixed inset-0 z-50 hidden h-fit w-[90%] max-w-2xl flex-col overflow-hidden border-none bg-transparent p-0 shadow-2xl outline-none open:flex md:flex-row backdrop:bg-black/70 backdrop:backdrop-blur-md animate-in fade-in zoom-in duration-500"
+>
+  <div class="relative h-auto w-full md:h-auto md:w-5/12">
+    <Image
+        src={imageModal}
+        alt="Playing"
+        class="w-full h-full object-cover"
+        inferSize={true}
+    />
+
+    <button
+      id={`close-${id}-mobile`}
+      class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 md:hidden"
+      aria-label="Cerrar"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+
+  </div>
+
+  <div class="relative flex w-full flex-col justify-center bg-[#fa8cff] p-6 md:p-10 md:w-7/12">
+    
+    <button
+      id={`close-${id}`}
+      class="absolute top-2 right-2 md:flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 hidden "
+      aria-label="Cerrar"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+
+    <h2 class="mb-4 text-lg font-black leading-tight font-(family-name:--font-titling-gothic-fb-extended-bold) uppercase text-(--surface-brand-primary) md:text-xl">
+      {titulo}
+    </h2>
+    
+    <div class="mb-6 text-base leading-relaxed text-(--surface-brand-primary)" set:html={stringifyRichText(descripcion)}></div>
+
+    <div class="flex flex-col items-center gap-4 sm:flex-row">
+      <Button
+        botones={[boton]}
+        clase="flex flex-row gap-4 sm:gap-6 w-full justify-center items-center flex-wrap sm:flex-nowrap"
+    />
+    </div>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ id }}>
+  // Esperar a que el DOM esté listo
+  window.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById(id);
+    const closeBtn = document.getElementById(`close-${id}`);
+    const closeBtnMobile = document.getElementById(`close-${id}-mobile`);
+    const delay = parseInt(modal.getAttribute('data-delay') || "3000");
+
+    // 1. Mostrar automáticamente después del delay
+    setTimeout(() => {
+      if (modal && !modal.open) {
+        modal.showModal();
+      }
+    }, delay);
+
+    // 2. Cerrar al hacer clic en la X
+    closeBtn?.addEventListener('click', () => {
+      modal.close();
+    });
+
+    closeBtnMobile?.addEventListener('click', () => {
+      modal.close();
+    });
+
+    // 3. Cerrar al hacer clic fuera (en el backdrop)
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.close();
+    });
+  });
+</script>
+
+<style>
+  /* Animación nativa para el backdrop */
+  dialog::backdrop {
+    transition: opacity 0.5s ease;
+  }
+  
+  /* Centrado extra para asegurar que esté en el medio exacto */
+  dialog[open] {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
