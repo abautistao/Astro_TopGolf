@@ -7,6 +7,8 @@ import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 
+import partytown from '@astrojs/partytown';
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server', // Changed to server for SSR support with Cloudflare
@@ -28,10 +30,11 @@ export default defineConfig({
     }
   },
 
-  integrations: [
-    sitemap(),
-    alpinejs({
-        entrypoint: '/src/entrypoint.js' // <--- Agrega esto
-    })
-  ]
+  integrations: [sitemap(), alpinejs({
+      entrypoint: '/src/entrypoint.js' // <--- Agrega esto
+  }), partytown({
+    config: {
+      forward: ["dataLayer.push"],
+    },
+  })]
 });
