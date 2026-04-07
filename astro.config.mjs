@@ -22,7 +22,10 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    build: {
+      target: 'esnext'
+    }
   },
 
   integrations: [
