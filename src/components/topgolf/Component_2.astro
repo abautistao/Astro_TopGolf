@@ -182,14 +182,21 @@ const cardsToRender =
       // Margen de error pequeño (10px) para cálculos de punto flotante
       const tolerance = 10;
 
+      // --- DOM READS ---
+      // Realizamos todas las lecturas geométricas primero para evitar Reprocesamiento Forzado (Layout Thrashing)
+      const currentScrollLeft = container.scrollLeft;
+      const currentScrollWidth = container.scrollWidth;
+      const currentClientWidth = container.clientWidth;
+
+      // --- DOM WRITES ---
+      // Aplicamos las escrituras (mutación del atributo disabled)
+      const maxScroll = currentScrollWidth - currentClientWidth;
+      
       // ¿Estamos al principio?
-      prevBtn.disabled = container.scrollLeft <= tolerance;
+      prevBtn.disabled = currentScrollLeft <= tolerance;
 
       // ¿Estamos al final?
-      // scrollWidth = ancho total del contenido
-      // clientWidth = ancho visible
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      nextBtn.disabled = container.scrollLeft >= maxScroll - tolerance;
+      nextBtn.disabled = currentScrollLeft >= maxScroll - tolerance;
     };
 
     // --- EVENTOS DE BOTONES ---
