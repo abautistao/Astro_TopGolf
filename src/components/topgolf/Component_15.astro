@@ -120,6 +120,8 @@ const showVideo = isVideo(heroBackgroundUrl);
                 loop
                 muted
                 playsinline
+                preload="auto"
+                fetchpriority="high"
                 class="absolute inset-0 w-full h-full object-cover"
             />
         ) : (
@@ -128,6 +130,8 @@ const showVideo = isVideo(heroBackgroundUrl);
                 alt={alt_imagen_fondo || placeholder.alt_imagen_fondo}
                 class="absolute inset-0 object-cover w-full h-full"
                 inferSize={true}
+                loading="eager"
+                fetchpriority="high"
             />
         )
     }
