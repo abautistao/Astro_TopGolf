@@ -14,6 +14,7 @@ import Generic_404 from "../../../components/errors/Generic_404.astro";
 // ==========================================================================================
 // SECCIÓN 3: OBTENCIÓN DE DATOS PARA LA PÁGINA DE BLOG
 // ==========================================================================================
+export const prerender = false;
 const { lang } = Astro.params;
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const theme = import.meta.env.PUBLIC_THEME || "toca";
