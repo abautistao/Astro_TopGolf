@@ -18,8 +18,8 @@ export async function getStaticPaths() {
   if (!pages) {
     return [];
   }
-  return pages.map((page) => ({
-    params: { slug: page.slug },
+  return pages.map((page: any) => ({
+    params: { lang: page.locale ?? "en",slug: page.slug },
   }));
 }
 
