@@ -33,11 +33,9 @@ interface Props {
     submitUrl?: string;
     submitButton?: Boton;
     id_form: string;
-    background: string;
-    text_title: string;
 }
 
-const { subtitulo, titulo, fields, submitUrl, submitButton, id_form, background, text_title } = Astro.props;
+const { subtitulo, titulo, fields, submitUrl, submitButton, id_form } = Astro.props;
 const mockFields: FormField[] = [
     {
         id: 1,
@@ -180,12 +178,8 @@ const data = {
     fields: fields || mockFields,
     submitUrl: submitUrl || "/api/events-email",
     button: submitButton || mockButton,
-    id_form: id_form || 'form',
+    id_form: id_form || 'form'
 };
-
-const bg =  background || '#0A0037';
-const colorText =  text_title || '#F7F8FC';
-
 const botonesFormulario: Boton[] = data.button
     ? [data.button]
     : [{
@@ -200,204 +194,201 @@ const getOptions = (optionsStr?: string) => {
 };
 ---
 
-<section id="componente_20" class="w-full py-16 lg:py-24">
+<section class="w-full bg-[var(--surface-brand-primary)] py-16 lg:py-24">
     <div class="max-w-[800px] mx-auto px-4">
         <!-- Header -->
         <div class="text-center mb-12 lg:mb-16">
             { subtitulo && (
                 <h3
-                    id="componente_20-title"
-                    class="text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
+                    class="text-[var(--accent-feedback-strong)]  text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
                 >
                     {data.subtitulo}
                 </h3>
             ) }
             
             <h2
-                id="componente_20-subtitle"
-                class="text-xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-8"
+                class="text-[var(--accent-feedback-strong)]  text-xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-8"
             >
                 {data.titulo}
             </h2>
         </div>
 
-        {data.fields.length > 0 && (
-            <form
-                class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6"
-                id={data.id_form}
-                enctype="multipart/form-data"
-            >
-                {
-                    data.fields.map((field) => {
-                        // SECTION TITLE
-                        if (field.inputType === "section_title") {
-                            return (
-                                <div class="col-span-1 md:col-span-2 mt-8 mb-2">
-                                    <h4 class="text-[var(--accent-feedback-strong)]  text-2xl font-bold uppercase text-center font-(family-name:--font-titling-gothic-fb-extended-bold)">
-                                        {field.label}
-                                    </h4>
-                                </div>
-                            );
-                        }
-    
-                        // CHECKBOX
-                        if (field.inputType === "checkbox") {
-                            return (
-                                <div class="col-span-1 md:col-span-2 flex items-start gap-3 py-2">
-                                    <input
-                                        id={field.name}
-                                        name={field.name}
-                                        type="checkbox"
-                                        required={field.required}
-                                        class="mt-1 h-5 w-5 rounded border-transparent bg-[var(--accent-feedback-strong)]  text-[var(--accent-feedback-strong)] focus:ring-[var(--accent-feedback-strong)]"
-                                    />
-                                    <label
-                                        for={field.name}
-                                        class="text-xs lg:text-sm text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
-                                    >
-                                        {field.label}
-                                    </label>
-                                </div>
-                            );
-                        }
-    
-                        // RADIO (Locations)
-                        if (field.inputType === "radio") {
-                            return (
-                                <div class="col-span-1 md:col-span-2 space-y-4 py-2">
-                                    <label class="block text-sm lg:text-base font-bold text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)">
-                                        {field.label}
-                                    </label>
-                                    <div class="space-y-3">
-                                        {getOptions(field.options).map(
-                                            (opt, idx) => (
-                                                <label class="flex items-center gap-3 cursor-pointer group">
-                                                    <input
-                                                        type="radio"
-                                                        name={field.name}
-                                                        value={opt}
-                                                        required={field.required}
-                                                        class="h-5 w-5 border-transparent bg-[var(--accent-feedback-strong)] text-[var(--accent-feedback-strong)] focus:ring-[var(--accent-feedback-strong)]"
-                                                    />
-                                                    <span class="text-xs lg:text-sm text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium) group-hover:text-[var(--accent-feedback-strong)]  transition-colors">
-                                                        {opt}
-                                                    </span>
-                                                </label>
-                                            ),
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        }
-    
-                        // WRAPPER FOR STANDARD INPUTS
+        <!-- Form -->
+        <form
+            class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6"
+            id={data.id_form}
+            enctype="multipart/form-data"
+        >
+            {
+                data.fields.map((field) => {
+                    // SECTION TITLE
+                    if (field.inputType === "section_title") {
                         return (
-                            <div
-                                class={`${field.gridWidth === "full" ? "col-span-1 md:col-span-2" : "col-span-1"}`}
-                            >
-                                <label
-                                    for={field.name}
-                                    class="block text-sm lg:text-base font-bold text-[var(--brand-interactive-base)] mb-2 font-(family-name:--font-sharp-sans-medium)"
-                                >
-                                    {field.label}{" "}
-                                    {field.required && (
-                                        <span class="text-red-500">*</span>
-                                    )}
-                                </label>
-    
-                                {field.inputType === "select" ? (
-                                    <div class="relative">
-                                        <select
-                                            id={field.name}
-                                            name={field.name}
-                                            required={field.required}
-                                            class="appearance-none w-full bg-[var(--accent-feedback-strong)]  border-none text-black rounded-sm py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
-                                        >
-                                            <option value="" disabled selected>
-                                                {field.placeholder ||
-                                                    "(select an option)"}
-                                            </option>
-                                            {getOptions(field.options).map(
-                                                (opt) => (
-                                                    <option value={opt}>
-                                                        {opt}
-                                                    </option>
-                                                ),
-                                            )}
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
-                                            <svg
-                                                class="fill-current h-4 w-4"
-                                                viewBox="0 0 20 20"
-                                            >
-                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                ) : field.inputType === "textarea" ? (
-                                    <textarea
-                                        id={field.name}
-                                        name={field.name}
-                                        placeholder={field.placeholder}
-                                        required={field.required}
-                                        rows="5"
-                                        class="w-full bg-[var(--accent-feedback-strong)]  border-none text-black rounded-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
-                                    />
-                                ) : (
-                                    <input
-                                        type={field.inputType}
-                                        id={field.name}
-                                        name={field.name}
-                                        placeholder={field.placeholder}
-                                        required={field.required}
-                                        class="w-full bg-[var(--accent-feedback-strong)]  border-none text-black rounded-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium) placeholder-gray-400"
-                                    />
-                                )}
+                            <div class="col-span-1 md:col-span-2 mt-8 mb-2">
+                                <h4 class="text-[var(--accent-feedback-strong)]  text-2xl font-bold uppercase text-center font-(family-name:--font-titling-gothic-fb-extended-bold)">
+                                    {field.label}
+                                </h4>
                             </div>
                         );
-                    })
-                }
-                {/* Submit Button Section */}
-                {
-                    data.button && (
-                        <div class="col-span-1 md:col-span-2 mt-4 flex justify-center">
-                            <button
-                                type="submit"
-                                class:list={[
-                                    'font-(family-name:--font-titling-gothic-fb-extended-bold) inline-block border-2 border-[var(--surface-brand-primary)] font-bold uppercase tracking-tight leading-tight',
-                                    'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
-                                    'text-sm',
-                                    'px-4 py-2 md:px-6 md:py-2',
-                                    'shadow-[3px_3px_0px_0px_black] md:shadow-[4px_4px_0px_0px_black]',
-                                    'active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
-                                    'hover:md:translate-x-[1px] hover:md:translate-y-[1px]',
-                                    'hover:md:shadow-[2px_2px_0px_0px_black]',
-                                    {
-                                        "bg-[var(--surface-brand-secondary)] text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-secondary)]":
-                                            data.button.tipo === "version_1",
-                                        "bg-[var(--surface-brand-primary)] text-[var(--accent-feedback-strong)] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--surface-brand-secondary)]":
-                                            data.button.tipo === "version_2",
-                                        "bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:bg-[var(--brand-interactive-base)]":
-                                            data.button.tipo === "version_3",
-                                        "bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] hover:bg-[var(--accent-feedback-strong)] hover:text-[var(--surface-brand-primary)]":
-                                            data.button.tipo === "version_4"
-                                    },
-                                ]}
+                    }
+
+                    // CHECKBOX
+                    if (field.inputType === "checkbox") {
+                        return (
+                            <div class="col-span-1 md:col-span-2 flex items-start gap-3 py-2">
+                                <input
+                                    id={field.name}
+                                    name={field.name}
+                                    type="checkbox"
+                                    required={field.required}
+                                    class="mt-1 h-5 w-5 rounded border-transparent bg-[var(--accent-feedback-strong)]  text-[var(--accent-feedback-strong)] focus:ring-[var(--accent-feedback-strong)]"
+                                />
+                                <label
+                                    for={field.name}
+                                    class="text-xs lg:text-sm text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
+                                >
+                                    {field.label}
+                                </label>
+                            </div>
+                        );
+                    }
+
+                    // RADIO (Locations)
+                    if (field.inputType === "radio") {
+                        return (
+                            <div class="col-span-1 md:col-span-2 space-y-4 py-2">
+                                <label class="block text-sm lg:text-base font-bold text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)">
+                                    {field.label}
+                                </label>
+                                <div class="space-y-3">
+                                    {getOptions(field.options).map(
+                                        (opt, idx) => (
+                                            <label class="flex items-center gap-3 cursor-pointer group">
+                                                <input
+                                                    type="radio"
+                                                    name={field.name}
+                                                    value={opt}
+                                                    required={field.required}
+                                                    class="h-5 w-5 border-transparent bg-[var(--accent-feedback-strong)] text-[var(--accent-feedback-strong)] focus:ring-[var(--accent-feedback-strong)]"
+                                                />
+                                                <span class="text-xs lg:text-sm text-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium) group-hover:text-[var(--accent-feedback-strong)]  transition-colors">
+                                                    {opt}
+                                                </span>
+                                            </label>
+                                        ),
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    // WRAPPER FOR STANDARD INPUTS
+                    return (
+                        <div
+                            class={`${field.gridWidth === "full" ? "col-span-1 md:col-span-2" : "col-span-1"}`}
+                        >
+                            <label
+                                for={field.name}
+                                class="block text-sm lg:text-base font-bold text-[var(--brand-interactive-base)] mb-2 font-(family-name:--font-sharp-sans-medium)"
                             >
-                                {data.button.texto}
-                            </button>
+                                {field.label}{" "}
+                                {field.required && (
+                                    <span class="text-red-500">*</span>
+                                )}
+                            </label>
+
+                            {field.inputType === "select" ? (
+                                <div class="relative">
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        required={field.required}
+                                        class="appearance-none w-full bg-[var(--accent-feedback-strong)]  border-none text-black rounded-sm py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
+                                    >
+                                        <option value="" disabled selected>
+                                            {field.placeholder ||
+                                                "(select an option)"}
+                                        </option>
+                                        {getOptions(field.options).map(
+                                            (opt) => (
+                                                <option value={opt}>
+                                                    {opt}
+                                                </option>
+                                            ),
+                                        )}
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                                        <svg
+                                            class="fill-current h-4 w-4"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            ) : field.inputType === "textarea" ? (
+                                <textarea
+                                    id={field.name}
+                                    name={field.name}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                    rows="5"
+                                    class="w-full bg-[var(--accent-feedback-strong)]  border-none text-black rounded-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium)"
+                                />
+                            ) : (
+                                <input
+                                    type={field.inputType}
+                                    id={field.name}
+                                    name={field.name}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                    class="w-full bg-[var(--accent-feedback-strong)]  border-none text-black rounded-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-interactive-base)] font-(family-name:--font-sharp-sans-medium) placeholder-gray-400"
+                                />
+                            )}
                         </div>
-                    )
-                }
-    
-                <!-- Messages -->
-                <div
-                    id="form-feedback"
-                    class="col-span-1 md:col-span-2 text-center text-lg font-bold p-4 rounded-sm hidden font-(family-name:--font-sharp-sans-bold)"
-                >
-                </div>
-            </form>
-        )}
+                    );
+                })
+            }
+            {/* Submit Button Section */}
+            {
+                data.button && (
+                    <div class="col-span-1 md:col-span-2 mt-4 flex justify-center">
+                        <button
+                            type="submit"
+                            class:list={[
+                                'font-(family-name:--font-titling-gothic-fb-extended-bold) inline-block border-2 border-[var(--surface-brand-primary)] font-bold uppercase tracking-tight leading-tight',
+                                'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
+                                'text-sm',
+                                'px-4 py-2 md:px-6 md:py-2',
+                                'shadow-[3px_3px_0px_0px_black] md:shadow-[4px_4px_0px_0px_black]',
+                                'active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+                                'hover:md:translate-x-[1px] hover:md:translate-y-[1px]',
+                                'hover:md:shadow-[2px_2px_0px_0px_black]',
+                                {
+                                    "bg-[var(--surface-brand-secondary)] text-[var(--surface-brand-primary)] hover:bg-[var(--surface-brand-secondary)]":
+                                        data.button.tipo === "version_1",
+                                    "bg-[var(--surface-brand-primary)] text-[var(--accent-feedback-strong)] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--surface-brand-secondary)]":
+                                        data.button.tipo === "version_2",
+                                    "bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:bg-[var(--brand-interactive-base)]":
+                                        data.button.tipo === "version_3",
+                                    "bg-[var(--accent-feedback-strong)] text-[var(--surface-brand-primary)] hover:bg-[var(--accent-feedback-strong)] hover:text-[var(--surface-brand-primary)]":
+                                        data.button.tipo === "version_4"
+                                },
+                            ]}
+                        >
+                            {data.button.texto}
+                        </button>
+                    </div>
+                )
+            }
+
+            <!-- Messages -->
+            <div
+                id="form-feedback"
+                class="col-span-1 md:col-span-2 text-center text-lg font-bold p-4 rounded-sm hidden font-(family-name:--font-sharp-sans-bold)"
+            >
+            </div>
+        </form>
     </div>
 </section>
 
@@ -456,7 +447,7 @@ const getOptions = (optionsStr?: string) => {
         });
     
 </script>
-<style define:vars={{ bg, colorText }}>
+<style>
     /* Styling for the radio inputs and checkboxes to look premium */
     input[type="radio"],
     input[type="checkbox"] {
@@ -514,13 +505,5 @@ const getOptions = (optionsStr?: string) => {
         font-weight: 900;
         font-size: 0.8rem;
         line-height: 1;
-    }
-
-    #componente_20 {
-        background-color: var(--bg);
-    }
-
-    #componente_20-title, #componente_20-subtitle {
-        color: var(--colorText);
     }
 </style>
