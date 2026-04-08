@@ -15,7 +15,7 @@ const defaultLang = PUBLIC_DEFAULT_LOCALE || "en";
 
 /** @type {import('astro/config').AstroUserConfig} */
 const config = {
-  output: 'server', // Changed to server for SSR support with Cloudflare
+  output: 'hybrid', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
   site: PUBLIC_SITE_URL, // URL para pruebas locales.
 
@@ -39,7 +39,16 @@ const config = {
   },
 
   integrations: [
-    sitemap(),
+    sitemap({
+      // Configuración para multiidioma
+      i18n: isMultiLanguage ? {
+        defaultLocale: defaultLang,
+        locales: {
+          en: 'en-US',
+          es: 'es-ES',
+        },
+      } : undefined,
+    }),
     alpinejs({
       entrypoint: '/src/entrypoint.js' // <--- Agrega esto
     })
