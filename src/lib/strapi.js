@@ -139,8 +139,11 @@ export const stringifyRichText = (richText) => {
         const linkText = processChildren(child.children);
         // Handle both internal and external links
         const isExternal = child.url.startsWith('http');
+        const isTelOrMail = child.url.startsWith('tel') || child.url.startsWith('mail');
         const target = isExternal ? '_blank' : '_self';
         const rel = isExternal ? 'noopener noreferrer' : '';
+
+        console.log(child.url)
         return `<a href="${formatUrl(child.url)}" target="${target}" rel="${rel}">${linkText}</a>`;
       }
       return processTextNode(child);
@@ -181,7 +184,7 @@ export const stringifyRichText = (richText) => {
 
 export const formatUrl = (url) => {
   if (!url) return '#';
-  if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/')) {
+  if (url.startsWith('http') || url.startsWith('https') || url.startsWith('/') || url.startsWith('tel') || url.startsWith('mailto')) {
     return url;
   }else if(url.startsWith('#')) {
     return `${url}`;
