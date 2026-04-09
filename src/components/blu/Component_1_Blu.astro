@@ -17,7 +17,7 @@ const { subtitulo, titulo, descripcion, imagen, boton = null } = Astro.props;
 
 const strapiImageUrl =
     getStrapiUrl(imagen) ||
-    "https://res.cloudinary.com/dmv76307y/image/upload/v1736741753/blu_hero_placeholder_ea4a75e062.jpg";
+    "https://placehold.co/1920x1080/1a202c/ffffff?text=Video+Placeholder";
 const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
 
 const buttons: Boton[] = boton ? [boton] : [];
