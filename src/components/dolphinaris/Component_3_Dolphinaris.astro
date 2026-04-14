@@ -1,0 +1,206 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface CardDolphinaris {
+    id: number;
+    titulo: string;
+    imagen: any;
+    duracion?: string;
+    intensidad?: string;
+    edadMinima?: string;
+    beneficios: any; 
+    precioOferta: string;
+    precioRegular: string;
+    LabelPrecioOferta: string;
+    LabelPrecioRegular: string;
+    boton?: Boton | Boton[] | null;
+}
+
+interface Props {
+    tituloExperiencias?: string;
+    experiencias?: CardDolphinaris[];
+}
+
+const {
+    tituloExperiencias,
+    experiencias = [
+        {
+            id: 1,
+            titulo: "DOLPHIN FRIENDLY ENCOUNTER",
+            imagen: "https://placehold.co/800x400/002A4E/ffffff?text=Dolphin+Encounter",
+            duracion: "40 minutes",
+            intensidad: "Easy",
+            edadMinima: "Minimum age: 3 years (minors with adult)",
+            beneficios: [
+                {
+                    type: "list",
+                    format: "unordered",
+                    children: [
+                        { type: "list-item", children: [{ type: "text", text: "Dolphin encounter" }] },
+                        { type: "list-item", children: [{ type: "text", text: "Domestic open bar" }] },
+                        { type: "list-item", children: [{ type: "text", text: "Food buffet" }] },
+                        { type: "list-item", children: [{ type: "text", text: "Basic digital photos" }] },
+                        { type: "list-item", children: [{ type: "text", text: "Facilities access" }] },
+                    ],
+                },
+            ],
+            precioOferta: "$99 USD",
+            precioRegular: "$149 USD",
+            LabelPrecioOferta: "ONLINE PRICE",
+            LabelPrecioRegular: "REGULAR PRICE",
+            boton: {
+                id: 1,
+                texto: "BOOK NOW",
+                url: "#",
+                tipo: "version_5", // Base white button
+            },
+        }
+    ],
+} = Astro.props;
+---
+
+<section class="w-full py-12 md:py-20 px-6 overflow-hidden bg-[var(--neutral-background-subtle)]">
+    <div class="max-w-[1440px] mx-auto">
+        { tituloExperiencias && (
+            <h2 class="text-[32px] md:text-[40px] font-bold font-montserrat text-[var(--surface-brand-primary)] text-center mb-12 uppercase">
+                {tituloExperiencias}
+            </h2>
+        )}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 max-w-7xl mx-auto">
+            {
+                Array.isArray(experiencias) && experiencias.map((exp) => (
+                    <div class="flex flex-col bg-white overflow-hidden shadow-xl border border-gray-100/50 experience-card group">
+                        
+                        <!-- IMAGEN Y TÍTULO -->
+                        <div class="relative h-[250px] overflow-hidden">
+                            <Image
+                                src={getStrapiUrl(exp.imagen) || exp.imagen}
+                                alt={exp.titulo}
+                                width={800}
+                                height={400}
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <!-- OVERLAY DEGRADADO OSCURO HACIA ABAJO -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#001f3a]/90 via-[#001f3a]/30 to-transparent pointer-events-none"></div>
+                            
+                            <!-- TÍTULO SOBRE LA IMAGEN -->
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <h3 class="text-white font-montserrat text-[24px] leading-tight font-bold uppercase tracking-wide">
+                                    {exp.titulo}
+                                </h3>
+                            </div>
+                        </div>
+
+                        <!-- CONTENIDO CARTA -->
+                        <div class="p-6 md:p-8 flex flex-col flex-grow text-[var(--surface-brand-primary)]">
+                            
+                            <!-- META INFO: Duracion, Intensidad, Edad -->
+                            <div class="flex flex-col gap-3 mb-6 pb-6 border-b border-gray-100 font-roboto text-[15px] font-normal text-[#6B7280]">
+                                <div class="flex flex-row justify-between flex-wrap gap-2">
+                                    {exp.duracion && (
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-regular fa-clock text-[var(--surface-brand-secondary)]"></i>
+                                            <span>{exp.duracion}</span>
+                                        </div>
+                                    )}
+                                    {exp.intensidad && (
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-heart-pulse text-[var(--surface-brand-secondary)]"></i>
+                                            <span>{exp.intensidad}</span>
+                                        </div>
+                                    )}
+                                </div>
+                                {exp.edadMinima && (
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-regular fa-user text-[var(--surface-brand-secondary)]"></i>
+                                        <span>{exp.edadMinima}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <!-- INCLUDES Y RICHTEXT -->
+                            <h4 class="font-montserrat font-bold text-[20px] mb-4 uppercase tracking-wider text-[var(--surface-brand-primary)]">
+                                INCLUDES:
+                            </h4>
+                            
+                            <div class="benefits-rich-text text-[16px] text-[#6B7280] font-roboto font-normal leading-relaxed mb-8 flex-grow">
+                                <Fragment set:html={stringifyRichText(exp.beneficios)} />
+                            </div>
+
+                            <!-- PRECIOS -->
+                            <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6 pb-2 relative">
+                                <div class="absolute left-1/2 top-8 bottom-4 w-px bg-gray-100" />
+                                
+                                <div class="text-center pr-2 flex flex-col justify-center items-center">
+                                    <p class="text-[11px] md:text-[12px] uppercase tracking-widest text-[#4B5563] font-black mb-1 font-montserrat">
+                                        {exp.LabelPrecioRegular}
+                                    </p>
+                                    <p class="text-[20px] font-bold text-[var(--surface-brand-primary)] line-through font-montserrat tracking-tight">
+                                        {exp.precioRegular}
+                                    </p>
+                                </div>
+                                
+                                <div class="text-center pl-2 flex flex-col justify-center items-center">
+                                    <p class="text-[11px] md:text-[12px] uppercase tracking-widest text-[var(--surface-brand-secondary)] font-black mb-1 font-montserrat">
+                                        {exp.LabelPrecioOferta}
+                                    </p>
+                                    <p class="text-[26px] md:text-[28px] font-extrabold text-[var(--surface-brand-secondary)] font-montserrat tracking-tight leading-none mt-1">
+                                        {exp.precioOferta}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- BOTON -->
+                            {exp.boton && (
+                                <div class="mt-8">
+                                    <Button
+                                        botones={Array.isArray(exp.boton) ? exp.boton : [exp.boton]}
+                                        clase="w-full justify-center [&>a]:w-full [&>a]:border-[var(--surface-brand-primary)] [&>a]:bg-white [&>a]:text-[var(--surface-brand-primary)] [&>a]:border-2 hover:[&>a]:bg-[var(--surface-brand-primary)] hover:[&>a]:text-white transition-all shadow-none"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .experience-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .experience-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Redefinición de los bullet points para convertirlos en checkmarks cyans */
+    .benefits-rich-text :global(ul) {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .benefits-rich-text :global(li) {
+        position: relative;
+        padding-left: 1.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .benefits-rich-text :global(li::before) {
+        content: "\f00c"; /* Unicode FontAwesome Checkmark */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        top: 0.15rem;
+        font-size: 1rem;
+        color: var(--accent-highlight-primary); 
+    }
+</style>
