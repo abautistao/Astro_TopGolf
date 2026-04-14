@@ -55,7 +55,7 @@ const {
                 id: 1,
                 texto: "BOOK NOW",
                 url: "#",
-                tipo: "version_5", // Base white button
+                tipo: "version_6", // Use Outline Dark Blue version
             },
         }
     ],
@@ -65,90 +65,91 @@ const {
 <section class="w-full py-12 md:py-20 px-6 overflow-hidden bg-[var(--neutral-background-subtle)]">
     <div class="max-w-[1440px] mx-auto">
         { tituloExperiencias && (
-            <h2 class="text-[32px] md:text-[40px] font-bold font-montserrat text-[var(--surface-brand-primary)] text-center mb-12 uppercase">
-                {tituloExperiencias}
-            </h2>
+            <div class="flex flex-col items-center justify-center mb-12">
+                <h2 class="text-[32px] md:text-[36px] font-bold font-montserrat text-[var(--surface-brand-primary)] text-center capitalize mb-4">
+                    {tituloExperiencias}
+                </h2>
+                <div class="w-[80px] h-0.5 bg-[var(--surface-brand-secondary)] hidden md:block"></div>
+            </div>
         )}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 max-w-7xl mx-auto">
+        <div class="flex flex-wrap justify-center items-stretch gap-8 md:gap-10 max-w-7xl mx-auto">
             {
                 Array.isArray(experiencias) && experiencias.map((exp) => (
-                    <div class="flex flex-col bg-white overflow-hidden shadow-xl border border-gray-100/50 experience-card group">
+                    <div class="flex flex-col bg-white overflow-hidden shadow-xl border border-gray-100 group transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 w-full max-w-[420px]">
                         
                         <!-- IMAGEN Y TÍTULO -->
-                        <div class="relative h-[250px] overflow-hidden">
+                        <div class="relative h-64 overflow-hidden">
                             <Image
                                 src={getStrapiUrl(exp.imagen) || exp.imagen}
                                 alt={exp.titulo}
                                 width={800}
                                 height={400}
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             />
                             <!-- OVERLAY DEGRADADO OSCURO HACIA ABAJO -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#001f3a]/90 via-[#001f3a]/30 to-transparent pointer-events-none"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-[var(--surface-brand-primary)]/90 via-[#002A4E]/30 to-transparent pointer-events-none z-10"></div>
                             
                             <!-- TÍTULO SOBRE LA IMAGEN -->
-                            <div class="absolute bottom-6 left-6 right-6">
-                                <h3 class="text-white font-montserrat text-[24px] leading-tight font-bold uppercase tracking-wide">
+                            <div class="absolute bottom-4 left-4 right-4 z-20">
+                                <h3 class="text-white font-montserrat text-xl leading-tight font-bold uppercase tracking-wide">
                                     {exp.titulo}
                                 </h3>
                             </div>
                         </div>
 
                         <!-- CONTENIDO CARTA -->
-                        <div class="p-6 md:p-8 flex flex-col flex-grow text-[var(--surface-brand-primary)]">
+                        <div class="p-6 flex flex-col flex-grow text-[var(--surface-brand-primary)]">
                             
                             <!-- META INFO: Duracion, Intensidad, Edad -->
-                            <div class="flex flex-col gap-3 mb-6 pb-6 border-b border-gray-100 font-roboto text-[15px] font-normal text-[#6B7280]">
-                                <div class="flex flex-row justify-between flex-wrap gap-2">
-                                    {exp.duracion && (
-                                        <div class="flex items-center gap-2">
-                                            <i class="fa-regular fa-clock text-[var(--surface-brand-secondary)]"></i>
-                                            <span>{exp.duracion}</span>
-                                        </div>
-                                    )}
-                                    {exp.intensidad && (
-                                        <div class="flex items-center gap-2">
-                                            <i class="fa-solid fa-heart-pulse text-[var(--surface-brand-secondary)]"></i>
-                                            <span>{exp.intensidad}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                {exp.edadMinima && (
+                            <div class="grid grid-cols-2 gap-4 mb-6 font-roboto text-base font-normal text-[#6B8096]">
+                                {exp.duracion && (
                                     <div class="flex items-center gap-2">
-                                        <i class="fa-regular fa-user text-[var(--surface-brand-secondary)]"></i>
+                                        <i class="fa-regular fa-clock text-[var(--accent-highlight-primary)]"></i>
+                                        <span>{exp.duracion}</span>
+                                    </div>
+                                )}
+                                {exp.intensidad && (
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-heart-pulse text-[var(--accent-highlight-primary)]"></i>
+                                        <span>{exp.intensidad}</span>
+                                    </div>
+                                )}
+                                {exp.edadMinima && (
+                                    <div class="flex items-center gap-2 col-span-2">
+                                        <i class="fa-regular fa-user text-[var(--accent-highlight-primary)]"></i>
                                         <span>{exp.edadMinima}</span>
                                     </div>
                                 )}
                             </div>
 
                             <!-- INCLUDES Y RICHTEXT -->
-                            <h4 class="font-montserrat font-bold text-[20px] mb-4 uppercase tracking-wider text-[var(--surface-brand-primary)]">
-                                INCLUDES:
-                            </h4>
-                            
-                            <div class="benefits-rich-text text-[16px] text-[#6B7280] font-roboto font-normal leading-relaxed mb-8 flex-grow">
-                                <Fragment set:html={stringifyRichText(exp.beneficios)} />
+                            <div class="mb-6 flex-grow">
+                                <h4 class="font-montserrat font-bold text-[12px] mb-3 uppercase tracking-wider text-[var(--surface-brand-primary)]">
+                                    INCLUDES:
+                                </h4>
+                                
+                                <div class="benefits-rich-text text-base text-[#6B8096] font-roboto font-normal leading-relaxed">
+                                    <Fragment set:html={stringifyRichText(exp.beneficios)} />
+                                </div>
                             </div>
 
                             <!-- PRECIOS -->
-                            <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6 pb-2 relative">
-                                <div class="absolute left-1/2 top-8 bottom-4 w-px bg-gray-100" />
-                                
-                                <div class="text-center pr-2 flex flex-col justify-center items-center">
-                                    <p class="text-[11px] md:text-[12px] uppercase tracking-widest text-[#4B5563] font-black mb-1 font-montserrat">
+                            <div class="flex items-center justify-between border-t border-gray-100 pt-6 mb-6">
+                                <div class="text-center w-1/2 pr-4 border-r border-[#E5E7EB] flex flex-col justify-center items-center">
+                                    <p class="text-[10px] uppercase tracking-widest text-[#6B8096] font-bold mb-1 font-montserrat">
                                         {exp.LabelPrecioRegular}
                                     </p>
-                                    <p class="text-[20px] font-bold text-[var(--surface-brand-primary)] line-through font-montserrat tracking-tight">
+                                    <p class="text-[20px] font-bold text-[var(--surface-brand-primary)] line-through decoration-[var(--surface-brand-primary)]/50 font-montserrat opacity-90">
                                         {exp.precioRegular}
                                     </p>
                                 </div>
                                 
-                                <div class="text-center pl-2 flex flex-col justify-center items-center">
-                                    <p class="text-[11px] md:text-[12px] uppercase tracking-widest text-[var(--surface-brand-secondary)] font-black mb-1 font-montserrat">
+                                <div class="text-center w-1/2 pl-4 flex flex-col justify-center items-center">
+                                    <p class="text-[10px] uppercase tracking-widest text-[var(--surface-brand-secondary)] font-bold mb-1 font-montserrat">
                                         {exp.LabelPrecioOferta}
                                     </p>
-                                    <p class="text-[26px] md:text-[28px] font-extrabold text-[var(--surface-brand-secondary)] font-montserrat tracking-tight leading-none mt-1">
+                                    <p class="text-[24px] font-extrabold text-[var(--surface-brand-secondary)] font-montserrat leading-none mt-1">
                                         {exp.precioOferta}
                                     </p>
                                 </div>
@@ -156,10 +157,10 @@ const {
 
                             <!-- BOTON -->
                             {exp.boton && (
-                                <div class="mt-8">
+                                <div class="mt-auto">
                                     <Button
                                         botones={Array.isArray(exp.boton) ? exp.boton : [exp.boton]}
-                                        clase="w-full justify-center [&>a]:w-full [&>a]:border-[var(--surface-brand-primary)] [&>a]:bg-white [&>a]:text-[var(--surface-brand-primary)] [&>a]:border-2 hover:[&>a]:bg-[var(--surface-brand-primary)] hover:[&>a]:text-white transition-all shadow-none"
+                                        clase="w-full justify-center [&>a]:w-full"
                                     />
                                 </div>
                             )}
@@ -172,14 +173,6 @@ const {
 </section>
 
 <style>
-    .experience-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .experience-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-    }
-
     /* Redefinición de los bullet points para convertirlos en checkmarks cyans */
     .benefits-rich-text :global(ul) {
         list-style: none;
@@ -190,7 +183,9 @@ const {
     .benefits-rich-text :global(li) {
         position: relative;
         padding-left: 1.75rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: flex-start;
     }
 
     .benefits-rich-text :global(li::before) {
@@ -199,8 +194,8 @@ const {
         font-weight: 900;
         position: absolute;
         left: 0;
-        top: 0.15rem;
-        font-size: 1rem;
+        top: 0.2rem;
+        font-size: 0.9rem;
         color: var(--accent-highlight-primary); 
     }
 </style>

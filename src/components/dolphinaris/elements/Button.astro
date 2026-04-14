@@ -49,6 +49,11 @@ const { botones, clase = "" } = Astro.props;
                             "bg-white text-[var(--surface-brand-primary)] hover:bg-white/90 rounded-none":
                                 boton.tipo === "version_5",
                         },
+                        // Version 6 (Outline Blue Dark)
+                        {
+                            "border-2 border-[var(--surface-brand-primary)] !text-[var(--surface-brand-primary)] hover:!bg-[var(--surface-brand-primary)] hover:!text-white rounded-none":
+                                boton.tipo === "version_6",
+                        },
                     ]}
                     set:html={boton.texto}
                 />
