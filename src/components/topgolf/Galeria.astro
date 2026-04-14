@@ -28,15 +28,6 @@ export interface Props {
 // 2. Recibimos las props y definimos placeholders
 const { titulo_seccion, descripcion_seccion, categorias_galeria } = Astro.props;
 
-const placeholderData: Props = {
-    titulo_seccion: "GALERÍA",
-    descripcion_seccion: [{ type: 'paragraph', children: [{ type: 'text', text: "Explora nuestra galería y conoce toda la experiencia de Topgolf." }] }],
-    texto_boton_cargar_mas: "CARGAR MÁS JUEGOS",
-    texto_boton_regresar: "REGRESAR",
-    imagenes: [
-        { title: 'Imagen 1',  image: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png', is_video: false, cover: 'https://cms-topgolf.venturaentertainment.mx/uploads/230101_AL_TOPGOLF_Shot_02_394_1_7aa53ae584.png', is_youtube: true, youtube_url: 'https://www.youtube.com/watch?v=-ElC3HcyUWo'},
-    ]
-};
 
 const placeholderImage = "https://placehold.co/600x400?text=No+Image";
 ---
@@ -48,7 +39,9 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
                 tracking-[0]">
                 {titulo_seccion}
             </h2>
-            <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-(--neutral-background-strong) prose" set:html={stringifyRichText(descripcion_seccion)}></div>
+            {descripcion_seccion && (
+                <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-(--neutral-background-strong) prose" set:html={stringifyRichText(descripcion_seccion)}></div>
+            )}
         </div>
 
         <div class="flex flex-wrap border border-(--brand-interactive-base) mb-10">
