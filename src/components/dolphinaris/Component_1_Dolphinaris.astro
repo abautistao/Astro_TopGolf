@@ -2,8 +2,8 @@
 // src/components/blu/Component_1_Blu.astro
 import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 import { Image } from "astro:assets";
-import Button from "../blu/elements/Button.astro";
-import type { Boton } from "../blu/elements/Button.astro";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 
 interface Props {
     subtitulo?: string;
@@ -81,17 +81,17 @@ const showVideo = isVideo(strapiImageUrl);
             <div class="relative z-10 w-full max-w-[1440px] px-6 pb-16 md:pb-0 text-left md:text-center text-white md:mt-[-50px]">
                 {/* Mobile Layout: Bottom Left. Desktop Layout: Center Center */}
                 {subtitulo && (
-                    <span class="block text-[20px] font-medium tracking-normal md:tracking-[0.3em] font-[family-name:var(--font-dolphinaris-title)] mb-0 md:mb-4">
+                    <span class="block text-[20px] font-medium tracking-[0.1em] md:tracking-[0.2em] uppercase text-[var(--accent-highlight-primary)] font-[family-name:var(--font-dolphinaris-title)] mb-2 md:mb-4">
                         {subtitulo}
                     </span>
                 )}
                 {titulo && (
-                    <h1 class="text-[32px] font-bold font-[family-name:var(--font-dolphinaris-title)] leading-[0.9] md:leading-tight mb-3 md:mb-6 uppercase">
+                    <h1 class="text-[32px] md:text-5xl lg:text-[60px] font-bold font-[family-name:var(--font-dolphinaris-title)] leading-tight mb-4 md:mb-8">
                         {titulo}
                     </h1>
                 )}
                 {descripcionHtml && (
-                    <div class="text-[16px] font-normal tracking-wide md:tracking-widest opacity-90 font-[family-name:var(--font-dolphinaris-body)] max-w-2xl md:mx-auto">
+                    <div class="text-[16px] font-normal md:text-[20px] opacity-90 font-[family-name:var(--font-dolphinaris-body)] max-w-3xl md:mx-auto">
                         <Fragment set:html={descripcionHtml} />
                     </div>
                 )}

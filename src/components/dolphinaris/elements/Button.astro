@@ -1,0 +1,57 @@
+---
+// src/components/dolphinaris/elements/Button.astro
+import { formatUrl } from "../../../lib/strapi";
+
+export interface Boton {
+    id: number;
+    texto: string;
+    url: string;
+    tipo?: string; // version_1, version_2, etc.
+}
+
+export interface Props {
+    botones: Boton[];
+    clase?: string;
+}
+const { botones, clase = "" } = Astro.props;
+---
+
+<div class={`flex flex-wrap gap-4 ${clase}`}>
+    {
+        botones &&
+            botones.map((boton) => (
+                <a
+                    href={formatUrl(boton.url)}
+                    class:list={[
+                        "inline-block px-8 py-3 font-bold text-[16px] tracking-wide transition-all uppercase font-[family-name:var(--font-dolphinaris-body)] text-center",
+                        // Version 1 (Outline White -> Now Outline White Square)
+                        {
+                            "border border-white text-white hover:bg-white hover:!text-[var(--neutral-background-strong)] rounded-none":
+                                boton.tipo === "version_1" || !boton.tipo,
+                        },
+                        // Version 2 (Cyan Background -> Solid Teal Square #1E8CA6 / var(--surface-brand-secondary))
+                        {
+                            "bg-[var(--surface-brand-secondary)] !text-white hover:bg-[var(--surface-brand-secondary)]/90 rounded-none":
+                                boton.tipo === "version_2",
+                        },
+                        // Version 3 (Medium Blue Theme)
+                        {
+                            "bg-[var(--neutral-background-strong)] !text-white hover:bg-[var(--neutral-background-strong)]/90 rounded-none":
+                                boton.tipo === "version_3",
+                        },
+                        // Version 4 
+                        {
+                            "bg-[var(--surface-brand-primary)] !text-white hover:bg-[var(--surface-brand-primary)]/90 rounded-none":
+                                boton.tipo === "version_4",
+                        },
+                        // Version 5 (White Solid)
+                        {
+                            "bg-white text-[var(--surface-brand-primary)] hover:bg-white/90 rounded-none":
+                                boton.tipo === "version_5",
+                        },
+                    ]}
+                    set:html={boton.texto}
+                />
+            ))
+    }
+</div>
