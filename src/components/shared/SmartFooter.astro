@@ -3,6 +3,7 @@ import { getFooterData } from "../../lib/strapi";
 import TopgolfFooter from "../topgolf/Footer.astro";
 import TocaFooter from "../toca/Footer.astro";
 import BluFooter from "../blu/Footer.astro";
+import DolphinarisFooter from "../dolphinaris/Footer.astro";
 
 const { locale = "en" } = Astro.props;
 const footerData = await getFooterData(locale);
@@ -21,6 +22,8 @@ if (
 
     if (componentName.includes("toca")) {
         Component = TocaFooter;
+    } else if (componentName.includes("dolphinaris")) {
+        Component = DolphinarisFooter;
     } else if (componentName.includes("blu")) {
         Component = BluFooter;
     } else if (componentName.includes("topgolf")) {

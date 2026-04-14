@@ -173,6 +173,24 @@
     font-display: swap;
 }
 
+/* Montserrat */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat/Montserrat-VariableFont.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Roboto */
+@font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/Roboto/Roboto-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --font-shields-sans-regular: 'ShieldSans-Regular', sans-serif;
     --font-shields-sans-condensed: 'ShieldSans-Condensed', sans-serif;
@@ -193,6 +211,10 @@
     /* Blu Typography */
     --font-blu-title: 'Tenor Sans', sans-serif;
     --font-blu-body: 'Satoshi-Regular', sans-serif;
+
+    /* Dolphinaris Typography */
+    --font-dolphinaris-title: 'Montserrat', sans-serif;
+    --font-dolphinaris-body: 'Roboto', sans-serif;
 }
 
 @import "tailwindcss";

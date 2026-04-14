@@ -1,0 +1,249 @@
+---
+// src/components/blu/Footer.astro
+import {
+    getFooterData,
+    getStrapiUrl,
+    stringifyRichText,
+    getLocalizedUrl,
+    formatUrl,
+} from "../../lib/strapi";
+import { Image } from "astro:assets";
+import Button from "../blu/elements/Button.astro";
+import type { Boton } from "../blu/elements/Button.astro";
+
+import localLogo from "../../assets/blu/logo-blu-white.png";
+import vectorB from "../../assets/blu/footer-vector.png";
+
+interface Props {
+    data?: any;
+    locale?: string;
+}
+
+const { data, locale = "en" } = Astro.props;
+const footerData = data || (await getFooterData(locale));
+
+const logoUrl = getStrapiUrl(footerData?.logo) || localLogo;
+
+const titulo_1 = footerData?.columna_1 || "About Us";
+const links_1 = footerData?.links_columna_1 || [];
+const titulo_2 = footerData?.columna_2 || "Our Products";
+const links_2 = footerData?.links_columna_2 || [];
+const titulo_3 = footerData?.columna_3 || "SIGN UP FOR OFFERS";
+const descripcion_columna_3 = stringifyRichText(footerData?.descripcion_columna_3) || "";
+const socialIcons = footerData?.social || [];
+
+const buttonBanner: Boton[] = (footerData?.Boton3 && !Array.isArray(footerData.Boton3)
+    ? [footerData.Boton3]
+    : footerData?.Boton3) || [
+    {
+        id: 1,
+        texto: "SUBSCRIBE",
+        url: "#",
+        tipo: "version_5",
+    },
+];
+
+const year = new Date().getFullYear();
+
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEn = currentLang === 'en';
+
+const t = {
+    privacy: isEn ? "Privacy notice" : "Aviso de privacidad",
+    terms: isEn ? "Terms and conditions" : "Términos y condiciones",
+    rights: isEn ? "all rights reserved" : "Todos los derechos reservados",
+    link_privacy: isEn ? "/en/privacy-notice" : "/es/aviso-de-privacidad",
+    link_terms: isEn ? "/en/terms-and-conditions" : "/es/terminos-y-condiciones",
+};
+---
+
+<footer
+    class="w-full font-[family-name:var(--font-dolphinaris-body)] bg-[var(--neutral-background-strong)] p-0 text-white overflow-hidden relative"
+>
+    <div
+        class="absolute bottom-0 left-0 w-full h-[50%] pointer-events-none z-0 block md:hidden"
+    >
+        <Image
+            src={vectorB}
+            alt=""
+            class="w-full h-full object-cover object-top opacity-60"
+        />
+    </div>
+
+    <div class="flex flex-col-reverse md:flex-row w-full relative z-10">
+        <div
+            class="w-full md:w-[30%] flex flex-col items-center justify-center gap-4 p-4 relative z-10"
+        >
+            {
+                logoUrl && (
+                    <Image
+                        src={logoUrl}
+                        alt="Blu Ocean Club"
+                        width={300}
+                        height={300}
+                        class="w-30 h-30 aspect-square object-contain"
+                    />
+                )
+            }
+
+            <div class="hidden md:flex gap-2 justify-center">
+                {socialIcons.length > 0 && (
+                    socialIcons.map((icon: any) => (
+                        <a
+                            href={formatUrl(icon.url)}
+                            class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <span class="flex items-center justify-center text-xs" set:html={icon.icon} />
+                        </a>
+                    ))
+                )}
+            </div>
+        </div>
+
+        <div
+            class="w-full md:w-[80%] bg-[var(--surface-brand-primary)] text-white md:rounded-bl-[80px] rounded-bl-[30px] flex flex-col items-center justify-center gap-2 px-4 pb-4 pt-12 md:px-6 md:pb-6 md:pt-14 relative overflow-hidden"
+        >
+            <div
+                class="absolute top-0 right-0 bottom-0 w-[50%] md:w-[30%] pointer-events-none z-0 opacity-100 hidden md:block"
+            >
+                <Image
+                    src={vectorB}
+                    alt=""
+                    class="w-full h-full object-contain object-right"
+                />
+            </div>
+
+            <div
+                class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start mb-2 w-full max-w-[1100px] px-4 md:px-8 relative z-10"
+            >
+                <div
+                    class="lg:col-span-5 flex flex-row justify-between md:justify-start gap-12 md:gap-16 order-1 pt-2"
+                >
+                    <div>
+                        <h4 class="text-base font-bold mb-4 text-[#75C5DB]">
+                            {titulo_1}
+                        </h4>
+                        <ul class="space-y-1 text-sm opacity-80">
+                            {links_1.map((link: any) => (
+                                <li>
+                                    <a
+                                        href={getLocalizedUrl(link.url, locale)}
+                                        class="hover:text-[var(--neutral-background-subtle)]  text-white transition-colors"
+                                    >
+                                        {link.texto}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-base font-bold mb-4 text-[#75C5DB]">
+                            {titulo_2}
+                        </h4>
+                        <ul class="space-y-1 text-sm opacity-80">
+                            {links_2.map((link: any) => (
+                                <li>
+                                    <a
+                                        href={getLocalizedUrl(link.url, locale)}
+                                        class="hover:text-[var(--neutral-background-subtle)] text-white transition-colors"
+                                    >
+                                        {link.texto}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 w-full order-2">
+                    <div
+                        class="bg-[#2C5F7E]/60 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex flex-col items-center text-center max-w-md mx-auto md:mx-0 lg:-ml-20"
+                    >
+                        <h4
+                            class="text-sm md:text-base font-bold text-[#75C5DB] uppercase mb-1"
+                        >
+                            {titulo_3}
+                        </h4>
+                        <div
+                            class="text-[10px] md:text-xs opacity-70 mb-2 leading-relaxed [&>p]:mb-0"
+                            set:html={descripcion_columna_3}
+                        />
+                        <div class="flex flex-col gap-2 w-full items-center">
+                            <Button
+                                botones={buttonBanner}
+                                clase="w-full md:w-auto min-w-[160px] py-1 text-xs"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-white/10 pt-3 pb-3 flex flex-col md:flex-row justify-between items-center gap-2 text-[12px] opacity-60 w-full max-w-[1100px] px-4 md:px-8 relative z-10"
+            >
+                <p>© {year} Blu Ocean Club {t.rights}</p>
+                <div class="flex gap-4 md:gap-6 ">
+                    <a href={t.link_privacy} class="hover:opacity-100! text-white!">{t.privacy}</a>
+                    <a href={t.link_terms} class="hover:opacity-100! text-white!">{t.terms}</a>
+                </div>
+            </div>
+
+            <div
+                class="flex md:hidden gap-3 justify-center mt-1 pb-4 relative z-10"
+            >
+                {socialIcons.length > 0 ? (
+                    socialIcons.map((icon: any) => (
+                        <a
+                            href={formatUrl(icon.url)}
+                            class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <span class="flex items-center justify-center text-xs" set:html={icon.icon} />
+                        </a>
+                    ))
+                ) : (
+                    <>
+                        <a
+                            href="#"
+                            class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"
+                        >
+                            <i class="fa-brands fa-facebook-f text-xs"></i>
+                        </a>
+                        <a
+                            href="#"
+                            class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"
+                        >
+                            <i class="fa-brands fa-instagram text-xs"></i>
+                        </a>
+                        <a
+                            href="#"
+                            class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"
+                        >
+                            <i class="fa-brands fa-tiktok text-xs"></i>
+                        </a>
+                        <a
+                            href="#"
+                            class="w-8 h-8 rounded-full bg-[var(--neutral-background-subtle)] flex items-center justify-center text-[var(--surface-brand-primary)] hover:bg-white transition-all"
+                        >
+                            <i class="fa-brands fa-whatsapp text-xs"></i>
+                        </a>
+                    </>
+                )}
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    :global(.flex .w-full > a) {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+</style>
