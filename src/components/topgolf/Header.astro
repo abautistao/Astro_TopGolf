@@ -18,7 +18,7 @@ const FALLBACK_LOGO = "https://placehold.co/100x50?text=Logo";
 const logoUrl       = getStrapiUrl(headerData?.logo) || FALLBACK_LOGO;
 const logoUrlMobile = getStrapiUrl(headerData?.logo_mobile) || FALLBACK_LOGO;
 
-const links = headerData?.links || [];
+const links: any[] = headerData?.links || [];
 const ubicacion = headerData?.ubicacion || 'UBICACION';
 const horario = headerData?.horario || 'MAR: 9 A.M. A 12 A.M.';
 const direccion = stringifyRichText(headerData?.direccion || {});

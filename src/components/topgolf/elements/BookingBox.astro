@@ -1,10 +1,12 @@
 ---
 import { formatUrl } from '../../../lib/strapi';
+import ArrowIcon from "../../../assets/down-arrow-circle-neon.svg?raw"
 
 interface Props {
   url_submit: string;
 }
 
+const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIcon)}")`;
 const { url_submit } = Astro.props;
 ---
 
@@ -48,12 +50,10 @@ const { url_submit } = Astro.props;
     
 </form>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"></noscript>
-
 <script>
   // 2. ZONA DE CLIENTE (Navegador)
   import flatpickr from "flatpickr";
+  import 'flatpickr/dist/flatpickr.min.css';
   import { Spanish } from "flatpickr/dist/l10n/es.js"; // Importar idioma español
 
   // Función de inicialización para soportar View Transitions de Astro 5
@@ -78,7 +78,7 @@ const { url_submit } = Astro.props;
   initDatePickers();
 </script>
 
-<style>
+<style define:vars={{ arrowDataUri }}>
   /* Puedes personalizar los colores de flatpickr aquí para que coincidan con tu marca */
   :global(.flatpickr-calendar) {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -86,7 +86,7 @@ const { url_submit } = Astro.props;
   
 
   .datepicker-input.neon, .flatpickr-input.neon, .select-container select.neon {
-    background: url(https://s3.topgolf.com/uploads/icons/down-arrow-circle-neon.svg) no-repeat right 10px center;
+    background: var(--arrowDataUri) no-repeat right 10px center;
     background-color: transparent;
     background-size: 16px 16px;
     background-position: right 12px center;

@@ -16,6 +16,7 @@
     "@astrojs/partytown": "^2.1.6",
     "@astrojs/sitemap": "^3.6.0",
     "@fancyapps/ui": "^6.1.7",
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",

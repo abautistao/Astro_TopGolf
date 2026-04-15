@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @font-face {
     font-family: 'ShieldSans-Bold';
@@ -94,8 +93,6 @@
     --font-shields-sans-black: 'ShieldSans-Black', sans-serif;
 }
 
-@import "tailwindcss";
-
 body.dark-mode {
     background-color: #0D1116;
 }
@@ -103,32 +100,4 @@ body.dark-mode {
 body.dark-mode div.bg-\[var\(--neutral-text-inverted\)\],
 body.dark-mode section.bg-\[var\(--neutral-text-inverted\)\] {
     background-color: #0D1116;
-}
-
-/* Override Font Awesome's font-display to swap for Lighthouse optimization */
-@font-face {
-  font-family: 'Font Awesome 6 Free';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/fa-solid-900.woff2") format("woff2"),
-       url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/fa-solid-900.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: 'Font Awesome 6 Brands';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/fa-brands-400.woff2") format("woff2"),
-       url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/fa-brands-400.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: 'Font Awesome 6 Free';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/fa-regular-400.woff2") format("woff2"),
-       url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/fa-regular-400.ttf") format("truetype");
 }
