@@ -1,0 +1,219 @@
+---
+// src/components/dolphinaris/Component_10_Dolphinaris.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface SeccionContenido {
+    id?: number;
+    titulo?: string;
+    contenido?: any;
+    imagenes?: any[];
+    fondoOscuro?: boolean;
+    layoutDosColumnas?: boolean;
+}
+
+interface Props {
+    tituloPagina?: string;
+    secciones?: SeccionContenido[];
+}
+
+const {
+    tituloPagina,
+    secciones = [],
+} = Astro.props;
+
+// Helper: obtener URLs de imágenes de una sección
+function getImageUrls(imagenes: any[]): string[] {
+    if (!Array.isArray(imagenes)) return [];
+    return imagenes
+        .map((img) => getStrapiUrl(img))
+        .filter(Boolean) as string[];
+}
+---
+
+<article class="bg-white font-roboto text-[var(--surface-brand-primary)]/70">
+
+    <!-- HERO TITLE -->
+    {tituloPagina && (
+        <div class="pt-24 pb-10 text-center px-4">
+            <h1 class="font-montserrat font-bold text-[32px] md:text-[40px] lg:text-[48px]
+                        text-[var(--surface-brand-secondary)] uppercase tracking-widest leading-tight">
+                {tituloPagina}
+            </h1>
+        </div>
+    )}
+
+    <!-- SECCIONES DINÁMICAS -->
+    {secciones.map((sec) => {
+        const imgs = getImageUrls(sec.imagenes || []);
+        const htmlContent = sec.contenido ? stringifyRichText(sec.contenido) : "";
+        const hasDark = sec.fondoOscuro === true;
+        const hasTwo = sec.layoutDosColumnas === true;
+
+        // ── SECCIÓN FONDO OSCURO + DOS COLUMNAS (texto izq | imagen derecha) ──
+        if (hasDark && hasTwo) {
+            return (
+                <div class="bg-[var(--surface-brand-primary)] text-white py-16 md:py-20">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                            <!-- Texto -->
+                            <div>
+                                {sec.titulo && (
+                                    <h2 class="font-montserrat font-bold text-[20px]
+                                                text-[var(--accent-highlight-primary)] mb-5 uppercase tracking-wider">
+                                        {sec.titulo}
+                                    </h2>
+                                )}
+                                {htmlContent && (
+                                    <div class="rich-text-c10 dark font-roboto text-[16px] leading-relaxed text-white/90">
+                                        <Fragment set:html={htmlContent} />
+                                    </div>
+                                )}
+                            </div>
+                            <!-- Imagen -->
+                            {imgs.length > 0 && (
+                                <div>
+                                    <Image
+                                        src={imgs[0]}
+                                        alt={sec.titulo || "Dolphinaris"}
+                                        width={800}
+                                        height={500}
+                                        class="w-full h-[380px] object-cover"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── SECCIÓN FONDO OSCURO (full ancho) ──
+        if (hasDark) {
+            return (
+                <div class="bg-[var(--surface-brand-primary)] text-white py-16 md:py-20">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        {sec.titulo && (
+                            <h2 class="font-montserrat font-bold text-[20px]
+                                        text-[var(--accent-highlight-primary)] mb-5 uppercase tracking-wider">
+                                {sec.titulo}
+                            </h2>
+                        )}
+                        {htmlContent && (
+                            <div class="rich-text-c10 dark font-roboto text-[16px] leading-relaxed text-white/90 mb-8">
+                                <Fragment set:html={htmlContent} />
+                            </div>
+                        )}
+                        {imgs.length > 0 && (
+                            <div class={`grid gap-4 ${imgs.length >= 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}>
+                                {imgs.map((src, i) => (
+                                    <Image
+                                        src={src}
+                                        alt={`${sec.titulo || "Dolphinaris"} ${i + 1}`}
+                                        width={800}
+                                        height={500}
+                                        class="w-full h-[380px] object-cover"
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // ── SECCIÓN FONDO CLARO + DOS COLUMNAS (imagen izq | texto derecha) ──
+        if (hasTwo && imgs.length > 0) {
+            return (
+                <div class="py-12 md:py-16">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                            <!-- Imagen -->
+                            <Image
+                                src={imgs[0]}
+                                alt={sec.titulo || "Dolphinaris"}
+                                width={800}
+                                height={500}
+                                class="w-full h-[380px] object-cover"
+                            />
+                            <!-- Texto -->
+                            <div>
+                                {sec.titulo && (
+                                    <h2 class="font-montserrat font-bold text-[20px]
+                                                text-[var(--surface-brand-secondary)] mb-4 uppercase tracking-wider">
+                                        {sec.titulo}
+                                    </h2>
+                                )}
+                                {htmlContent && (
+                                    <div class="rich-text-c10 font-roboto text-[16px] leading-relaxed">
+                                        <Fragment set:html={htmlContent} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── SECCIÓN FONDO CLARO ESTÁNDAR (título + texto + grid imágenes) ──
+        return (
+            <div class="py-10 md:py-14">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {sec.titulo && (
+                        <h2 class="font-montserrat font-bold text-[20px]
+                                    text-[var(--surface-brand-secondary)] mb-4 uppercase tracking-wider">
+                            {sec.titulo}
+                        </h2>
+                    )}
+                    {htmlContent && (
+                        <div class="rich-text-c10 font-roboto text-[16px] leading-relaxed mb-8">
+                            <Fragment set:html={htmlContent} />
+                        </div>
+                    )}
+                    {imgs.length > 0 && (
+                        <div class={`grid gap-4 ${imgs.length >= 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 max-w-3xl"}`}>
+                            {imgs.map((src, i) => (
+                                <Image
+                                    src={src}
+                                    alt={`${sec.titulo || "Dolphinaris"} ${i + 1}`}
+                                    width={800}
+                                    height={500}
+                                    class="w-full h-[380px] object-cover"
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    })}
+</article>
+
+<style>
+    /* Rich text — fondo claro */
+    .rich-text-c10 :global(p)          { margin-bottom: 1em; }
+    .rich-text-c10 :global(p:last-child){ margin-bottom: 0; }
+    .rich-text-c10 :global(strong)     { font-weight: 700; color: var(--surface-brand-primary); }
+    .rich-text-c10 :global(em)         { font-style: italic; }
+    .rich-text-c10 :global(u)          { text-decoration: underline; text-decoration-color: var(--surface-brand-secondary); }
+    .rich-text-c10 :global(a)          { color: var(--surface-brand-secondary); text-decoration: underline; }
+    .rich-text-c10 :global(a:hover)    { color: var(--accent-highlight-primary); }
+    .rich-text-c10 :global(ul)         { list-style: disc; margin-left: 1.5rem; margin-bottom: 1em; }
+    .rich-text-c10 :global(ol)         { list-style: decimal; margin-left: 1.5rem; margin-bottom: 1em; }
+    .rich-text-c10 :global(li)         { margin-bottom: 0.5em; }
+    .rich-text-c10 :global(h2),
+    .rich-text-c10 :global(h3)         { font-family: 'Montserrat', sans-serif; font-weight: 700;
+                                          color: var(--surface-brand-secondary); margin: 1rem 0 0.5rem; }
+    .rich-text-c10 :global(blockquote) { border-left: 3px solid var(--surface-brand-secondary);
+                                          padding-left: 1rem; margin: 1rem 0; font-style: italic; opacity: 0.85; }
+    .rich-text-c10 :global(hr)         { border: none; border-top: 1px solid var(--surface-brand-secondary)/30;
+                                          margin: 1.5rem 0; }
+
+    /* Rich text — fondo oscuro */
+    .rich-text-c10.dark :global(strong)  { color: #fff; }
+    .rich-text-c10.dark :global(a)       { color: var(--accent-highlight-primary); }
+    .rich-text-c10.dark :global(h2),
+    .rich-text-c10.dark :global(h3)     { color: var(--accent-highlight-primary); }
+    .rich-text-c10.dark :global(blockquote){ border-left-color: var(--accent-highlight-primary); }
+</style>
