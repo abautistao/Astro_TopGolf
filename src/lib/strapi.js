@@ -24,17 +24,16 @@ export async function getSiteSetup(locale = 'en') {
 }
 
 export async function getPageBySlug(slug, locale = 'en') {
-  // Usamos 'populate=*' para popular automáticamente todos los niveles de componentes y relaciones.
-  // Esto requiere un plugin como '@fourlights/strapi-plugin-deep-populate' en el backend de Strapi.
-  // Also filtering by locale
   if (slug === 'blog') {
     const blog = await fetchAPI(`/paginas?filters[slug][$eq]=blog&locale=${locale}&populate[ContenidoPagina][populate]=*&populate[SEO][populate]=*`);
-
     return blog?.[0];
   }
   const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
-  return pages?.[0]; // Devuelve el primer elemento o undefined
+  return pages?.[0];
 }
+
+
+
 
 export async function getAllPages(locale = 'en') {
   return await fetchAPI(`/paginas?locale=${locale}&pagination[pageSize]=100`);

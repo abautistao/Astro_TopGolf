@@ -146,12 +146,13 @@ const featureImage =
                                                 <Image
                                                     src={
                                                         getStrapiUrl(testimonio.avatar) ||
-                                                        testimonio.avatar ||
+                                                        (typeof testimonio.avatar === 'string' ? testimonio.avatar : null) ||
                                                         "https://placehold.co/100x100/1E8CA6/ffffff?text=?"
                                                     }
                                                     alt={testimonio.nombre}
                                                     width={48}
                                                     height={48}
+                                                    loading="lazy"
                                                     class="w-full h-full object-cover"
                                                 />
                                             </div>

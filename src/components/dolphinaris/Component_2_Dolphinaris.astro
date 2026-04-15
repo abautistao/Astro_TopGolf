@@ -23,9 +23,10 @@ const placeholderImages = [
   "https://placehold.co/800x600/1E8CA6/ffffff?text=Dolphinaris+Image+3"
 ];
 
-const sliderImages = media.length > 0 
-  ? media.map((img: any) => getStrapiUrl(img)) 
-  : placeholderImages;
+const rawImages = media.length > 0
+  ? media.map((img: any) => getStrapiUrl(img)).filter(Boolean)
+  : [];
+const sliderImages: string[] = rawImages.length > 0 ? rawImages : placeholderImages;
 ---
 
 <section class="relative bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] overflow-hidden w-full">
