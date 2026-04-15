@@ -12,7 +12,7 @@ const { url_submit } = Astro.props;
 
 <form class="pav-widget w-full flex flex-wrap md:justify-center gap-2 sm:gap-y-4 mt-1 mb-3" method="get" action={formatUrl(url_submit)}>
     <div class="basis-full h-0 sm:hidden"></div>
-    <div class="flex-1 md:flex-none rounded md:rounded-full border border-[var(--accent-highlight-secondary)] border-opacity-50 hover:border-white hover:border-opacity-70 relative">
+    <div class="flex-1 md:flex-none rounded md:rounded-full border border-(--accent-highlight-secondary) border-opacity-50 hover:border-white hover:border-opacity-70 relative">
     <label>
         <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Fecha</div>
         <div role="application" class="datecalendar">
