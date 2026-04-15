@@ -25,13 +25,26 @@ const {
     direccion = "Carretera Costera Sur Km 4, San Miguel de Cozumel, Q.R., Mexico",
     horario = "Monday to Sunday 9:00 AM – 5:00 PM",
     comoLlegar = "Ferry from Playa del Carmen (45 min), direct flight to Cozumel, or cruise (stop at Cozumel port)",
-    textoBoton = "Ver en Mapa",
+    textoBoton = "View on Map",
     urlBoton = "#",
 } = Astro.props;
+
+// Detección de idioma desde la URL
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEs = currentLang === "es";
+
+const labels = {
+    direccion: isEs ? "Dirección"   : "Address",
+    horario:   isEs ? "Horario"     : "Hours",
+    comoLlegar:isEs ? "Cómo llegar" : "How to Get There",
+};
 
 const imgSrc =
     getStrapiUrl(imagen) ||
     "https://placehold.co/800x800/002A4E/4BA3B5?text=Dolphinaris";
+
 ---
 
 <section class="w-full py-16 md:py-24 bg-[var(--neutral-background-subtle)]">
@@ -99,7 +112,7 @@ const imgSrc =
                             </div>
                             <div>
                                 <h4 class="font-montserrat font-bold text-[16px] text-[var(--surface-brand-primary)] mb-1">
-                                    Dirección
+                                    {labels.direccion}
                                 </h4>
                                 <p class="font-roboto text-[15px] font-normal text-[var(--surface-brand-primary)]/60">
                                     {direccion}
@@ -119,7 +132,7 @@ const imgSrc =
                             </div>
                             <div>
                                 <h4 class="font-montserrat font-bold text-[16px] text-[var(--surface-brand-primary)] mb-1">
-                                    Horario
+                                    {labels.horario}
                                 </h4>
                                 <p class="font-roboto text-[15px] font-normal text-[var(--surface-brand-primary)]/60">
                                     {horario}
@@ -138,7 +151,7 @@ const imgSrc =
                             </div>
                             <div>
                                 <h4 class="font-montserrat font-bold text-[16px] text-[var(--surface-brand-primary)] mb-1">
-                                    Cómo llegar
+                                    {labels.comoLlegar}
                                 </h4>
                                 <p class="font-roboto text-[15px] font-normal text-[var(--surface-brand-primary)]/60">
                                     {comoLlegar}
