@@ -1,0 +1,109 @@
+---
+// src/components/dolphinaris/Component_6_Dolphinaris.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+interface ItemReconocimiento {
+    id: number;
+    titulo: string;
+    descripcion?: string;
+    imagen?: any;
+    urlPagina?: string;
+}
+
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+    items?: ItemReconocimiento[];
+}
+
+const {
+    titulo = "WE ARE PROUD",
+    descripcion = "At Dolphinaris Mexico, we are proud to be much more than just a Dolphin Habitat. In addition to being home to a large marine family, we are also dedicated to the research and conservation of marine mammals. Every day, we strive to raise awareness among each and every visitor who takes part in our Swim with Dolphins experiences, which is why we take great pride in our recognitions.",
+    items = [
+        {
+            id: 1,
+            titulo: "AHC",
+            descripcion: "One of the only global animal protection organizations that works to help all animals, with a track record of achievements...",
+            imagen: "https://placehold.co/800x480/4BA3B5/ffffff?text=AHC",
+            urlPagina: "#",
+        },
+        {
+            id: 2,
+            titulo: "EAAM",
+            descripcion: "Proudly, Dolphinaris and its Cancún location received certification from the European Association for Aquatic Mammals (EAAM)...",
+            imagen: "https://placehold.co/800x480/4BA3B5/ffffff?text=EAAM",
+            urlPagina: "#",
+        },
+        {
+            id: 3,
+            titulo: "AMHMAR",
+            descripcion: "Dolphinaris is one of the organizations represented by AMHMAR, which has extensive experience in the care of marine mammals...",
+            imagen: "https://placehold.co/800x480/4BA3B5/ffffff?text=AMHMAR",
+            urlPagina: "#",
+        },
+    ],
+} = Astro.props;
+---
+
+<section class="w-full py-16 md:py-24 bg-[var(--surface-brand-primary)] overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+
+        <!-- ENCABEZADO CENTRADO -->
+        <div class="text-center mb-14 max-w-4xl mx-auto">
+            {titulo && (
+                <h2 class="font-montserrat font-bold text-[28px] md:text-[36px] uppercase tracking-[0.2em] text-[var(--surface-brand-secondary)] mb-6">
+                    {titulo}
+                </h2>
+            )}
+            {descripcion && (
+                <p class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed">
+                    {descripcion}
+                </p>
+            )}
+        </div>
+
+        <!-- GRID DE ITEMS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+            {
+                Array.isArray(items) && items.map((item) => {
+                    const imgSrc = getStrapiUrl(item.imagen) || item.imagen;
+                    const isLink = item.urlPagina && item.urlPagina !== "#";
+                    const Tag = isLink ? "a" : "div";
+
+                    return (
+                        <Tag
+                            href={isLink ? item.urlPagina : undefined}
+                            class={`flex flex-col group ${isLink ? "cursor-pointer" : ""}`}
+                        >
+                            <!-- IMAGEN CON OVERLAY CYAN -->
+                            <div class="h-48 overflow-hidden mb-5 relative bg-[var(--accent-highlight-primary)]">
+                                {imgSrc && (
+                                    <Image
+                                        src={imgSrc}
+                                        alt={item.titulo}
+                                        width={800}
+                                        height={480}
+                                        class="w-full h-full object-cover opacity-80 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                )}
+                            </div>
+
+                            <!-- TÍTULO -->
+                            <h3 class="font-montserrat font-bold text-[20px] text-[var(--surface-brand-secondary)] mb-3 uppercase tracking-wide group-hover:text-[var(--accent-highlight-primary)] transition-colors duration-300">
+                                {item.titulo}
+                            </h3>
+
+                            <!-- DESCRIPCIÓN -->
+                            {item.descripcion && (
+                                <p class="font-roboto text-[15px] font-normal text-white/70 leading-relaxed">
+                                    {item.descripcion}
+                                </p>
+                            )}
+                        </Tag>
+                    );
+                })
+            }
+        </div>
+    </div>
+</section>

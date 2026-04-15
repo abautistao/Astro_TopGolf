@@ -1,0 +1,270 @@
+---
+// src/components/dolphinaris/Component_5_Dolphinaris.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+interface Testimonio {
+    id: number;
+    cita: string;
+    nombre: string;
+    fecha: string;
+    avatar: any;
+}
+
+interface Props {
+    fondoDesktop?: any;
+    fondoMovil?: any;
+    imagen?: any;
+    testimonios?: Testimonio[];
+}
+
+const {
+    fondoDesktop,
+    fondoMovil,
+    imagen,
+    testimonios = [
+        {
+            id: 1,
+            cita: "Una experiencia única e inolvidable. Nadar con delfines en Cozumel fue el momento más mágico de nuestras vacaciones. El equipo es increíble.",
+            nombre: "Alondra Campos",
+            fecha: "Hace 3 meses",
+            avatar: "https://placehold.co/100x100/002A4E/ffffff?text=AC",
+        },
+        {
+            id: 2,
+            cita: "El servicio es impecable y la atención al cliente es excepcional. Definitivamente regresaré con toda mi familia. ¡100% recomendado!",
+            nombre: "Carlos Rivera",
+            fecha: "Hace 1 mes",
+            avatar: "https://placehold.co/100x100/1E8CA6/ffffff?text=CR",
+        },
+        {
+            id: 3,
+            cita: "Los delfines son hermosos y los entrenadores muy profesionales. Una experiencia que vale cada peso. ¡No se la pierdan!",
+            nombre: "Sofía Martínez",
+            fecha: "Hace 2 semanas",
+            avatar: "https://placehold.co/100x100/4BA3B5/ffffff?text=SM",
+        },
+    ],
+} = Astro.props;
+
+const desktopUrl =
+    getStrapiUrl(fondoDesktop) ||
+    "https://placehold.co/1920x1080/002A4E/1E8CA6?text=+";
+
+const mobileUrl =
+    getStrapiUrl(fondoMovil) ||
+    "https://placehold.co/768x1024/002A4E/1E8CA6?text=+";
+
+const featureImage =
+    getStrapiUrl(imagen) ||
+    "https://placehold.co/1200x800/1E8CA6/ffffff?text=Dolphinaris";
+---
+
+<section
+    class="relative w-full overflow-hidden py-12 md:py-24 bg-cover bg-center"
+    style={`background-image: url('${desktopUrl}');`}
+>
+    <style define:vars={{ desktopUrl, mobileUrl }}>
+        section {
+            background-image: url(var(--desktopUrl));
+        }
+        @media (max-width: 768px) {
+            section {
+                background-image: url(var(--mobileUrl));
+            }
+        }
+    </style>
+
+    <!-- Overlay semitransparente sobre el fondo -->
+    <div class="absolute inset-0 bg-[var(--surface-brand-primary)]/70"></div>
+
+    <div class="max-w-[1440px] mx-auto px-4 md:px-6 relative z-10 flex flex-col md:block items-center">
+
+        <!-- IMAGEN PRINCIPAL (izquierda) -->
+        <div class="w-full md:w-[65%] h-[300px] md:h-[580px] relative overflow-hidden shadow-2xl z-0 rounded-none md:rounded-r-[2.5rem]">
+            <Image
+                src={featureImage}
+                alt="Dolphinaris Experience"
+                width={1200}
+                height={800}
+                class="w-full h-full object-cover"
+            />
+            <!-- Subtle overlay gradient -->
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--surface-brand-primary)]/30 hidden md:block"></div>
+        </div>
+
+        <!-- CARD DE TESTIMONIOS (derecha, solapada) -->
+        <div class="w-full md:w-[44%] lg:w-[40%] relative md:absolute md:right-8 lg:right-16 md:top-1/2 md:-translate-y-1/2 z-10 mt-[-3rem] md:mt-0 px-2 md:px-0">
+            <div
+                id="testimonial-carousel-dolph"
+                class="w-full overflow-hidden relative rounded-[2rem] shadow-2xl bg-white border border-white/30 p-5"
+            >
+                <!-- Comillas decorativas y citas -->
+                <div class="bg-[var(--neutral-background-subtle)] rounded-[1.5rem] p-1 relative h-[220px] md:h-[260px] flex items-center">
+                    <div class="w-full h-full overflow-hidden flex items-center">
+                        <div
+                            class="flex transition-transform duration-500 ease-out w-full"
+                            id="carousel-track-dolph"
+                        >
+                            {
+                                testimonios.map((testimonio) => (
+                                    <div class="w-full flex-shrink-0 flex flex-col items-start justify-center px-4 py-3">
+                                        <!-- Quote Open -->
+                                        <div class="mb-3 text-[var(--surface-brand-secondary)]">
+                                            <i class="fa-sharp-duotone fa-solid fa-quote-left text-3xl md:text-4xl" />
+                                        </div>
+
+                                        <!-- Cita -->
+                                        <p class="text-sm md:text-base text-[var(--surface-brand-primary)] font-roboto font-normal leading-relaxed italic mb-4">
+                                            "{testimonio.cita}"
+                                        </p>
+
+                                        <!-- Quote Close -->
+                                        <div class="text-[var(--surface-brand-secondary)] self-end">
+                                            <i class="fa-sharp-duotone fa-solid fa-quote-right text-3xl md:text-4xl" />
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avatar, Nombre, Fecha + Dots -->
+                <div class="bg-white px-6 pb-6 pt-4 flex flex-col items-center">
+                    <!-- Track de usuarios sincronizado -->
+                    <div class="relative w-full h-16 overflow-hidden mb-4">
+                        <div class="w-full h-full overflow-hidden">
+                            <div
+                                id="user-info-track-dolph"
+                                class="flex transition-transform duration-500 ease-out w-full"
+                            >
+                                {
+                                    testimonios.map((testimonio) => (
+                                        <div class="w-full flex-shrink-0 flex items-center justify-start text-left gap-3">
+                                            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 ring-2 ring-[var(--surface-brand-secondary)]">
+                                                <Image
+                                                    src={
+                                                        getStrapiUrl(testimonio.avatar) ||
+                                                        testimonio.avatar ||
+                                                        "https://placehold.co/100x100/1E8CA6/ffffff?text=?"
+                                                    }
+                                                    alt={testimonio.nombre}
+                                                    width={48}
+                                                    height={48}
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div class="text-left">
+                                                <h4 class="text-[16px] font-montserrat font-bold text-[var(--surface-brand-primary)]">
+                                                    {testimonio.nombre}
+                                                </h4>
+                                                <span class="text-xs text-[var(--surface-brand-primary)]/60 font-roboto">
+                                                    {testimonio.fecha}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Puntos de navegación -->
+                    <div class="flex justify-center gap-2">
+                        {
+                            testimonios.map((_, index) => (
+                                <button
+                                    class={`h-2 rounded-full transition-all duration-300 carousel-dot-dolph ${
+                                        index === 0
+                                            ? "bg-[var(--surface-brand-secondary)] w-6"
+                                            : "bg-[var(--surface-brand-secondary)]/40 w-2 hover:bg-[var(--surface-brand-secondary)]/70"
+                                    }`}
+                                    data-index={index}
+                                    aria-label={`Ir al testimonio ${index + 1}`}
+                                />
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function initTestimonialCarouselDolph() {
+        const track = document.getElementById("carousel-track-dolph");
+        const dots = document.querySelectorAll(".carousel-dot-dolph");
+        const userTrack = document.getElementById("user-info-track-dolph");
+
+        if (!track || dots.length === 0) return;
+
+        let currentIndex = 0;
+        const totalSlides = dots.length;
+        let autoplayInterval: number | undefined;
+
+        function updateCarousel(index: number) {
+            const translateX = -(index * 100);
+            (track as HTMLElement).style.transform = `translateX(${translateX}%)`;
+
+            if (userTrack) {
+                (userTrack as HTMLElement).style.transform = `translateX(${translateX}%)`;
+            }
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle("bg-[var(--surface-brand-secondary)]", i === index);
+                dot.classList.toggle("w-6", i === index);
+                dot.classList.toggle("bg-[var(--surface-brand-secondary)]/40", i !== index);
+                dot.classList.toggle("w-2", i !== index);
+            });
+
+            currentIndex = index;
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            autoplayInterval = setInterval(() => {
+                updateCarousel((currentIndex + 1) % totalSlides);
+            }, 6000) as unknown as number;
+        }
+
+        function stopAutoplay() {
+            if (autoplayInterval) clearInterval(autoplayInterval);
+        }
+
+        dots.forEach((dot) => {
+            dot.addEventListener("click", (e) => {
+                stopAutoplay();
+                const index = parseInt((e.target as HTMLElement).getAttribute("data-index") || "0");
+                updateCarousel(index);
+                startAutoplay();
+            });
+        });
+
+        // Swipe táctil
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener("touchstart", (e) => {
+            touchStartX = (e as TouchEvent).changedTouches[0].screenX;
+            stopAutoplay();
+        }, { passive: true });
+
+        track.addEventListener("touchend", (e) => {
+            touchEndX = (e as TouchEvent).changedTouches[0].screenX;
+            const threshold = 50;
+            if (touchEndX < touchStartX - threshold) {
+                updateCarousel((currentIndex + 1) % totalSlides);
+            } else if (touchEndX > touchStartX + threshold) {
+                updateCarousel((currentIndex - 1 + totalSlides) % totalSlides);
+            }
+            startAutoplay();
+        }, { passive: true });
+
+        startAutoplay();
+    }
+
+    initTestimonialCarouselDolph();
+    document.addEventListener("astro:page-load", initTestimonialCarouselDolph);
+</script>
