@@ -16,7 +16,7 @@ const defaultLang = PUBLIC_DEFAULT_LOCALE || "en";
 
 /** @type {import('astro/config').AstroUserConfig} */
 const config = {
-  output: 'static', // Changed to server for SSR support with Cloudflare
+  output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
   site: PUBLIC_SITE_URL, // URL para pruebas locales.
 
@@ -26,10 +26,6 @@ const config = {
   },
 
   vite: {
-    build: {
-      cssCodeSplit: false,
-      assetsInlineLimit: 4096,
-    },
     plugins: [tailwindcss()]
   },
 
