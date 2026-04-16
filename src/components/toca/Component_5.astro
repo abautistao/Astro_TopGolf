@@ -56,12 +56,12 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
     <div
         id="sliderContainer"
         class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6
-            max-w-[1600px] mx-auto scrollbar-hide"
+            max-w-400 mx-auto scrollbar-hide"
         style="--anim-delay: 0.2s;"
     >
         {dataToRender.map((evento) => (
 
-            <div class="min-w-full md:min-w-[calc(25%-18px)] h-full snap-start">
+            <div class="basis-1/3 min-w-full md:min-w-[calc(25%-18px)] h-full snap-start">
                 <EventCard
                     evento={evento}
                     tipo="version_1"

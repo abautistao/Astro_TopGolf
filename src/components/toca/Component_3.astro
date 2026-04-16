@@ -91,13 +91,11 @@ const ProcessedTarjetas = rawData.map((card) => ({
                         </div>
                     </div>
 
-                    <div class="w-full aspect-[430/560] lg:aspect-square relative overflow-hidden shadow-lg border-2 border-transparent mt-auto">
+                    <div class="w-full aspect-square relative overflow-hidden shadow-lg border-2 border-transparent mt-auto">
                         <Image
                             src={item.img || "https://placehold.co/600x600/2d3748/ffffff?text=Image"}
                             alt={item.alt}
                             class="w-full h-full object-cover object-center"
-                            width={600}
-                            height={600}
                             inferSize={true}
                             loading="lazy"
                         />

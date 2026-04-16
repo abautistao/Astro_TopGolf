@@ -31,9 +31,10 @@ const currentTheme = tipo === 'version_1' ? theme.v1 : theme.v2;
     <a href={getLocalizedUrl(eventLink, 'en')} class:list={[
         "block w-full relative overflow-hidden mb-2",
         currentTheme.bg,
-        tipo === 'version_1' ? 'aspect-[4/5]' : 'aspect-[3/2]',
+        tipo === 'version_1' ? 'aspect-square' : 'aspect-[3/2]',
         "transition-all duration-300 ease-out cursor-pointer group-hover:-translate-y-3 group-hover:scale-[1.01]"
     ]}>
+
         <Image
             src={finalImgUrl}
             alt={evento.titulo}
