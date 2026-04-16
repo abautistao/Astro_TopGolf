@@ -7,7 +7,6 @@ import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
-import partytown from '@astrojs/partytown';
 
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
