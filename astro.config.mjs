@@ -8,7 +8,6 @@ import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
 import partytown from '@astrojs/partytown';
-import critters from 'astro-critters';
 
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
@@ -17,7 +16,7 @@ const defaultLang = PUBLIC_DEFAULT_LOCALE || "en";
 
 /** @type {import('astro/config').AstroUserConfig} */
 const config = {
-  output: 'static', // Changed to server for SSR support with Cloudflare
+  output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
   site: PUBLIC_SITE_URL, // URL para pruebas locales.
 
