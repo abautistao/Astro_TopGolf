@@ -62,6 +62,14 @@ const config = {
       config: {
         forward: ["dataLayer.push"], // Permite que los eventos lleguen al worker
         debug: true, // ACTÍVALO AHORA para ver errores en la consola
+        resolveUrl: function (url, location, type) {
+          if (type === 'script' && url.hostname === 'connect.facebook.net') {
+            const proxyUrl = new URL('https://cdn.builder.io/api/v1/proxy-api');
+            proxyUrl.searchParams.append('url', url.href);
+            return proxyUrl;
+          }
+          return url;
+        },
       },
     }),
   ],
