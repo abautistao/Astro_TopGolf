@@ -95,7 +95,7 @@
 /* Tenor Sans */
 @font-face {
     font-family: 'Bebas Neue';
-    src: url('/fonts/Bebas-Neue/BebasNeue-Regular.ttf') format('truetype');
+    src: url('/fonts/Bebas-Neue/BebasNeue-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
