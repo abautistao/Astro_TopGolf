@@ -92,6 +92,15 @@
     font-display: swap;
 }
 
+/* Tenor Sans */
+@font-face {
+    font-family: 'Bebas Neue';
+    src: url('/fonts/Bebas-Neue/BebasNeue-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --font-titling-gothic-fb-extended-bold: 'Titling Gothic FB Extended Bold', sans-serif;
     --font-sharp-sans-bold: 'SharpSans-Bold', sans-serif;

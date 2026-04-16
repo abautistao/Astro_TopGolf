@@ -7,6 +7,7 @@ import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
+import { build } from 'astro';
 
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
@@ -25,6 +26,10 @@ const config = {
   },
 
   vite: {
+    build: {
+      cssCodeSplit: false,
+      assetsInlineLimit: 4096,
+    },
     plugins: [tailwindcss()]
   },
 
