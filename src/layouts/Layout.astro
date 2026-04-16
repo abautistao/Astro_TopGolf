@@ -1,6 +1,6 @@
 ---
 // Importa los estilos y componentes necesarios.
-import globalStyles from "../styles/global.css?inline";
+import globalStyles from "../styles/global.css";
 import Header from "../components/shared/SmartHeader.astro";
 import Footer from "../components/shared/SmartFooter.astro";
 import SEO from "../components/shared/SEO.astro";
@@ -73,11 +73,7 @@ const seoProps = seo || defaultSeo;
 <html lang={locale} class="scroll-smooth">
     <head>
         { setupData.google_tag_manager_id && (
-            <script is:inline>
-                window.dataLayer = window.dataLayer || [];
-            </script>
-            
-            <script type="text/partytown" is:inline define:vars={{ setupData }}>;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            <script define:vars={{ setupData }}>;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -86,13 +82,10 @@ const seoProps = seo || defaultSeo;
         
         <meta charset="UTF-8" />
         <link rel="icon" href={faviconUrl} />
-<<<<<<< HEAD
-=======
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
->>>>>>> parent of c426659 (feat: optimize web)
         <meta name="generator" content={Astro.generator} />
     
         <SEO {...seoProps} />
