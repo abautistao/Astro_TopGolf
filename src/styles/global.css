@@ -1,9 +1,9 @@
 @import "tailwindcss";
-@import "@fortawesome/fontawesome-free/css/solid.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @font-face {
     font-family: 'Titling Gothic FB Extended Bold';
-    src: url('/fonts/Titling-Gothic-FB/TitlingGothicFBExtendedBold.ttf') format('truetype');
+    src: url('/fonts/Titling-Gothic-FB/TitlingGothicFBExtended-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -61,23 +61,6 @@
 @font-face {
     font-family: 'Satoshi-Bold';
     src: url('/fonts/Satoshi/Satoshi-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Scheherazade New */
-@font-face {
-    font-family: 'Scheherazade New';
-    src: url('/fonts/Scheherazade_New/ScheherazadeNew-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Scheherazade New';
-    src: url('/fonts/Scheherazade_New/ScheherazadeNew-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
     font-display: swap;

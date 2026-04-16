@@ -415,106 +415,109 @@ const ctaButtons: Boton[] = [
 <script>
     import lottie from "lottie-web";
 
-    const lottieContainers = document.querySelectorAll(".js-lottie-anim");
+    document.addEventListener("DOMContentLoaded", () => {
 
-    lottieContainers.forEach((container) => {
-        const el = container as HTMLElement;
-        const path = el.dataset.path;
-
-        if (path) {
-            const isFestive = path.toLowerCase().includes("festive");
-
-            const anim = lottie.loadAnimation({
-                container: container,
-                renderer: "svg",
-                loop: true,
-                autoplay: isFestive,
-                path: path,
-            });
-
-            if (!isFestive) {
-                const triggerElement = container.closest("a") || container;
-
-                triggerElement.addEventListener("mouseenter", () => {
-                    anim.play();
+        const lottieContainers = document.querySelectorAll(".js-lottie-anim");
+    
+        lottieContainers.forEach((container) => {
+            const el = container as HTMLElement;
+            const path = el.dataset.path;
+    
+            if (path) {
+                const isFestive = path.toLowerCase().includes("festive");
+    
+                const anim = lottie.loadAnimation({
+                    container: container,
+                    renderer: "svg",
+                    loop: true,
+                    autoplay: isFestive,
+                    path: path,
                 });
-
-                triggerElement.addEventListener("mouseleave", () => {
-                    anim.stop();
-                });
-            }
-        }
-    });
-
-    const triggers = document.querySelectorAll(".menu-trigger");
-    const allMenus = document.querySelectorAll(".mega-menu");
-
-    const closeAllMenus = () => {
-        allMenus.forEach((menu) => menu.classList.add("hidden"));
-        triggers.forEach((trigger) => {
-            const chevron = trigger.querySelector(".chevron");
-            if (chevron) chevron.classList.remove("rotate-180");
-        });
-    };
-
-    triggers.forEach((trigger) => {
-        trigger.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const targetId = (trigger as HTMLElement).dataset.target;
-            const targetMenu = document.getElementById(targetId || "");
-            const chevron = trigger.querySelector(".chevron");
-
-            if (targetMenu && !targetMenu.classList.contains("hidden")) {
-                closeAllMenus();
-                return;
-            }
-
-            closeAllMenus();
-
-            if (targetMenu) {
-                targetMenu.classList.remove("hidden");
-                if (chevron) chevron.classList.add("rotate-180");
-            }
-        });
-    });
-
-    document.addEventListener("click", (e) => {
-        const target = e.target as HTMLElement;
-        const isClickInsideMenu = target.closest(".mega-menu");
-        const isClickInsideTrigger = target.closest(".menu-trigger");
-
-        if (!isClickInsideMenu && !isClickInsideTrigger) {
-            closeAllMenus();
-        }
-    });
-
-    const menuBtn = document.getElementById("mobile-menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const iconMenu = document.getElementById("icon-menu");
-    const iconClose = document.getElementById("icon-close");
-
-    if (menuBtn && mobileMenu && iconMenu && iconClose) {
-        menuBtn.addEventListener("click", () => {
-            mobileMenu.classList.toggle("hidden");
-            document.body.classList.toggle("overflow-hidden");
-            iconMenu.classList.toggle("hidden");
-            iconClose.classList.toggle("hidden");
-        });
-    }
-
-    const accordionTriggers = document.querySelectorAll(
-        ".mobile-accordion-trigger",
-    );
-    accordionTriggers.forEach((trigger) => {
-        trigger.addEventListener("click", () => {
-            const content = trigger.nextElementSibling;
-            const chevron = trigger.querySelector(".accordion-chevron");
-            if (content) {
-                content.classList.toggle("hidden");
-                if (chevron) {
-                    chevron.classList.toggle("rotate-180");
+    
+                if (!isFestive) {
+                    const triggerElement = container.closest("a") || container;
+    
+                    triggerElement.addEventListener("mouseenter", () => {
+                        anim.play();
+                    });
+    
+                    triggerElement.addEventListener("mouseleave", () => {
+                        anim.stop();
+                    });
                 }
             }
         });
-    });
+    
+        const triggers = document.querySelectorAll(".menu-trigger");
+        const allMenus = document.querySelectorAll(".mega-menu");
+    
+        const closeAllMenus = () => {
+            allMenus.forEach((menu) => menu.classList.add("hidden"));
+            triggers.forEach((trigger) => {
+                const chevron = trigger.querySelector(".chevron");
+                if (chevron) chevron.classList.remove("rotate-180");
+            });
+        };
+    
+        triggers.forEach((trigger) => {
+            trigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const targetId = (trigger as HTMLElement).dataset.target;
+                const targetMenu = document.getElementById(targetId || "");
+                const chevron = trigger.querySelector(".chevron");
+    
+                if (targetMenu && !targetMenu.classList.contains("hidden")) {
+                    closeAllMenus();
+                    return;
+                }
+    
+                closeAllMenus();
+    
+                if (targetMenu) {
+                    targetMenu.classList.remove("hidden");
+                    if (chevron) chevron.classList.add("rotate-180");
+                }
+            });
+        });
+    
+        document.addEventListener("click", (e) => {
+            const target = e.target as HTMLElement;
+            const isClickInsideMenu = target.closest(".mega-menu");
+            const isClickInsideTrigger = target.closest(".menu-trigger");
+    
+            if (!isClickInsideMenu && !isClickInsideTrigger) {
+                closeAllMenus();
+            }
+        });
+    
+        const menuBtn = document.getElementById("mobile-menu-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const iconMenu = document.getElementById("icon-menu");
+        const iconClose = document.getElementById("icon-close");
+    
+        if (menuBtn && mobileMenu && iconMenu && iconClose) {
+            menuBtn.addEventListener("click", () => {
+                mobileMenu.classList.toggle("hidden");
+                document.body.classList.toggle("overflow-hidden");
+                iconMenu.classList.toggle("hidden");
+                iconClose.classList.toggle("hidden");
+            });
+        }
+    
+        const accordionTriggers = document.querySelectorAll(
+            ".mobile-accordion-trigger",
+        );
+        accordionTriggers.forEach((trigger) => {
+            trigger.addEventListener("click", () => {
+                const content = trigger.nextElementSibling;
+                const chevron = trigger.querySelector(".accordion-chevron");
+                if (content) {
+                    content.classList.toggle("hidden");
+                    if (chevron) {
+                        chevron.classList.toggle("rotate-180");
+                    }
+                }
+            });
+        });
+    })
 </script>
