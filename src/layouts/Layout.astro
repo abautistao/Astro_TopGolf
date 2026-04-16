@@ -1,6 +1,6 @@
 ---
 // Importa los estilos y componentes necesarios.
-import "../styles/global.css";
+import globalStyles from "../styles/global.css?inline";
 import Header from "../components/shared/SmartHeader.astro";
 import Footer from "../components/shared/SmartFooter.astro";
 import SEO from "../components/shared/SEO.astro";
@@ -58,7 +58,7 @@ const customStyles = setupData
     : "";
 
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
-const allStyles = customStyles;
+const allStylesMerged = globalStyles + customStyles;
 
 const defaultSeo = {
     metaTitle: title || "Astro Basics",
@@ -90,7 +90,7 @@ const seoProps = seo || defaultSeo;
         <SEO {...seoProps} />
 
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
-        <style is:global set:html={allStyles}></style>
+        <style is:inline set:html={allStylesMerged}></style>
     </head>
     <body>
         
