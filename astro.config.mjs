@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
-import { build } from 'astro';
+import partytown from '@astrojs/partytown';
 
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
@@ -56,7 +56,14 @@ const config = {
     }),
     alpinejs({
       entrypoint: '/src/entrypoint.js' // <--- Agrega esto
-    })
+    }),
+    partytown({
+      // CONFIGURACIÓN CLAVE:
+      config: {
+        forward: ["dataLayer.push"], // Permite que los eventos lleguen al worker
+        debug: true, // ACTÍVALO AHORA para ver errores en la consola
+      },
+    }),
   ],
   
 };
