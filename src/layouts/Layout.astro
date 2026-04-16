@@ -1,6 +1,6 @@
 ---
 // Importa los estilos y componentes necesarios.
-import globalStyles from "../styles/global.css";
+import "../styles/global.css";
 import Header from "../components/shared/SmartHeader.astro";
 import Footer from "../components/shared/SmartFooter.astro";
 import SEO from "../components/shared/SEO.astro";
@@ -8,7 +8,6 @@ import LanguageSwitcher from "../components/shared/LanguageSwitcher.astro";
 // Importa las funciones para obtener datos de configuración y generar fuentes desde Strapi.
 import {
     getSiteSetup,
-    generateFontFaces,
     getStrapiUrl,
 } from "../lib/strapi.js";
 
@@ -59,7 +58,7 @@ const customStyles = setupData
     : "";
 
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
-const allStylesMerged = globalStyles + customStyles;
+const allStyles = customStyles;
 
 const defaultSeo = {
     metaTitle: title || "Astro Basics",
@@ -85,13 +84,12 @@ const seoProps = seo || defaultSeo;
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
         <meta name="generator" content={Astro.generator} />
     
         <SEO {...seoProps} />
 
         <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
-        <style is:inline set:html={allStylesMerged}></style>
+        <style is:global set:html={allStyles}></style>
     </head>
     <body>
         
