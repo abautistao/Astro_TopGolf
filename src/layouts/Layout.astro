@@ -8,6 +8,7 @@ import LanguageSwitcher from "../components/shared/LanguageSwitcher.astro";
 // Importa las funciones para obtener datos de configuración y generar fuentes desde Strapi.
 import {
     getSiteSetup,
+    generateFontFaces,
     getStrapiUrl,
 } from "../lib/strapi.js";
 
@@ -85,6 +86,13 @@ const seoProps = seo || defaultSeo;
         
         <meta charset="UTF-8" />
         <link rel="icon" href={faviconUrl} />
+<<<<<<< HEAD
+=======
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+>>>>>>> parent of c426659 (feat: optimize web)
         <meta name="generator" content={Astro.generator} />
     
         <SEO {...seoProps} />
