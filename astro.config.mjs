@@ -28,7 +28,7 @@ const config = {
   vite: {
     build: {
       cssCodeSplit: false,
-      assetsInlineLimit: 4096,
+      assetsInlineLimit: 102400,
     },
     plugins: [tailwindcss()]
   },
