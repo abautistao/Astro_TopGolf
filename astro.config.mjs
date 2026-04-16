@@ -8,6 +8,7 @@ import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
 import partytown from '@astrojs/partytown';
+import critters from 'astro-critters';
 
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
@@ -70,7 +71,8 @@ const config = {
           return url;
         },
       },
-    })
+    }),
+    critters()
   ],
   
 };
