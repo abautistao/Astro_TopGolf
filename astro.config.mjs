@@ -72,6 +72,7 @@ const config = {
         },
       },
     }),
+    critters()
   ],
   
 };
