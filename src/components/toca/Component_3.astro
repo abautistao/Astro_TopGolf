@@ -1,5 +1,6 @@
 ---
 // src/components/toca/Component_3.astro
+import { lazy } from 'astro:schema';
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
 
@@ -97,6 +98,8 @@ const ProcessedTarjetas = rawData.map((card) => ({
                             class="w-full h-full object-cover object-center"
                             width={600}
                             height={600}
+                            inferSize={true}
+                            loading="lazy"
                         />
                     </div>
                 </div>
