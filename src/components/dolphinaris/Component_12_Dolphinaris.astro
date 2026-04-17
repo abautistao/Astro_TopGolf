@@ -1,0 +1,271 @@
+---
+// src/components/dolphinaris/Component_12_Dolphinaris.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+// Reusing GaleriaItem from Component 46
+export interface GaleriaItem {
+    image: string;
+    title: string;
+    is_video: boolean;
+    cover: string;
+    is_youtube: boolean;
+    youtube_url: string;
+}
+
+export interface TabGaleria {
+    id: number;
+    nombre_tab: string;
+    descripcion: any; // rich text
+    imagenes: GaleriaItem[];
+}
+
+export interface Props {
+    titulo_seccion?: string;
+    tabs?: TabGaleria[];
+}
+
+const { titulo_seccion = "GALERÍA", tabs = [] } = Astro.props;
+
+// Placeholders just in case
+const placeholderTabs: TabGaleria[] = [
+    {
+        id: 1,
+        nombre_tab: "SKYBAR",
+        descripcion: [
+            {
+                type: "paragraph",
+                children: [
+                    {
+                        type: "text",
+                        text: "Vive el mejor ambiente al aire libre de Monterrey en nuestro SKYBAR. El lugar perfecto para disfrutar de atardeceres espectaculares, buena música y grandes momentos con tus amigos... acompañados, claro, de unas cervezas bien frías.",
+                    },
+                ],
+            },
+        ],
+        imagenes: [
+            {
+                title: "Skybar 1",
+                image: "https://placehold.co/800x600?text=Galeria+1",
+                is_video: false,
+                cover: "https://placehold.co/800x600?text=Galeria+1",
+                is_youtube: false,
+                youtube_url: "",
+            },
+            {
+                title: "Skybar 2",
+                image: "https://placehold.co/800x600?text=Galeria+2",
+                is_video: false,
+                cover: "https://placehold.co/800x600?text=Galeria+2",
+                is_youtube: false,
+                youtube_url: "",
+            },
+            {
+                title: "Skybar 3",
+                image: "https://placehold.co/800x600?text=Galeria+3",
+                is_video: false,
+                cover: "https://placehold.co/800x600?text=Galeria+3",
+                is_youtube: false,
+                youtube_url: "",
+            },
+        ],
+    },
+    {
+        id: 2,
+        nombre_tab: "NO NAME BAR",
+        descripcion: [
+            {
+                type: "paragraph",
+                children: [
+                    {
+                        type: "text",
+                        text: "Un refugio íntimo con mixología de autor y un diseño sofisticado, la opción perfecta para largas charlas nocturnas.",
+                    },
+                ],
+            },
+        ],
+        imagenes: [
+            {
+                title: "No Name Bar 1",
+                image: "https://placehold.co/800x600?text=Galeria+4",
+                is_video: false,
+                cover: "https://placehold.co/800x600?text=Galeria+4",
+                is_youtube: false,
+                youtube_url: "",
+            },
+        ],
+    },
+    {
+        id: 3,
+        nombre_tab: "SPORT BAR",
+        descripcion: [
+            {
+                type: "paragraph",
+                children: [
+                    {
+                        type: "text",
+                        text: "Toda la emoción del deporte en nuestras megapantallas, snacks y diversión continua garantizada.",
+                    },
+                ],
+            },
+        ],
+        imagenes: [
+            {
+                title: "Sport Bar 1",
+                image: "https://placehold.co/800x600?text=Galeria+5",
+                is_video: false,
+                cover: "https://placehold.co/800x600?text=Galeria+5",
+                is_youtube: false,
+                youtube_url: "",
+            },
+        ],
+    },
+];
+
+const renderTabs = tabs && tabs.length > 0 ? tabs : placeholderTabs;
+const placeholderImage = "https://placehold.co/600x400?text=No+Image";
+---
+
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12 md:py-24">
+    <div class="max-w-[1440px] mx-auto px-6">
+        <!-- Título -->
+        <div class="text-center mb-10 md:mb-16">
+            <h2
+                class="font-montserrat text-[32px] font-bold text-[var(--surface-brand-primary)] uppercase tracking-wide"
+            >
+                {titulo_seccion}
+            </h2>
+        </div>
+
+        <div class="w-full dolphinaris-gallery-tabs">
+            <!-- Navegación de Tabs -->
+            <div
+                class="flex flex-col md:flex-row shadow-sm border border-gray-200 overflow-hidden mb-8 md:mb-12"
+            >
+                {
+                    renderTabs.map((tab, index) => (
+                        <button
+                            data-tab-index={index}
+                            class={`tab-button flex-1 py-4 px-6 text-center font-montserrat text-[20px] font-medium border-b md:border-b-0 md:border-r last:border-0 border-gray-200 transition-colors uppercase ${index === 0 ? 'bg-[var(--surface-brand-primary)] text-white' : 'bg-[var(--neutral-background-subtle)] text-[var(--surface-brand-primary)] hover:bg-white'}`}
+                        >
+                            {tab.nombre_tab}
+                        </button>
+                    ))
+                }
+            </div>
+
+            <!-- Contenido de los Tabs -->
+            <div class="relative">
+                {
+                    renderTabs.map((tab, index) => (
+                        <div
+                            data-tab-content={index}
+                            class={`tab-content ${index === 0 ? 'block' : 'hidden'} transition-opacity duration-300`}
+                        >
+                            <!-- Descripción -->
+                            {tab.descripcion && (
+                                <div class="font-roboto text-[16px] font-normal text-gray-700 text-center max-w-4xl mx-auto mb-10 prose prose-lg" set:html={stringifyRichText(tab.descripcion)}>
+                                </div>
+                            )}
+
+                            <!-- Grid de Galería -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {tab.imagenes && tab.imagenes.map((img, i) => (
+                                    <div class="overflow-hidden rounded-xl shadow-md group relative">
+                                        <!-- Enlace para Lightbox (Fancybox) -->
+                                        <a
+                                            href={(img.is_video ? (img.is_youtube ? img.youtube_url : getStrapiUrl(img.image)) : getStrapiUrl(img.cover || img.image)) || placeholderImage}
+                                            data-fancybox={`gallery-tab-${index}`}
+                                            data-caption={img.title}
+                                            class="block w-full h-full relative"
+                                        >
+                                            <Image
+                                                src={getStrapiUrl(img.cover || img.image) || placeholderImage}
+                                                alt={img.title || "Galería Dolphinaris"}
+                                                width={600}
+                                                height={400}
+                                                class="w-full h-64 md:h-72 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                            {/* Efecto de Hover (Overlay sutil) */}
+                                            <div class="absolute inset-0 bg-[var(--surface-brand-primary)]/0 group-hover:bg-[var(--surface-brand-primary)]/20 transition-colors duration-300 pointer-events-none"></div>
+
+                                            <!-- Botón Play si es video -->
+                                            {img.is_video && (
+                                                <button
+                                                    class="absolute inset-0 !m-auto bg-white/90 text-[var(--surface-brand-primary)] rounded-full w-14 h-14 flex items-center justify-center shadow-2xl pointer-events-none"
+                                                >
+                                                    <i class="fa-solid fa-play text-xl pl-1"></i>
+                                                </button>
+                                            )}
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vanilla JS para Tabs y Lightbox -->
+<script>
+    import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
+
+    // 1. Inicializar Fancybox
+    Fancybox.bind("[data-fancybox]", {});
+
+    // 2. Lógica Vanilla JS para mostrar y ocultar Tabs
+    document.addEventListener("DOMContentLoaded", () => {
+        const galleries = document.querySelectorAll('.dolphinaris-gallery-tabs');
+
+        galleries.forEach(gallery => {
+            const tabButtons = gallery.querySelectorAll('.tab-button');
+            const tabContents = gallery.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetIndex = button.getAttribute('data-tab-index');
+
+                    // Resetear todos los tabs a estado inactivo
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('bg-[var(--surface-brand-primary)]', 'text-white');
+                        btn.classList.add('bg-[var(--neutral-background-subtle)]', 'text-[var(--surface-brand-primary)]', 'hover:bg-white');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                        content.classList.remove('block', 'animate-fade-in');
+                    });
+
+                    // Activar el tab seleccionado
+                    button.classList.add('bg-[var(--surface-brand-primary)]', 'text-white');
+                    button.classList.remove('bg-[var(--neutral-background-subtle)]', 'text-[var(--surface-brand-primary)]', 'hover:bg-white');
+
+                    const targetContent = gallery.querySelector(`[data-tab-content="${targetIndex}"]`);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        targetContent.classList.add('block', 'animate-fade-in');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+</style>

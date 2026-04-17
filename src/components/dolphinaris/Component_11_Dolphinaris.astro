@@ -1,0 +1,316 @@
+---
+// src/components/dolphinaris/Component_11_Dolphinaris.astro
+interface Props {
+    titulo?: string;
+    direccion?: string;
+    telefono_contacto?: string;
+    email_contacto?: string;
+    telefono_horario?: string;
+    horario_dias?: string;
+    social_facebook?: string;
+    social_instagram?: string;
+    social_tiktok?: string;
+    social_whatsapp?: string;
+}
+
+const {
+    titulo = "Tus Datos",
+    direccion = "4517 Washington Ave, Manchester, Kentucky 39495",
+    telefono_contacto = "+0123-456-789",
+    email_contacto = "example@gmail.com",
+    telefono_horario = "+0123-456-789",
+    horario_dias = "Lunes a Viernes de 9:00 AM a 6:00 PM",
+    social_facebook = "#",
+    social_instagram = "#",
+    social_tiktok = "#",
+    social_whatsapp = "#",
+} = Astro.props;
+
+// Localization Logic
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEn = currentLang === 'en';
+
+const t = {
+    placeholder_nombre: isEn ? "Full Name" : "Tu Nombre Completo",
+    placeholder_email: "Email",
+    placeholder_telefono: isEn ? "Phone Number" : "Número de Teléfono",
+    placeholder_sujeto: isEn ? "Subject" : "Sujeto",
+    placeholder_mensaje: isEn ? "Message" : "Mensaje",
+    boton_enviar: isEn ? "Send Message" : "Enviar Mensaje",
+    label_ubicacion: isEn ? "Location" : "Nos ubicamos en:",
+    label_contacto: isEn ? "Contact" : "Contacto:",
+    label_horario: isEn ? "Hours" : "Horario:",
+    label_conocenos: isEn ? "Get to know us" : "Conócenos a través de:",
+    label_phone: isEn ? "Phone" : "Teléfono",
+    message_success: isEn ? "THANK YOU! THE FORM HAS BEEN SUBMITTED." : "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.",
+    message_error: isEn ? "REQUIRED FIELDS ARE MISSING." : "FALTAN CAMPOS REQUERIDOS",
+    message_try: isEn ? "There was a problem submitting the form. Please try again." : "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
+    sending: isEn ? "Sending..." : "Enviando...",
+};
+---
+
+<section class="w-full bg-[var(--neutral-background-subtle)] py-12 md:py-24 relative overflow-hidden">
+    <!-- Decorative Background Pattern (Abstract Flower/Sunburst) -->
+    <div class="absolute inset-0 pointer-events-none opacity-20 z-0">
+        <svg
+            viewBox="0 0 100 100"
+            fill="none"
+            class="w-full h-full text-[var(--accent-highlight-primary)]"
+            preserveAspectRatio="none"
+        >
+            <path
+                d="M50 50 L100 0 L100 100 Z M50 50 L0 100 L0 0 Z"
+                fill="currentColor"
+                class="opacity-50"></path>
+            <!-- Placeholder for the actual organic curve pattern seen in image -->
+            <circle
+                cx="0"
+                cy="50"
+                r="80"
+                stroke="currentColor"
+                stroke-width="20"
+                class="opacity-30"></circle>
+        </svg>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="max-w-[1440px] mx-auto px-6 relative z-10">
+        <div class="flex flex-col md:flex-row gap-8 md:gap-16">
+            <!-- Left Column: Form -->
+            <div class="w-full md:w-3/5">
+                <h2
+                    class="font-montserrat text-[32px] font-bold text-[var(--surface-brand-primary)] mb-8 md:mb-12"
+                >
+                    {titulo}
+                </h2>
+
+                <form id="dolphinaris-contact-form" class="space-y-4 md:space-y-6">
+                    <!-- Name -->
+                    <div>
+                        <input
+                            type="text"
+                            name="Nombre"
+                            placeholder={t.placeholder_nombre}
+                            class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
+                        />
+                    </div>
+
+                    <!-- Email & Phone Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <input
+                            type="email"
+                            name="Correo"
+                            placeholder={t.placeholder_email}
+                            class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
+                        />
+                        <input
+                            type="tel"
+                            name="Telefono"
+                            placeholder={t.placeholder_telefono}
+                            class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
+                        />
+                    </div>
+
+                    <!-- Subject -->
+                    <div>
+                        <input
+                            type="text"
+                            name="Asunto"
+                            placeholder={t.placeholder_sujeto}
+                            class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all"
+                        />
+                    </div>
+
+                    <!-- Message -->
+                    <div>
+                        <textarea
+                            rows="6"
+                            name="Mensaje"
+                            placeholder={t.placeholder_mensaje}
+                            class="w-full bg-white rounded-lg md:rounded-xl px-6 py-4 outline-none text-[var(--surface-brand-primary)] placeholder-gray-400 border border-transparent focus:border-[var(--surface-brand-primary)] transition-all resize-none"
+                        ></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4">
+                        <button
+                            type="submit"
+                            class="bg-[var(--surface-brand-primary)] text-white font-roboto text-[16px] font-normal px-8 py-3 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2"
+                        >
+                            {t.boton_enviar}
+                            <i
+                                class="fa-solid fa-arrow-right text-sm hidden md:inline-block"
+                            ></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Messages -->
+                <div
+                    id="form-feedback"
+                    class="col-span-1 md:col-span-2 text-center font-roboto text-[16px] font-normal p-4 rounded-sm hidden mt-10"
+                >
+                </div>
+            </div>
+
+            <!-- Right Column: Info Card -->
+            <div class="w-full md:w-2/5 mt-8 md:mt-24">
+                <div
+                    class="bg-[var(--surface-brand-primary)] text-white rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 shadow-xl"
+                >
+                    <div
+                        class="space-y-8 md:space-y-10 font-roboto text-[16px] font-normal"
+                    >
+                        <!-- Location -->
+                        <div>
+                            <h3
+                                class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
+                            >
+                                {t.label_ubicacion}
+                            </h3>
+                            <p class="text-white/80 leading-relaxed max-w-xs">
+                                {direccion}
+                            </p>
+                        </div>
+
+                        <!-- Contact -->
+                        <div>
+                            <h3
+                                class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
+                            >
+                                {t.label_contacto}
+                            </h3>
+                            <div class="space-y-1 text-white/80">
+                                <p>{t.label_phone}: <a href={`tel:${telefono_contacto}`} class="underline decoration-[var(--accent-highlight-primary)]">{telefono_contacto}</a></p>
+                                <p>Email: <a href={`mailto:${email_contacto}`} class="underline decoration-[var(--accent-highlight-primary)]">{email_contacto}</a></p>
+                            </div>
+                        </div>
+
+                        <!-- Hours -->
+                        <div>
+                            <h3
+                                class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
+                            >
+                                {t.label_horario}
+                            </h3>
+                            <div class="space-y-1 text-white/80">
+                                <p>{t.label_phone}: {telefono_horario}</p>
+                                <p>{horario_dias}</p>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div>
+                            <h3
+                                class="text-white font-montserrat text-[20px] font-medium mb-6 opacity-90"
+                            >
+                                {t.label_conocenos}
+                            </h3>
+                            <div class="flex items-center gap-4">
+                                {
+                                    social_facebook && (
+                                        <a
+                                            href={social_facebook}
+                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                        >
+                                            <i class="fa-brands fa-facebook-f text-lg md:text-xl" />
+                                        </a>
+                                    )
+                                }
+                                {
+                                    social_instagram && (
+                                        <a
+                                            href={social_instagram}
+                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                        >
+                                            <i class="fa-brands fa-instagram text-lg md:text-xl" />
+                                        </a>
+                                    )
+                                }
+                                {
+                                    social_tiktok && (
+                                        <a
+                                            href={social_tiktok}
+                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                        >
+                                            <i class="fa-brands fa-tiktok text-lg md:text-xl" />
+                                        </a>
+                                    )
+                                }
+                                {
+                                    social_whatsapp && (
+                                        <a
+                                            href={social_whatsapp}
+                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                        >
+                                            <i class="fa-brands fa-whatsapp text-lg md:text-xl" />
+                                        </a>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script define:vars={{ t }}>
+    
+        const form = document.getElementById("dolphinaris-contact-form");
+        const feedback = document.getElementById("form-feedback");
+
+        if (form) {
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const submitBtn = form.querySelector('button[type="submit"]');
+    
+                // Loading state
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = t.sending;
+                }
+    
+                feedback.classList.add("hidden");
+                feedback.className =
+                    "col-span-1 md:col-span-2 text-center font-roboto text-[16px] font-normal p-4 rounded-sm hidden mt-10";
+    
+                const formData = new FormData(form);
+    
+                try {
+                    const response = await fetch('/api/send-email', {
+                        method: "POST",
+                        body: formData,
+                    });
+    
+                    if (response.ok) {
+                        feedback.textContent =
+                            t.message_success;
+                        feedback.classList.remove("hidden");
+                        feedback.classList.add("bg-green-100", "text-green-800");
+                        form.reset();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(
+                            error.message = t.message_error ||
+                                "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
+                        );
+                    }
+                } catch (err) {
+                    feedback.textContent = err.message.toUpperCase();
+                    feedback.classList.remove("hidden");
+                    feedback.classList.add("bg-red-100", "text-red-800");
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = t.boton_enviar;
+                    }
+                }
+            });
+        }
+
+    
+</script>
