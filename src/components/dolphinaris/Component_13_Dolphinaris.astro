@@ -30,9 +30,10 @@ const images = rawImages.map((img: any) => ({
 
 // Background Logic
 const bgUrl = fondoImagen ? getStrapiUrl(fondoImagen) : null;
+const finalColor = codigoColorFondo || "var(--neutral-text-inverted, #FFFFFF)";
 const styleAttribute = bgUrl
     ? `background-image: url('${bgUrl}'); background-size: cover; background-position: center;`
-    : `background-color: ${codigoColorFondo};`;
+    : `background-color: ${finalColor};`;
 ---
 
 <section class="w-full py-12 md:py-24 relative" style={styleAttribute}>
