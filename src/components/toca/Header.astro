@@ -280,7 +280,7 @@ const ctaButtons: Boton[] = [
                         class="fa-solid fa-bars text-[28px] cursor-pointer"></i>
                     <i
                         id="icon-close"
-                        class="fa-solid fa-xmark text-[32px] hidden cursor-pointer"
+                        class="fa-solid fa-xmark text-[32px] hidden! cursor-pointer"
                     ></i>
                 </button>
             </div>
@@ -497,8 +497,8 @@ const ctaButtons: Boton[] = [
         menuBtn.addEventListener("click", () => {
             mobileMenu.classList.toggle("hidden");
             document.body.classList.toggle("overflow-hidden");
-            iconMenu.classList.toggle("hidden");
-            iconClose.classList.toggle("hidden");
+            iconMenu.classList.toggle("hidden!");
+            iconClose.classList.toggle("hidden!");
         });
     }
 
