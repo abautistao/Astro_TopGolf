@@ -13,7 +13,10 @@ import partytown from '@astrojs/partytown';
 export default defineConfig({
   output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
-  site: 'https://topgolf.com.mx', // URL para pruebas locales.
+  site: 'https://topgolf.com.mx',
+  build: {
+    inlineStylesheets: 'always'
+  }, // URL para pruebas locales.
   image: {
     domains: ['localhost', '127.0.0.1'],
     remotePatterns: [{ protocol: "https" }],
