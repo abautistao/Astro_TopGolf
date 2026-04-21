@@ -413,88 +413,102 @@ const ctaButtons: Boton[] = [
 </header>
 
 <script>
-    import lottie from "lottie-web";
-
-    document.addEventListener("DOMContentLoaded", () => {
-
+    /**
+     * OPTIMIZACIÓN DE LOTTIE:
+     * Cargamos la librería y los JSON solo cuando el navegador está libre (Idle).
+     */
+    const initLotties = async () => {
         const lottieContainers = document.querySelectorAll(".js-lottie-anim");
-    
-        lottieContainers.forEach((container) => {
-            const el = container as HTMLElement;
-            const path = el.dataset.path;
-    
-            if (path) {
+        if (lottieContainers.length === 0) return;
+
+        try {
+            // Importación dinámica para reducir el peso del bundle inicial
+            const lottie = (await import("lottie-web")).default;
+
+            lottieContainers.forEach((container) => {
+                const el = container as HTMLElement;
+                const path = el.dataset.path;
+                if (!path) return;
+
                 const isFestive = path.toLowerCase().includes("festive");
-    
+
+                // Cargamos la animación
                 const anim = lottie.loadAnimation({
-                    container: container,
+                    container: el,
                     renderer: "svg",
                     loop: true,
                     autoplay: isFestive,
                     path: path,
                 });
-    
+
+                // Si no es "festivo", la dejamos estática en el frame 0 hasta el hover
                 if (!isFestive) {
-                    const triggerElement = container.closest("a") || container;
-    
-                    triggerElement.addEventListener("mouseenter", () => {
-                        anim.play();
+                    anim.addEventListener('DOMLoaded', () => {
+                        anim.goToAndStop(0, true);
                     });
-    
-                    triggerElement.addEventListener("mouseleave", () => {
-                        anim.stop();
-                    });
+
+                    const trigger = el.closest("a") || el;
+                    trigger.addEventListener("mouseenter", () => anim.play());
+                    trigger.addEventListener("mouseleave", () => anim.stop());
                 }
-            }
-        });
-    
+            });
+        } catch (error) {
+            console.error("Error cargando Lottie:", error);
+        }
+    };
+
+    /**
+     * LÓGICA DE MENÚS:
+     * Interactividad para desktop (Mega Menus) y Mobile.
+     */
+    const initMenus = () => {
         const triggers = document.querySelectorAll(".menu-trigger");
         const allMenus = document.querySelectorAll(".mega-menu");
-    
-        const closeAllMenus = () => {
+        const menuBtn = document.getElementById("mobile-menu-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const iconMenu = document.getElementById("icon-menu");
+        const iconClose = document.getElementById("icon-close");
+        const accordionTriggers = document.querySelectorAll(".mobile-accordion-trigger");
+
+        // --- Mega Menús Desktop ---
+        const closeAllDesktopMenus = () => {
             allMenus.forEach((menu) => menu.classList.add("hidden"));
             triggers.forEach((trigger) => {
                 const chevron = trigger.querySelector(".chevron");
                 if (chevron) chevron.classList.remove("rotate-180");
             });
         };
-    
+
         triggers.forEach((trigger) => {
             trigger.addEventListener("click", (e) => {
                 e.stopPropagation();
                 const targetId = (trigger as HTMLElement).dataset.target;
                 const targetMenu = document.getElementById(targetId || "");
                 const chevron = trigger.querySelector(".chevron");
-    
+
                 if (targetMenu && !targetMenu.classList.contains("hidden")) {
-                    closeAllMenus();
+                    closeAllDesktopMenus();
                     return;
                 }
-    
-                closeAllMenus();
-    
+
+                closeAllDesktopMenus();
+
                 if (targetMenu) {
                     targetMenu.classList.remove("hidden");
                     if (chevron) chevron.classList.add("rotate-180");
                 }
             });
         });
-    
+
+        // Cerrar al hacer clic fuera
         document.addEventListener("click", (e) => {
             const target = e.target as HTMLElement;
-            const isClickInsideMenu = target.closest(".mega-menu");
-            const isClickInsideTrigger = target.closest(".menu-trigger");
-    
-            if (!isClickInsideMenu && !isClickInsideTrigger) {
-                closeAllMenus();
+            if (!target.closest(".mega-menu") && !target.closest(".menu-trigger")) {
+                closeAllDesktopMenus();
             }
         });
-    
-        const menuBtn = document.getElementById("mobile-menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
-        const iconMenu = document.getElementById("icon-menu");
-        const iconClose = document.getElementById("icon-close");
-    
+
+        // --- Menú Mobile ---
         if (menuBtn && mobileMenu && iconMenu && iconClose) {
             menuBtn.addEventListener("click", () => {
                 mobileMenu.classList.toggle("hidden");
@@ -503,21 +517,37 @@ const ctaButtons: Boton[] = [
                 iconClose.classList.toggle("hidden");
             });
         }
-    
-        const accordionTriggers = document.querySelectorAll(
-            ".mobile-accordion-trigger",
-        );
+
+        // --- Acordeones Mobile ---
         accordionTriggers.forEach((trigger) => {
             trigger.addEventListener("click", () => {
                 const content = trigger.nextElementSibling;
                 const chevron = trigger.querySelector(".accordion-chevron");
                 if (content) {
                     content.classList.toggle("hidden");
-                    if (chevron) {
-                        chevron.classList.toggle("rotate-180");
-                    }
+                    chevron?.classList.toggle("rotate-180");
                 }
             });
         });
-    })
+    };
+
+    /**
+     * EJECUCIÓN ORQUESTADA:
+     * Priorizamos la interactividad de los menús sobre las animaciones.
+     */
+    const runAll = () => {
+        initMenus();
+
+        // Cargamos Lotties cuando el navegador termine de pintar (Idle)
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(() => initLotties());
+        } else {
+            // Fallback para Safari o navegadores antiguos
+            setTimeout(initLotties, 1500);
+        }
+    };
+
+    // Soporte para transiciones de página de Astro (View Transitions)
+    document.addEventListener("DOMContentLoaded", runAll);
+    document.addEventListener("astro:page-load", runAll);
 </script>
