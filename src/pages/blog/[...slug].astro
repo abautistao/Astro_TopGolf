@@ -1,49 +1,41 @@
 ---
-import Layout from "../../../layouts/Layout.astro"; // Importamos el Layout principal
-import { getAllBlogs, getBlogBySlug } from "../../../lib/strapi.js";
-import RenderBlocks from "../../../components/RenderBlocks.astro";
-import Blu_404 from "../../../components/errors/Blu_404.astro";
-import Toca_404 from "../../../components/errors/Toca_404.astro";
-import Component_404 from "../../../components/errors/Component_404.astro";
-import Generic_404 from "../../../components/errors/Generic_404.astro";
-
-// export const prerender = true;
+import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
+import { getAllBlogs, getBlogBySlug } from "../../lib/strapi.js";
+import RenderBlocks from "../../components/RenderBlocks.astro";
+import Blu_404 from "../../components/errors/Blu_404.astro";
+import Toca_404 from "../../components/errors/Toca_404.astro";
+import Component_404 from "../../components/errors/Component_404.astro";
+import Generic_404 from "../../components/errors/Generic_404.astro";
 
 // ==========================================================================================
 // SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
 // ==========================================================================================
 export async function getStaticPaths() {
   const pages = await getAllBlogs();
-  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
   const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
 
-  if (!pages || !isMultiLanguage) {
+  if (!pages) {
     return [];
   }
   return pages
-    .filter((page: any) => (page.locale || "en") !== defaultLocale)
+    .filter((page: any) => (page.locale || "en") === defaultLocale)
     .map((page: any) => ({
-      params: { lang: page.locale ?? "en", slug: page.slug },
+      params: { slug: page.slug },
     }));
 }
 
 // ==========================================================================================
 // SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
 // ==========================================================================================
-const { slug, lang } = Astro.params;
-const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+const { slug } = Astro.params;
 const theme = import.meta.env.PUBLIC_THEME || "toca";
 const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
 
 let notFound = false;
 let pagina = null;
 
-if (!isMultiLanguage || lang === defaultLocale) {
-  notFound = true;
-}
-
 if (!notFound) {
-  pagina = await getBlogBySlug(slug, lang);
+  pagina = await getBlogBySlug(slug, defaultLocale);
   if (!pagina) notFound = true;
 }
 
@@ -67,7 +59,7 @@ if (pagina && localizations && localizations.data) {
 }
 
 console.log(
-  `[Blog] Loaded '${slug}' (Lang: ${lang}). Alternate Links:`,
+  `[Blog] Loaded '${slug}' (Lang: ${defaultLocale}). Alternate Links:`,
   alternateLinks,
 );
 ---
@@ -75,19 +67,19 @@ console.log(
 <Layout
   seo={SEO}
   alternateLinks={alternateLinks}
-  lang={lang || defaultLocale}
+  lang={defaultLocale}
   title={notFound ? "Page Not Found" : titulo}
 >
   {
     notFound ? (
       theme === "blu" ? (
-        <Blu_404 lang={lang} />
+        <Blu_404 lang={defaultLocale} />
       ) : theme === "toca" ? (
-        <Toca_404 lang={lang} />
+        <Toca_404 lang={defaultLocale} />
       ) : theme === "topgolf" ? (
         <Component_404 />
       ) : (
-        <Generic_404 lang={lang} />
+        <Generic_404 lang={defaultLocale} />
       )
     ) : (
       <main class="mx-auto container-full">

@@ -20,28 +20,29 @@ const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
 const theme = import.meta.env.PUBLIC_THEME || "toca";
 
 const { lang } = Astro.params;
-export async function getStaticPaths(page) {
-  const pages = await getAllPages();
-
-  if (!pages) {
-    return [];
-  }
-  return [
-    {
-      params: { lang: page.locale ?? "en", slug: page.slug },
-    },
-  ];
+export async function getStaticPaths() {
+  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+  if (!isMultiLanguage) return [];
+  
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+  const locales = ["es", "en"]; // Supported locales
+  
+  return locales
+    .filter(l => l !== defaultLocale)
+    .map(lang => ({
+      params: { lang },
+    }));
 }
 
 let pagina;
 
 if (isMultiLanguage) {
-  // Multi-language: /es/ -> Home page in Spanish
-  pagina = await getPageBySlug("home", lang);
-} else {
-  // Single-language: /about -> Page 'about' in Default Locale
-  // Here 'lang' param captures the first segment which is the slug
-  pagina = await getPageBySlug(lang, defaultLocale);
+  // En multi-idioma este archivo maneja el home de idiomas NO base (ej /es)
+  if (lang === defaultLocale) {
+    Astro.response.status = 404;
+  } else {
+    pagina = await getPageBySlug("home", lang);
+  }
 }
 
 const notFound = !pagina;

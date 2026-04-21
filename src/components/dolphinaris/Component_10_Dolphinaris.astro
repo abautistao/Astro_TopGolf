@@ -72,14 +72,16 @@ function getImageUrls(imagenes: any[]): string[] {
                             </div>
                             <!-- Imagen -->
                             {imgs.length > 0 && (
-                                <div>
-                                    <Image
-                                        src={imgs[0]}
-                                        alt={sec.titulo || "Dolphinaris"}
-                                        width={800}
-                                        height={500}
-                                        class="w-full h-[380px] object-cover"
-                                    />
+                                <div class={`grid gap-4 ${imgs.length >= 2 ? "grid-cols-2" : "grid-cols-1"}`}>
+                                    {imgs.map((src, i) => (
+                                        <Image
+                                            src={src}
+                                            alt={`${sec.titulo || "Dolphinaris"} ${i + 1}`}
+                                            width={800}
+                                            height={500}
+                                            class="w-full h-[380px] object-cover rounded-lg"
+                                        />
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -129,13 +131,19 @@ function getImageUrls(imagenes: any[]): string[] {
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                             <!-- Imagen -->
-                            <Image
-                                src={imgs[0]}
-                                alt={sec.titulo || "Dolphinaris"}
-                                width={800}
-                                height={500}
-                                class="w-full h-[380px] object-cover"
-                            />
+                            {imgs.length > 0 && (
+                                <div class={`grid gap-4 ${imgs.length >= 2 ? "grid-cols-2" : "grid-cols-1"}`}>
+                                    {imgs.map((src, i) => (
+                                        <Image
+                                            src={src}
+                                            alt={`${sec.titulo || "Dolphinaris"} ${i + 1}`}
+                                            width={800}
+                                            height={500}
+                                            class="w-full h-[380px] object-cover rounded-lg"
+                                        />
+                                    ))}
+                                </div>
+                            )}
                             <!-- Texto -->
                             <div>
                                 {sec.titulo && (

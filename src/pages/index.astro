@@ -8,12 +8,8 @@ import RenderBlocks from "../components/RenderBlocks.astro";
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
 
-// LOGIC 1: Multi-language Mode enabled -> Redirect to /{defaultLocale}
-if (isMultiLanguage) {
-    return Astro.redirect(`/${defaultLocale}`);
-}
-
-// LOGIC 2: Single-language Mode -> Render Home Page directly at root (/)
+// LOGIC 1: Rendering Home Page directly at root (/)
+// Fetch home page content for the default locale
 // Fetch home page content
 const pagina = await getPageBySlug("home", defaultLocale);
 

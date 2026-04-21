@@ -17,13 +17,17 @@ import Generic_404 from "../../components/errors/Generic_404.astro";
 // ==========================================================================================
 export async function getStaticPaths() {
   const pages = await getAllPages();
+  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
 
-  if (!pages) {
+  if (!pages || !isMultiLanguage) {
     return [];
   }
-  return pages.map((page: any) => ({
-    params: { lang: page.locale ?? "en", slug: page.slug },
-  }));
+  return pages
+    .filter((page: any) => (page.locale || "en") !== defaultLocale)
+    .map((page: any) => ({
+      params: { lang: page.locale ?? "en", slug: page.slug },
+    }));
 }
 
 // ==========================================================================================
@@ -39,18 +43,10 @@ let pagina;
 
 if (isMultiLanguage) {
   // Multi-language: /es/about -> Page 'about' in 'es'
-  pagina = await getPageBySlug(slug || "home", lang);
-} else {
-  // Single-language: /about/team -> Page 'about/team' in Default Locale
-  // 'lang' is first segment ('about'), 'slug' is rest ('team')
-
-  // Special case for Blog in Single Language Mode
-  if (lang === "blog" && slug) {
-    // Route: /blog/my-post
-    pagina = await getBlogBySlug(slug, defaultLocale);
+  if (lang === defaultLocale) {
+      Astro.response.status = 404;
   } else {
-    const fullSlug = slug ? `${lang}/${slug}` : lang;
-    pagina = await getPageBySlug(fullSlug, defaultLocale);
+      pagina = await getPageBySlug(slug || "home", lang);
   }
 }
 
