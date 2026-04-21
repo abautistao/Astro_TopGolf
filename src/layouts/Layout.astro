@@ -24,7 +24,6 @@ let locale = propsLang || paramsLang || defaultLocale;
 if (!isMultiLanguage) {
     locale = defaultLocale;
 }
-console.log('Layout Locale:', locale);
 
 const setupData = await getSiteSetup(locale);
 const faviconUrl = setupData?.favicon
@@ -82,10 +81,6 @@ const seoProps = seo || defaultSeo;
         
         <meta charset="UTF-8" />
         <link rel="icon" href={faviconUrl} />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
         <meta name="generator" content={Astro.generator} />
     
         <SEO {...seoProps} />

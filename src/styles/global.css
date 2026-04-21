@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
+@import "tailwindcss";
 @tailwind utilities;
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @font-face {
     font-family: 'ShieldSans-Bold';
@@ -147,23 +147,6 @@
     font-display: swap;
 }
 
-/* Scheherazade New */
-@font-face {
-    font-family: 'Scheherazade New';
-    src: url('/fonts/Scheherazade_New/ScheherazadeNew-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Scheherazade New';
-    src: url('/fonts/Scheherazade_New/ScheherazadeNew-Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
 /* Tenor Sans */
 @font-face {
     font-family: 'Tenor Sans';
@@ -186,6 +169,14 @@
 @font-face {
     font-family: 'Roboto';
     src: url('/fonts/Roboto/Roboto-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Bebas Neue';
+    src: url('/fonts/Bebas-Neue/BebasNeue-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -217,7 +208,7 @@
     --font-dolphinaris-body: 'Roboto', sans-serif;
 }
 
-@import "tailwindcss";
+
 
 body.dark-mode {
     background-color: #0D1116;

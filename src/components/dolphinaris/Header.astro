@@ -17,7 +17,6 @@ interface Props {
 
 const { data, locale = "en" } = Astro.props;
 const headerData = data || (await getHeaderData());
-console.log("---- DOLPHINARIS HEADER DATA ----", JSON.stringify(headerData, null, 2));
 
 const logoUrl = getStrapiUrl(headerData?.logo) || "/assets/blu-logo-white.png";
 
@@ -233,6 +232,11 @@ const buttons: Boton[] = [ctaButtonLocalized];
 
     .header-scrolled > div {
         height: 70px !important;
+    }
+
+    .header-scrolled > div {
+        padding-top: 50px !important;
+        padding-bottom: 50px !important;
     }
 
     @keyframes slideInDown {

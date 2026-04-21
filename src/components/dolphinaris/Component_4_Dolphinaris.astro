@@ -1,5 +1,5 @@
 ---
-import { getStrapiUrl } from "../../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 
 interface PromoCard {
     id: number;
@@ -15,6 +15,7 @@ interface PromoCard {
 interface Props {
     titulo?: string;
     promos?: PromoCard[];
+    descripcion?: string;
 }
 
 // Mapa de estilos por colorOverlay
@@ -73,6 +74,7 @@ const {
             urlBoton: "#",
         },
     ],
+    descripcion
 } = Astro.props;
 ---
 
@@ -82,10 +84,17 @@ const {
         <!-- HEADER DE SECCIÓN -->
         {titulo && (
             <div class="mb-12">
-                <h2 class="font-montserrat font-bold text-[32px] md:text-[40px] text-[var(--surface-brand-primary)] mb-4 leading-tight">
+                <h2 class="font-montserrat font-bold text-[32px] md:text-[40px] text-[var(--surface-brand-primary)] mb-4 leading-tight text-center">
                     {titulo}
                 </h2>
-                <div class="w-24 h-0.5 bg-[var(--surface-brand-secondary)]"></div>
+                <div class="w-24 h-0.5 bg-[var(--surface-brand-secondary)] mb-5 mx-auto"></div>
+
+                <!-- RICH TEXT -->
+                {descripcion && (
+                    <div class="rich-text-dolphinaris font-roboto text-[16px] text-center font-normal leading-relaxed text-[var(--surface-brand-primary)]/70 max-w-2xl mx-auto">
+                        <Fragment set:html={stringifyRichText(descripcion)} />
+                    </div>
+                )}
             </div>
         )}
 
