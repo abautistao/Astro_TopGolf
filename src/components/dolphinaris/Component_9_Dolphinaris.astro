@@ -5,14 +5,24 @@ import { stringifyRichText } from "../../lib/strapi.js";
 interface Props {
     titulo?: string;
     contenido?: any;
+    alineacion?: 'left' | 'center' | 'right' | 'justify';
 }
 
 const {
     titulo = "Gourmet Experiences",
     contenido,
+    alineacion = 'center',
 } = Astro.props;
 
 const contenidoHtml = contenido ? stringifyRichText(contenido) : "";
+
+const alignmentClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+    justify: 'text-justify'
+};
+const alignmentClass = alignmentClasses[alineacion] || 'text-center';
 ---
 
 <section class="w-full py-14 md:py-20 bg-[var(--neutral-background-subtle)]">
@@ -30,7 +40,7 @@ const contenidoHtml = contenido ? stringifyRichText(contenido) : "";
 
         <!-- RICH TEXT -->
         {contenidoHtml && (
-            <div class="rich-text-dolphinaris font-roboto text-[16px] font-normal leading-relaxed text-[var(--surface-brand-primary)]/70 max-w-2xl mx-auto">
+            <div class={`rich-text-dolphinaris font-roboto text-[16px] font-normal leading-relaxed text-[var(--surface-brand-primary)]/70 max-w-2xl mx-auto ${alignmentClass}`}>
                 <Fragment set:html={contenidoHtml} />
             </div>
         )}
