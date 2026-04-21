@@ -18,7 +18,7 @@ const defaultLang = PUBLIC_DEFAULT_LOCALE || "en";
 const config = {
   output: 'server', // Changed to server for SSR support with Cloudflare
   adapter: cloudflare(),
-  site: 'http://www.tocasocial.com.mx', //PUBLIC_SITE_URL, // URL para pruebas locales.
+  site: PUBLIC_SITE_URL, // URL para pruebas locales.
   build: {
     inlineStylesheets: 'always'
   },
