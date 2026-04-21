@@ -212,11 +212,15 @@ export const getLocalizedUrl = (url, locale = 'en') => {
 
   // Check multi-language config
   const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== 'false'; // Default to true if not set
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || 'en';
 
-  if (!isMultiLanguage) {
+  if (!isMultiLanguage || locale === defaultLocale) {
+    // Si la ruta original era vacía o '/', devuelve '/' en lugar de '//'
+    if (cleanPath === '') return '/';
     return `/${cleanPath}`;
   }
 
+  if (cleanPath === '') return `/${locale}`;
   return `/${locale}/${cleanPath}`;
 };
 

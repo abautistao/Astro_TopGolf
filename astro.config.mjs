@@ -34,7 +34,7 @@ const config = {
     locales: isMultiLanguage ? ["es", "en"] : [defaultLang],
     routing: {
       // ESTA ES LA CLAVE: 'false' hace que /es/ se convierta en /
-      prefixDefaultLocale: isMultiLanguage ? true : false 
+      prefixDefaultLocale: false 
     }
   },
 
