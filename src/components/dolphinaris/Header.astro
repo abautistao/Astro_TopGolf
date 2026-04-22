@@ -47,10 +47,10 @@ const buttons: Boton[] = [ctaButtonLocalized];
     id="blu-header"
 >
     <div
-        class="max-w-[1440px] mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
+        class="max-w-360 mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
     >
         <!-- Logo -->
-        <a href="/" class="flex-shrink-0">
+        <a href="/" class="shrink-0">
             {
                 logoUrl && (
                     <Image
@@ -65,7 +65,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
         </a>
 
         <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center space-x-12">
+        <nav class="hidden! md:flex! items-center space-x-12">
             {
                 links.map((link: any) => (
                     <a
@@ -132,7 +132,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
                 class="md:hidden text-white p-2 focus:outline-none"
             >
                 <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
-                <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden"
+                <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden!"
                 ></i>
             </button>
         </div>
@@ -142,21 +142,21 @@ const buttons: Boton[] = [ctaButtonLocalized];
 <!-- Mobile Menu Overlay -->
 <div
     id="mobile-menu"
-    class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
+    class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28! px-10! flex flex-col"
 >
-    <nav class="flex flex-col space-y-8">
+    <nav class="flex! flex-col! space-y-8">
         {
             links.map((link: any) => (
                 <a
                     href={getLocalizedUrl(link.url, locale)}
-                    class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase font-[family-name:var(--font-dolphinaris-title)]"
+                    class="text-white font-bold text-lg md:text-3xl tracking-widest border-b border-white/5 pb-6! uppercase font-[family-name:var(--font-dolphinaris-title)]"
                 >
                     {link.texto}
                 </a>
             ))
         }
-        <div class="pt-4 flex flex-col gap-6">
-            <Button botones={buttons} clase="w-full py-5 text-center text-xl" />
+        <div class="flex flex-col gap-3">
+            <Button botones={buttons} clase="w-full py-5! text-center text-xl" />
 
             <!-- Mobile Language Switcher -->
             {
@@ -181,7 +181,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
                             href={targetPath}
                             class="flex items-center justify-center gap-3 text-white border border-white/20 py-3 rounded-md hover:bg-white/10 transition-colors"
                         >
-                            <span class="text-lg font-bold tracking-widest">
+                            <span class="text-md font-bold tracking-widest">
                                 {isEn ? "ESPAÑOL" : "ENGLISH"}
                             </span>
                             <img
@@ -272,14 +272,14 @@ const buttons: Boton[] = [ctaButtonLocalized];
         if (isHidden) {
             menu?.classList.remove("hidden");
             header?.classList.add("is-menu-open"); // Force solid background
-            menuIcon?.classList.add("hidden");
-            closeIcon?.classList.remove("hidden");
+            menuIcon?.classList.add("hidden!");
+            closeIcon?.classList.remove("hidden!");
             document.body.style.overflow = "hidden";
         } else {
             menu?.classList.add("hidden");
             header?.classList.remove("is-menu-open"); // Remove solid background force
-            menuIcon?.classList.remove("hidden");
-            closeIcon?.classList.add("hidden");
+            menuIcon?.classList.remove("hidden!");
+            closeIcon?.classList.add("hidden!");
             document.body.style.overflow = "";
         }
     });
