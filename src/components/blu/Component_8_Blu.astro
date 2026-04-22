@@ -40,10 +40,10 @@ const showVideo = isVideo(strapiImageUrl);
 ---
 
 <section
-    class="relative w-full h-[550px] md:h-screen md:min-h-[700px] flex items-end justify-center overflow-hidden"
+    class="relative! w-full! h-137.5! md:h-screen! md:min-h-175! flex! items-end! justify-center! overflow-hidden!"
 >
     <!-- Background Image or Video -->
-    <div class="absolute inset-0 z-0">
+    <div class="absolute! inset-0 z-0!">
         {
             showVideo ? (
                 <video
@@ -52,7 +52,7 @@ const showVideo = isVideo(strapiImageUrl);
                     loop
                     muted
                     playsinline
-                    class="w-full h-full object-cover"
+                    class="w-full! h-full! object-cover!"
                 />
             ) : (
                 <Image
@@ -60,7 +60,7 @@ const showVideo = isVideo(strapiImageUrl);
                     alt={titulo || "Blu Ocean Club"}
                     width={1920}
                     height={1080}
-                    class="w-full h-full object-cover"
+                    class="w-full! h-full! object-cover!"
                 />
             )
         }
@@ -68,8 +68,8 @@ const showVideo = isVideo(strapiImageUrl);
         {
             hasContent && (
                 <>
-                    <div class="absolute inset-0 bg-[#012b49]/20 hidden md:block" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#012b49]/90 via-transparent to-transparent" />
+                    <div class="absolute! inset-0! bg-[#012b49]/20! hidden! md:block!" />
+                    <div class="absolute! inset-0! bg-gradient-to-t! from-[#012b49]/90! via-transparent! to-transparent!" />
                 </>
             )
         }
@@ -78,7 +78,7 @@ const showVideo = isVideo(strapiImageUrl);
     <!-- Content -->
     {
         hasContent && (
-            <div class="relative z-10 w-full max-w-[1440px] px-6 pb-16 md:pb-32 text-left text-white">
+            <div class="relative! z-10! w-full max-w-360! px-6! pb-16! md:pb-32! text-left text-white">
                 {/* Mobile Layout: Bottom Left. Desktop Layout: Bottom Left */}
                 {subtitulo && (
                     <span class="block text-xl md:text-3xl font-normal md:font-medium tracking-normal md:tracking-[0.1em] font-[family-name:var(--font-blu-body)] mb-0 md:mb-4">

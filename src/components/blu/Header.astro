@@ -46,7 +46,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
     id="blu-header"
 >
     <div
-        class="max-w-[1440px] mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
+        class="max-w-360 mx-auto! px-6! h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
     >
         <!-- Logo -->
         <a href="/" class="flex-shrink-0">
@@ -64,12 +64,12 @@ const buttons: Boton[] = [ctaButtonLocalized];
         </a>
 
         <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center space-x-12">
+        <nav class="hidden! md:flex! items-center! space-x-12!">
             {
                 links.map((link: any) => (
                     <a
                         href={getLocalizedUrl(link.url, locale)}
-                        class="text-white font-medium text-xs tracking-[0.2em] hover:text-[var(--neutral-background-subtle)] transition-colors uppercase font-[family-name:var(--font-blu-body)]"
+                        class="text-white! font-medium! text-xs! tracking-[0.2em] hover:text(--neutral-background-subtle) transition-colors uppercase font-[family-name:var(--font-blu-body)]"
                     >
                         {link.texto}
                     </a>
@@ -78,7 +78,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
         </nav>
 
         <!-- CTA Button & Mobile Toggle -->
-        <div class="flex items-center gap-4">
+        <div class="flex! items-center! gap-4!">
             <!-- Language Switcher (Desktop) -->
             {
                 (() => {
@@ -87,7 +87,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
                     if (!isMultiLanguage) return null;
 
                     return (
-                        <div class="hidden md:flex items-center">
+                        <div class="hidden! md:flex! items-center!">
                             {(() => {
                                 const isEn = locale === "en";
                                 const targetLang = isEn ? "es" : "en";
@@ -106,15 +106,15 @@ const buttons: Boton[] = [ctaButtonLocalized];
                                 return (
                                     <a
                                         href={targetPath}
-                                        class="flex items-center gap-2 text-white hover:opacity-80 transition-opacity"
+                                        class="flex! items-center! gap-2! text-white! hover:opacity-80 transition-opacity"
                                     >
-                                        <span class="text-xs font-bold tracking-widest">
+                                        <span class="text-xs! font-bold! tracking-widest">
                                             {isEn ? "ES" : "EN"}
                                         </span>
                                         <img
                                             src={flagUrl}
                                             alt={isEn ? "Español" : "English"}
-                                            class="w-6 h-auto rounded-sm border border-white/20"
+                                            class="w-6! h-auto! rounded-sm! border! border-white/20!"
                                         />
                                     </a>
                                 );
@@ -124,14 +124,14 @@ const buttons: Boton[] = [ctaButtonLocalized];
                 })()
             }
 
-            <Button botones={buttons} clase="hidden md:block" />
+            <Button botones={buttons} clase="hidden! md:block!" />
 
             <button
                 id="mobile-menu-toggle"
-                class="md:hidden text-white p-2 focus:outline-none"
+                class="md:hidden! text-white! p-2! focus:outline-none"
             >
                 <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
-                <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden"
+                <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden!"
                 ></i>
             </button>
         </div>
@@ -141,21 +141,21 @@ const buttons: Boton[] = [ctaButtonLocalized];
 <!-- Mobile Menu Overlay -->
 <div
     id="mobile-menu"
-    class="hidden md:hidden fixed inset-0 bg-[var(--surface-brand-primary)] z-40 pt-28 px-10 flex flex-col"
+    class="hidden! md:hidden fixed! inset-0! bg-(--surface-brand-primary) z-40 pt-28! px-10! flex-col!"
 >
-    <nav class="flex flex-col space-y-8">
+    <nav class="flex! flex-col! space-y-8!">
         {
             links.map((link: any) => (
                 <a
                     href={getLocalizedUrl(link.url, locale)}
-                    class="text-white font-bold text-3xl tracking-widest border-b border-white/5 pb-6 uppercase font-[family-name:var(--font-blu-title)]"
+                    class="text-white! font-bold! text-lg! md:text3xl! tracking-widest border-b border-white/5 pb-6 uppercase! font-[family-name:var(--font-blu-title)]"
                 >
                     {link.texto}
                 </a>
             ))
         }
         <div class="pt-4 flex flex-col gap-6">
-            <Button botones={buttons} clase="w-full py-5 text-center text-xl" />
+            <Button botones={buttons} clase="w-full py-5! text-center! text-xl!" />
 
             <!-- Mobile Language Switcher -->
             {
@@ -262,18 +262,18 @@ const buttons: Boton[] = [ctaButtonLocalized];
 
     // Toggle del menú móvil
     toggle?.addEventListener("click", () => {
-        const isHidden = menu?.classList.contains("hidden");
+        const isHidden = menu?.classList.contains("hidden!");
         if (isHidden) {
-            menu?.classList.remove("hidden");
+            menu?.classList.remove("hidden!");
             header?.classList.add("is-menu-open"); // Force solid background
-            menuIcon?.classList.add("hidden");
-            closeIcon?.classList.remove("hidden");
-            document.body.style.overflow = "hidden";
+            menuIcon?.classList.add("hidden!");
+            closeIcon?.classList.remove("hidden!");
+            document.body.style.overflow = "hidden!";
         } else {
-            menu?.classList.add("hidden");
+            menu?.classList.add("hidden!");
             header?.classList.remove("is-menu-open"); // Remove solid background force
-            menuIcon?.classList.remove("hidden");
-            closeIcon?.classList.add("hidden");
+            menuIcon?.classList.remove("hidden!");
+            closeIcon?.classList.add("hidden!");
             document.body.style.overflow = "";
         }
     });
