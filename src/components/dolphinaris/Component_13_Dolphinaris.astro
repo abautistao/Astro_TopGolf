@@ -10,6 +10,7 @@ interface Props {
     galeria?: any;
     fondoImagen?: any;
     codigoColorFondo?: string;
+    tabs?: any;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
     galeria,
     fondoImagen,
     codigoColorFondo = "var(--neutral-text-inverted, #FFFFFF)",
+    tabs,
 } = Astro.props;
 
 // Process Gallery Images (Normalize for Strapi 4 and Strapi 5)
@@ -118,6 +120,44 @@ const styleAttribute = bgUrl
                         ) : null
                     }
                 </div>
+
+                {
+                    tabs && tabs.length > 0 && (
+                        <div class="mt-8 tabs-container">
+                            {/* Headers */}
+                            <div class="flex flex-wrap gap-2 mb-0 border-b border-gray-200">
+                                {tabs.map((tab: any, index: number) => (
+                                    <button 
+                                        class={`tab-btn px-6 py-3 font-montserrat! text-[16px]! font-medium! transition-colors rounded-t-lg
+                                        ${index === 0 ? 'bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)]' : 'bg-transparent text-[var(--brand-interactive-base)] hover:bg-[var(--neutral-background-subtle)]'}`}
+                                        data-tab={index}
+                                    >
+                                        {tab.titulo}
+                                    </button>
+                                ))}
+                            </div>
+                            
+                            {/* Content */}
+                            <div class="bg-[var(--neutral-background-subtle)] p-6 rounded-b-lg rounded-tr-lg w-full">
+                                {tabs.map((tab: any, index: number) => {
+                                    const tabImgUrl = tab.imagen ? getStrapiUrl(tab.imagen) : null;
+                                    return (
+                                        <div class={`tab-pane space-y-4 ${index === 0 ? 'block' : 'hidden'}`} data-pane={index}>
+                                            {tabImgUrl && (
+                                                <img src={tabImgUrl} alt={tab.titulo} class="w-auto h-auto mx-auto max-h-24 object-contain mb-6" />
+                                            )}
+                                            {tab.contenido && (
+                                                <div class="font-roboto! text-[16px]! font-normal! text-(--surface-brand-primary) leading-relaxed rich-text-content">
+                                                    <Fragment set:html={stringifyRichText(tab.contenido)} />
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         </div>
     </div>
@@ -193,4 +233,45 @@ const styleAttribute = bgUrl
     // Initialize
     initGalleryDolphinaris();
     document.addEventListener("astro:page-load", initGalleryDolphinaris);
+
+    // Tabs Logic
+    function initTabsDolphinaris() {
+        const tabContainers = document.querySelectorAll(".tabs-container");
+
+        tabContainers.forEach((container) => {
+            const btns = container.querySelectorAll(".tab-btn");
+            const panes = container.querySelectorAll(".tab-pane");
+
+            btns.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const targetIndex = btn.getAttribute("data-tab");
+
+                    // Update buttons
+                    btns.forEach((b) => {
+                        if (b === btn) {
+                            b.classList.remove("bg-transparent", "text-[var(--brand-interactive-base)]", "hover:bg-[var(--neutral-background-subtle)]");
+                            b.classList.add("bg-[var(--surface-brand-primary)]", "text-[var(--neutral-text-inverted)]");
+                        } else {
+                            b.classList.remove("bg-[var(--surface-brand-primary)]", "text-[var(--neutral-text-inverted)]");
+                            b.classList.add("bg-transparent", "text-[var(--brand-interactive-base)]", "hover:bg-[var(--neutral-background-subtle)]");
+                        }
+                    });
+
+                    // Update panes
+                    panes.forEach((pane) => {
+                        if (pane.getAttribute("data-pane") === targetIndex) {
+                            pane.classList.remove("hidden");
+                            pane.classList.add("block");
+                        } else {
+                            pane.classList.remove("block");
+                            pane.classList.add("hidden");
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    initTabsDolphinaris();
+    document.addEventListener("astro:page-load", initTabsDolphinaris);
 </script>
