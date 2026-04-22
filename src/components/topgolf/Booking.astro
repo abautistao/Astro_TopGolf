@@ -70,7 +70,7 @@ for (const [key, value] of Object.entries(rawParams)) {
     <script is:inline src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script is:inline define:vars={{ paramsLimpios, vmgPluginUrl }}>
 	jQuery(document).ready(function($){
-        console.log('aaaaaaaaa');
+        
 		var vmg_plugin_id = $('#vmg_plugin_id').val();
 		var vmg_plugin_url = $('#vmg_plugin_url').val();
 		var vmg_plugin_version = $('#vmg_plugin_version').val();
@@ -260,7 +260,7 @@ for (const [key, value] of Object.entries(rawParams)) {
                 "price": $finalPrice
             };
             
-            
+            console.log(itemGA4);
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 'event': 'view_item',
