@@ -196,7 +196,9 @@ const t = {
                                 {t.label_horario}
                             </h3>
                             <div class="space-y-1 text-white/80">
-                                <p>{t.label_phone}: {telefono_horario}</p>
+                                {telefono_horario && (
+                                   <p>{t.label_phone}: {telefono_horario}</p> 
+                                )} 
                                 <p>{horario_dias}</p>
                             </div>
                         </div>
