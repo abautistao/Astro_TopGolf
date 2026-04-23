@@ -1,9 +1,7 @@
 ---
-// src/components/blu/Header.astro
 import {
     getHeaderData,
     getStrapiUrl,
-    formatUrl,
     getLocalizedUrl,
 } from "../../lib/strapi";
 import { Image } from "astro:assets";
@@ -18,33 +16,29 @@ interface Props {
 const { data, locale = "en" } = Astro.props;
 const headerData = data || (await getHeaderData());
 
-const logoUrl = getStrapiUrl(headerData?.logo) || "/assets/blu-logo-white.png";
+const logoUrl = getStrapiUrl(headerData?.logo);
 
-const links = headerData?.links || [
-    { texto: "HOME", url: "/" },
-    { texto: "PRODUCTOS", url: "/productos" },
-    { texto: "GALERÍA", url: "/galeria" },
-    { texto: "CONTACTO", url: "/contacto" },
-];
+const links = headerData?.links || [];
 
 const ctaButtonRaw = headerData?.Boton || {
     id: 999,
     texto: "RESERVAR",
     url: "/reservar",
 };
+let buttons: Boton[] = [];
 
-// Ensure the CTA button URL is localized
-const ctaButtonLocalized = {
-    ...ctaButtonRaw,
-    url: getLocalizedUrl(ctaButtonRaw.url, locale)
-};
-
-const buttons: Boton[] = [ctaButtonLocalized];
+if (ctaButtonRaw) {
+    const ctaButtonLocalized = {
+        ...ctaButtonRaw,
+        url: getLocalizedUrl(ctaButtonRaw.url, locale)
+    };
+    buttons = [ctaButtonLocalized];
+}
 ---
 
 <header
     class="w-full absolute top-0 left-0 z-50 transition-all duration-500 ease-in-out"
-    id="blu-header"
+    id="dolphinaris-header"
 >
     <div
         class="max-w-360 mx-auto px-6 h-20 md:h-28 flex items-center justify-between transition-all duration-500 relative z-50"
@@ -55,7 +49,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
                 logoUrl && (
                     <Image
                         src={logoUrl}
-                        alt="Blu Ocean Club"
+                        alt="Dolphinaris"
                         width={250}
                         height={100}
                         class="h-16 md:h-20 w-auto object-contain"
@@ -68,12 +62,37 @@ const buttons: Boton[] = [ctaButtonLocalized];
         <nav class="hidden! md:flex! items-center space-x-12">
             {
                 links.map((link: any) => (
-                    <a
-                        href={getLocalizedUrl(link.url, locale)}
-                        class="text-white font-medium text-xs tracking-[0.2em] hover:text-[var(--neutral-background-subtle)] transition-colors uppercase font-[family-name:var(--font-dolphinaris-body)]"
-                    >
-                        {link.texto}
-                    </a>
+                    <div class="relative group py-8">
+                        <a
+                            href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
+                            class="flex items-center gap-2 text-white font-medium text-xs tracking-[0.2em] hover:text-[var(--brand-interactive-base)] transition-colors uppercase font-[family-name:var(--font-dolphinaris-body)]"
+                        >
+                            {link.texto}
+                            {link.dropdown_items && link.dropdown_items.length > 0 && (
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            )}
+                        </a>
+                        
+                        {/* Submenu Dropdown */}
+                        {link.dropdown_items && link.dropdown_items.length > 0 && (
+                            <div class="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-max min-w-[280px] bg-[var(--surface-brand-primary)] border-t-[4px] border-[var(--brand-interactive-base)] shadow-2xl z-50">
+                                <ul class="flex flex-col py-3">
+                                    {link.dropdown_items.map((sublink: any) => (
+                                        <li>
+                                            <a
+                                                href={getLocalizedUrl(sublink.url, locale)}
+                                                class="block px-6 py-4 text-[var(--neutral-text-inverted)] font-roboto text-[16px] font-normal hover:bg-[var(--accent-highlight-primary)] hover:text-white transition-colors"
+                                            >
+                                                {sublink.titulo}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 ))
             }
         </nav>
@@ -88,15 +107,14 @@ const buttons: Boton[] = [ctaButtonLocalized];
                     if (!isMultiLanguage) return null;
 
                     return (
-                        <div class="hidden md:flex items-center">
+                        <div class="hidden lg:flex items-center">
                             {(() => {
                                 const isEn = locale === "en";
                                 const targetLang = isEn ? "es" : "en";
                                 const flagUrl = isEn
-                                    ? "https://flagcdn.com/w40/mx.png" // Show Mexico flag to switch to Spanish
-                                    : "https://flagcdn.com/w40/us.png"; // Show USA flag to switch to English
+                                    ? "https://flagcdn.com/w40/mx.png"
+                                    : "https://flagcdn.com/w40/us.png";
 
-                                // Simple URL replacement logic (robust enough for mostly static paths)
                                 const currentPath = Astro.url.pathname;
                                 const targetPath =
                                     currentPath.replace(
@@ -107,7 +125,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
                                 return (
                                     <a
                                         href={targetPath}
-                                        class="flex items-center gap-2 text-white hover:opacity-80 transition-opacity"
+                                        class="flex items-center gap-2 text-[var(--neutral-text-inverted)] hover:opacity-80 transition-opacity"
                                     >
                                         <span class="text-xs font-bold tracking-widest">
                                             {isEn ? "ES" : "EN"}
@@ -125,11 +143,11 @@ const buttons: Boton[] = [ctaButtonLocalized];
                 })()
             }
 
-            <Button botones={buttons} clase="hidden md:block" />
+            {buttons.length > 0 && <Button botones={buttons} clase="hidden lg:block" />}
 
             <button
                 id="mobile-menu-toggle"
-                class="md:hidden text-white p-2 focus:outline-none"
+                class="lg:hidden text-[var(--neutral-text-inverted)] p-2 focus:outline-none flex items-center justify-center w-10 h-10"
             >
                 <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
                 <i id="close-icon" class="fa-solid fa-xmark text-2xl hidden!"
@@ -146,13 +164,40 @@ const buttons: Boton[] = [ctaButtonLocalized];
 >
     <nav class="flex! flex-col! space-y-8">
         {
-            links.map((link: any) => (
-                <a
-                    href={getLocalizedUrl(link.url, locale)}
-                    class="text-white font-bold text-lg md:text-3xl tracking-widest border-b border-white/5 pb-6! uppercase font-[family-name:var(--font-dolphinaris-title)]"
-                >
-                    {link.texto}
-                </a>
+            links.map((link: any, index: number) => (
+                <div class="border-b border-white/20 pb-6">
+                    <div class="flex items-center justify-between">
+                        <a
+                            href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
+                            class="text-white font-bold text-3xl tracking-widest uppercase font-[family-name:var(--font-dolphinaris-title)]"
+                        >
+                            {link.texto}
+                        </a>
+                        {link.dropdown_items && link.dropdown_items.length > 0 && (
+                            <button
+                                class="text-[var(--neutral-text-inverted)] p-2 mobile-submenu-toggle focus:outline-none"
+                                data-target={`submenu-${index}`}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                    
+                    {link.dropdown_items && link.dropdown_items.length > 0 && (
+                        <div id={`submenu-${index}`} class="hidden flex-col pl-6 pt-6 space-y-5">
+                            {link.dropdown_items.map((sublink: any) => (
+                                <a
+                                    href={getLocalizedUrl(sublink.url, locale)}
+                                    class="text-[var(--neutral-text-inverted)] opacity-90 font-roboto text-[16px] font-normal hover:text-[var(--accent-highlight-primary)] transition-colors"
+                                >
+                                    {sublink.titulo}
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                </div>
             ))
         }
         <div class="flex flex-col gap-3">
@@ -198,14 +243,12 @@ const buttons: Boton[] = [ctaButtonLocalized];
 </div>
 
 <style>
-    /* Default Mobile Background: Solid Blue */
-    #blu-header {
+    #dolphinaris-header {
         background-color: var(--surface-brand-primary);
     }
 
-    /* Desktop Background: Vertical Gradient */
-    @media (min-width: 768px) {
-        #blu-header {
+    @media (min-width: 1024px) {
+        #dolphinaris-header {
             background-color: transparent;
             background-image: linear-gradient(
                 to bottom,
@@ -215,28 +258,21 @@ const buttons: Boton[] = [ctaButtonLocalized];
         }
     }
 
-    /* Transición suave para el encabezado al hacer scroll */
     .header-scrolled {
         background-color: var(--surface-brand-primary) !important;
-        background-image: none !important; /* Kill gradient */
+        background-image: none !important;
         position: fixed !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         animation: slideInDown 0.5s ease;
     }
 
-    /* Estado cuando el menú móvil está abierto: Fondo sólido forzado */
     .is-menu-open {
         background-color: var(--surface-brand-primary) !important;
         background-image: none !important;
     }
 
     .header-scrolled > div {
-        height: 70px !important;
-    }
-
-    .header-scrolled > div {
-        padding-top: 50px !important;
-        padding-bottom: 50px !important;
+        height: 80px !important;
     }
 
     @keyframes slideInDown {
@@ -250,15 +286,13 @@ const buttons: Boton[] = [ctaButtonLocalized];
 </style>
 
 <script>
-    const header = document.getElementById("blu-header");
+    const header = document.getElementById("dolphinaris-header");
     const toggle = document.getElementById("mobile-menu-toggle");
     const menu = document.getElementById("mobile-menu");
     const menuIcon = document.getElementById("menu-icon");
     const closeIcon = document.getElementById("close-icon");
 
-    // Manejador de scroll para el header
     window.addEventListener("scroll", () => {
-        // En mobile el fondo ya es sólido, pero aplicamos fixed y min-height igual
         if (window.scrollY > 50) {
             header?.classList.add("header-scrolled");
         } else {
@@ -266,7 +300,6 @@ const buttons: Boton[] = [ctaButtonLocalized];
         }
     });
 
-    // Toggle del menú móvil
     toggle?.addEventListener("click", () => {
         const isHidden = menu?.classList.contains("hidden");
         if (isHidden) {
@@ -282,5 +315,27 @@ const buttons: Boton[] = [ctaButtonLocalized];
             closeIcon?.classList.add("hidden!");
             document.body.style.overflow = "";
         }
+    });
+
+    // Mobile submenu toggles
+    const submenuToggles = document.querySelectorAll('.mobile-submenu-toggle');
+    submenuToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            const btn = e.currentTarget as HTMLButtonElement;
+            const targetId = btn.getAttribute('data-target');
+            if (targetId) {
+                const submenu = document.getElementById(targetId);
+                const icon = btn.querySelector('svg');
+                if (submenu?.classList.contains('hidden')) {
+                    submenu.classList.remove('hidden');
+                    submenu.classList.add('flex');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                } else {
+                    submenu?.classList.add('hidden');
+                    submenu?.classList.remove('flex');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
     });
 </script>
