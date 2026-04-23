@@ -31,12 +31,12 @@ for (const [key, value] of Object.entries(rawParams)) {
 }
 ---
 
-<div id="booking-container-dolphinaris" class="font-roboto bg-[var(--surface-brand-primary)] py-12">
+<div id="booking-container-dolphinaris" class="bg-(--neutral-background-subtle) py-12">
     <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
     <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
     <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
     
-    <div id="pluginContainer" class="container mx-auto px-4 !font-roboto"></div>
+    <div id="pluginContainer" class="container mx-auto px-4"></div>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
     <script is:inline src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -47,9 +47,9 @@ for (const [key, value] of Object.entries(rawParams)) {
 		var vmg_plugin_version = $('#vmg_plugin_version').val();
         var paramsVMG = paramsLimpios;
 
-		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
+		$.getScript( `https://plugin.venturae.com.mx/js/pluginscripts.js`, function(jd) {
 			"use strict";
-			$.pluginUrl = `https://${vmg_plugin_url}/${vmg_plugin_version}.php`;
+			$.pluginUrl = `https://plugin.venturae.com.mx/${vmg_plugin_version}.php`;
 			var params = {
                 ...paramsVMG,
 				'plugin_id': vmg_plugin_id
