@@ -10,14 +10,20 @@ interface Props {
     titulo: string;
     descripcion: string;
     imagen: any;
+    imagen_mobile: any;
     boton: Boton | Boton[] | null;
 }
 
-const { subtitulo, titulo, descripcion, imagen, boton = null } = Astro.props;
+const { subtitulo, titulo, descripcion, imagen, boton = null, imagen_mobile } = Astro.props;
 
 const strapiImageUrl =
     getStrapiUrl(imagen) ||
     "https://placehold.co/1920x1080/1a202c/ffffff?text=Video+Placeholder";
+
+const strapiImageUrlMobile =
+    getStrapiUrl(imagen_mobile) ||
+    "https://placehold.co/1920x1080/1a202c/ffffff?text=Video+Placeholder";
+
 const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
 
 const buttons: Boton[] = Array.isArray(boton) ? boton : (boton ? [boton] : []);
@@ -60,7 +66,14 @@ const showVideo = isVideo(strapiImageUrl);
                     alt={titulo || "Blu Ocean Club"}
                     width={1920}
                     height={1080}
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover hidden lg:block"
+                />
+
+                <Image
+                    src={strapiImageUrlMobile}
+                    alt={titulo || "Blu Ocean Club"}
+                    inferSize={true}
+                    class="w-full h-full object-cover block lg:hidden"
                 />
             )
         }
