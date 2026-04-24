@@ -50,13 +50,27 @@ if (notFound) {
   Astro.response.status = 404;
 }
 
-const { titulo, ContenidoPagina, SEO } = pagina || {};
+const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
+
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  // For the homepage, the slug is typically 'home', but we route it to root / or /es
+  
+  if (localeCode) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/` : `/${localeCode}`;
+  }
+});
 ---
 
 <Layout
   seo={SEO}
   lang={lang || defaultLocale}
   title={notFound ? "Page Not Found" : titulo}
+  alternateLinks={alternateLinks}
 >
   {
     notFound ? (

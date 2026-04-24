@@ -20,10 +20,23 @@ if (!pagina) {
     );
 }
 
-const { titulo, ContenidoPagina, SEO } = pagina;
+const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
+
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  // For the homepage, we route to root / or /es
+  
+  if (localeCode) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/` : `/${localeCode}`;
+  }
+});
 ---
 
-<Layout seo={SEO}>
+<Layout seo={SEO} alternateLinks={alternateLinks}>
     <main class="mx-auto container-full">
         <RenderBlocks blocks={ContenidoPagina} />
     </main>
