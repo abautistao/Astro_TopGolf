@@ -53,18 +53,18 @@ if (!pagina) {
 
 const { titulo, ContenidoPagina, SEO, localizations } = pagina;
 
-const alternateLinks = {};
-if (localizations && localizations.data) {
-  localizations.data.forEach((loc) => {
-    const attributes = loc.attributes || loc;
-    const localeCode = attributes.locale;
-    const locSlug = attributes.slug;
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  const locSlug = attributes.slug;
 
-    if (localeCode && locSlug) {
-      alternateLinks[localeCode] = `/${localeCode}/promociones/${locSlug}`;
-    }
-  });
-}
+  if (localeCode && locSlug) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/promociones/${locSlug}` : `/${localeCode}/promociones/${locSlug}`;
+  }
+});
 ---
 
 <Layout seo={SEO} alternateLinks={alternateLinks}>

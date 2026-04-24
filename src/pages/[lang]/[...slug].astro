@@ -70,17 +70,17 @@ if (notFound) {
 const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
 
 const alternateLinks: any = {};
-if (localizations && localizations.data) {
-  localizations.data.forEach((loc: any) => {
-    const attributes = loc.attributes || loc;
-    const localeCode = attributes.locale;
-    const locSlug = attributes.slug;
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  const locSlug = attributes.slug;
 
-    if (localeCode && locSlug) {
-      alternateLinks[localeCode] = `/${localeCode}/${locSlug}`;
-    }
-  });
-}
+  if (localeCode && locSlug) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/${locSlug}` : `/${localeCode}/${locSlug}`;
+  }
+});
 ---
 
 <Layout

@@ -5,7 +5,7 @@ import TocaHeader from "../toca/Header.astro";
 import BluHeader from "../blu/Header.astro";
 import DolphinarisHeader from "../dolphinaris/Header.astro";
 
-const { locale = "en" } = Astro.props;
+const { locale = "en", alternateLinks = {} } = Astro.props;
 // Fetch data directly here
 const headerData = await getHeaderData(locale);
 
@@ -17,7 +17,7 @@ const headerData = await getHeaderData(locale);
 // Case B: The attributes directly match Topgolf (legacy)
 
 let Component = TopgolfHeader;
-let props = { data: headerData, locale: locale };
+let props = { data: headerData, locale: locale, alternateLinks: alternateLinks };
 
 // Logic to detect variant:
 if (
@@ -39,7 +39,7 @@ if (
     }
 
     // Pass the variant data as 'data' to the specific component
-    props = { data: variant, locale: locale };
+    props = { data: variant, locale: locale, alternateLinks: alternateLinks };
 } else {
     // console.log("SmartHeader: 'Variante' array not found or empty in headerData.");
 }

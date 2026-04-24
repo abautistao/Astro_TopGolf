@@ -95,7 +95,7 @@ const seoProps = seo || defaultSeo;
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         )}
         
-        <Header locale={locale} />
+        <Header locale={locale} alternateLinks={alternateLinks} />
         <!-- El contenido de la página se insertará aquí. -->
         <slot />
         <Footer locale={locale} />

@@ -33,16 +33,18 @@ if (notFound) {
 
 const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
 
-const alternateLinks = {};
-if (pagina && localizations && localizations.data) {
-    localizations.data.forEach((loc) => {
-        const attributes = loc.attributes || loc;
-        const localeCode = attributes.locale;
-        if (localeCode) {
-            alternateLinks[localeCode] = `/${localeCode}/blog`;
-        }
-    });
-}
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  const locSlug = attributes.slug;
+
+  if (localeCode && locSlug) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/blog` : `/${localeCode}/blog`;
+  }
+});
 ---
 
 <Layout

@@ -11,9 +11,10 @@ import type { Boton } from "./elements/Button.astro";
 interface Props {
     data?: any;
     locale?: string;
+    alternateLinks?: Record<string, string>;
 }
 
-const { data, locale = "en" } = Astro.props;
+const { data, locale = "en", alternateLinks = {} } = Astro.props;
 const headerData = data || (await getHeaderData());
 
 const logoUrl = getStrapiUrl(headerData?.logo);
@@ -116,11 +117,17 @@ if (ctaButtonRaw) {
                                     : "https://flagcdn.com/w40/us.png";
 
                                 const currentPath = Astro.url.pathname;
-                                const targetPath =
-                                    currentPath.replace(
-                                        `/${locale}`,
-                                        `/${targetLang}`,
-                                    ) || `/${targetLang}`;
+                                let targetPath = `/${targetLang}`;
+
+                                if (alternateLinks && alternateLinks[targetLang]) {
+                                    targetPath = alternateLinks[targetLang];
+                                } else {
+                                    if (isEn) {
+                                        targetPath = `/es${currentPath === '/' ? '' : currentPath}`;
+                                    } else {
+                                        targetPath = currentPath.replace(`/${locale}`, '') || '/';
+                                    }
+                                }
 
                                 return (
                                     <a
@@ -217,9 +224,17 @@ if (ctaButtonRaw) {
                         : "https://flagcdn.com/w40/us.png";
 
                     const currentPath = Astro.url.pathname;
-                    const targetPath =
-                        currentPath.replace(`/${locale}`, `/${targetLang}`) ||
-                        `/${targetLang}`;
+                    let targetPath = `/${targetLang}`;
+
+                    if (alternateLinks && alternateLinks[targetLang]) {
+                        targetPath = alternateLinks[targetLang];
+                    } else {
+                        if (isEn) {
+                            targetPath = `/es${currentPath === '/' ? '' : currentPath}`;
+                        } else {
+                            targetPath = currentPath.replace(`/${locale}`, '') || '/';
+                        }
+                    }
 
                     return (
                         <a
