@@ -7,16 +7,18 @@ import Layout from "../../../layouts/Layout.astro"; // Importamos el Layout prin
 import { getAllPages } from "../../../lib/strapi.js";
 export const prerender = true;
 
-export async function getStaticPaths(page) {
+export async function getStaticPaths() {
+  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+  if (!isMultiLanguage) return [];
   
-  const pages = await getAllPages();
-
-  if (!pages) {
-    return [];
-  }
-  return [{
-    params: { lang: page.locale ?? 'en', slug: page.slug },
-  }];
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+  const locales = ["es", "en"]; // Supported locales
+  
+  return locales
+    .filter(l => l !== defaultLocale)
+    .map(lang => ({
+      params: { lang },
+    }));
 }
 ---
 

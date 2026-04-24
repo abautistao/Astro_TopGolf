@@ -12,14 +12,29 @@ import RenderBlocks from "../../../components/RenderBlocks.astro";
 // SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
 // ==========================================================================================
 export async function getStaticPaths() {
-  const pages = await getAllPromociones();
-  console.log("Datos recibidos para getStaticPaths:", pages);
-  if (!pages) {
+  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+  if (!isMultiLanguage) {
     return [];
   }
-  return pages.map((page) => ({
-    params: { slug: page.slug },
-  }));
+
+  const locales = ["es", "en"];
+  const nonDefaultLocales = locales.filter(l => l !== defaultLocale);
+  let allPaths = [];
+
+  for (const lang of nonDefaultLocales) {
+    const pages = await getAllPromociones(lang);
+    if (pages && Array.isArray(pages)) {
+      pages.forEach((page: any) => {
+        allPaths.push({
+          params: { lang, slug: page.slug },
+        });
+      });
+    }
+  }
+
+  return allPaths;
 }
 
 // ==========================================================================================

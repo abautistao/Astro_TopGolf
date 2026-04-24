@@ -11,8 +11,8 @@ import Generic_404 from "../../components/errors/Generic_404.astro";
 // SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
 // ==========================================================================================
 export async function getStaticPaths() {
-  const pages = await getAllBlogs();
   const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+  const pages = await getAllBlogs(defaultLocale);
 
   if (!pages) {
     return [];
