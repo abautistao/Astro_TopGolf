@@ -11,6 +11,7 @@ interface Props {
     social_instagram?: string;
     social_tiktok?: string;
     social_whatsapp?: string;
+    show_sidebar?: boolean;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
     social_instagram = "#",
     social_tiktok = "#",
     social_whatsapp = "#",
+    show_sidebar = false
 } = Astro.props;
 
 // Localization Logic
@@ -77,7 +79,7 @@ const t = {
 
     <!-- Main Content Container -->
     <div class="max-w-[1440px] mx-auto px-6 relative z-10">
-        <div class="flex flex-col md:flex-row gap-8 md:gap-16">
+        <div class="flex flex-col md:flex-row gap-8 md:gap-16 justify-center">
             <!-- Left Column: Form -->
             <div class="w-full md:w-3/5">
                 <h2
@@ -156,106 +158,108 @@ const t = {
             </div>
 
             <!-- Right Column: Info Card -->
-            <div class="w-full md:w-2/5 mt-8 md:mt-24">
-                <div
-                    class="bg-[var(--surface-brand-primary)] text-white rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 shadow-xl"
-                >
+            {show_sidebar && (
+                <div class="w-full md:w-2/5 mt-8 md:mt-24">
                     <div
-                        class="space-y-8 md:space-y-10 font-roboto text-[16px] font-normal"
+                        class="bg-[var(--surface-brand-primary)] text-white rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 shadow-xl"
                     >
-                        <!-- Location -->
-                        <div>
-                            <h3
-                                class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
-                            >
-                                {t.label_ubicacion}
-                            </h3>
-                            <p class="text-white/80 leading-relaxed max-w-xs">
-                                {direccion}
-                            </p>
-                        </div>
-
-                        <!-- Contact -->
-                        <div>
-                            <h3
-                                class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
-                            >
-                                {t.label_contacto}
-                            </h3>
-                            <div class="space-y-1 text-white/80">
-                                <p>{t.label_phone}: <a href={`tel:${telefono_contacto}`} class="underline decoration-[var(--accent-highlight-primary)]">{telefono_contacto}</a></p>
-                                <p>Email: <a href={`mailto:${email_contacto}`} class="underline decoration-[var(--accent-highlight-primary)]">{email_contacto}</a></p>
+                        <div
+                            class="space-y-8 md:space-y-10 font-roboto text-[16px] font-normal"
+                        >
+                            <!-- Location -->
+                            <div>
+                                <h3
+                                    class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
+                                >
+                                    {t.label_ubicacion}
+                                </h3>
+                                <p class="text-white/80 leading-relaxed max-w-xs">
+                                    {direccion}
+                                </p>
                             </div>
-                        </div>
-
-                        <!-- Hours -->
-                        <div>
-                            <h3
-                                class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
-                            >
-                                {t.label_horario}
-                            </h3>
-                            <div class="space-y-1 text-white/80">
-                                {telefono_horario && (
-                                   <p>{t.label_phone}: {telefono_horario}</p> 
-                                )} 
-                                <p>{horario_dias}</p>
+    
+                            <!-- Contact -->
+                            <div>
+                                <h3
+                                    class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
+                                >
+                                    {t.label_contacto}
+                                </h3>
+                                <div class="space-y-1 text-white/80">
+                                    <p>{t.label_phone}: <a href={`tel:${telefono_contacto}`} class="underline decoration-[var(--accent-highlight-primary)]">{telefono_contacto}</a></p>
+                                    <p>Email: <a href={`mailto:${email_contacto}`} class="underline decoration-[var(--accent-highlight-primary)]">{email_contacto}</a></p>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Social Media -->
-                        <div>
-                            <h3
-                                class="text-white font-montserrat text-[20px] font-medium mb-6 opacity-90"
-                            >
-                                {t.label_conocenos}
-                            </h3>
-                            <div class="flex items-center gap-4">
-                                {
-                                    social_facebook && (
-                                        <a
-                                            href={social_facebook}
-                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
-                                        >
-                                            <i class="fa-brands fa-facebook-f text-lg md:text-xl" />
-                                        </a>
-                                    )
-                                }
-                                {
-                                    social_instagram && (
-                                        <a
-                                            href={social_instagram}
-                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
-                                        >
-                                            <i class="fa-brands fa-instagram text-lg md:text-xl" />
-                                        </a>
-                                    )
-                                }
-                                {
-                                    social_tiktok && (
-                                        <a
-                                            href={social_tiktok}
-                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
-                                        >
-                                            <i class="fa-brands fa-tiktok text-lg md:text-xl" />
-                                        </a>
-                                    )
-                                }
-                                {
-                                    social_whatsapp && (
-                                        <a
-                                            href={social_whatsapp}
-                                            class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
-                                        >
-                                            <i class="fa-brands fa-whatsapp text-lg md:text-xl" />
-                                        </a>
-                                    )
-                                }
+    
+                            <!-- Hours -->
+                            <div>
+                                <h3
+                                    class="text-white font-montserrat text-[20px] font-medium mb-2 opacity-90"
+                                >
+                                    {t.label_horario}
+                                </h3>
+                                <div class="space-y-1 text-white/80">
+                                    {telefono_horario && (
+                                       <p>{t.label_phone}: {telefono_horario}</p> 
+                                    )} 
+                                    <p>{horario_dias}</p>
+                                </div>
+                            </div>
+    
+                            <!-- Social Media -->
+                            <div>
+                                <h3
+                                    class="text-white font-montserrat text-[20px] font-medium mb-6 opacity-90"
+                                >
+                                    {t.label_conocenos}
+                                </h3>
+                                <div class="flex items-center gap-4">
+                                    {
+                                        social_facebook && (
+                                            <a
+                                                href={social_facebook}
+                                                class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                            >
+                                                <i class="fa-brands fa-facebook-f text-lg md:text-xl" />
+                                            </a>
+                                        )
+                                    }
+                                    {
+                                        social_instagram && (
+                                            <a
+                                                href={social_instagram}
+                                                class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                            >
+                                                <i class="fa-brands fa-instagram text-lg md:text-xl" />
+                                            </a>
+                                        )
+                                    }
+                                    {
+                                        social_tiktok && (
+                                            <a
+                                                href={social_tiktok}
+                                                class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                            >
+                                                <i class="fa-brands fa-tiktok text-lg md:text-xl" />
+                                            </a>
+                                        )
+                                    }
+                                    {
+                                        social_whatsapp && (
+                                            <a
+                                                href={social_whatsapp}
+                                                class="w-10 h-10 md:w-12 md:h-12 bg-[var(--accent-highlight-primary)] rounded-full flex items-center justify-center text-[var(--surface-brand-primary)] hover:scale-110 transition-transform"
+                                            >
+                                                <i class="fa-brands fa-whatsapp text-lg md:text-xl" />
+                                            </a>
+                                        )
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )} 
         </div>
     </div>
 </section>
