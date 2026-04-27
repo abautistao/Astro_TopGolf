@@ -3,7 +3,7 @@
 // SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
 // ==========================================================================================
 
-import Layout from "../../layouts/Layout.astro"; // Importamos el Layout principal
+import Layout from "../layouts/Layout.astro"; // Importamos el Layout principal
 
 export async function getStaticPaths() {
   // Aquí debes retornar los idiomas que soportas. 
@@ -108,9 +108,9 @@ const t = {
   
 </script>
 
-<!-- <script>
+<script>
     // Función para obtener el valor de un parámetro de la URL
-    function getParameterByName(name: string) {
+    function getParameterByName(name) {
       name = name.replace(/[\[\]]/g, "\\$&");
       const url = window.location.href;
       const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
@@ -122,9 +122,6 @@ const t = {
 
     // Obtener el reservacion_id de los parámetros de la URL
     const reservacionId = getParameterByName('reservacion_id');
-    const status = getParameterByName('status');
-
-
 
     // Función para verificar si el evento ya se ha ejecutado
     function hasEventExecuted() {
@@ -136,9 +133,9 @@ const t = {
       localStorage.setItem(`event_executed_${reservacionId}`, 'true');
     }
 
-    if (reservacionId && !hasEventExecuted() && status <= 0) {
+    if (reservacionId && !hasEventExecuted()) {
       // Realizar la solicitud a la API con el reservacion_id
-      fetch(`https://vmyguest.venturae.com.mx/reservaciones/googleJson?reservacion_id=${reservacionId}`)
+      fetch(`https://vmyguest.dolphinaris.com/reservaciones/googleJson?reservacion_id=${reservacionId}`)
         .then(response => response.json())
         .then(data => {
           // Calcular la sumatoria de las cantidades
@@ -162,18 +159,15 @@ const t = {
             }
           };
 
-          console.log(eventData);
           // Empujar los datos a la capa de datos
           window.dataLayer = window.dataLayer || [];
           window.dataLayer.push(eventData);
 
           // Marcar el evento como ejecutado
           markEventAsExecuted();
-
-          // Evento Klaviyo Orden confirmada
         })
         .catch(error => console.error('Error fetching reservation data:', error));
     } else {
       console.error('No reservation_id found in URL or event already executed');
     }
-</script> -->
+</script>
