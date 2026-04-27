@@ -25,10 +25,10 @@ export async function getSiteSetup(locale = 'en') {
 
 export async function getPageBySlug(slug, locale = 'en') {
   if (slug === 'blog') {
-    const blog = await fetchAPI(`/paginas?filters[slug][$eq]=blog&locale=${locale}&populate[ContenidoPagina][populate]=*&populate[SEO][populate]=*`);
+    const blog = await fetchAPI(`/paginas?filters[slug][$eq]=blog&locale=${locale}&populate[ContenidoPagina][populate]=*&populate[SEO][populate]=*&pagination[pageSize]=100`);
     return blog?.[0];
   }
-  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
+  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&populate=*&pagination[pageSize]=100`);
   return pages?.[0];
 }
 

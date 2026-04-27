@@ -66,7 +66,7 @@ if (ctaButtonRaw) {
                     <div class="relative group py-8">
                         <a
                             href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
-                            class="flex items-center gap-2 text-white font-medium text-xs tracking-[0.2em] hover:text-[var(--brand-interactive-base)] transition-colors uppercase font-[family-name:var(--font-dolphinaris-body)]"
+                            class="flex items-center gap-2 text-white font-medium text-xs! tracking-[0.2em] hover:text-[var(--brand-interactive-base)]! transition-colors uppercase font-[family-name:var(--font-dolphinaris-body)] hover:no-underline!"
                         >
                             {link.texto}
                             {link.dropdown_items && link.dropdown_items.length > 0 && (
@@ -79,12 +79,12 @@ if (ctaButtonRaw) {
                         {/* Submenu Dropdown */}
                         {link.dropdown_items && link.dropdown_items.length > 0 && (
                             <div class="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-max min-w-[280px] bg-[var(--surface-brand-primary)] border-t-[4px] border-[var(--brand-interactive-base)] shadow-2xl z-50">
-                                <ul class="flex flex-col py-3">
+                                <ul class="flex! flex-col py-3">
                                     {link.dropdown_items.map((sublink: any) => (
                                         <li>
                                             <a
                                                 href={getLocalizedUrl(sublink.url, locale)}
-                                                class="block px-6 py-4 text-[var(--neutral-text-inverted)] font-roboto text-[16px] font-normal hover:bg-[var(--accent-highlight-primary)] hover:text-white transition-colors"
+                                                class="block! px-6 py-4 text-[var(--neutral-text-inverted)]! font-roboto! text-[16px] font-normal hover:bg-[var(--accent-highlight-primary)] hover:text-white transition-colors"
                                             >
                                                 {sublink.titulo}
                                             </a>
@@ -134,7 +134,7 @@ if (ctaButtonRaw) {
                                         href={targetPath}
                                         class="flex items-center gap-2 text-[var(--neutral-text-inverted)] hover:opacity-80 transition-opacity"
                                     >
-                                        <span class="text-xs font-bold tracking-widest">
+                                        <span class="text-xs font-bold tracking-widest text-white!">
                                             {isEn ? "ES" : "EN"}
                                         </span>
                                         <img
@@ -176,7 +176,7 @@ if (ctaButtonRaw) {
                     <div class="flex items-center justify-between">
                         <a
                             href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
-                            class="text-white font-bold text-3xl tracking-widest uppercase font-[family-name:var(--font-dolphinaris-title)]"
+                            class="text-white font-bold text-xl tracking-widest uppercase font-[family-name:var(--font-dolphinaris-title)]"
                         >
                             {link.texto}
                         </a>
@@ -193,11 +193,11 @@ if (ctaButtonRaw) {
                     </div>
                     
                     {link.dropdown_items && link.dropdown_items.length > 0 && (
-                        <div id={`submenu-${index}`} class="hidden flex-col pl-6 pt-6 space-y-5">
+                        <div id={`submenu-${index}`} class="hidden! flex-col pl-6 pt-6 space-y-5">
                             {link.dropdown_items.map((sublink: any) => (
                                 <a
                                     href={getLocalizedUrl(sublink.url, locale)}
-                                    class="text-[var(--neutral-text-inverted)] opacity-90 font-roboto text-[16px] font-normal hover:text-[var(--accent-highlight-primary)] transition-colors"
+                                    class="text-[var(--neutral-text-inverted)]! opacity-90 font-[family-name:var(--font-dolphinaris-title)] text-md font-normal hover:text-[var(--accent-highlight-primary)] transition-colors"
                                 >
                                     {sublink.titulo}
                                 </a>
@@ -341,13 +341,13 @@ if (ctaButtonRaw) {
             if (targetId) {
                 const submenu = document.getElementById(targetId);
                 const icon = btn.querySelector('svg');
-                if (submenu?.classList.contains('hidden')) {
-                    submenu.classList.remove('hidden');
-                    submenu.classList.add('flex');
+                if (submenu?.classList.contains('hidden!')) {
+                    submenu.classList.remove('hidden!');
+                    submenu.classList.add('flex!');
                     if (icon) icon.style.transform = 'rotate(180deg)';
                 } else {
-                    submenu?.classList.add('hidden');
-                    submenu?.classList.remove('flex');
+                    submenu?.classList.add('hidden!');
+                    submenu?.classList.remove('flex!');
                     if (icon) icon.style.transform = 'rotate(0deg)';
                 }
             }
