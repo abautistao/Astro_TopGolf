@@ -30,7 +30,8 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
 ];
 ---
 
-<footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) ">
+<footer class="bg-gradient-to-r from-[var(--surface-brand-secondary)] to-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular) relative">
+
     <div class="!px-6 !py-12 lg:!px-20 overflow-hidden">
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-8">
             <div class="grid grid-cols-2 gap-4 md:gap-10">
@@ -129,6 +130,14 @@ const buttonBanner: Boton[] = (footerData.Boton3 && !Array.isArray(footerData.Bo
             s.parentNode.insertBefore(b, s);})(window.lintrk);
         </script>
         <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=7730356&fmt=gif" loading="lazy" />
+
+
+
+        <div id="wa-contact" class="rounded-full fixed right-[5%] bottom-[8%] w-12 h-12 bg-green-500 flex justify-center items-center text-white text-3xl z-50">
+            <a target="_blank" href="https://api.whatsapp.com/send?phone=5218113003877">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
 </footer>
 <style>
     :root {
