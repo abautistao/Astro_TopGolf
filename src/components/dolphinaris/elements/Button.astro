@@ -23,35 +23,35 @@ const { botones, clase = "" } = Astro.props;
                 <a
                     href={formatUrl(boton.url)}
                     class:list={[
-                        "inline-block px-8 py-3 font-bold text-[16px] tracking-wide transition-all uppercase font-[family-name:var(--font-dolphinaris-body)] text-center",
+                        "inline-block px-8! py-3! font-bold text-[16px] tracking-wide transition-all uppercase font-[family-name:var(--font-dolphinaris-body)] text-center hover:no-underline!",
                         // Version 1 (Outline White -> Now Outline White Square)
                         {
-                            "border border-white text-white hover:bg-white hover:!text-[var(--neutral-background-strong)] rounded-none":
+                            "border border-white text-white! hover:bg-white! hover:text-[var(--neutral-background-strong)]! rounded-none":
                                 boton.tipo === "version_1" || !boton.tipo,
                         },
                         // Version 2 (Cyan Background -> Solid Teal Square #1E8CA6 / var(--surface-brand-secondary))
                         {
-                            "bg-[var(--surface-brand-secondary)] !text-white hover:bg-[var(--surface-brand-secondary)]/90 rounded-none":
+                            "bg-[var(--surface-brand-secondary)]! text-white! hover:bg-[var(--surface-brand-secondary)]/90! rounded-none":
                                 boton.tipo === "version_2",
                         },
                         // Version 3 (Medium Blue Theme)
                         {
-                            "bg-[var(--neutral-background-strong)] !text-white hover:bg-[var(--neutral-background-strong)]/90 rounded-none":
+                            "bg-[var(--neutral-background-strong)]! text-white! hover:bg-[var(--neutral-background-strong)]/90! rounded-none":
                                 boton.tipo === "version_3",
                         },
                         // Version 4 
                         {
-                            "bg-[var(--surface-brand-primary)] !text-white hover:bg-[var(--surface-brand-primary)]/90 rounded-none":
+                            "bg-[var(--surface-brand-primary)]! text-white! hover:bg-[var(--surface-brand-primary)]/90! rounded-none":
                                 boton.tipo === "version_4",
                         },
                         // Version 5 (White Solid)
                         {
-                            "bg-white text-[var(--surface-brand-primary)] hover:bg-white/90 rounded-none":
+                            "bg-white text-[var(--surface-brand-primary)]! hover:bg-white/90! rounded-none":
                                 boton.tipo === "version_5",
                         },
                         // Version 6 (Outline Blue Dark)
                         {
-                            "border-2 border-[var(--surface-brand-primary)] !text-[var(--surface-brand-primary)] hover:!bg-[var(--surface-brand-primary)] hover:!text-white rounded-none":
+                            "border-2 border-[var(--surface-brand-primary)]! text-[var(--surface-brand-primary)]! hover:!bg-[var(--surface-brand-primary)]! hover:text-white! rounded-none":
                                 boton.tipo === "version_6",
                         },
                     ]}
