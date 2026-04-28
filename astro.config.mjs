@@ -7,6 +7,7 @@ import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 import alpinejs from '@astrojs/alpinejs';
 import { loadEnv } from 'vite';
+import partytown from '@astrojs/partytown';
 
 const { PUBLIC_MULTILANGUAGE, PUBLIC_SITE_URL, PUBLIC_DEFAULT_LOCALE } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), "");
 
@@ -53,7 +54,21 @@ const config = {
     }),
     alpinejs({
       entrypoint: '/src/entrypoint.js' // <--- Agrega esto
-    })
+    }),
+    partytown({
+      config: {
+        forward: ["dataLayer.push"],
+        // ESTO ES LO QUE FALTA:
+        resolveUrl: function (url, location, type) {
+          if (type === 'script' && url.hostname === 'connect.facebook.net') {
+            const proxyUrl = new URL('https://cdn.builder.io/api/v1/proxy-api');
+            proxyUrl.searchParams.append('url', url.href);
+            return proxyUrl;
+          }
+          return url;
+        },
+      },
+    }),
   ],
   
 };

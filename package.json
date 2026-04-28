@@ -13,6 +13,7 @@
     "@astrojs/alpinejs": "^0.4.9",
     "@astrojs/cloudflare": "^12.6.11",
     "@astrojs/node": "^9.4.6",
+    "@astrojs/partytown": "^2.1.7",
     "@astrojs/sitemap": "^3.6.0",
     "@fancyapps/ui": "^6.1.7",
     "@fortawesome/fontawesome-free": "^6.5.2",
