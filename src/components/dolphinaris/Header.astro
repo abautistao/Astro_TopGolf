@@ -78,13 +78,13 @@ if (ctaButtonRaw) {
                         
                         {/* Submenu Dropdown */}
                         {link.dropdown_items && link.dropdown_items.length > 0 && (
-                            <div class="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-max min-w-[280px] bg-[var(--surface-brand-primary)] border-t-[4px] border-[var(--brand-interactive-base)] shadow-2xl z-50">
+                            <div class="absolute top-full left-0 opacity-0 invisible! group-hover:opacity-100! group-hover:visible! transition-all duration-300 w-max min-w-[280px] bg-[var(--surface-brand-primary)] border-t-[4px] border-[var(--brand-interactive-base)] shadow-2xl z-50">
                                 <ul class="flex! flex-col py-3">
                                     {link.dropdown_items.map((sublink: any) => (
                                         <li>
                                             <a
                                                 href={getLocalizedUrl(sublink.url, locale)}
-                                                class="block! px-6 py-4 text-[var(--neutral-text-inverted)]! font-roboto! text-[16px] font-normal hover:bg-[var(--accent-highlight-primary)] hover:text-white transition-colors"
+                                                class="block! px-6! py-4! text-[var(--neutral-text-inverted)]! font-roboto! text-[16px]! font-normal hover:bg-[var(--accent-highlight-primary)]! hover:text-white! transition-colors hover:no-underline!"
                                             >
                                                 {sublink.titulo}
                                             </a>
