@@ -12,6 +12,7 @@ const t = {
     date: isEn ? "DATE" : "FECHA",
     guests: isEn ? "GUESTS" : "INVITADOS",
     bookNow: isEn ? "BOOK NOW" : "RESERVAR AHORA",
+    urlBookNow: isEn ? "/booking" : "/es/reservar",
 };
 ---
 
@@ -19,7 +20,7 @@ const t = {
     <div class="w-full px-4 md:max-w-5xl md:mx-auto z-50 pointer-events-auto relative md:absolute md:top-0 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
         <!-- Container (Solid on Mobile, Glass on Desktop) -->
         <div class="w-full md:bg-white/10 md:backdrop-blur-md md:border md:border-white/20 md:p-6 md:shadow-2xl md:rounded-sm">
-            <form method="get" action="booking" class="grid grid-cols-2 md:flex md:flex-row gap-4 lg:gap-6 items-end booking-home-form">
+            <form method="get" action={t.urlBookNow} class="grid grid-cols-2 md:flex md:flex-row gap-4 lg:gap-6 items-end booking-home-form">
                 
                 <!-- Experience Dropdown -->
                 <div class="col-span-2 md:col-span-none md:w-1/4 text-left w-full">
@@ -29,9 +30,8 @@ const t = {
                     <div class="relative">
                         <select name="producto_id" class="w-full h-12.5 bg-white/90 text-(--surface-brand-primary) px-3 outline-none focus:ring-2 focus:ring-(--accent-highlight-primary) appearance-none cursor-pointer text-[15px] font-roboto">
                             <option value="">{t.placeholder_experience}</option>
-                            <option value="1">Dolphin Encounter</option>
-                            <option value="2">Dolphin Swim Program</option>
-                            <option value="3">Trainer for a Day</option>
+                            <option value="1119">Dolphin Friendly Encounter</option>
+                            <option value="1120">Dolphin Swim Experience</option>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-(--surface-brand-primary) text-sm pointer-events-none"></i>
                     </div>
