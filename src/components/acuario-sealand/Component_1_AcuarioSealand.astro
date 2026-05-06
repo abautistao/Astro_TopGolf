@@ -1,0 +1,59 @@
+---
+// src/components/acuario-sealand/Component_1_AcuarioSealand.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+// Asumiendo que Button se reutiliza de shared u otra carpeta, o se creará uno específico
+// import Button from "../shared/Button.astro";
+
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    descripcion?: string;
+    imagen?: any;
+}
+
+const { titulo, subtitulo, descripcion, imagen } = Astro.props;
+
+const strapiImageUrl =
+    getStrapiUrl(imagen) ||
+    "https://placehold.co/1920x1080/1a202c/ffffff?text=Acuario+Sealand+Placeholder";
+
+const descripcionHtml = descripcion ? stringifyRichText(descripcion) : "";
+---
+
+<section
+    class="relative z-10 w-screen relative left-1/2 -ml-[50vw] min-h-[600px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]"
+>
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+        <Image
+            src={strapiImageUrl}
+            alt={titulo || "Acuario Sealand"}
+            width={1920}
+            height={1080}
+            class="w-full h-full object-cover opacity-50"
+        />
+        <div class="absolute inset-0 bg-black/40"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 w-full max-w-[1440px] px-6 text-center text-[var(--neutral-text-inverted)]">
+        {subtitulo && (
+            <span class="block text-[20px] font-medium tracking-[0.1em] uppercase text-[var(--accent-highlight-primary)] font-[family-name:var(--font-secundaria)] mb-4">
+                {subtitulo}
+            </span>
+        )}
+        
+        {titulo && (
+            <h1 class="text-[32px] md:text-[60px] font-bold font-[family-name:var(--font-principal)] leading-tight mb-6">
+                {titulo}
+            </h1>
+        )}
+        
+        {descripcionHtml && (
+            <div class="text-[16px] md:text-[20px] font-normal font-[family-name:var(--font-secundaria)] max-w-3xl mx-auto">
+                <Fragment set:html={descripcionHtml} />
+            </div>
+        )}
+    </div>
+</section>

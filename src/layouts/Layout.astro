@@ -26,12 +26,53 @@ if (!isMultiLanguage) {
 }
 
 const setupData = await getSiteSetup(locale);
+
+// ============================================================================
+// TEMPORAL PARA DESARROLLO: Sobreescritura de colores por query param o .env
+// Permite ver el sitio como Acuario o Sealands sin cambiar Strapi.
+// Uso en navegador: http://localhost:4321/?theme=acuario o ?theme=sealands
+// ============================================================================
+const queryTheme = Astro.url.searchParams.get('theme');
+const devTheme = queryTheme || import.meta.env.PUBLIC_DEV_THEME;
+
+if (setupData && devTheme) {
+    if (devTheme === 'acuario') {
+        setupData.surface_brand_primary = '#003F7F';
+        setupData.surface_brand_secondary = '#005DA8';
+        setupData.neutral_background_strong = '#1A1A2E';
+        setupData.brand_interactive_base = '#F5A623';
+        setupData.neutral_text_inverted = '#FFFFFF';
+        setupData.accent_highlight_primary = '#00BFCF';
+        setupData.accent_highlight_secondary = '#0097C4';
+        setupData.accent_highlight_tertiary = '#FFFFFF';
+        setupData.neutral_background_subtle = '#F0F4F8';
+        setupData.accent_feedback_strong = '#F5A623';
+        setupData.feedback_positive_dark = '#003F7F';
+        setupData.feedback_positive_base = '#00BFCF';
+        setupData.feedback_info_background = '#005DA8';
+    } else if (devTheme === 'sealands') {
+        setupData.surface_brand_primary = '#0080BB';
+        setupData.surface_brand_secondary = '#4B9C38';
+        setupData.neutral_background_strong = '#0080BB';
+        setupData.brand_interactive_base = '#FD7E14';
+        setupData.neutral_text_inverted = '#FFFFFF';
+        setupData.accent_highlight_primary = '#17A4F3';
+        setupData.accent_highlight_secondary = '#4B9C38';
+        setupData.accent_highlight_tertiary = '#FFFFFF';
+        setupData.neutral_background_subtle = '#FFFFFF';
+        setupData.accent_feedback_strong = '#FD7E14';
+        setupData.feedback_positive_dark = '#0080BB';
+        setupData.feedback_positive_base = '#4B9C38';
+        setupData.feedback_info_background = '#17A4F3';
+    }
+}
+// ============================================================================
 const faviconUrl = setupData?.favicon
     ? getStrapiUrl(setupData.favicon)
     : "/favicon.svg";
 
 // Genera las declaraciones @font-face si los datos de tipografía existen.
-//const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
+const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
 
 // Define variables CSS personalizadas y otros estilos basados en los datos de configuración.
 const customStyles = setupData
@@ -58,7 +99,7 @@ const customStyles = setupData
     : "";
 
 // Combina los estilos de fuente y los estilos personalizados en una sola cadena.
-const allStyles = customStyles;
+const allStyles = fontStyles + customStyles;
 
 const defaultSeo = {
     metaTitle: title || "Astro Basics",
@@ -71,7 +112,7 @@ const seoProps = seo || defaultSeo;
 <!doctype html>
 <html lang={locale} class="scroll-smooth">
     <head>
-        { setupData.google_tag_manager_id && (
+        { setupData?.google_tag_manager_id && (
             <script is:inline>
                 window.dataLayer = window.dataLayer || [];
             </script>
@@ -94,7 +135,7 @@ const seoProps = seo || defaultSeo;
     </head>
     <body>
         
-        {setupData.google_tag_manager_id && (
+        {setupData?.google_tag_manager_id && (
             <noscript><iframe src=`https://www.googletagmanager.com/ns.html?id=${setupData.google_tag_manager_id}`
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         )}
