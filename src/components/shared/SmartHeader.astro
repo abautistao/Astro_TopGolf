@@ -4,6 +4,7 @@ import TopgolfHeader from "../topgolf/Header.astro";
 import TocaHeader from "../toca/Header.astro";
 import BluHeader from "../blu/Header.astro";
 import DolphinarisHeader from "../dolphinaris/Header.astro";
+import AcuarioSealandHeader from "../acuario-sealand/Header.astro";
 
 const { locale = "en", alternateLinks = {} } = Astro.props;
 // Fetch data directly here
@@ -30,6 +31,8 @@ if (
 
     if (componentName.includes("toca")) {
         Component = TocaHeader;
+    } else if (componentName.includes("acuario-sealand")) {
+        Component = AcuarioSealandHeader;
     } else if (componentName.includes("dolphinaris")) {
         Component = DolphinarisHeader;
     } else if (componentName.includes("blu")) {
