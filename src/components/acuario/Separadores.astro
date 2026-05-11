@@ -1,0 +1,27 @@
+---
+const { tipo = 'tipo_1', color_inicio, color_final } = Astro.props;
+
+// Usamos el color provisto por el CMS, o por defecto usamos los de Acuario
+// El usuario puede poner "var(--surface-brand-primary)", "#003F7F", etc.
+const startColor = color_inicio || 'var(--surface-brand-primary)';
+const endColor = color_final || 'var(--accent-highlight-primary)';
+---
+
+<div class="w-full overflow-hidden leading-none relative z-10" style={`background-color: ${startColor};`}>
+    
+    {tipo === 'tipo_1' && (
+        <svg class="block w-full h-[60px] md:h-[120px] lg:h-[180px]" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill={endColor} fill-opacity="0.33" d="M0,60 Q180,220 360,140 T720,140 T1080,140 T1440,140 L1440,320 L0,320 Z"></path>
+            <path fill={endColor} fill-opacity="0.66" d="M0,90 Q180,250 360,170 T720,170 T1080,170 T1440,170 L1440,320 L0,320 Z"></path>
+            <path fill={endColor} fill-opacity="1" d="M0,120 Q180,280 360,200 T720,200 T1080,200 T1440,200 L1440,320 L0,320 Z"></path>
+        </svg>
+    )}
+
+    {tipo === 'tipo_2' && (
+        <svg class="block w-full h-[60px] md:h-[120px] lg:h-[180px]" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Capa principal (Onda gruesa y sólida) -->
+            <path fill={endColor} d="M0,180 C 150,80 250,80 400,160 C 550,240 700,280 850,200 C 1000,120 1200,80 1440,160 L1440,320 L0,320 Z"></path>
+        </svg>
+    )}
+
+</div>
