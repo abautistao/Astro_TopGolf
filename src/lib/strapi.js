@@ -28,8 +28,30 @@ export async function getPageBySlug(slug, locale = 'en') {
     const blog = await fetchAPI(`/paginas?filters[slug][$eq]=blog&locale=${locale}&populate[ContenidoPagina][populate]=*&populate[SEO][populate]=*&pagination[pageSize]=100`);
     return blog?.[0];
   }
-  const pages = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&populate=*&pagination[pageSize]=100`);
-  return pages?.[0];
+  
+  // 1. Fetch base page data (first level populated)
+  const pagesResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&populate=*&pagination[pageSize]=100`);
+  const page = pagesResponse?.[0];
+
+  if (!page || !page.ContenidoPagina) return page;
+
+  // 2. Fetch deep populated data for specific complex components
+  // To fetch nested media inside the 'slides' repeatable component of 'componente-1-acuario'
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*`;
+  const deepDataResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
+  const deepPage = deepDataResponse?.[0];
+
+  // 3. Merge deep populated fields into the main object
+  if (deepPage && deepPage.ContenidoPagina) {
+    page.ContenidoPagina.forEach((component, i) => {
+      // Check if it's the specific component and the deep data exists
+      if (component.__component === 'secciones.componente-1-acuario' && deepPage.ContenidoPagina[i]) {
+        component.slides = deepPage.ContenidoPagina[i].slides;
+      }
+    });
+  }
+
+  return page;
 }
 
 
@@ -62,7 +84,22 @@ export async function getAllPromociones(locale = 'en') {
 }
 
 export async function getHeaderData(locale = 'en') {
-  return await fetchAPI(`/header?locale=${locale}&populate=*`);
+  const headerData = await fetchAPI(`/header?locale=${locale}&populate=*`);
+  
+  // To fetch nested sublinks inside dynamic zones (which populate=* does not cover natively in Strapi 5)
+  // We make a parallel query and merge the sublinks.
+  const variantsQuery = `populate[Variante][on][header.header-acuario][populate][links][populate]=sublinks&populate[Variante][on][header.header-dolphinaris][populate][links][populate]=sublinks&populate[Variante][on][header.header-blu][populate][links][populate]=dropdown_items`;
+  const variantsData = await fetchAPI(`/header?locale=${locale}&${variantsQuery}`);
+
+  if (headerData && variantsData && headerData.Variante && variantsData.Variante) {
+    headerData.Variante.forEach((component, i) => {
+      if (variantsData.Variante[i] && variantsData.Variante[i].links) {
+        component.links = variantsData.Variante[i].links;
+      }
+    });
+  }
+
+  return headerData;
 }
 
 export async function getFooterData(locale = 'en') {

@@ -38,25 +38,27 @@ if (ctaButtonRaw) {
 
 <header class="w-full relative z-50">
     <!-- Desktop Top Bar -->
-    <div class="hidden md:flex w-full h-12">
-        <div class="flex-grow bg-[var(--accent-highlight-primary)] flex items-center justify-between px-8">
-            <!-- Social Icons -->
-            <div class="flex items-center gap-4 text-white">
+    <div class="hidden md:flex w-full h-[40px]">
+        <!-- Social Icons -->
+        <div class="bg-[var(--accent-highlight-primary)] flex items-center justify-center px-8 min-w-[200px]">
+            <div class="flex items-center gap-5 text-white">
                 {social.map((item: any) => (
                     <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
-                        <i class={`${item.icono_clase} text-xl`}></i>
+                        <i class={`${item.icono_clase} text-sm`}></i>
                     </a>
                 ))}
             </div>
-            <!-- Horario / Text -->
-            <div class="text-white text-sm font-[family-name:var(--font-secundaria)] font-medium">
+        </div>
+        <!-- Horario / Text -->
+        <div class="flex-grow bg-[var(--accent-highlight-secondary)] flex items-center justify-center">
+            <div class="text-white text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
                 {textoHorario}
             </div>
         </div>
         <!-- Right Yellow Button Section -->
         {buttons.length > 0 && (
-            <div class="bg-[var(--brand-interactive-base)] flex items-center justify-center px-10 h-full cursor-pointer hover:brightness-110 transition-all">
-                <a href={buttons[0].url} class="text-[var(--neutral-background-strong)] font-[family-name:var(--font-principal)] font-bold text-lg uppercase">
+            <div class="bg-[var(--brand-interactive-base)] flex items-center justify-center px-12 h-full cursor-pointer hover:brightness-110 transition-all min-w-[250px]">
+                <a href={buttons[0].url} class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-sm md:text-[16px] tracking-wide uppercase">
                     {buttons[0].texto}
                 </a>
             </div>
@@ -65,14 +67,14 @@ if (ctaButtonRaw) {
 
     <!-- Main Navigation Bar -->
     <div class="bg-[var(--surface-brand-primary)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)]">
-        <div class="max-w-[1440px] mx-auto px-4 md:px-8 h-20 md:h-24 flex items-center justify-between">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8 h-20 md:h-[80px] flex items-center justify-between">
             <!-- Logo -->
             <a href="/" class="shrink-0 h-full py-2">
                 <!-- Desktop Logo -->
                 {logoUrl && (
                     <Image
                         src={logoUrl}
-                        alt="Acuario Sealand"
+                        alt="Acuario"
                         width={250}
                         height={100}
                         class="hidden md:block h-full w-auto object-contain"
@@ -82,7 +84,7 @@ if (ctaButtonRaw) {
                 {logoMobileUrl && (
                     <Image
                         src={logoMobileUrl}
-                        alt="Acuario Sealand Mobile"
+                        alt="Acuario Mobile"
                         width={200}
                         height={80}
                         class="block md:hidden h-full w-auto object-contain py-1"
@@ -91,28 +93,28 @@ if (ctaButtonRaw) {
             </a>
 
             <!-- Desktop Links -->
-            <nav class="hidden md:flex items-center gap-8 h-full">
+            <nav class="hidden md:flex items-center justify-end gap-6 h-full flex-grow">
                 {links.map((link: any) => (
                     <div class="relative group h-full flex items-center">
                         <a
                             href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
-                            class="flex items-center gap-2 text-white font-[family-name:var(--font-principal)] text-sm tracking-wide uppercase hover:text-[var(--accent-highlight-primary)] transition-colors"
+                            class="flex items-center gap-1.5 text-white font-[family-name:var(--font-principal)] text-[13px] font-bold tracking-wide uppercase hover:text-[var(--accent-highlight-primary)] transition-colors"
                         >
                             {link.texto}
                             {link.sublinks && link.sublinks.length > 0 && (
-                                <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
+                                <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300 group-hover:rotate-180 mt-0.5"></i>
                             )}
                         </a>
                         
                         <!-- Dropdown -->
                         {link.sublinks && link.sublinks.length > 0 && (
-                            <div class="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-max min-w-[240px] bg-[var(--surface-brand-primary)] border-t-4 border-[var(--accent-highlight-primary)] shadow-2xl z-50">
-                                <ul class="flex flex-col py-2">
+                            <div class="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-max min-w-[240px] bg-white border-t-4 border-[var(--brand-interactive-base)] shadow-2xl z-50">
+                                <ul class="flex flex-col">
                                     {link.sublinks.map((sublink: any) => (
                                         <li>
                                             <a
                                                 href={getLocalizedUrl(sublink.url, locale)}
-                                                class="block px-6 py-3 text-white font-[family-name:var(--font-secundaria)] text-sm hover:bg-[var(--accent-highlight-primary)] transition-colors"
+                                                class="block px-8 py-4 text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[15px] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--brand-interactive-base)] transition-colors"
                                             >
                                                 {sublink.texto}
                                             </a>
@@ -126,38 +128,38 @@ if (ctaButtonRaw) {
             </nav>
 
             <!-- Mobile Info & Hamburger -->
-            <div class="flex md:hidden items-center gap-4">
-                <span class="text-white text-xs font-[family-name:var(--font-secundaria)]">
+            <div class="flex md:hidden items-center gap-3">
+                <span class="text-white text-[10px] sm:text-xs font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase text-right max-w-[150px] leading-tight">
                     {textoHorario.split('/')[1]?.trim() || textoHorario} <!-- Shorten for mobile if contains / -->
                 </span>
-                <button id="mobile-menu-toggle" class="text-white text-3xl focus:outline-none">
-                    <i class="fa-solid fa-bars" id="menu-icon"></i>
-                    <i class="fa-solid fa-xmark hidden" id="close-icon"></i>
+                <button id="mobile-menu-toggle" class="text-white text-3xl focus:outline-none ml-1 w-8 h-8 flex items-center justify-center">
+                    <span id="menu-icon"><i class="fa-solid fa-bars"></i></span>
+                    <span id="close-icon" class="hidden"><i class="fa-solid fa-xmark"></i></span>
                 </button>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Mobile Overlay Menu (Placeholder for future expansion) -->
-<div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[84px] bg-[var(--surface-brand-primary)] z-40 px-6 py-8 overflow-y-auto">
-    <nav class="flex flex-col gap-6">
+<!-- Mobile Overlay Menu -->
+<div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[84px] bg-white z-40 overflow-y-auto flex-col pb-20 border-t-4 border-[var(--brand-interactive-base)]">
+    <nav class="flex flex-col">
         {links.map((link: any, index: number) => (
-            <div class="border-b border-white/10 pb-4">
-                <div class="flex items-center justify-between">
-                    <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class="text-white font-[family-name:var(--font-principal)] text-lg uppercase font-bold">
+            <div class="mobile-menu-group border-b border-gray-200">
+                <div class="mobile-menu-header flex items-center justify-between px-6 py-4 bg-white text-[var(--surface-brand-primary)] transition-colors duration-300">
+                    <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class="font-[family-name:var(--font-principal)] text-[15px] uppercase font-bold flex-grow text-inherit">
                         {link.texto}
                     </a>
                     {link.sublinks && link.sublinks.length > 0 && (
-                        <button class="text-white p-2 mobile-submenu-toggle focus:outline-none" data-target={`submenu-${index}`}>
+                        <button class="p-2 mobile-submenu-toggle focus:outline-none text-inherit" data-target={`submenu-${index}`}>
                             <i class="fa-solid fa-chevron-down transition-transform duration-300"></i>
                         </button>
                     )}
                 </div>
                 {link.sublinks && link.sublinks.length > 0 && (
-                    <div id={`submenu-${index}`} class="hidden flex-col pl-4 pt-4 gap-3">
+                    <div id={`submenu-${index}`} class="hidden flex-col bg-white">
                         {link.sublinks.map((sublink: any) => (
-                            <a href={getLocalizedUrl(sublink.url, locale)} class="text-white/80 font-[family-name:var(--font-secundaria)] text-base hover:text-white transition-colors">
+                            <a href={getLocalizedUrl(sublink.url, locale)} class="block px-8 py-3.5 text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[15px] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--brand-interactive-base)] transition-colors border-t border-gray-100">
                                 {sublink.texto}
                             </a>
                         ))}
@@ -166,8 +168,8 @@ if (ctaButtonRaw) {
             </div>
         ))}
         {buttons.length > 0 && (
-            <div class="pt-4">
-                <a href={buttons[0].url} class="block w-full text-center bg-[var(--brand-interactive-base)] text-[var(--neutral-background-strong)] font-[family-name:var(--font-principal)] font-bold text-lg py-4 rounded-md uppercase">
+            <div class="p-6 mt-4">
+                <a href={buttons[0].url} class="block w-full text-center bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-lg py-4 rounded-md uppercase shadow-sm">
                     {buttons[0].texto}
                 </a>
             </div>
@@ -185,11 +187,13 @@ if (ctaButtonRaw) {
         const isHidden = menu?.classList.contains("hidden");
         if (isHidden) {
             menu?.classList.remove("hidden");
+            menu?.classList.add("flex");
             menuIcon?.classList.add("hidden");
             closeIcon?.classList.remove("hidden");
             document.body.style.overflow = "hidden";
         } else {
             menu?.classList.add("hidden");
+            menu?.classList.remove("flex");
             menuIcon?.classList.remove("hidden");
             closeIcon?.classList.add("hidden");
             document.body.style.overflow = "";
@@ -205,14 +209,24 @@ if (ctaButtonRaw) {
             if (targetId) {
                 const submenu = document.getElementById(targetId);
                 const icon = btn.querySelector('i');
+                const header = btn.closest('.mobile-menu-header');
+                
                 if (submenu?.classList.contains('hidden')) {
                     submenu.classList.remove('hidden');
                     submenu.classList.add('flex');
                     if (icon) icon.style.transform = 'rotate(180deg)';
+                    
+                    // Apply expanded styles to header wrapper
+                    header?.classList.remove('bg-white', 'text-[var(--surface-brand-primary)]');
+                    header?.classList.add('bg-[var(--surface-brand-primary)]', 'text-[var(--brand-interactive-base)]');
                 } else {
                     submenu?.classList.add('hidden');
                     submenu?.classList.remove('flex');
                     if (icon) icon.style.transform = 'rotate(0deg)';
+                    
+                    // Revert styles on header wrapper
+                    header?.classList.add('bg-white', 'text-[var(--surface-brand-primary)]');
+                    header?.classList.remove('bg-[var(--surface-brand-primary)]', 'text-[var(--brand-interactive-base)]');
                 }
             }
         });

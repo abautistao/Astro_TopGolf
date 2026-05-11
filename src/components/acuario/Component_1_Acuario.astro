@@ -1,0 +1,220 @@
+---
+// src/components/acuario/Component_1_Acuario.astro
+import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+    ext?: string;
+}
+
+export interface SlideAcuario {
+    id: number;
+    fondo: StrapiMedia;
+    fondo_mobile?: StrapiMedia;
+    texto_principal?: string;
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    subtitulo?: string;
+    boton?: any[];
+}
+
+export interface Props {
+    slides?: SlideAcuario[];
+    // Legacy properties fallback
+    imagen?: StrapiMedia;
+    imagen_mobile?: StrapiMedia;
+    titulo?: string;
+    subtitulo?: string;
+    descripcion?: any;
+    boton?: any[];
+}
+
+const { slides = [], imagen, imagen_mobile, titulo, subtitulo, boton } = Astro.props;
+
+// Build final slides array with fallback for old data structure
+let finalSlides = slides && slides.length > 0 ? slides : [];
+
+if (finalSlides.length === 0 && (imagen || titulo)) {
+    finalSlides = [{
+        id: 9999,
+        fondo: imagen as StrapiMedia,
+        fondo_mobile: imagen_mobile as StrapiMedia,
+        texto_principal: titulo,
+        nivel_heading: "h1",
+        subtitulo: subtitulo,
+        boton: boton
+    }];
+}
+
+// Función auxiliar para determinar si un medio es video
+const isVideo = (url: string) => {
+    return url?.match(/\.(mp4|webm|ogg)$/i);
+};
+
+// Determinar nivel de heading para SEO (fallback a h1)
+const getHeadingTag = (nivel?: string) => {
+    const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+    return validTags.includes(nivel || "") ? nivel : "h1";
+};
+---
+
+<section class="relative z-10 w-screen left-1/2 -ml-[50vw] h-[600px] md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
+    {finalSlides && finalSlides.length > 0 ? (
+        <div class="swiper acuario-banner-swiper w-full h-full absolute inset-0">
+            <div class="swiper-wrapper h-full">
+                {finalSlides.map((slide) => {
+                    const bgUrl = getStrapiUrl(slide.fondo);
+                    const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
+                    const altText = slide.fondo?.alternativeText || "Acuario Inbursa";
+                    const isBgVideo = isVideo(bgUrl);
+                    
+                    const HeadingTag = getHeadingTag(slide.nivel_heading);
+                    
+                    return (
+                        <div class="swiper-slide relative w-full h-full">
+                            <!-- Background Media -->
+                            <div class="absolute inset-0 z-0 overflow-hidden w-full h-full">
+                                {isBgVideo ? (
+                                    <video
+                                        src={bgUrl}
+                                        autoplay
+                                        loop
+                                        muted
+                                        playsinline
+                                        class="absolute inset-0 w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <>
+                                        <!-- Mobile Image -->
+                                        <img
+                                            src={bgMobileUrl}
+                                            alt={altText}
+                                            class="md:hidden absolute inset-0 w-full h-full object-cover"
+                                        />
+                                        <!-- Desktop Image -->
+                                        <img
+                                            src={bgUrl}
+                                            alt={altText}
+                                            class="hidden md:block absolute inset-0 w-full h-full object-cover"
+                                        />
+                                    </>
+                                )}
+                                <!-- Overlay oscuro para que el texto resalte -->
+                                <div class="absolute inset-0 bg-black/40 z-10"></div>
+                            </div>
+
+                            <!-- Text Content (Optional) -->
+                            {slide.texto_principal && (
+                                <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
+                                    <div class="w-full max-w-[1440px] mx-auto px-6 flex flex-col items-center justify-center text-center text-[var(--neutral-text-inverted)] pointer-events-auto">
+                                        {slide.subtitulo && (
+                                            <span class="block text-[20px] font-medium tracking-[0.1em] uppercase text-[var(--accent-highlight-primary)] font-[family-name:var(--font-secundaria)] mb-4 drop-shadow-md">
+                                                {slide.subtitulo}
+                                            </span>
+                                        )}
+                                        
+                                        <HeadingTag class="text-[32px] md:text-[60px] font-bold font-[family-name:var(--font-principal)] leading-tight mb-6 uppercase drop-shadow-lg text-center">
+                                            {slide.texto_principal}
+                                        </HeadingTag>
+
+                                        {slide.boton && slide.boton.length > 0 && (
+                                            <div class="mt-4 flex justify-center">
+                                                <a href={slide.boton[0].url} class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-background-strong)] font-[family-name:var(--font-principal)] font-bold text-lg py-4 px-10 rounded-md uppercase hover:brightness-110 transition-all shadow-md">
+                                                    {slide.boton[0].texto}
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+            
+            {/* Controles del carrusel si hay más de 1 slide */}
+            {finalSlides.length > 1 && (
+                <>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev hidden md:flex"></div>
+                    <div class="swiper-button-next hidden md:flex"></div>
+                </>
+            )}
+        </div>
+    ) : (
+        <!-- Placeholder if no slides are added yet -->
+        <div class="text-white z-10 text-center relative w-full h-full flex flex-col justify-center items-center">
+             <div class="absolute inset-0 bg-black/40 z-0"></div>
+            <div class="relative z-10">
+                <h1 class="text-[32px] md:text-[60px] font-bold font-[family-name:var(--font-principal)] leading-tight mb-6 uppercase drop-shadow-lg">Banner Acuario</h1>
+                <p class="font-[family-name:var(--font-secundaria)] text-[20px]">Añade slides desde el panel de Strapi</p>
+            </div>
+        </div>
+    )}
+</section>
+
+<style>
+    .acuario-banner-swiper {
+        --swiper-theme-color: var(--brand-interactive-base);
+        --swiper-navigation-color: #ffffff;
+        --swiper-pagination-color: var(--brand-interactive-base);
+        --swiper-pagination-bullet-inactive-color: #ffffff;
+        --swiper-pagination-bullet-inactive-opacity: 0.5;
+    }
+    
+    .acuario-banner-swiper .swiper-button-next,
+    .acuario-banner-swiper .swiper-button-prev {
+        text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+    }
+</style>
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+    import "swiper/css";
+    import "swiper/css/navigation";
+    import "swiper/css/pagination";
+    import "swiper/css/effect-fade";
+
+    const initSwiper = () => {
+        const swiperContainer = document.querySelector(".acuario-banner-swiper");
+        if (!swiperContainer) return;
+
+        // Solo inicializar si hay más de 1 slide
+        const slides = swiperContainer.querySelectorAll(".swiper-slide");
+        if (slides.length <= 1) return;
+
+        try {
+            new Swiper(".acuario-banner-swiper", {
+                modules: [Navigation, Pagination, Autoplay, EffectFade],
+                effect: "fade",
+                fadeEffect: {
+                    crossFade: true
+                },
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+            });
+        } catch (e) {
+            console.error("Swiper init error:", e);
+        }
+    };
+
+    // Inicializar al cargar
+    document.addEventListener("DOMContentLoaded", initSwiper);
+    
+    // Astro View Transitions support
+    document.addEventListener("astro:page-load", initSwiper);
+</script>

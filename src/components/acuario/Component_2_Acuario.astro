@@ -1,0 +1,40 @@
+---
+const { texto_resaltado, texto_secundario, boton } = Astro.props;
+
+// Normalizamos el botón si viene como array o objeto singular
+const btn = Array.isArray(boton) ? boton[0] : boton;
+---
+
+<section class="w-full bg-[var(--accent-highlight-primary)] py-6 px-4 md:py-4 border-b border-[var(--accent-highlight-primary)] overflow-hidden">
+    <div class="w-full max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 px-2 md:px-10">
+        
+        <!-- Text Container -->
+        <div class="flex flex-col md:flex-row items-center justify-center text-center md:text-left text-[var(--surface-brand-primary)]">
+            {texto_resaltado && (
+                <h2 class="font-[family-name:var(--font-principal)] text-[24px] md:text-[32px] font-bold uppercase md:mr-2">
+                    {texto_resaltado}
+                </h2>
+            )}
+            {texto_secundario && (
+                <p class="font-[family-name:var(--font-principal)] text-[18px] md:text-[32px] font-bold uppercase mt-1 md:mt-0">
+                    <span class="border-b-[3px] border-[var(--surface-brand-primary)] md:border-none pb-1 md:pb-0">
+                        {texto_secundario}
+                    </span>
+                </p>
+            )}
+        </div>
+
+        <!-- Button Container -->
+        {btn && btn.texto && btn.url && (
+            <div class="mt-2 md:mt-0 flex-shrink-0">
+                <a 
+                    href={btn.url} 
+                    class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[16px] md:text-[18px] py-3 px-8 md:py-4 md:px-10 rounded-md uppercase hover:brightness-110 transition-all shadow-md text-center"
+                >
+                    {btn.texto}
+                </a>
+            </div>
+        )}
+        
+    </div>
+</section>
