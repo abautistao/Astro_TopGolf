@@ -1,0 +1,197 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+    ext?: string;
+}
+
+export interface Props {
+    subtitulo?: string;
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    imagen_decorativa?: StrapiMedia;
+    descripcion?: string;
+    boton?: any;
+    slides?: any[];
+}
+
+const {
+    subtitulo,
+    titulo,
+    etiqueta_titulo = "h2",
+    imagen_decorativa,
+    descripcion,
+    boton,
+    slides = []
+} = Astro.props;
+
+// Use the project's utility to render rich text
+const renderHtml = (content: string) => {
+    if (!content) return "";
+    return stringifyRichText(content);
+};
+
+const isVideo = (url: string) => {
+    return url?.match(/\.(mp4|webm|ogg)$/i);
+};
+
+// Normalize button
+const btn = Array.isArray(boton) ? boton[0] : boton;
+
+// Determine heading tag
+const HeadingTag = etiqueta_titulo;
+
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 md:py-20 overflow-hidden">
+    <div class="w-full max-w-[1440px] mx-auto px-6 md:px-10 flex flex-col md:flex-row gap-10 md:gap-16 items-center">
+        
+        <!-- Left Column: Content -->
+        <div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-10">
+            
+            {subtitulo && (
+                <span class="w-full text-center font-[family-name:var(--font-secundaria)] text-[var(--accent-highlight-primary)] text-[16px] md:text-[20px] font-medium tracking-[0.05em] uppercase mb-1">
+                    {subtitulo}
+                </span>
+            )}
+
+            {titulo && (
+                <HeadingTag class="w-full text-center font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] text-[32px] md:text-[48px] font-bold uppercase leading-tight mb-4">
+                    {titulo}
+                </HeadingTag>
+            )}
+
+            {imagen_decorativa && (
+                <div class="w-full mb-6 flex justify-center">
+                    <img 
+                        src={getStrapiUrl(imagen_decorativa)} 
+                        alt={imagen_decorativa.alternativeText || "Decoración Acuario"} 
+                        class="w-full max-w-[500px] h-auto object-contain"
+                    />
+                </div>
+            )}
+
+            {descripcion && (
+                <div 
+                    class="w-full text-justify md:text-justify font-[family-name:var(--font-secundaria)] text-[var(--neutral-text-inverted)] text-[16px] md:text-[18px] font-normal leading-relaxed mb-8 [&>p>strong]:font-bold [&>p>strong]:text-[var(--neutral-text-inverted)] [&>p]:mb-4 last:[&>p]:mb-0"
+                    set:html={renderHtml(descripcion)}
+                />
+            )}
+
+            {btn && btn.texto && btn.url && (
+                <div class="flex w-full justify-center mt-2">
+                    <a 
+                        href={btn.url} 
+                        style="width: fit-content; max-width: max-content; display: inline-flex;"
+                        class="items-center justify-center border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)] bg-[var(--surface-brand-primary)] md:bg-transparent font-[family-name:var(--font-principal)] font-bold text-[16px] py-3 px-10 rounded-[30px] uppercase hover:bg-[var(--neutral-text-inverted)] hover:text-[var(--surface-brand-primary)] transition-all text-center whitespace-nowrap"
+                    >
+                        {btn.texto}
+                    </a>
+                </div>
+            )}
+            
+        </div>
+
+        <!-- Right Column: Carousel -->
+        <div class="w-full md:w-1/2 relative rounded-lg md:rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-video z-10">
+            {slides && slides.length > 0 ? (
+                <div class="swiper acuario-componente-3-swiper w-full h-full absolute inset-0">
+                    <div class="swiper-wrapper h-full">
+                        {slides.map((slide) => {
+                            const bgUrl = getStrapiUrl(slide.fondo);
+                            const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
+                            const altText = slide.fondo?.alternativeText || "Acuario Media";
+                            const isBgVideo = isVideo(bgUrl);
+                            
+                            return (
+                                <div class="swiper-slide w-full h-full relative bg-black">
+                                    {isBgVideo ? (
+                                        <video
+                                            src={bgUrl}
+                                            autoplay
+                                            loop
+                                            muted
+                                            playsinline
+                                            class="absolute inset-0 w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <>
+                                            <img
+                                                src={bgMobileUrl}
+                                                alt={altText}
+                                                class="md:hidden absolute inset-0 w-full h-full object-cover"
+                                            />
+                                            <img
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="hidden md:block absolute inset-0 w-full h-full object-cover"
+                                            />
+                                        </>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {slides.length > 1 && (
+                        <div class="swiper-pagination"></div>
+                    )}
+                </div>
+            ) : (
+                <div class="w-full h-full flex items-center justify-center bg-black/20">
+                    <p class="text-white/50 font-[family-name:var(--font-secundaria)]">No media found</p>
+                </div>
+            )}
+        </div>
+        
+    </div>
+</section>
+
+<style>
+    /* Pagination styles for swiper to match the theme */
+    :global(.acuario-componente-3-swiper .swiper-pagination-bullet) {
+        background-color: var(--neutral-text-inverted);
+        opacity: 0.6;
+        width: 10px;
+        height: 10px;
+    }
+    :global(.acuario-componente-3-swiper .swiper-pagination-bullet-active) {
+        background-color: var(--brand-interactive-base);
+        opacity: 1;
+        width: 12px;
+        height: 12px;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    import 'swiper/css/effect-fade';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const swiperElements = document.querySelectorAll('.acuario-componente-3-swiper');
+        
+        swiperElements.forEach((el) => {
+            new Swiper(el as HTMLElement, {
+                modules: [Autoplay, Pagination, EffectFade],
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                loop: true,
+            });
+        });
+    });
+</script>

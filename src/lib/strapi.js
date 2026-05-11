@@ -36,8 +36,8 @@ export async function getPageBySlug(slug, locale = 'en') {
   if (!page || !page.ContenidoPagina) return page;
 
   // 2. Fetch deep populated data for specific complex components
-  // To fetch nested media inside the 'slides' repeatable component of 'componente-1-acuario'
-  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*`;
+  // To fetch nested media inside the 'slides' repeatable component of 'componente-1-acuario' and 'componente-3-acuario'
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*`;
   const deepDataResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
@@ -47,6 +47,11 @@ export async function getPageBySlug(slug, locale = 'en') {
       // Check if it's the specific component and the deep data exists
       if (component.__component === 'secciones.componente-1-acuario' && deepPage.ContenidoPagina[i]) {
         component.slides = deepPage.ContenidoPagina[i].slides;
+      }
+      if (component.__component === 'secciones.componente-3-acuario' && deepPage.ContenidoPagina[i]) {
+        component.slides = deepPage.ContenidoPagina[i].slides;
+        component.imagen_decorativa = deepPage.ContenidoPagina[i].imagen_decorativa;
+        component.boton = deepPage.ContenidoPagina[i].boton;
       }
     });
   }
