@@ -1,0 +1,142 @@
+---
+// src/components/toca/Component_4.astro
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import Button, { type Boton } from './elements/Button.astro';
+import Modal from './Modal.astro';
+
+
+interface Props {
+    titulo_seccion?: string;
+    titulo_header?: string;
+    precio: string;
+    descripcion: any;
+    boton_google: Boton;
+    boton_comment: Boton
+    claseSection?: string;
+}
+
+const {
+    titulo_seccion,
+    titulo_header,
+    precio = "Precio Ejemplo",
+    descripcion = [],
+    claseSection = "pt-5 pb-12 lg:py-12",
+    boton_google,
+    boton_comment
+} = Astro.props;
+
+const descripcionHtml = stringifyRichText(descripcion);
+---
+<section class={`trigger-anim-pricing w-full bg-(--surface-brand-primary) ${claseSection}`}>
+
+    <div class="anim-content max-w-350 mx-auto px-4 sm:px-6 flex flex-col items-center justify-center">
+
+        {titulo_seccion && (
+            <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-center font-bold text-2xl lg:text-2xl uppercase tracking-tighter text-[var(--accent-feedback-strong)] mb-8 lg:mb-10 title-extended">
+                {titulo_seccion}
+            </h2>
+        )}
+
+        <div class="w-full max-w-[682px] border-2 border-(--brand-interactive-base) flex flex-col shadow-lg">
+            {titulo_header && (
+                <div class="font-(family-name:--font-titling-gothic-fb-extended-bold) w-full bg-(--brand-interactive-base) py-1 text-center">
+                    <h2 class="font-bold text-(--surface-brand-primary) text-2xl uppercase">
+                        {titulo_header}
+                    </h2>
+                </div>
+            )}
+
+            <div class="bg-(--surface-brand-primary) p-6 lg:p-4 text-center flex flex-col items-center justify-center">
+
+                <h3 class="font-(family-name:--font-bebas-neue) font-bold text-(--accent-feedback-strong) text-4xl lg:text-5xl uppercase leading-none mb-3">
+                    {precio}
+                </h3>
+
+                <div class="font-(family-name:--font-sharp-sans-medium) text-(--brand-interactive-base) text-base lg:text-base font-medium mb-6 w-full px-2 leading-tight strapi-rich-text">
+                    <Fragment set:html={descripcionHtml} />
+                </div>
+
+                <div class="flex gap-5 scale-90 lg:scale-100">
+                    <Button
+                        botones={[boton_google]}
+                        clase="flex justify-center btn_google"
+                    />
+                    <Button
+                        botones={[boton_comment]}
+                        clase="flex justify-center btn_comment"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-pricing');
+        targets.forEach(target => observer.observe(target));
+
+        const btnGoogle = document.querySelector('.btn_google > a')
+        const btnComment = document.querySelector('.btn_comment > a')
+
+        btnGoogle?.addEventListener('click', function(e){
+            e.preventDefault()
+            const modalGoogle = document.getElementById('google')
+            modalGoogle?.showModal()
+
+        })
+
+        btnComment?.addEventListener('click', function(e){
+            e.preventDefault()
+            const modalComment = document.getElementById('comment')
+            modalComment?.showModal()
+
+        })
+    });
+</script>
+
+<style>
+    .strapi-rich-text :global(p) {
+        margin-bottom: 0;
+        color: inherit;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: bold;
+        color: inherit;
+    }
+
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .anim-content {
+        opacity: 0;
+    }
+
+    :global(.trigger-anim-pricing.is-visible) .anim-content {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+</style>

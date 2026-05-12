@@ -3,50 +3,85 @@ import { Image } from "astro:assets";
 import Button from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import Component_20 from './Component_20.astro'
 
+interface FormField {
+    id: number;
+    label: string;
+    placeholder?: string;
+    name: string;
+    inputType:
+        | "text"
+        | "select"
+        | "date"
+        | "time"
+        | "number"
+        | "email"
+        | "textarea"
+        | "radio"
+        | "checkbox"
+        | "file"
+        | "section_title";
+    gridWidth: "full" | "half";
+    options?: string; // Comma separated for select/radio
+    required?: boolean;
+}
 interface Props {
   id: string;
+  id_modal: string;
   titulo: string;
   descripcion: string;
-  boton: Boton
+  boton?: Boton
   image: string;
   delay?: number; // Tiempo en milisegundos para aparecer
+  show_form: boolean
+  form: FormField
 }
 
-const { id, image, titulo, descripcion, boton, delay = 3000 } = Astro.props;
+const { id, image, titulo, descripcion, boton, delay, show_form, form, id_modal } = Astro.props;
 
-const imageModal = getStrapiUrl(image) || "https://cms.tocasocial.com.mx/uploads/JERSEY_TOCA_MONTERREY_82590e28ce.jpg";
+const imageModal = getStrapiUrl(image);
 ---
 
 <dialog
-  id={id}
+  id={id_modal}
   data-delay={delay}
-  class="fixed inset-0 z-50 hidden h-fit w-[90%] max-w-2xl flex-col overflow-hidden border-none bg-transparent p-0 shadow-2xl outline-none open:flex md:flex-row backdrop:bg-black/70 backdrop:backdrop-blur-md animate-in fade-in zoom-in duration-500"
+  class="fixed inset-0 z-50 hidden h-fit w-[90%] max-w-2xl flex-col  overflow-hidden border-none bg-transparent p-0  outline-none open:flex md:flex-row backdrop:bg-black/70 backdrop:backdrop-blur-md animate-in fade-in zoom-in duration-500 md:justify-center"
+  class:list={[
+    { 'shadow-2xl': imageModal }
+  ]}
 >
-  <div class="relative h-auto w-full md:h-auto md:w-5/12">
-    <Image
-        src={imageModal}
-        alt="Playing"
-        class="w-full h-full object-cover"
-        inferSize={true}
-        loading="lazy"
-    />
-
-    <button
-      id={`close-${id}-mobile`}
-      class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 md:hidden"
-      aria-label="Cerrar"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-    </button>
-
-  </div>
+  {imageModal && (
+    <div class="relative h-auto w-full md:h-auto md:w-5/12">
+      <button
+        id={`close-${id_modal}-mobile`}
+        class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 md:hidden"
+        aria-label="Cerrar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+  
+      {imageModal && (
+        <Image
+            src={imageModal}
+            alt="Playing"
+            class="w-full h-full object-cover"
+            inferSize={true}
+            loading="lazy"
+        />
+      )}
+    </div>
+  )}
 
   <div class="relative flex w-full flex-col justify-center bg-[#fa8cff] p-6 md:p-10 md:w-7/12">
     
     <button
-      id={`close-${id}`}
-      class="absolute top-2 right-2 md:flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 hidden "
+      id={`close-${id_modal}`}
+      class="absolute top-2 right-2 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90"
+      class:list={[
+        {'hidden md:flex' : imageModal},
+        {'flex md:flex' : !imageModal}
+      ]}
       aria-label="Cerrar"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -58,26 +93,32 @@ const imageModal = getStrapiUrl(image) || "https://cms.tocasocial.com.mx/uploads
     
     <div class="mb-6 text-base leading-relaxed text-(--surface-brand-primary)" set:html={stringifyRichText(descripcion)}></div>
 
+    {show_form && form && (
+      <Component_20 id_form="comments" {...form} />
+    )}
+
     <div class="flex flex-col items-center gap-4 sm:flex-row">
-      <Button
-        botones={[boton]}
-        clase="flex flex-row gap-4 sm:gap-6 w-full justify-center items-center flex-wrap sm:flex-nowrap"
-    />
+      {boton && (
+        <Button
+            botones={[boton]}
+            clase="flex flex-row gap-4 sm:gap-6 w-full justify-center items-center flex-wrap sm:flex-nowrap"
+        />
+      )}
     </div>
   </div>
 </dialog>
 
-<script is:inline define:vars={{ id }}>
+<script is:inline define:vars={{ id_modal }}>
   // Esperar a que el DOM esté listo
   window.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById(id);
-    const closeBtn = document.getElementById(`close-${id}`);
-    const closeBtnMobile = document.getElementById(`close-${id}-mobile`);
-    const delay = parseInt(modal.getAttribute('data-delay') || "3000");
+    const modal = document.getElementById(id_modal);
+    const closeBtn = document.getElementById(`close-${id_modal}`);
+    const closeBtnMobile = document.getElementById(`close-${id_modal}-mobile`);
+    const delay = parseInt(modal.getAttribute('data-delay'));
 
     // 1. Mostrar automáticamente después del delay
     setTimeout(() => {
-      if (modal && !modal.open) {
+      if (modal && !modal.open && delay) {
         modal.showModal();
       }
     }, delay);

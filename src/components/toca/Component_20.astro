@@ -194,24 +194,28 @@ const getOptions = (optionsStr?: string) => {
 };
 ---
 
-<section class="w-full bg-[var(--surface-brand-primary)] py-16 lg:py-24">
+<section class="w-full bg-[var(--surface-brand-primary)] py-10">
     <div class="max-w-[800px] mx-auto px-4">
         <!-- Header -->
-        <div class="text-center mb-12 lg:mb-16">
-            { subtitulo && (
-                <h3
-                    class="text-[var(--accent-feedback-strong)]  text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
-                >
-                    {data.subtitulo}
-                </h3>
-            ) }
-            
-            <h2
-                class="text-[var(--accent-feedback-strong)]  text-xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-8"
-            >
-                {data.titulo}
-            </h2>
-        </div>
+        {(subtitulo || titulo) && (
+            <div class="text-center mb-12 lg:mb-16">
+                { subtitulo && (
+                    <h3
+                        class="text-[var(--accent-feedback-strong)]  text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
+                    >
+                        {data.subtitulo}
+                    </h3>
+                ) }
+                
+                {titulo && (
+                    <h2
+                        class="text-[var(--accent-feedback-strong)]  text-xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-8"
+                    >
+                        {data.titulo}
+                    </h2>
+                )}
+            </div>
+        )} 
 
         <!-- Form -->
         <form
