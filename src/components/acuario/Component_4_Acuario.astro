@@ -1,0 +1,286 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    subtitulo?: string;
+    etiqueta_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    tarjetas?: any[];
+    icono_decorativo_hover?: any;
+    color_fondo?: string;
+    imagen_decorativa_fondo?: any;
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    subtitulo,
+    etiqueta_subtitulo = "span",
+    tarjetas = [],
+    icono_decorativo_hover,
+    color_fondo,
+    imagen_decorativa_fondo
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+const SubtitleTag = etiqueta_subtitulo;
+
+const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+</svg>`;
+---
+
+<section 
+    class="w-full py-16 md:py-24 overflow-hidden relative" 
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: #D1EAFA;"}
+>
+    <!-- Elemento decorativo lateral (opcional según imagen) -->
+    {imagen_decorativa_fondo ? (
+        <div class="absolute left-0 top-0 h-full pointer-events-none opacity-40 hidden md:block w-32 md:w-48">
+            <img src={getStrapiUrl(imagen_decorativa_fondo)} alt="Decoración de fondo" class="w-full h-full object-contain object-left" />
+        </div>
+    ) : (
+        <div class="absolute left-0 top-0 w-24 h-full pointer-events-none opacity-20 md:opacity-40 hidden md:block">
+            <svg viewBox="0 0 100 800" class="w-full h-full">
+                <path d="M20,0 Q60,200 10,400 T30,800" stroke="var(--accent-highlight-primary)" stroke-width="2" fill="none" stroke-dasharray="10 10" />
+                <circle cx="15" cy="50" r="15" fill="#FFD700" />
+            </svg>
+        </div>
+    )}
+
+    <div class="max-w-[1440px] mx-auto px-6 relative z-10">
+        <div class="text-center mb-12 md:mb-16">
+            {titulo && (
+                <TitleTag class="font-[family-name:var(--font-principal)] text-[#003F7F] text-[32px] md:text-[48px] font-bold uppercase leading-tight">
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <SubtitleTag class="font-[family-name:var(--font-secundaria)] text-[#005DA8] text-[18px] md:text-[22px] font-medium uppercase mt-2 block tracking-wider">
+                    {subtitulo}
+                </SubtitleTag>
+            )}
+        </div>
+
+        <div class="swiper acuario-precios-swiper !overflow-visible" data-count={tarjetas.length}>
+            <div class={`swiper-wrapper ${tarjetas.length <= 3 ? 'lg:!grid lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] lg:gap-8 lg:w-full lg:justify-center' : ''}`}>
+                {tarjetas.map((item) => (
+                    <div class="swiper-slide h-auto group pb-10">
+                        <div 
+                            class="relative rounded-[30px] overflow-visible flex flex-col h-full border-[3px] border-transparent group-hover:border-[var(--accent-highlight-primary)] transition-all duration-300 shadow-xl group-hover:shadow-2xl group-hover:-translate-y-2"
+                            style={item.color_fondo_contenido ? `background-color: ${item.color_fondo_contenido}` : "background-color: #002A4E;"}
+                        >
+                            
+                            {/* Popular Badge */}
+                            {item.es_popular && (
+                                <div class="absolute top-0 right-0 z-20 overflow-hidden w-32 h-32 pointer-events-none">
+                                    <div class="absolute top-6 -right-8 bg-[#F5A623] text-[#002A4E] font-[family-name:var(--font-principal)] font-bold text-[10px] py-1 w-32 text-center transform rotate-45 shadow-md uppercase">
+                                        {item.texto_popular || 'MÁS POPULAR'}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Imagen */}
+                            <div class="relative aspect-video rounded-t-[27px] overflow-hidden">
+                                <img 
+                                    src={getStrapiUrl(item.imagen)} 
+                                    alt={item.titulo}
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#002A4E] via-transparent to-transparent opacity-60"></div>
+                            </div>                            {/* Contenido */}
+                            <div class="p-6 md:p-8 flex flex-col flex-grow items-center text-center text-white">
+                                <h3 class="font-[family-name:var(--font-principal)] text-[22px] md:text-[26px] font-bold uppercase mb-8 leading-tight min-h-[3rem] flex items-center justify-center">
+                                    {item.titulo}
+                                </h3>
+
+                                <div class="w-full mb-8">
+                                    {item.precio_regular && item.precio_en_linea ? (
+                                        /* Case 1: Both prices exist - 2 Column Grid */
+                                        <div class="grid grid-cols-2 gap-4 w-full">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-medium tracking-wider">
+                                                    {item.label_precio_regular || 'Precio Regular'}
+                                                </span>
+                                                <div class="flex items-center justify-center relative">
+                                                    <span class="text-[20px] md:text-[24px] font-bold opacity-100">
+                                                        {item.precio_regular?.split(' ')[0]}
+                                                    </span>
+                                                    <span class="text-[10px] font-bold uppercase ml-0.5 mt-1">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
+                                                    <div class="absolute w-full h-[2px] bg-white top-1/2 left-0 -rotate-1 opacity-100"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-bold tracking-wider">
+                                                    {item.label_precio_en_linea || 'Precio en Línea'}
+                                                </span>
+                                                <div class="flex items-baseline justify-center">
+                                                    <span class="text-[28px] md:text-[34px] font-bold">
+                                                        {item.precio_en_linea?.split(' ')[0]}
+                                                    </span>
+                                                    <span class="text-[12px] font-bold uppercase ml-1">{item.precio_en_linea?.split(' ')[1] || 'MXN'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        /* Case 2: Only one price exists - Centered */
+                                        <div class="flex flex-col items-center">
+                                            {item.precio_regular && (
+                                                <>
+                                                    <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-medium tracking-wider">
+                                                        {item.label_precio_regular || 'Precio Regular'}
+                                                    </span>
+                                                    <div class="flex items-center justify-center relative">
+                                                        <span class="text-[28px] md:text-[34px] font-bold">
+                                                            {item.precio_regular?.split(' ')[0]}
+                                                        </span>
+                                                        <span class="text-[12px] font-bold uppercase ml-1">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
+                                                        <div class="absolute w-full h-[2px] bg-white top-1/2 left-0 -rotate-1 opacity-100"></div>
+                                                    </div>
+                                                </>
+                                            )}
+                                            {item.precio_en_linea && (
+                                                <>
+                                                    <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-bold tracking-wider">
+                                                        {item.label_precio_en_linea || 'Precio en Línea'}
+                                                    </span>
+                                                    <div class="flex items-baseline justify-center">
+                                                        <span class="text-[28px] md:text-[34px] font-bold">
+                                                            {item.precio_en_linea?.split(' ')[0]}
+                                                        </span>
+                                                        <span class="text-[12px] font-bold uppercase ml-1">{item.precio_en_linea?.split(' ')[1] || 'MXN'}</span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {item.boton && (
+                                    <a 
+                                        href={item.boton.url} 
+                                        class="w-full py-3 md:py-4 bg-[#F5EC23] text-[#002A4E] font-[family-name:var(--font-principal)] font-black text-[20px] md:text-[24px] rounded-2xl uppercase hover:scale-105 transition-all shadow-lg mb-4"
+                                    >
+                                        {item.boton.texto || 'COMPRA AQUÍ'}
+                                    </a>
+                                )}
+
+                                {item.disclaimer && (
+                                    <p class="text-[10px] font-[family-name:var(--font-secundaria)] opacity-90 uppercase tracking-widest font-medium">
+                                        {item.disclaimer}
+                                    </p>
+                                )}
+                            </div>iv>
+
+                            {/* Estrella / Elemento Decorativo (Solo en Hover) */}
+                            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 pointer-events-none">
+                                {icono_decorativo_hover ? (
+                                    <div class="h-16 flex items-center justify-center">
+                                        <img src={getStrapiUrl(icono_decorativo_hover)} alt="Icono decorativo" class="h-full w-auto object-contain drop-shadow-lg" />
+                                    </div>
+                                ) : (
+                                    <div class="w-12 h-12 flex items-center justify-center bg-[var(--accent-highlight-primary)] text-white rounded-full shadow-lg border-4 border-[#002A4E]">
+                                        <Fragment set:html={defaultSvg} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            
+            {/* Controles Movil/Desktop */}
+            <div class={`flex items-center justify-center gap-6 mt-8 ${tarjetas.length <= 3 ? 'lg:hidden' : ''}`}>
+                <button class="swiper-btn-prev p-2 text-[#003F7F] hover:scale-110 transition-transform">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <div class="swiper-pagination-dots !static !w-auto flex gap-2"></div>
+                <button class="swiper-btn-next p-2 text-[#003F7F] hover:scale-110 transition-transform">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    :global(.acuario-precios-swiper .swiper-pagination-bullet) {
+        width: 10px;
+        height: 10px;
+        background: #003F7F;
+        opacity: 0.3;
+        transition: all 0.3s ease;
+    }
+    :global(.acuario-precios-swiper .swiper-pagination-bullet-active) {
+        opacity: 1;
+        transform: scale(1.3);
+        background: #003F7F;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+
+    function initPreciosSwiper() {
+        const sliders = document.querySelectorAll('.acuario-precios-swiper');
+        
+        sliders.forEach((sliderElement) => {
+            const count = parseInt(sliderElement.getAttribute('data-count') || '0', 10);
+            let swiperInstance: Swiper | null = null;
+
+            const handleResize = () => {
+                const isDesktop = window.innerWidth >= 1024;
+                const shouldBeCarousel = !isDesktop || count > 3;
+
+                if (shouldBeCarousel) {
+                    if (!swiperInstance) {
+                        swiperInstance = new Swiper(sliderElement as HTMLElement, {
+                            modules: [Navigation, Pagination, Autoplay],
+                            slidesPerView: 1, // En móvil solo 1 tarjeta
+                            centeredSlides: true,
+                            spaceBetween: 20,
+                            loop: count > 1, // Solo hacer loop si hay más de 1 tarjeta
+                            autoplay: count > 3 ? {
+                                delay: 3000, // 3 segundos
+                                disableOnInteraction: false,
+                            } : false,
+                            pagination: {
+                                el: sliderElement.parentElement?.querySelector('.swiper-pagination-dots') as HTMLElement,
+                                clickable: true,
+                            },
+                            navigation: {
+                                nextEl: sliderElement.parentElement?.querySelector('.swiper-btn-next') as HTMLElement,
+                                prevEl: sliderElement.parentElement?.querySelector('.swiper-btn-prev') as HTMLElement,
+                            },
+                            breakpoints: {
+                                640: {
+                                    slidesPerView: 1,
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    centeredSlides: false,
+                                    spaceBetween: 30,
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    if (swiperInstance) {
+                        swiperInstance.destroy(true, true);
+                        swiperInstance = null;
+                    }
+                }
+            };
+
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initPreciosSwiper);
+</script>

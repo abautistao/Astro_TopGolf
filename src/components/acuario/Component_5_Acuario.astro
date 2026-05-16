@@ -1,0 +1,110 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    subtitulo?: string;
+    etiqueta_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    descripcion?: string;
+    tarjetas?: any[];
+    color_fondo?: string;
+    imagen_decorativa_fondo?: any;
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    subtitulo,
+    etiqueta_subtitulo = "span",
+    descripcion,
+    tarjetas = [],
+    color_fondo,
+    imagen_decorativa_fondo
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+const SubtitleTag = etiqueta_subtitulo;
+---
+
+<section 
+    class="w-full py-16 md:py-24 relative overflow-hidden"
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: var(--surface-brand-secondary, #005DA8);"}
+>
+    <!-- Elemento Decorativo Fondo (Pingüinos) -->
+    {imagen_decorativa_fondo && (
+        <div class="absolute top-0 left-0 w-full max-w-[500px] opacity-30 pointer-events-none z-0">
+            <img 
+                src={getStrapiUrl(imagen_decorativa_fondo)} 
+                alt="Decoración de fondo" 
+                class="w-full h-auto object-contain object-top object-left" 
+            />
+        </div>
+    )}
+
+    <div class="max-w-[1440px] mx-auto px-6 relative z-10">
+        
+        <!-- Header de la sección -->
+        <div class="text-center mb-12 md:mb-16 text-white max-w-4xl mx-auto">
+            {titulo && (
+                <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[48px] font-bold uppercase leading-tight mb-2">
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <SubtitleTag class="font-[family-name:var(--font-principal)] text-[20px] md:text-[22px] font-medium uppercase text-[var(--accent-highlight-primary,#00BFCF)] tracking-wide">
+                    {subtitulo}
+                </SubtitleTag>
+            )}
+            {descripcion && (
+                <p class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-normal mt-4 opacity-90 max-w-2xl mx-auto">
+                    {descripcion}
+                </p>
+            )}
+        </div>
+
+        <!-- Grid de Tarjetas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {tarjetas.map((card) => {
+                return (
+                    <a 
+                        href={card.url || "#"} 
+                        class="group block relative rounded-[16px] overflow-hidden aspect-[4/3] md:aspect-[4/3] shadow-lg hover:shadow-2xl transition-all duration-300"
+                    >
+                        {/* Imagen de fondo de la tarjeta */}
+                        <img 
+                            src={getStrapiUrl(card.imagen)} 
+                            alt={card.titulo} 
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        
+                        {/* 1. ESTADO: ESCRITORIO NORMAL (Franja Blanca Inferior) */}
+                        <div class="hidden md:flex absolute bottom-0 left-0 w-full bg-white text-[#003F7F] py-4 px-4 items-center justify-center transition-opacity duration-300 z-30">
+                            <h3 class="font-[family-name:var(--font-principal)] text-[16px] lg:text-[18px] font-bold uppercase text-center m-0">
+                                {card.titulo}
+                            </h3>
+                        </div>
+
+                        {/* 2. ESTADO: ESCRITORIO HOVER (Oscuro + Lupa) */}
+                        <div class="hidden md:flex absolute inset-0 bg-[#002A4E]/70 flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pb-14">
+                            <i class="fas fa-search text-5xl mb-4"></i>
+                            <span class="font-[family-name:var(--font-principal)] font-bold text-[20px]">
+                                {card.texto_enlace || 'Leer más'}
+                            </span>
+                        </div>
+
+                        {/* 3. ESTADO: MÓVIL NORMAL (Oscuro + Título + Botón) */}
+                        <div class="md:hidden absolute inset-0 bg-[#002A4E]/60 flex flex-col items-center justify-center text-white p-6 z-20">
+                            <h3 class="font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase text-center mb-6 leading-tight drop-shadow-md">
+                                {card.titulo}
+                            </h3>
+                            <button class="bg-[var(--accent-highlight-primary,#00BFCF)] text-[#002A4E] font-[family-name:var(--font-secundaria)] font-bold text-[16px] py-3 px-8 rounded-full shadow-lg uppercase tracking-wider">
+                                {card.texto_enlace || 'LEER MÁS'}
+                            </button>
+                        </div>
+                    </a>
+                );
+            })}
+        </div>
+    </div>
+</section>

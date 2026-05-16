@@ -36,23 +36,44 @@ export async function getPageBySlug(slug, locale = 'en') {
   if (!page || !page.ContenidoPagina) return page;
 
   // 2. Fetch deep populated data for specific complex components
-  // To fetch nested media inside the 'slides' repeatable component of 'componente-1-acuario' and 'componente-3-acuario'
-  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*`;
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*`;
   const deepDataResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
-  // 3. Merge deep populated fields into the main object
+  // 3. Merge deep populated fields into the main object using ID matching
   if (deepPage && deepPage.ContenidoPagina) {
-    page.ContenidoPagina.forEach((component, i) => {
-      // Check if it's the specific component and the deep data exists
-      if (component.__component === 'secciones.componente-1-acuario' && deepPage.ContenidoPagina[i]) {
-        component.slides = deepPage.ContenidoPagina[i].slides;
+    page.ContenidoPagina = page.ContenidoPagina.map((component) => {
+      const deepComponent = deepPage.ContenidoPagina.find((c) => c.id === component.id);
+      
+      if (deepComponent) {
+        if (component.__component === 'secciones.componente-1-acuario') {
+          return { ...component, slides: deepComponent.slides };
+        }
+        if (component.__component === 'secciones.componente-3-acuario') {
+          return { 
+            ...component, 
+            slides: deepComponent.slides, 
+            imagen_decorativa: deepComponent.imagen_decorativa, 
+            boton: deepComponent.boton 
+          };
+        }
+        if (component.__component === 'secciones.componente-4-acuario') {
+          return { 
+            ...component, 
+            tarjetas: deepComponent.tarjetas,
+            imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo,
+            icono_decorativo_hover: deepComponent.icono_decorativo_hover
+          };
+        }
+        if (component.__component === 'secciones.componente-5-acuario') {
+          return { 
+            ...component, 
+            tarjetas: deepComponent.tarjetas,
+            imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo
+          };
+        }
       }
-      if (component.__component === 'secciones.componente-3-acuario' && deepPage.ContenidoPagina[i]) {
-        component.slides = deepPage.ContenidoPagina[i].slides;
-        component.imagen_decorativa = deepPage.ContenidoPagina[i].imagen_decorativa;
-        component.boton = deepPage.ContenidoPagina[i].boton;
-      }
+      return component;
     });
   }
 
