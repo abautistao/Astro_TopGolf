@@ -1,0 +1,216 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    color_fondo?: string;
+    imagen_decorativa_fondo?: any;
+    tarjeta_principal?: any;
+    tarjetas_secundarias?: any[];
+    boton?: any;
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    color_fondo,
+    imagen_decorativa_fondo,
+    tarjeta_principal,
+    tarjetas_secundarias = [],
+    boton
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+---
+
+<section 
+    class="w-full py-16 md:py-24 relative overflow-hidden bg-[#EAF5FC] z-10"
+    style={color_fondo ? `background-color: ${color_fondo}` : ""}
+>
+    <!-- Fondo decorativo predeterminado (Peces, burbujas y algas) si no hay imagen de fondo cargada -->
+    {!imagen_decorativa_fondo && (
+        <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 opacity-40">
+            <!-- Burbujas Bottom Left -->
+            <div class="absolute bottom-10 left-10 flex flex-col gap-4 items-center">
+                <span class="w-3 h-3 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-60 animate-bounce"></span>
+                <span class="w-5 h-5 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-40 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-70"></span>
+            </div>
+            
+            <!-- Burbujas Bottom Right -->
+            <div class="absolute bottom-20 right-16 flex flex-col-reverse gap-3 items-center">
+                <span class="w-4 h-4 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-50 animate-pulse"></span>
+                <span class="w-6 h-6 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-30 animate-bounce"></span>
+                <span class="w-3 h-3 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-60"></span>
+            </div>
+
+            <!-- Silueta Pez Top Left -->
+            <svg class="absolute top-10 left-[8%] w-32 h-auto text-[var(--feedback-positive-base,#29c2fa)]/30" viewBox="0 0 100 40" fill="currentColor">
+                <path d="M10,20 Q30,5 60,20 T90,20 Q80,25 70,20 Q60,35 40,20 Z" />
+                <path d="M90,20 L95,12 L92,20 L95,28 Z" />
+            </svg>
+
+            <!-- Silueta Pez Top Right -->
+            <svg class="absolute top-16 right-[12%] w-24 h-auto text-[var(--feedback-positive-base,#29c2fa)]/25" viewBox="0 0 100 40" fill="currentColor">
+                <path d="M10,20 Q30,5 60,20 T90,20 Q80,25 70,20 Q60,35 40,20 Z" />
+                <path d="M90,20 L95,12 L92,20 L95,28 Z" />
+            </svg>
+
+            <!-- Algas Bottom Left (Siluetas sutiles) -->
+            <svg class="absolute bottom-0 left-0 w-48 h-64 text-[var(--feedback-positive-base,#29c2fa)]/15" viewBox="0 0 100 200" fill="currentColor">
+                <path d="M10,200 Q20,150 5,100 T15,0 Q5,50 20,100 T10,200 Z" />
+                <path d="M40,200 Q50,130 35,80 T45,10 Q35,70 50,130 T40,200 Z" />
+                <path d="M70,200 Q60,160 75,110 T65,30 Q75,80 60,140 T70,200 Z" />
+            </svg>
+            
+            <!-- Algas Bottom Right (Siluetas sutiles) -->
+            <svg class="absolute bottom-0 right-0 w-48 h-64 text-[var(--feedback-positive-base,#29c2fa)]/15 scale-x-[-1]" viewBox="0 0 100 200" fill="currentColor">
+                <path d="M10,200 Q20,150 5,100 T15,0 Q5,50 20,100 T10,200 Z" />
+                <path d="M40,200 Q50,130 35,80 T45,10 Q35,70 50,130 T40,200 Z" />
+                <path d="M70,200 Q60,160 75,110 T65,30 Q75,80 60,140 T70,200 Z" />
+            </svg>
+        </div>
+    )}
+
+    <!-- Imagen de fondo decorativa si se carga desde Strapi -->
+    {imagen_decorativa_fondo && (
+        <img 
+            src={getStrapiUrl(imagen_decorativa_fondo)} 
+            alt="Fondo decorativo" 
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 opacity-80"
+        />
+    )}
+
+    <div class="max-w-[1440px] mx-auto px-6 relative z-10">
+        
+        <!-- Header de la sección (Centrado) -->
+        {titulo && (
+            <div class="mb-12 text-center">
+                <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[44px] font-bold leading-tight uppercase tracking-wide">
+                    {titulo}
+                </TitleTag>
+            </div>
+        )}
+
+        <!-- Layout 2 Columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+            
+            <!-- Columna 1: Tarjeta Principal (Ocupa 5/12 en desktop) -->
+            <div class="lg:col-span-5 flex">
+                {tarjeta_principal && (
+                    <a 
+                        href={tarjeta_principal.url || "#"} 
+                        class="flex flex-col w-full bg-[var(--feedback-positive-base,#29c2fa)] rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
+                    >
+                        <!-- Imagen (Top) -->
+                        <div class="aspect-[16/11] w-full overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)]">
+                            {tarjeta_principal.imagen && (
+                                <img 
+                                    src={getStrapiUrl(tarjeta_principal.imagen)} 
+                                    alt={tarjeta_principal.titulo} 
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                />
+                            )}
+                        </div>
+                        
+                        <!-- Contenido (Bottom) -->
+                        <div class="p-8 flex flex-col justify-between flex-grow text-[var(--surface-brand-primary,#003F7F)]">
+                            <div>
+                                <h3 class="font-[family-name:var(--font-principal)] text-[22px] md:text-[25px] font-bold leading-tight mb-4 group-hover:text-[var(--surface-brand-secondary,#005DA8)] transition-colors duration-300">
+                                    {tarjeta_principal.titulo}
+                                </h3>
+                                {tarjeta_principal.descripcion && (
+                                    <p class="font-[family-name:var(--font-secundaria)] text-[15px] md:text-[16px] font-normal leading-relaxed opacity-90 mb-6">
+                                        {tarjeta_principal.descripcion}
+                                    </p>
+                                )}
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-[var(--surface-brand-primary,#003F7F)]/20">
+                                <span class="font-[family-name:var(--font-secundaria)] text-[13px] md:text-[14px] font-bold opacity-80">
+                                    {tarjeta_principal.fecha || "Noticia"}
+                                </span>
+                                
+                                <div class="flex items-center gap-2 group/link">
+                                    <span class="font-[family-name:var(--font-principal)] text-[13px] md:text-[14px] font-bold uppercase tracking-wider">
+                                        Leer más
+                                    </span>
+                                    <div class="w-8 h-8 rounded-full bg-[var(--surface-brand-primary,#003F7F)] text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-[var(--surface-brand-secondary,#005DA8)] shadow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                )}
+            </div>
+
+            <!-- Columna 2: Tarjetas Secundarias y Botón (Ocupa 7/12 en desktop) -->
+            <div class="lg:col-span-7 flex flex-col justify-between gap-6">
+                <!-- Lista de tarjetas secundarias (Horizontal en desktop) -->
+                <div class="flex flex-col gap-6 flex-grow">
+                    {tarjetas_secundarias && tarjetas_secundarias.map((card) => (
+                        <a 
+                            href={card.url || "#"} 
+                            class="group flex flex-col md:flex-row bg-[var(--feedback-positive-base,#29c2fa)] rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 gap-6 w-full items-stretch"
+                        >
+                            <!-- Imagen (Izquierda en desktop, Arriba en mobile) -->
+                            <div class="w-full md:w-[42%] aspect-[16/10] md:aspect-auto md:min-h-[170px] rounded-[20px] overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)] shrink-0">
+                                {card.imagen && (
+                                    <img 
+                                        src={getStrapiUrl(card.imagen)} 
+                                        alt={card.titulo} 
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                    />
+                                )}
+                            </div>
+                            
+                            <!-- Contenido (Derecha) -->
+                            <div class="flex flex-col justify-between flex-grow text-[var(--surface-brand-primary,#003F7F)] py-1">
+                                <div>
+                                    <h4 class="font-[family-name:var(--font-principal)] text-[19px] md:text-[21px] font-bold leading-snug mb-3 group-hover:text-[var(--surface-brand-secondary,#005DA8)] transition-colors duration-300 line-clamp-2">
+                                        {card.titulo}
+                                    </h4>
+                                    {card.descripcion && (
+                                        <p class="font-[family-name:var(--font-secundaria)] text-[14px] md:text-[15px] font-normal leading-relaxed opacity-90 line-clamp-3 mb-4">
+                                            {card.descripcion}
+                                        </p>
+                                    )}
+                                </div>
+                                
+                                <div class="flex justify-end items-center mt-auto pt-2 border-t border-[var(--surface-brand-primary,#003F7F)]/10">
+                                    <div class="flex items-center gap-2 group/link">
+                                        <span class="font-[family-name:var(--font-principal)] text-[12px] md:text-[13px] font-bold uppercase tracking-wider">
+                                            Leer más
+                                        </span>
+                                        <div class="w-7 h-7 rounded-full bg-[var(--surface-brand-primary,#003F7F)] text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-[var(--surface-brand-secondary,#005DA8)] shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+
+                <!-- Botón de Otras Noticias (Centrado debajo de la columna 2) -->
+                {boton && (
+                    <div class="mt-4 flex justify-center w-full">
+                        <a 
+                            href={boton.url || "#"} 
+                            class="w-auto max-w-max inline-flex items-center justify-center border-[2.5px] border-[var(--surface-brand-primary,#003F7F)] hover:bg-[var(--surface-brand-primary,#003F7F)] hover:text-white text-[var(--surface-brand-primary,#003F7F)] font-[family-name:var(--font-principal)] font-bold text-[16px] py-3.5 px-12 rounded-[16px] shadow-sm hover:shadow-md transition-all duration-300 uppercase tracking-widest text-center shrink-0"
+                        >
+                            {boton.texto || "Otras noticias"}
+                        </a>
+                    </div>
+                )}
+            </div>
+
+        </div>
+    </div>
+</section>
