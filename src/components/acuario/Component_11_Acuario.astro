@@ -1,0 +1,167 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    galeria?: { data: any[] } | any[];
+}
+
+const {
+    color_fondo,
+    galeria,
+} = Astro.props;
+
+// Procesar galería (soporta Strapi v4/v5 format)
+const mediaFiles = galeria?.data || galeria || [];
+---
+
+<section 
+    class="w-full py-12 md:py-20 relative overflow-hidden" 
+    style={{ backgroundColor: color_fondo || "var(--neutral-background-subtle)" }}
+>
+    <div class="max-w-[1440px] mx-auto px-0 md:px-6 relative z-10">
+        
+        {mediaFiles.length > 0 && (
+            <div class="relative w-full">
+                {/* Contenedor principal del Swiper */}
+                <div class="acuario-carousel-swiper w-full pb-16 px-4 md:px-0">
+                    <div class="swiper-wrapper flex items-stretch">
+                        {mediaFiles.map((mediaFile: any) => {
+                            const url = getStrapiUrl(mediaFile);
+                            const isVideo = mediaFile?.attributes?.mime?.startsWith('video/') || mediaFile?.mime?.startsWith('video/');
+                            
+                            return (
+                                <div class="swiper-slide h-auto">
+                                    <div class="w-full h-[300px] md:h-[400px] lg:h-[450px] rounded-[24px] overflow-hidden shadow-md group relative">
+                                        {isVideo ? (
+                                            <video 
+                                                src={url} 
+                                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                                                autoplay 
+                                                loop 
+                                                muted 
+                                                playsinline
+                                            ></video>
+                                        ) : (
+                                            <img 
+                                                src={url} 
+                                                alt="Galería Acuario" 
+                                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            />
+                                        )}
+                                        {/* Overlay oscuro sutil para que luzcan premium */}
+                                        <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none"></div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Controles: Flechas y Paginación (Centrados abajo) */}
+                <div class="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-6 z-20">
+                    <button class="swiper-btn-prev text-[var(--surface-brand-primary)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none flex items-center justify-center cursor-pointer">
+                        <i class="fa-solid fa-angle-left text-2xl"></i>
+                    </button>
+                    
+                    <div class="swiper-pagination-custom flex items-center justify-center gap-2"></div>
+                    
+                    <button class="swiper-btn-next text-[var(--surface-brand-primary)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none flex items-center justify-center cursor-pointer">
+                        <i class="fa-solid fa-angle-right text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    /* Ajustes específicos para el efecto de 1.5 slides en móvil */
+    .acuario-carousel-swiper .swiper-slide {
+        transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    
+    /* Paginación de Swiper */
+    :global(.swiper-pagination-custom .swiper-pagination-bullet) {
+        background: var(--surface-brand-primary);
+        opacity: 0.6;
+        width: 10px;
+        height: 10px;
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    :global(.swiper-pagination-custom .swiper-pagination-bullet-active) {
+        background: var(--brand-interactive-base); /* Azul claro/Naranja dependiendo del tema */
+        opacity: 1;
+        width: 10px; /* Mantener redondo en este diseño */
+        transform: scale(1.2);
+    }
+    
+    /* Evitar selección de texto en flechas */
+    .swiper-btn-prev, .swiper-btn-next {
+        user-select: none;
+    }
+    .swiper-btn-prev.swiper-button-disabled, .swiper-btn-next.swiper-button-disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/navigation';
+    import 'swiper/css/pagination';
+
+    function initCarouselSwiper() {
+        const sliders = document.querySelectorAll('.acuario-carousel-swiper');
+        
+        sliders.forEach((sliderElement) => {
+            const container = sliderElement.closest('.relative.w-full');
+            const prevBtn = container?.querySelector('.swiper-btn-prev') as HTMLElement;
+            const nextBtn = container?.querySelector('.swiper-btn-next') as HTMLElement;
+            const paginationEl = container?.querySelector('.swiper-pagination-custom') as HTMLElement;
+
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Navigation, Pagination, Autoplay],
+                loop: true,
+                autoplay: {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                },
+                // Configuración central móvil
+                centeredSlides: true,
+                slidesPerView: 1.3, // Muestra la central y pedazos de las laterales
+                spaceBetween: 16,
+                pagination: {
+                    el: paginationEl,
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                },
+                breakpoints: {
+                    // Tablets (SM/MD)
+                    640: {
+                        slidesPerView: 2.2,
+                        centeredSlides: false,
+                        spaceBetween: 20,
+                    },
+                    // Desktop (LG)
+                    1024: {
+                        slidesPerView: 4,
+                        centeredSlides: false,
+                        spaceBetween: 24,
+                    }
+                }
+            });
+        });
+    }
+
+    // Inicializar al cargar el DOM y en ViewTransitions
+    document.addEventListener('DOMContentLoaded', initCarouselSwiper);
+    document.addEventListener('astro:page-load', initCarouselSwiper);
+</script>
