@@ -1,0 +1,246 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    subtitulo?: string;
+    etiqueta_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    color_fondo?: string;
+    imagen_fondo?: any;
+    tarjetas?: any[];
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    subtitulo,
+    etiqueta_subtitulo = "span",
+    color_fondo,
+    imagen_fondo,
+    tarjetas = []
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+const SubtitleTag = etiqueta_subtitulo;
+
+// Función para procesar texto de forma segura si viene en el RichText
+const renderMarkdown = (text) => {
+    if (!text) return "";
+    return stringifyRichText(text);
+};
+---
+
+<section 
+    class="w-full py-16 md:py-24 relative overflow-hidden z-10"
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: #EAF5FC"}
+>
+    <!-- Imagen de fondo decorativa si se carga desde Strapi -->
+    {imagen_fondo && (
+        <img 
+            src={getStrapiUrl(imagen_fondo)} 
+            alt="Fondo de sección" 
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+        />
+    )}
+
+    <!-- Olas/Decoración superior (Simulación si es necesario o puro CSS por theme) -->
+    <!-- (Puedes añadir tu SVG de transición aquí si lo requiere el diseño general) -->
+
+    <div class="max-w-[1280px] mx-auto px-4 md:px-6 relative z-10">
+        
+        <!-- Headers (Título y Subtítulo Centrados) -->
+        <div class="mb-14 text-center">
+            {titulo && (
+                <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide">
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <SubtitleTag class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[16px] md:text-[20px] font-medium mt-2 uppercase tracking-widest">
+                    {subtitulo}
+                </SubtitleTag>
+            )}
+        </div>
+
+        <!-- Grid de Tarjetas de Entradas/Paquetes -->
+        <div class="flex flex-col gap-8 md:gap-10">
+            {tarjetas && tarjetas.map((tarjeta) => (
+                <div class="relative w-full">
+                    
+                    <!-- Decoración "EL MÁS POPULAR" (Banner Superior) -->
+                    {tarjeta.es_destacado && (
+                        <div class="w-full bg-[var(--accent-highlight-secondary,#0097C4)] rounded-t-[20px] py-3 md:py-4 px-6 md:px-10 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6">
+                            <span class="font-[family-name:var(--font-principal)] text-white font-bold text-[22px] md:text-[28px] uppercase tracking-wide drop-shadow-sm text-center">
+                                {tarjeta.texto_destacado || "EL MÁS POPULAR"}
+                            </span>
+                            
+                            {/* Icono Cinta/Estrella Amarilla (Esquina Derecha) */}
+                            {tarjeta.icono_destacado && (
+                                <img 
+                                    src={getStrapiUrl(tarjeta.icono_destacado)} 
+                                    alt="Destacado"
+                                    class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] h-auto drop-shadow-md translate-y-[-10%]"
+                                />
+                            )}
+                            {!tarjeta.icono_destacado && (
+                                /* Fallback SVG de la cinta con estrella si no se sube imagen */
+                                <div class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] text-[var(--brand-interactive-base,#F5A623)] drop-shadow-md translate-y-[-5%]">
+                                    <svg viewBox="0 0 100 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10,0 L90,0 L90,100 L50,80 L10,100 Z" />
+                                        <circle cx="50" cy="40" r="25" fill="none" stroke="var(--surface-brand-primary,#003F7F)" stroke-width="4" />
+                                        <polygon points="50,22 56,34 69,36 60,45 62,58 50,52 38,58 40,45 31,36 44,34" fill="var(--surface-brand-primary,#003F7F)" />
+                                    </svg>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <!-- Contenedor Principal de la Tarjeta Blanca -->
+                    <!-- Si tiene destacado, añadimos paddingTop para que no se pegue al banner azul -->
+                    <div class={`w-full bg-white rounded-[24px] shadow-xl overflow-hidden flex flex-col md:flex-row items-stretch relative z-10 ${tarjeta.es_destacado ? "pt-4 md:pt-6" : ""}`}>
+                        
+                        <!-- Columna Izquierda: Imagen del Paquete -->
+                        <div class="w-full aspect-[16/10] md:aspect-auto md:w-[45%] lg:w-[40%] shrink-0 p-5 md:p-6 relative overflow-hidden">
+                            <div class="relative w-full h-full rounded-[20px] overflow-hidden min-h-[220px] md:min-h-full">
+                                {tarjeta.imagen ? (
+                                    <img 
+                                        src={getStrapiUrl(tarjeta.imagen)} 
+                                        alt={tarjeta.titulo} 
+                                        class="w-full h-full object-cover absolute inset-0"
+                                    />
+                                ) : (
+                                    <div class="w-full h-full bg-gray-200 animate-pulse absolute inset-0"></div>
+                                )}
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Contenido y Precios -->
+                        <div class="w-full md:w-[55%] lg:w-[60%] p-6 md:p-8 md:pl-0 flex flex-col">
+                            
+                            <!-- Título -->
+                            <h3 class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[24px] md:text-[32px] font-bold leading-tight uppercase tracking-wide mb-6 text-center">
+                                {tarjeta.titulo}
+                            </h3>
+
+                            <!-- Sección Precios (Cruzados) Centrada -->
+                            <div class="flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 mb-6 border-b-2 border-[var(--feedback-info-background,#EAF5FC)] pb-4">
+                                
+                                <!-- Precio Regular -->
+                                {tarjeta.precio_regular && (
+                                    <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
+                                        <!-- Label (Arriba en móvil, Izquierda en desktop) -->
+                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--accent-highlight-primary,#00BFCF)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
+                                            {tarjeta.label_precio_regular || "PRECIO REGULAR"}
+                                        </span>
+                                        <!-- Valor -->
+                                        <div class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] opacity-90 leading-none">
+                                            <span class="font-[family-name:var(--font-principal)] text-[18px] sm:text-[20px] md:text-[24px] font-black line-through decoration-[2px] mr-0.5">
+                                                $
+                                            </span>
+                                            <span class="font-[family-name:var(--font-principal)] text-[32px] sm:text-[34px] md:text-[44px] font-black line-through decoration-[2px]">
+                                                {tarjeta.precio_regular}
+                                            </span>
+                                            <span class="font-[family-name:var(--font-principal)] text-[13px] sm:text-[14px] md:text-[16px] font-black ml-1.5 uppercase">
+                                                MXN
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                <!-- Línea separadora vertical siempre visible -->
+                                {tarjeta.precio_regular && tarjeta.precio_en_linea && (
+                                    <div class="w-[2px] sm:w-[3px] h-8 bg-[var(--accent-highlight-primary,#00BFCF)] mx-2 sm:mx-3 self-center rounded-full"></div>
+                                )}
+
+                                <!-- Precio en Línea -->
+                                {tarjeta.precio_en_linea && (
+                                    <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
+                                        <!-- Label (Arriba en móvil, Izquierda en desktop) -->
+                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--accent-highlight-primary,#00BFCF)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
+                                            {tarjeta.label_precio_en_linea || "PRECIO EN LÍNEA"}
+                                        </span>
+                                        <!-- Valor -->
+                                        <div class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] leading-none">
+                                            <span class="font-[family-name:var(--font-principal)] text-[20px] sm:text-[22px] md:text-[26px] font-black mr-0.5">
+                                                $
+                                            </span>
+                                            <span class="font-[family-name:var(--font-principal)] text-[38px] sm:text-[40px] md:text-[50px] font-black">
+                                                {tarjeta.precio_en_linea}
+                                            </span>
+                                            <span class="font-[family-name:var(--font-principal)] text-[13px] sm:text-[14px] md:text-[16px] font-black ml-1.5 uppercase">
+                                                MXN
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <!-- "Incluye" Título Fijo -->
+                            <h4 class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[18px] md:text-[20px] font-bold mb-4">
+                                Incluye
+                            </h4>
+
+                            <!-- Contenido "Incluye" (Dos opciones: Lista de iconos O editor WYSIWYG) -->
+                            <div class="flex-grow mb-6">
+                                
+                                {/* Opción 1: Lista Dinámica de Iconos */}
+                                {tarjeta.lista_incluye && tarjeta.lista_incluye.length > 0 && (
+                                    <ul class="flex flex-col gap-3">
+                                        {tarjeta.lista_incluye.map((item) => (
+                                            <li class="flex items-start gap-3">
+                                                <!-- Icono Ticket/Pez (Renderiza la imagen de Strapi, o un SVG fallback) -->
+                                                <div class="w-6 h-6 shrink-0 mt-0.5 text-[var(--surface-brand-secondary,#1E8CA6)]">
+                                                    {item.icono ? (
+                                                        <img src={getStrapiUrl(item.icono)} alt="Icono" class="w-full h-full object-contain" />
+                                                    ) : (
+                                                        /* Ticket Fallback Icon */
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M21.5,10.8l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0L17,9l-2-2l0.6-0.6c0.4-0.4,0.4-1.1,0-1.5l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0 L11,3.2L9,1.2C8.6,0.8,8,0.8,7.6,1.2L5.2,3.6c-0.4,0.4-0.4,1.1,0,1.5L5.8,5.8l-2,2L3.2,7.2c-0.4-0.4-1.1-0.4-1.5,0L-0.7,9.6 c-0.4,0.4-0.4,1.1,0,1.5L1.7,13.5l2-2l-0.6-0.6c-0.4-0.4-0.4-1.1,0-1.5l2.4-2.4c0.4-0.4,1.1-0.4,1.5,0L7,7.6l2,2L8.4,10.2 c-0.4,0.4-0.4,1.1,0,1.5l2.4,2.4c0.4,0.4,1.1,0.4,1.5,0L13,13.4l2,2l0.6,0.6c0.4,0.4,0.4,1.1,0,1.5l-2.4,2.4 c-0.4,0.4-1.1,0.4-1.5,0l-2.4-2.4L7.8,20.2L9.2,21.6c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4c0.4-0.4,0.4-1.1,0-1.5l-0.6-0.6l2-2l0.6,0.6 c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4C21.9,11.9,21.9,11.2,21.5,10.8z"/>
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                                <span class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[15px] md:text-[16px] leading-snug font-medium">
+                                                    {item.texto}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+
+                                {/* Opción 2: RichText (WYSIWYG) */}
+                                {tarjeta.incluye_wysiwyg && (
+                                    <div 
+                                        class="prose prose-sm md:prose-base prose-p:font-[family-name:var(--font-secundaria)] prose-p:text-[var(--surface-brand-primary,#003F7F)] prose-p:text-[15px] md:prose-p:text-[16px] prose-p:font-medium prose-p:leading-snug max-w-none prose-li:text-[var(--surface-brand-primary,#003F7F)]"
+                                        set:html={renderMarkdown(tarjeta.incluye_wysiwyg)}
+                                    ></div>
+                                )}
+                            </div>
+
+                            <!-- Nota Legal Importante -->
+                            {tarjeta.nota_importante && (
+                                <p class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[11px] md:text-[12px] font-normal italic opacity-80 mb-4 text-center md:text-left">
+                                    {tarjeta.nota_importante}
+                                </p>
+                            )}
+
+                            <!-- Botón de Compra -->
+                            {tarjeta.boton && (
+                                <div class="w-full flex justify-center md:justify-start">
+                                    <a 
+                                        href={tarjeta.boton.url || "#"} 
+                                        class="w-full md:w-auto min-w-[280px] flex items-center justify-center bg-[var(--brand-interactive-base,#F5A623)] hover:bg-[var(--surface-brand-primary,#003F7F)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#F5A623)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#F5A623)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-3 md:py-4 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
+                                    >
+                                        {tarjeta.boton.texto || "COMPRA TU ENTRADA"}
+                                    </a>
+                                </div>
+                            )}
+
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+    </div>
+</section>
