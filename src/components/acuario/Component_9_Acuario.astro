@@ -1,0 +1,192 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    mostrar_tag_destacado?: boolean;
+    texto_tag_destacado?: string;
+    subtitulo?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: string;
+    titulo_lista?: string;
+    elementos_lista?: any[];
+    galeria?: { data: any[] } | any[];
+}
+
+const {
+    color_fondo,
+    mostrar_tag_destacado = true,
+    texto_tag_destacado = "EL MÁS POPULAR",
+    subtitulo,
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    titulo_lista,
+    elementos_lista = [],
+    galeria,
+} = Astro.props;
+
+const TitleTag = htmlTag;
+
+// Procesar galería (soporta Strapi v4/v5 format)
+const mediaFiles = galeria?.data || galeria || [];
+---
+
+<section 
+    class="w-full py-12 md:py-20 relative overflow-hidden" 
+    style={{ backgroundColor: color_fondo || "#E8F6FD" }}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            
+            {/* Columna Izquierda: Información */}
+            <div class="flex flex-col items-start w-full pr-0 lg:pr-8">
+                
+                {/* Etiqueta Destacada (Listón) */}
+                {mostrar_tag_destacado && texto_tag_destacado && (
+                    <div class="relative mb-6">
+                        <div class="bg-[var(--brand-interactive-base)] text-[#002A4E] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[22px] px-6 py-2 shadow-sm inline-block"
+                             style="clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%); padding-right: 2.5rem;">
+                            {texto_tag_destacado}
+                        </div>
+                    </div>
+                )}
+                
+                {/* Subtítulo */}
+                {subtitulo && (
+                    <span class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[16px] md:text-[20px] font-bold uppercase tracking-wide mb-2">
+                        {subtitulo}
+                    </span>
+                )}
+                
+                {/* Título Principal (Precio) */}
+                {titulo && (
+                    <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[40px] md:text-[56px] font-bold leading-tight mb-6 uppercase">
+                        {titulo}
+                    </TitleTag>
+                )}
+                
+                {/* Descripción (Rich Text / Blocks) */}
+                {descripcion && (
+                    <div 
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] font-normal leading-relaxed mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+                
+                {/* Título de Lista */}
+                {titulo_lista && (
+                    <h3 class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] font-bold mb-4">
+                        {titulo_lista}
+                    </h3>
+                )}
+                
+                {/* Elementos de Lista (Iconos FontAwesome) */}
+                {elementos_lista && elementos_lista.length > 0 && (
+                    <ul class="flex flex-col gap-3">
+                        {elementos_lista.map((item) => (
+                            <li class="flex items-start gap-3 font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] font-bold">
+                                {item.icono && (
+                                    <i class={`${item.icono} text-[var(--surface-brand-secondary)] mt-1 text-[20px] w-6 text-center shrink-0`}></i>
+                                )}
+                                <span>{item.texto}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
+            {/* Columna Derecha: Carrusel Swiper */}
+            <div class="w-full h-full relative flex items-center justify-center mt-10 lg:mt-0">
+                {mediaFiles.length > 0 && (
+                    <div class="acuario-galeria-swiper w-full h-[350px] md:h-[450px] lg:h-[500px] rounded-[24px] overflow-hidden shadow-2xl relative">
+                        <div class="swiper-wrapper h-full">
+                            {mediaFiles.map((mediaFile: any) => {
+                                const url = getStrapiUrl(mediaFile);
+                                const isVideo = mediaFile?.attributes?.mime?.startsWith('video/') || mediaFile?.mime?.startsWith('video/');
+                                
+                                return (
+                                    <div class="swiper-slide w-full h-full relative">
+                                        {isVideo ? (
+                                            <video 
+                                                src={url} 
+                                                class="w-full h-full object-cover" 
+                                                autoplay 
+                                                loop 
+                                                muted 
+                                                playsinline
+                                            ></video>
+                                        ) : (
+                                            <img 
+                                                src={url} 
+                                                alt="Galería" 
+                                                class="w-full h-full object-cover"
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        
+                        {mediaFiles.length > 1 && (
+                            <div class="swiper-pagination"></div>
+                        )}
+                    </div>
+                )}
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Estilos para customizar la paginación de Swiper */
+    :global(.acuario-galeria-swiper .swiper-pagination-bullet) {
+        background: white;
+        opacity: 0.6;
+        width: 10px;
+        height: 10px;
+        transition: all 0.3s ease;
+    }
+    :global(.acuario-galeria-swiper .swiper-pagination-bullet-active) {
+        background: var(--brand-interactive-base);
+        opacity: 1;
+        width: 24px;
+        border-radius: 5px;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    import 'swiper/css/effect-fade';
+
+    function initGaleriaSwiper() {
+        const sliders = document.querySelectorAll('.acuario-galeria-swiper');
+        
+        sliders.forEach((sliderElement) => {
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Pagination, Autoplay, EffectFade],
+                slidesPerView: 1,
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                loop: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initGaleriaSwiper);
+</script>
