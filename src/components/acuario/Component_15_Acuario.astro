@@ -1,0 +1,208 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    titulo_principal?: string;
+    subtitulo?: string;
+    etiqueta_texto?: string;
+    etiqueta_color?: string;
+    descripcion_inicial?: any;
+    imagen_principal?: any;
+    bloques_contenido?: any[];
+}
+
+const {
+    color_fondo,
+    titulo_principal,
+    subtitulo,
+    etiqueta_texto,
+    etiqueta_color,
+    descripcion_inicial,
+    imagen_principal,
+    bloques_contenido = [],
+} = Astro.props;
+
+const finalBgColor = color_fondo || "var(--neutral-background-subtle)";
+const hasMainMedia = imagen_principal?.data || imagen_principal;
+const mainMediaUrl = hasMainMedia ? getStrapiUrl(imagen_principal) : null;
+const isMainVideo = hasMainMedia && (imagen_principal?.data?.attributes?.mime?.startsWith('video/') || imagen_principal?.mime?.startsWith('video/'));
+
+// --- Generador de Tabla de Contenidos (ToC) ---
+const tocItems: { title: string, id: string, level: number }[] = [];
+const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+// Extraer H's de descripcion_inicial (Asumiendo formato Strapi JSON blocks)
+if (descripcion_inicial && Array.isArray(descripcion_inicial)) {
+    descripcion_inicial.forEach((block: any) => {
+        if (block.type === 'heading') {
+            const innerText = block.children?.map((c: any) => c.text || '').join('');
+            if (innerText && innerText.trim()) {
+                tocItems.push({
+                    title: innerText,
+                    id: slugify(innerText),
+                    level: block.level || 2
+                });
+            }
+        }
+    });
+}
+
+// Extraer títulos de los bloques repetibles
+if (bloques_contenido && bloques_contenido.length > 0) {
+    bloques_contenido.forEach((bloque: any) => {
+        if (bloque.titulo) {
+            tocItems.push({
+                title: bloque.titulo,
+                id: slugify(bloque.titulo),
+                level: 2 // Nivel base para los bloques
+            });
+        }
+    });
+}
+---
+
+<section class="w-full py-12 md:py-20 relative" style={{ backgroundColor: finalBgColor }}>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1440px]">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+            
+            {/* Columna Principal (Contenido) - 70% */}
+            <div class="lg:col-span-8 flex flex-col gap-10">
+                
+                {/* Cabecera del Post */}
+                <div class="flex flex-col gap-4">
+                    {titulo_principal && (
+                        <h1 class="font-[family-name:var(--font-principal)] text-[36px] md:text-[48px] font-bold uppercase text-[var(--surface-brand-primary)] leading-tight">
+                            {titulo_principal}
+                        </h1>
+                    )}
+                    {subtitulo && (
+                        <p class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)]">
+                            {subtitulo}
+                        </p>
+                    )}
+                    {etiqueta_texto && (
+                        <div class="mt-2">
+                            <span 
+                                class="inline-block px-4 py-1.5 rounded-full text-white text-xs md:text-sm font-bold uppercase tracking-wide"
+                                style={{ backgroundColor: etiqueta_color || "var(--brand-interactive-base)" }}
+                            >
+                                {etiqueta_texto}
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Descripción Inicial */}
+                {descripcion_inicial && (
+                    <div 
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] leading-relaxed space-y-6 [&>h2]:font-[family-name:var(--font-principal)] [&>h2]:text-[32px] [&>h2]:font-bold [&>h2]:text-[var(--accent-highlight-primary)] [&>h3]:font-[family-name:var(--font-principal)] [&>h3]:text-[24px] [&>h3]:font-bold [&>h3]:text-[var(--surface-brand-primary)]"
+                        set:html={stringifyRichText(descripcion_inicial)}
+                    />
+                )}
+
+                {/* Media Principal */}
+                {hasMainMedia && (
+                    <div class="w-full rounded-[24px] overflow-hidden shadow-lg mt-4 mb-4">
+                        {isMainVideo ? (
+                            <video src={mainMediaUrl} class="w-full h-auto object-cover" autoplay loop muted playsinline></video>
+                        ) : (
+                            <img src={mainMediaUrl} alt={titulo_principal || "Blog Media"} class="w-full h-auto object-cover" />
+                        )}
+                    </div>
+                )}
+
+                {/* Bloques Repetibles */}
+                {bloques_contenido.length > 0 && (
+                    <div class="flex flex-col gap-16 mt-8">
+                        {bloques_contenido.map((bloque: any) => {
+                            const bMedia = bloque.imagen?.data || bloque.imagen;
+                            const bMediaUrl = bMedia ? getStrapiUrl(bloque.imagen) : null;
+                            const bIsVideo = bMedia && (bloque.imagen?.data?.attributes?.mime?.startsWith('video/') || bloque.imagen?.mime?.startsWith('video/'));
+                            const disposicion = bloque.disposicion || '1_columna';
+                            
+                            let bContainerClasses = "flex flex-col gap-8 items-start";
+                            let bTextClasses = "w-full";
+                            let bMediaClasses = "w-full";
+
+                            if (disposicion === 'texto_izquierda' && bMedia) {
+                                bContainerClasses = "flex flex-col md:flex-row gap-8 items-center";
+                                bTextClasses = "w-full md:w-1/2";
+                                bMediaClasses = "w-full md:w-1/2";
+                            } else if (disposicion === 'texto_derecha' && bMedia) {
+                                bContainerClasses = "flex flex-col md:flex-row-reverse gap-8 items-center";
+                                bTextClasses = "w-full md:w-1/2";
+                                bMediaClasses = "w-full md:w-1/2";
+                            }
+
+                            return (
+                                <div class={bContainerClasses}>
+                                    <div class={bTextClasses}>
+                                        {bloque.titulo && (
+                                            <h2 id={slugify(bloque.titulo)} class="font-[family-name:var(--font-principal)] text-[28px] md:text-[32px] font-bold text-[var(--accent-highlight-primary)] mb-4">
+                                                {bloque.titulo}
+                                            </h2>
+                                        )}
+                                        {bloque.descripcion && (
+                                            <div 
+                                                class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] leading-relaxed space-y-4 [&>h3]:font-[family-name:var(--font-principal)] [&>h3]:text-[24px] [&>h3]:font-bold [&>h3]:text-[var(--surface-brand-primary)]"
+                                                set:html={stringifyRichText(bloque.descripcion)}
+                                            />
+                                        )}
+                                    </div>
+                                    {bMedia && (
+                                        <div class={`${bMediaClasses} rounded-[24px] overflow-hidden shadow-md`}>
+                                            {bIsVideo ? (
+                                                <video src={bMediaUrl} class="w-full h-auto object-cover" autoplay loop muted playsinline></video>
+                                            ) : (
+                                                <img src={bMediaUrl} alt={bloque.titulo || "Blog Bloque Media"} class="w-full h-auto object-cover" />
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+
+            {/* Columna Lateral (ToC) - 30% */}
+            {tocItems.length > 0 && (
+                <div class="lg:col-span-4 relative">
+                    <aside class="sticky top-28 bg-white shadow-xl flex flex-col overflow-hidden">
+                        <div class="bg-[var(--surface-brand-secondary)] text-white p-5">
+                            <h3 class="font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase tracking-wider m-0">
+                                CONTENIDO
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <ul class="space-y-5 font-[family-name:var(--font-secundaria)]">
+                                {tocItems.map(item => {
+                                    // Indentar visualmente H3, H4, etc.
+                                    const isSubLevel = item.level > 2;
+                                    return (
+                                        <li class={`${isSubLevel ? 'ml-4' : ''}`}>
+                                            <a href={`#${item.id}`} class="group flex items-start gap-3 text-[14px] md:text-[15px] text-[var(--surface-brand-primary)] hover:text-[var(--accent-highlight-primary)] transition-colors duration-300">
+                                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--surface-brand-primary)] group-hover:bg-[var(--accent-highlight-primary)] shrink-0 transition-colors duration-300"></span>
+                                                <span class="leading-snug">{item.title}</span>
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    </aside>
+                </div>
+            )}
+
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Suavizar el scroll al hacer clic en un link del ToC */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>

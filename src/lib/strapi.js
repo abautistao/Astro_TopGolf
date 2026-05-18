@@ -36,7 +36,7 @@ export async function getPageBySlug(slug, locale = 'en') {
   if (!page || !page.ContenidoPagina) return page;
 
   // 2. Fetch deep populated data for specific complex components
-  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*`;
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*`;
   const deepDataResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
@@ -82,6 +82,12 @@ export async function getPageBySlug(slug, locale = 'en') {
           return {
             ...component,
             galeria: deepComponent.galeria
+          };
+        }
+        if (component.__component === 'secciones.componente-15-acuario') {
+          return {
+            ...component,
+            bloques_contenido: deepComponent.bloques_contenido
           };
         }
       }
@@ -130,7 +136,7 @@ export async function getPaseBySlug(slug, locale = 'en') {
   if (!page || !page.ContenidoPagina) return page;
 
   // Fetch deep populated data for specific complex components
-  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][elementos_lista][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-10-acuario][populate][acordeones][populate]=*&populate[ContenidoPagina][on][secciones.componente-11-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*`;
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][elementos_lista][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-10-acuario][populate][acordeones][populate]=*&populate[ContenidoPagina][on][secciones.componente-11-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*`;
   const deepDataResponse = await fetchAPI(`/pases?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
@@ -149,6 +155,7 @@ export async function getPaseBySlug(slug, locale = 'en') {
         if (component.__component === 'secciones.componente-11-acuario') return { ...component, galeria: deepComponent.galeria };
         if (component.__component === 'secciones.componente-12-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
         if (component.__component === 'secciones.componente-13-acuario') return { ...component, galeria: deepComponent.galeria };
+        if (component.__component === 'secciones.componente-15-acuario') return { ...component, bloques_contenido: deepComponent.bloques_contenido };
       }
       return component;
     });
@@ -280,7 +287,9 @@ export const stringifyRichText = (richText) => {
         const content = processChildren(block.children);
         return `<p>${content || '<br/>'}</p>`;
       case 'heading':
-        return `<h${block.level}>${processChildren(block.children)}</h${block.level}>`;
+        const innerText = block.children.map(c => c.text || '').join('');
+        const id = innerText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        return `<h${block.level} id="${id}">${processChildren(block.children)}</h${block.level}>`;
       case 'list':
         const tag = block.format === 'ordered' ? 'ol' : 'ul';
         const items = block.children.map(item => `<li>${processChildren(item.children)}</li>`).join('');
