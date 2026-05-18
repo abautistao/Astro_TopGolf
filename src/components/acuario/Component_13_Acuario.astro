@@ -1,0 +1,204 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    color_fondo?: string;
+    imagen_fondo?: any;
+    galeria?: { data: any[] } | any[];
+}
+
+const {
+    titulo,
+    subtitulo,
+    htmlTag = "h2",
+    descripcion,
+    color_fondo,
+    imagen_fondo,
+    galeria,
+} = Astro.props;
+
+const TitleTag = htmlTag;
+const finalBgColor = color_fondo || "var(--surface-brand-primary)";
+const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
+
+// Procesar galería
+const mediaFiles = galeria?.data || galeria || [];
+---
+
+<section 
+    class="w-full py-16 md:py-24 relative overflow-hidden" 
+    style={{
+        backgroundColor: finalBgColor,
+        backgroundImage: bgImageStyle,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+    }}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-[1440px]">
+        
+        {/* Cabecera: Título, Subtítulo y Descripción */}
+        <div class="text-center max-w-4xl mx-auto mb-12 md:mb-16">
+            {titulo && (
+                <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-2">
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <p class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)] mb-6">
+                    {subtitulo}
+                </p>
+            )}
+            {descripcion && (
+                <div 
+                    class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-white leading-relaxed opacity-90 [&>p]:mb-4"
+                    set:html={stringifyRichText(descripcion)}
+                />
+            )}
+        </div>
+
+        {/* Carrusel de Imágenes */}
+        {mediaFiles.length > 0 && (
+            <div class="relative w-full px-0 md:px-10">
+                <div class="componente-13-swiper w-full overflow-hidden pb-12" data-total={mediaFiles.length}>
+                    <div class="swiper-wrapper flex items-stretch">
+                        {mediaFiles.map((mediaFile: any) => {
+                            const url = getStrapiUrl(mediaFile);
+                            const isVideo = mediaFile?.attributes?.mime?.startsWith('video/') || mediaFile?.mime?.startsWith('video/');
+                            
+                            return (
+                                <div class="swiper-slide h-auto">
+                                    <div class="w-full h-[300px] md:h-[400px] rounded-[24px] overflow-hidden shadow-lg relative group">
+                                        {isVideo ? (
+                                            <video 
+                                                src={url} 
+                                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                                autoplay 
+                                                loop 
+                                                muted 
+                                                playsinline
+                                            ></video>
+                                        ) : (
+                                            <img 
+                                                src={url} 
+                                                alt={mediaFile?.attributes?.alternativeText || "Galería Acuario"} 
+                                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                        )}
+                                        {/* Overlay para contraste si es necesario */}
+                                        <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none"></div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Controles de Navegación y Paginación */}
+                <div class="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-6 z-20">
+                    <button class="comp13-btn-prev text-white hover:text-[var(--accent-highlight-primary)] transition-colors duration-300 focus:outline-none flex items-center justify-center cursor-pointer">
+                        <i class="fa-solid fa-angle-left text-2xl md:text-3xl"></i>
+                    </button>
+                    
+                    <div class="comp13-pagination flex items-center justify-center gap-2"></div>
+                    
+                    <button class="comp13-btn-next text-white hover:text-[var(--accent-highlight-primary)] transition-colors duration-300 focus:outline-none flex items-center justify-center cursor-pointer">
+                        <i class="fa-solid fa-angle-right text-2xl md:text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    .componente-13-swiper .swiper-slide {
+        transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    
+    /* Estilos de la Paginación */
+    :global(.comp13-pagination .swiper-pagination-bullet) {
+        background: #ffffff;
+        opacity: 0.5;
+        width: 10px;
+        height: 10px;
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    :global(.comp13-pagination .swiper-pagination-bullet-active) {
+        background: var(--accent-highlight-primary);
+        opacity: 1;
+        transform: scale(1.3);
+    }
+    
+    /* Evitar selección de texto en botones */
+    .comp13-btn-prev, .comp13-btn-next {
+        user-select: none;
+    }
+    .comp13-btn-prev.swiper-button-disabled, .comp13-btn-next.swiper-button-disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/navigation';
+    import 'swiper/css/pagination';
+
+    function initComp13Swiper() {
+        const sliders = document.querySelectorAll('.componente-13-swiper');
+        
+        sliders.forEach((sliderElement) => {
+            const container = sliderElement.closest('.relative.w-full');
+            const prevBtn = container?.querySelector('.comp13-btn-prev') as HTMLElement;
+            const nextBtn = container?.querySelector('.comp13-btn-next') as HTMLElement;
+            const paginationEl = container?.querySelector('.comp13-pagination') as HTMLElement;
+            
+            const totalSlides = parseInt(sliderElement.getAttribute('data-total') || '0', 10);
+            // Solo auto-play y loop si hay más de 3 imágenes
+            const shouldAutoplay = totalSlides > 3;
+
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Navigation, Pagination, Autoplay],
+                loop: shouldAutoplay,
+                autoplay: shouldAutoplay ? {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                } : false,
+                slidesPerView: 1, // Móvil: 1 imagen
+                spaceBetween: 16,
+                pagination: {
+                    el: paginationEl,
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                },
+                breakpoints: {
+                    // Tablets (SM/MD)
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    // Desktop (LG)
+                    1024: {
+                        slidesPerView: 3, // Desktop: 3 imágenes
+                        spaceBetween: 24,
+                    }
+                }
+            });
+        });
+    }
+
+    // Inicializar al cargar el DOM y en ViewTransitions
+    document.addEventListener('DOMContentLoaded', initComp13Swiper);
+    document.addEventListener('astro:page-load', initComp13Swiper);
+</script>

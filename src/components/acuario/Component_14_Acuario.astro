@@ -1,0 +1,111 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    disposicion?: "texto_izquierda" | "texto_derecha" | "solo_texto_centrado";
+    titulo?: string;
+    subtitulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    media?: any;
+    color_fondo?: string;
+    imagen_fondo?: any;
+}
+
+const {
+    disposicion = "texto_izquierda",
+    titulo,
+    subtitulo,
+    htmlTag = "h2",
+    descripcion,
+    media,
+    color_fondo,
+    imagen_fondo,
+} = Astro.props;
+
+const TitleTag = htmlTag;
+const finalBgColor = color_fondo || "var(--neutral-background-subtle)";
+const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
+
+const hasMedia = media?.data || media;
+const mediaUrl = hasMedia ? getStrapiUrl(media) : null;
+const isVideo = hasMedia && (media?.data?.attributes?.mime?.startsWith('video/') || media?.mime?.startsWith('video/'));
+
+// Determinar las clases de flexbox basado en la disposición
+let containerClasses = "flex flex-col gap-10 lg:gap-16 items-center ";
+let textContainerClasses = "w-full ";
+let mediaContainerClasses = "w-full lg:w-1/2 relative ";
+
+if (disposicion === "texto_izquierda") {
+    containerClasses += "lg:flex-row";
+    textContainerClasses += "lg:w-1/2";
+} else if (disposicion === "texto_derecha") {
+    containerClasses += "lg:flex-row-reverse";
+    textContainerClasses += "lg:w-1/2";
+} else {
+    // solo_texto_centrado
+    containerClasses = "flex flex-col items-center justify-center";
+    textContainerClasses = "w-full max-w-4xl text-center mx-auto";
+    mediaContainerClasses = "hidden"; // No se muestra media
+}
+---
+
+<section 
+    class="w-full py-16 md:py-24 relative overflow-hidden" 
+    style={{
+        backgroundColor: finalBgColor,
+        backgroundImage: bgImageStyle,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+    }}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-[1440px]">
+        <div class={containerClasses}>
+            
+            {/* Columna de Texto */}
+            <div class={textContainerClasses}>
+                {titulo && (
+                    <TitleTag class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-[var(--surface-brand-primary)] mb-2 leading-tight ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}>
+                        {titulo}
+                    </TitleTag>
+                )}
+                {subtitulo && (
+                    <p class={`font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)] mb-6 ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}>
+                        {subtitulo}
+                    </p>
+                )}
+                {descripcion && (
+                    <div 
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] leading-relaxed [&>p]:mb-4"
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+            </div>
+
+            {/* Columna de Media */}
+            {hasMedia && disposicion !== "solo_texto_centrado" && (
+                <div class={mediaContainerClasses}>
+                    <div class="w-full h-auto min-h-[300px] md:min-h-[450px] rounded-[24px] overflow-hidden shadow-2xl relative">
+                        {isVideo ? (
+                            <video 
+                                src={mediaUrl} 
+                                class="absolute inset-0 w-full h-full object-cover" 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline
+                            ></video>
+                        ) : (
+                            <img 
+                                src={mediaUrl} 
+                                alt={titulo || "Media Acuario"} 
+                                class="absolute inset-0 w-full h-full object-cover"
+                            />
+                        )}
+                    </div>
+                </div>
+            )}
+            
+        </div>
+    </div>
+</section>
