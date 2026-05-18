@@ -1,0 +1,87 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    color_fondo?: string;
+    imagen_fondo?: any;
+    tarjetas?: any[];
+}
+
+const {
+    titulo,
+    subtitulo,
+    htmlTag = "h2",
+    color_fondo,
+    imagen_fondo,
+    tarjetas = [],
+} = Astro.props;
+
+const TitleTag = htmlTag;
+const finalBgColor = color_fondo || "var(--surface-brand-primary)";
+const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
+---
+
+<section 
+    class="w-full py-16 md:py-24 relative overflow-hidden" 
+    style={{
+        backgroundColor: finalBgColor,
+        backgroundImage: bgImageStyle,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+    }}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-6xl">
+        
+        {/* Cabecera: Título y Subtítulo */}
+        {(titulo || subtitulo) && (
+            <div class="text-center mb-12 md:mb-16">
+                {titulo && (
+                    <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-2">
+                        {titulo}
+                    </TitleTag>
+                )}
+                {subtitulo && (
+                    <p class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)]">
+                        {subtitulo}
+                    </p>
+                )}
+            </div>
+        )}
+
+        {/* Cuadrícula de Tarjetas */}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12">
+            {tarjetas.map((item) => (
+                <div class="flex flex-col items-center text-center group">
+                    {/* Icono SVG o Imagen */}
+                    {item.icono && (
+                        <div class="w-16 h-16 md:w-20 md:h-20 mb-6 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                            <img 
+                                src={getStrapiUrl(item.icono)} 
+                                alt={item.titulo || "Icono"} 
+                                class="w-full h-full object-contain"
+                            />
+                        </div>
+                    )}
+                    
+                    {/* Título de Tarjeta */}
+                    {item.titulo && (
+                        <h3 class="font-[family-name:var(--font-principal)] text-[18px] md:text-[20px] font-bold uppercase text-[var(--accent-highlight-primary)] mb-4">
+                            {item.titulo}
+                        </h3>
+                    )}
+                    
+                    {/* Descripción */}
+                    {item.descripcion && (
+                        <div 
+                            class="font-[family-name:var(--font-secundaria)] text-[16px] text-white leading-relaxed [&>p]:mb-3 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                            set:html={stringifyRichText(item.descripcion)}
+                        />
+                    )}
+                </div>
+            ))}
+        </div>
+    </div>
+</section>

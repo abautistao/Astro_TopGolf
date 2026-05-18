@@ -1,0 +1,74 @@
+---
+// ==========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+import Layout from "../../../layouts/Layout.astro"; // Importamos el Layout principal
+import { getAllPases, getPaseBySlug } from "../../../lib/strapi.js";
+import RenderBlocks from "../../../components/RenderBlocks.astro";
+
+// export const prerender = true;
+
+// ==========================================================================================
+// SECCIÓN 3: GENERACIÓN DE RUTAS (getStaticPaths)
+// ==========================================================================================
+export async function getStaticPaths() {
+  const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+  if (!isMultiLanguage) {
+    return [];
+  }
+
+  const locales = ["es", "en"];
+  const nonDefaultLocales = locales.filter(l => l !== defaultLocale);
+  let allPaths = [];
+
+  for (const lang of nonDefaultLocales) {
+    const pages = await getAllPases(lang);
+    if (pages && Array.isArray(pages)) {
+      pages.forEach((page: any) => {
+        allPaths.push({
+          params: { lang, slug: page.slug },
+        });
+      });
+    }
+  }
+
+  return allPaths;
+}
+
+// ==========================================================================================
+// SECCIÓN 4: OBTENCIÓN DE DATOS PARA CADA PÁGINA
+// ==========================================================================================
+const { slug, lang } = Astro.params;
+const pagina = await getPaseBySlug(slug, lang);
+
+// Si la página no se encuentra, mostramos un error 404.
+if (!pagina) {
+  return new Response(null, {
+    status: 404,
+    statusText: "No Encontrado",
+  });
+}
+
+const { titulo, ContenidoPagina, SEO, localizations } = pagina;
+
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  const locSlug = attributes.slug;
+
+  if (localeCode && locSlug) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/pases/${locSlug}` : `/${localeCode}/pases/${locSlug}`;
+  }
+});
+---
+
+<Layout seo={SEO} alternateLinks={alternateLinks}>
+  <main class="mx-auto container-full">
+    <RenderBlocks blocks={ContenidoPagina} />
+  </main>
+</Layout>
