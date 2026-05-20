@@ -104,9 +104,9 @@
                         </div>
                     </div>
 
-                    <button class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                    <a href="/reservar?party_size=1" class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
                         Reservar Starter (1 pers) →
-                    </button>
+                    </a>
                 </div>
 
                 {/* CARD 2: SOCIAL (Popular) */}
@@ -160,9 +160,9 @@
                         </div>
                     </div>
 
-                    <button class="w-full py-3 px-4 rounded-xl bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:bg-white hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                    <a href="/reservar?party_size=4" class="w-full py-3 px-4 rounded-xl bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:bg-white hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
                         Reservar Social (4 pers) →
-                    </button>
+                    </a>
                 </div>
 
                 {/* CARD 3: SQUAD */}
@@ -213,9 +213,9 @@
                         </div>
                     </div>
 
-                    <button class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                    <a  href="/reservar?party_size=7" class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
                         Reservar Squad (7 pers) →
-                    </button>
+                    </a>
                 </div>
 
                 {/* CARD 4: PRO */}
@@ -266,9 +266,9 @@
                         </div>
                     </div>
 
-                    <button class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                    <a href="/reservar?party_size=10" class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
                         Reservar Pro (10 pers) →
-                    </button>
+                    </a>
                 </div>
 
             </div>
@@ -624,6 +624,7 @@
                     if (actionBtn) {
                         const cardTitle = cardName.charAt(0).toUpperCase() + cardName.slice(1);
                         actionBtn.textContent = `Reservar ${cardTitle} (${players} pers) →`;
+                        actionBtn.setAttribute('href', '/reservar?party_size=' + players)
                     }
                 }
             });

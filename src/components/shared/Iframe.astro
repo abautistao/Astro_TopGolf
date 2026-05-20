@@ -1,12 +1,22 @@
 ---
 interface Props {
     codigo: string;
+    url_seven_rooms: string;
 }
 
-const { codigo } = Astro.props;
+const { codigo, url_seven_rooms} = Astro.props;
+const partySize = Astro.url.searchParams.get('party_size') || 1;
+const sevenRoomsUrl = url_seven_rooms + '?party_size='  + partySize
+
 ---
 
-<div class="w-full iframe-container" set:html={codigo} />
+<div class="w-full iframe-container">
+    <iframe 
+       src={sevenRoomsUrl}
+        allow="geolocation; microphone; camera"
+        title="SevenRooms Reservation">
+    </iframe>
+</div>
 
 <style>
     .iframe-container :global(iframe) {
