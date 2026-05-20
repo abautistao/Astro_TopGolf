@@ -58,13 +58,13 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
                 </div>
             </div>
 
-            <div class="w-full lg:w-2/4 text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20 mb-0 lg:mb-0 pb-0 lg:pb-0">
+            <div class="w-full text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20 mb-0 lg:mb-0 pb-0 lg:pb-0">
 
-                <div class="font-(family-name:--font-sharp-sans-bold) font-bold text-[var(--surface-brand-primary)] text-base md:text-base mb-4 max-w-xl mx-auto px-8 lg:px-20 text-center">
+                <div class="prose font-(family-name:--font-sharp-sans-bold) font-bold text-[var(--surface-brand-primary)] text-base md:text-base mb-4 mx-auto px-8 lg:px-12 text-center">
                     <Fragment set:html={mainTextHtml} />
                 </div>
 
-                <div class="font-(family-name:--font-sharp-sans-medium) font-normal text-[var(--surface-brand-primary)] text-base md:text-base mb-4 max-w-xl mx-auto px-8 lg:px-20 text-center">
+                <div class="font-(family-name:--font-sharp-sans-medium) font-normal text-[var(--surface-brand-primary)] text-base md:text-base mb-4 mx-auto px-8 lg:px-20 text-center">
                     <Fragment set:html={secondaryTextHtml} />
                 </div>
 
@@ -147,5 +147,17 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 
     .section-animate.is-visible {
         animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .prose :global(h3) {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1.15rem;
+        margin-bottom: 2rem;
+    }
+
+    .prose :global(em) {
+        font-family: var(--font-sharp-sans-medium-italic);
+        font-size: .8rem;
     }
 </style>
