@@ -1,0 +1,203 @@
+---
+// src/components/toca/Component_27.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+import Button from './elements/Button.astro';
+import type { Boton } from './elements/Button.astro';
+
+interface Props {
+    subtitulo?: string;
+    titulo: string;
+    descripcion: string;
+    imagen: any;
+    social: any;
+    boton: Boton | null;
+}
+
+const {
+    subtitulo = "Subtitulo de Ejemplo",
+    titulo,
+    descripcion = "Descripcion de Ejemplo",
+    imagen,
+    social = [],
+    boton = null
+} = Astro.props;
+
+const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
+
+const strapiImageUrl = getStrapiUrl(imagen);
+const descripcionHtml = stringifyRichText(descripcion);
+
+// --- LÓGICA DE DETECCIÓN DE VIDEO ---
+const mime = imagen?.data?.attributes?.mime || "";
+const ext = imagen?.data?.attributes?.ext || "";
+const isVideo = mime.startsWith("video/") || ext === ".mp4" || strapiImageUrl?.endsWith(".mp4");
+
+const altText =
+    imagen?.data?.attributes?.alternativeText ||
+    tituloMostrar ||
+    "Imagen destacada";
+
+const boton_pricing: Boton[] = boton ? [boton] : [];
+
+// Dividimos el título en palabras para la animación
+const palabras = tituloMostrar.split(' ');
+
+// --- CONFIGURACIÓN DE VELOCIDAD ---
+const startDelay = 0.6;       // Tiempo antes de empezar
+const wordInterval = 0.3;     // Tiempo ENTRE cada palabra
+
+// Calculamos cuándo debe aparecer todo el bloque de contenido (descripción + botón + iconos)
+const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.4;
+---
+
+<section class="relative w-full min-h-[700px] lg:h-[95vh] flex items-center justify-center overflow-hidden bg-black p-0">
+    
+    {/* Full-width Media (Video or Image) */}
+    <div class="absolute inset-0 w-full h-full z-0 image-anim opacity-0">
+        {/* Dark overlay to ensure text legibility */}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/80 z-10"></div>
+        
+        {isVideo ? (
+            <video
+                src={strapiImageUrl}
+                class="w-full h-full object-cover object-center"
+                autoplay
+                muted
+                loop
+                playsinline
+            ></video>
+        ) : (
+            <Image
+                src={strapiImageUrl || "https://placehold.co/1920x1080/0a0037/ffffff?text=Video+Background"}
+                alt={altText}
+                class="w-full h-full object-cover object-center"
+                inferSize={true}
+                loading="eager"
+            />
+        )}
+    </div>
+
+    {/* Centered Content */}
+    <div class="relative z-20 max-w-5xl mx-auto px-6 py-16 flex flex-col items-center text-center gap-6 md:gap-8">
+        
+        {subtitulo && (
+            <span class="block font-medium uppercase tracking-widest text-[16px] md:text-[20px] text-[var(--brand-interactive-base)] font-[family-name:var(--font-principal)] tracking-wider mt-4">
+                {subtitulo}
+            </span>
+        )}
+
+        <h1 class="font-[family-name:var(--font-principal)] text-[44px] sm:text-[64px] md:text-[80px] font-bold uppercase leading-[0.9] tracking-tighter text-[var(--accent-feedback-strong)] w-full">
+            <span class="whitespace-pre-line block" aria-label={tituloMostrar}>
+                {palabras.map((palabra, index) => (
+                    <span
+                        class="word-anim inline-block opacity-0"
+                        style={`animation-delay: ${(index * wordInterval) + startDelay}s;`}
+                    >
+                        {palabra}&nbsp;
+                    </span>
+                ))}
+            </span>
+        </h1>
+
+        <div
+            class="text-[var(--accent-feedback-strong)]/80 text-[16px] md:text-[18px] font-normal leading-relaxed max-w-2xl strapi-rich-text font-[family-name:var(--font-secundaria)] desc-anim opacity-0"
+            style={`animation-delay: ${delayDescripcion}s;`}
+        >
+            <Fragment set:html={descripcionHtml} />
+        </div>
+
+        {boton && (
+            <div
+                class="mt-2 desc-anim opacity-0"
+                style={`animation-delay: ${delayDescripcion}s;`}
+            >
+                <Button
+                    botones={boton_pricing}
+                    clase="flex justify-center w-fit mx-auto"
+                />
+            </div>
+        )}
+
+        {social && social.length > 0 && (
+            <div
+                class="flex items-center justify-center gap-6 mt-4 desc-anim opacity-0"
+                style={`animation-delay: ${delayDescripcion}s;`}
+            >
+                {social.map((social_item: any) => (
+                    <a
+                        href={social_item.url}
+                        target="_blank"
+                        class="text-[var(--brand-interactive-base)] text-2xl hover:text-white hover:scale-110 transition-all duration-300"
+                    >
+                        <Fragment set:html={social_item.icon} />
+                    </a>
+                ))}
+            </div>
+        )}
+
+    </div>
+</section>
+
+<style>
+    /* --- ANIMACIÓN DESLIZAR IMAGEN --- */
+    @keyframes fadeInBg {
+        0% {
+            opacity: 0;
+            transform: scale(1.05);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .image-anim {
+        animation: fadeInBg 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* --- ANIMACIÓN FADE IN --- */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .word-anim {
+        animation: fadeIn 1.8s ease-out forwards;
+    }
+
+    /* Animación descripción, botón e iconos */
+    @keyframes fadeInSimple {
+        from { 
+            opacity: 0; 
+            transform: translateY(15px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+
+    .desc-anim {
+        animation: fadeInSimple 1.2s ease-out forwards;
+    }
+
+    .strapi-rich-text :global(strong) {
+        color: var(--brand-interactive-base);
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        color: var(--brand-interactive-base);
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+</style>
