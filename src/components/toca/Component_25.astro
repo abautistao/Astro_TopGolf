@@ -1,0 +1,117 @@
+---
+// src/components/toca/Component_25.astro
+
+interface Review {
+    id: number;
+    estrellas?: number;
+    comentario?: string;
+}
+
+interface Props {
+    titulo_seccion?: string;
+    titulo_seccionHtmlTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
+    reviews?: Review[];
+}
+
+const {
+    titulo_seccion = "1000'S OF 5 STAR REVIEWS",
+    titulo_seccionHtmlTag = "h2",
+    reviews = []
+} = Astro.props;
+
+const defaultReviews: Review[] = [
+    {
+        id: 1,
+        estrellas: 5,
+        comentario: "We had an amazing experience today, Molly and Maria made it extra special with their amazing customer service and friendly nature. Will definitely be back because of these 2 employees, nothing was too much trouble for them. Thanks again guys! :)"
+    },
+    {
+        id: 2,
+        estrellas: 5,
+        comentario: "Brilliant experience at TOCA Social O2! The atmosphere was great and everything ran smoothly. Huge shoutout to Dana and Amy for their amazing service - they were friendly, attentive, and really made our visit special. Will definitely be back!"
+    },
+    {
+        id: 3,
+        estrellas: 5,
+        comentario: "Brilliant atmosphere and the interactive football games are so much fun! Great for groups, birthdays, or just hanging out. Food and drinks were fantastic too."
+    }
+];
+
+const dataToRender = reviews && reviews.length > 0 ? reviews : defaultReviews;
+
+// Triplicamos la lista para garantizar el efecto sin fin y cubrir toda la pantalla
+const marqueeItems = [...dataToRender, ...dataToRender, ...dataToRender];
+
+const TitleTag = titulo_seccionHtmlTag || 'h2';
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-16 overflow-hidden">
+    <div class="max-w-[1280px] mx-auto px-6 sm:px-8 mb-10">
+        {titulo_seccion && (
+            <TitleTag class="text-center font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--accent-feedback-strong)] uppercase leading-[1.1] tracking-wide">
+                {titulo_seccion}
+            </TitleTag>
+        )}
+    </div>
+
+    {/* Marquee Carousel Wrapper */}
+    <div class="relative w-full overflow-hidden flex items-center marquee-container">
+        {/* Track containing duplicated items */}
+        <div class="marquee-track py-2">
+            {marqueeItems.map((item, index) => {
+                const starsCount = item.estrellas || 5;
+
+                return (
+                    <div 
+                        class="w-[360px] sm:w-[500px] md:w-[700px] shrink-0 border border-[var(--brand-interactive-base)] p-6 md:p-8 flex flex-col justify-start gap-4 mx-3 bg-[var(--surface-brand-primary)] transition-all duration-300 hover:scale-[1.02]"
+                        data-index={index}
+                    >
+                        {/* Stars row */}
+                        <div class="flex items-center gap-1 text-[var(--brand-interactive-base)] text-lg">
+                            {Array.from({ length: starsCount }).map(() => (
+                                <i class="fa-solid fa-star"></i>
+                            ))}
+                        </div>
+
+                        {/* Comment text */}
+                        <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--accent-feedback-strong)] leading-relaxed">
+                            {item.comentario}
+                        </p>
+                    </div>
+                );
+            })}
+        </div>
+    </div>
+</section>
+
+<style>
+    .marquee-container {
+        /* Degradado lateral sutil para el desvanecimiento (fade-out) en los extremos */
+        mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+    }
+
+    .marquee-track {
+        display: flex;
+        width: max-content;
+        /* Animación infinita con velocidad constante */
+        animation: marquee-animation 45s linear infinite;
+    }
+
+    /* Pausa la animación al pasar el ratón para facilitar la lectura */
+    @media (hover: hover) {
+        .marquee-container:hover .marquee-track {
+            animation-play-state: paused;
+        }
+    }
+
+    @keyframes marquee-animation {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            /* Se desplaza exactamente 1/3 del total (una iteración completa) para un bucle infinito continuo */
+            transform: translateX(-33.3333%);
+        }
+    }
+</style>

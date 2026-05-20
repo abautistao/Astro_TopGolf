@@ -1,0 +1,138 @@
+---
+// src/components/toca/Component_24.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+
+interface Props {
+    subtitulo?: string;
+    subtituloHtmlTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
+    titulo?: string;
+    tituloHtmlTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
+    descripcion?: any;
+    imagen_principal?: any;
+    boton_primario?: Boton | null;
+    boton_secundario?: Boton | null;
+}
+
+const {
+    subtitulo,
+    subtituloHtmlTag = "span",
+    titulo,
+    tituloHtmlTag = "h2",
+    descripcion,
+    imagen_principal,
+    boton_primario = null,
+    boton_secundario = null
+} = Astro.props;
+
+const subtituloMostrar = subtitulo || "";
+const tituloMostrar = titulo || "";
+const descripcionHtml = stringifyRichText(descripcion);
+
+const strapiImageUrl = getStrapiUrl(imagen_principal);
+const mime = imagen_principal?.data?.attributes?.mime || "";
+const ext = imagen_principal?.data?.attributes?.ext || "";
+const isVideo = mime.startsWith("video/") || ext === ".mp4" || strapiImageUrl?.endsWith(".mp4");
+const altText = imagen_principal?.data?.attributes?.alternativeText || tituloMostrar || "Imagen Principal";
+
+const SubtitleTag = subtituloHtmlTag || 'span';
+const TitleTag = tituloHtmlTag || 'h2';
+
+// Prepare buttons array
+const buttonsToRender: Boton[] = [];
+if (boton_primario) {
+    buttonsToRender.push({
+        ...boton_primario,
+        tipo: boton_primario.tipo || "version_3" // default to mint green style
+    });
+}
+if (boton_secundario) {
+    buttonsToRender.push({
+        ...boton_secundario,
+        tipo: boton_secundario.tipo || "version_1" // default to pink style
+    });
+}
+---
+
+<section class="w-full bg-[var(--surface-brand-primary)] py-12 px-4 md:px-8 lg:px-16 flex items-center justify-center overflow-hidden">
+    <div class="flex flex-col lg:flex-row lg:items-stretch w-full max-w-[1200px] mx-auto overflow-hidden border-2 border-[var(--surface-brand-primary)]" style="background-color: var(--accent-feedback-strong);">
+        
+        {/* Left Column (Text box) */}
+        <div class="order-2 lg:order-1 w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center text-center lg:text-left border-t-2 lg:border-t-0 lg:border-r-2 border-[var(--surface-brand-primary)]">
+            {subtituloMostrar && (
+                <SubtitleTag class="block font-[family-name:var(--font-principal)] text-[20px] font-medium text-[var(--surface-brand-primary)] uppercase tracking-wider mb-2">
+                    {subtituloMostrar}
+                </SubtitleTag>
+            )}
+
+            {tituloMostrar && (
+                <TitleTag class="block font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--surface-brand-primary)] leading-[1.1] uppercase mb-6">
+                    {tituloMostrar}
+                </TitleTag>
+            )}
+
+            {descripcionHtml && (
+                <div class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)] leading-relaxed mb-6 strapi-rich-text [&_p]:font-[family-name:var(--font-secundaria)] [&_p]:text-[16px] [&_p]:font-normal [&_p]:text-[var(--surface-brand-primary)] [&_p]:mb-4 [&_p:last-child]:mb-0">
+                    <Fragment set:html={descripcionHtml} />
+                </div>
+            )}
+
+            {buttonsToRender.length > 0 && (
+                <div class="mt-4">
+                    <Button 
+                        botones={buttonsToRender} 
+                        clase="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+                    />
+                </div>
+            )}
+        </div>
+
+        {/* Right Column (Media) */}
+        <div class="order-1 lg:order-2 w-full lg:w-1/2 min-h-[300px] md:min-h-[450px] lg:min-h-auto relative overflow-hidden flex items-center justify-center bg-[var(--surface-brand-primary)]">
+            {strapiImageUrl ? (
+                isVideo ? (
+                    <video
+                        src={strapiImageUrl}
+                        class="w-full h-full object-cover"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                    ></video>
+                ) : (
+                    <Image
+                        src={strapiImageUrl}
+                        alt={altText}
+                        class="w-full h-full object-cover"
+                        inferSize={true}
+                        loading="lazy"
+                    />
+                )
+            ) : (
+                <div class="text-[var(--neutral-text-inverted)] font-[family-name:var(--font-secundaria)] text-sm">
+                    No Media Available
+                </div>
+            )}
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .strapi-rich-text :global(strong) {
+        color: var(--surface-brand-primary);
+        font-weight: bold;
+    }
+    .strapi-rich-text :global(u) {
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .strapi-rich-text :global(a) {
+        color: var(--surface-brand-secondary);
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+</style>
