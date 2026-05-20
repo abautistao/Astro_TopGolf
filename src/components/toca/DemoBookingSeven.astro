@@ -1,0 +1,692 @@
+---
+// src/components/toca/DemoBookingSeven.astro
+---
+
+<section class="w-full bg-[var(--surface-brand-secondary)] text-[var(--surface-brand-primary)] py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div class="max-w-7xl mx-auto flex flex-col gap-16">
+        
+        {/* --- SECCIÓN 1: ELIGE TU NIVEL DE JUEGO (Booking Grid) --- */}
+        <div class="flex flex-col gap-10">
+            {/* Header Area */}
+            <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+                <div class="flex flex-col items-start gap-4 max-w-2xl">
+                    <span class="inline-block border border-[var(--surface-brand-primary)] text-[var(--surface-brand-primary)] text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest font-[family-name:var(--font-principal)]">
+                        • Precios Transparentes
+                    </span>
+                    <h2 class="font-[family-name:var(--font-principal)] text-[40px] sm:text-[56px] md:text-[64px] font-bold uppercase leading-none tracking-tight text-[var(--surface-brand-primary)]">
+                        Elige tu <span class="bg-[var(--surface-brand-primary)] text-[var(--brand-interactive-base)] px-2 py-0.5 inline-block transform -rotate-1 rounded">nivel</span> de juego
+                    </h2>
+                    <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)]/80 max-w-md leading-relaxed">
+                        Un precio fijo por persona, sin costos ocultos. Entre más jugadores, más minutos de juego. Así de simple.
+                    </p>
+                </div>
+                
+                {/* Price Legend */}
+                <div class="flex gap-8 items-center bg-[var(--surface-brand-primary)] border border-white/10 p-4 rounded-xl shadow-lg">
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-extrabold text-[var(--brand-interactive-base)] font-[family-name:var(--font-principal)]">$199</span>
+                        <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">P/P • Lun - Jue</span>
+                    </div>
+                    <div class="h-8 w-px bg-white/20"></div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-extrabold text-[var(--surface-brand-secondary)] font-[family-name:var(--font-principal)]">$250</span>
+                        <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">P/P • Vie - Dom</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Tab Selector */}
+            <div class="flex justify-center mt-4">
+                <div class="inline-flex bg-[var(--surface-brand-primary)] border border-white/10 p-1.5 rounded-full shadow-md">
+                    <button 
+                        class="tab-btn active px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-300"
+                        data-tab-value="lun-jue"
+                    >
+                        Lunes - Jueves
+                    </button>
+                    <button 
+                        class="tab-btn px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-300 text-white/60 hover:text-white"
+                        data-tab-value="vie-dom"
+                    >
+                        Viernes - Domingo
+                    </button>
+                </div>
+            </div>
+
+            {/* Cards Grid */}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+                
+                {/* CARD 1: STARTER */}
+                <div class="card-booking bg-[var(--surface-brand-primary)] border border-white/10 hover:border-[var(--brand-interactive-base)]/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 gap-6 shadow-md text-white" data-card-id="starter">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs uppercase tracking-widest text-[var(--brand-interactive-base)] font-bold font-[family-name:var(--font-principal)]">1 - 3 JUGADORES</span>
+                        </div>
+                        <div>
+                            <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">STARTER</h3>
+                            <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
+                                ⏱️ 30 minutos de juego
+                            </span>
+                        </div>
+                        <div class="py-2 border-y border-white/10 flex justify-between items-center">
+                            <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="250">$199</span>
+                        </div>
+                        <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
+                            Precio fijo independiente del número de jugadores.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/40 font-bold font-[family-name:var(--font-principal)]">Selecciona tu grupo:</span>
+                        <div class="flex flex-col gap-2">
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200 active" data-players="1" data-card="starter">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">1</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">1 persona</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$199</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="2" data-card="starter">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">2</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">2 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$398</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="3" data-card="starter">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">3</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">3 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$597</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                        Reservar Starter (1 pers) →
+                    </button>
+                </div>
+
+                {/* CARD 2: SOCIAL (Popular) */}
+                <div class="card-booking bg-[var(--surface-brand-primary)] border-2 border-[var(--brand-interactive-base)] rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 gap-6 relative shadow-lg text-white" data-card-id="social">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] text-[10px] font-extrabold uppercase px-3 py-1 rounded-full tracking-widest font-[family-name:var(--font-principal)]">
+                        Popular
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-between items-start mt-2">
+                            <span class="text-xs uppercase tracking-widest text-[var(--brand-interactive-base)] font-bold font-[family-name:var(--font-principal)]">4 - 6 JUGADORES</span>
+                        </div>
+                        <div>
+                            <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">SOCIAL</h3>
+                            <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
+                                ⏱️ 60 minutos de juego
+                            </span>
+                        </div>
+                        <div class="py-2 border-y border-white/10 flex justify-between items-center">
+                            <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="250">$199</span>
+                        </div>
+                        <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
+                            El doble de tiempo, el mismo precio p/persona.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/40 font-bold font-[family-name:var(--font-principal)]">Selecciona tu grupo:</span>
+                        <div class="flex flex-col gap-2">
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200 active" data-players="4" data-card="social">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">4</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">4 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$796</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="5" data-card="social">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">5</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">5 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$995</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="6" data-card="social">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">6</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">6 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,194</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 rounded-xl bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:bg-white hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                        Reservar Social (4 pers) →
+                    </button>
+                </div>
+
+                {/* CARD 3: SQUAD */}
+                <div class="card-booking bg-[var(--surface-brand-primary)] border border-white/10 hover:border-[var(--brand-interactive-base)]/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 gap-6 shadow-md text-white" data-card-id="squad">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs uppercase tracking-widest text-[var(--brand-interactive-base)] font-bold font-[family-name:var(--font-principal)]">7 - 9 JUGADORES</span>
+                        </div>
+                        <div>
+                            <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">SQUAD</h3>
+                            <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
+                                ⏱️ 90 minutos de juego
+                            </span>
+                        </div>
+                        <div class="py-2 border-y border-white/10 flex justify-between items-center">
+                            <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="250">$199</span>
+                        </div>
+                        <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
+                            90 minutos completos para jugar de verdad.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/40 font-bold font-[family-name:var(--font-principal)]">Selecciona tu grupo:</span>
+                        <div class="flex flex-col gap-2">
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200 active" data-players="7" data-card="squad">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">7</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">7 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$1,393</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="8" data-card="squad">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">8</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">8 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,592</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="9" data-card="squad">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">9</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">9 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,791</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                        Reservar Squad (7 pers) →
+                    </button>
+                </div>
+
+                {/* CARD 4: PRO */}
+                <div class="card-booking bg-[var(--surface-brand-primary)] border border-white/10 hover:border-[var(--brand-interactive-base)]/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 gap-6 shadow-md text-white" data-card-id="pro">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs uppercase tracking-widest text-[var(--brand-interactive-base)] font-bold font-[family-name:var(--font-principal)]">10 - 12 JUGADORES</span>
+                        </div>
+                        <div>
+                            <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">PRO</h3>
+                            <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
+                                ⏱️ 120 minutos de juego
+                            </span>
+                        </div>
+                        <div class="py-2 border-y border-white/10 flex justify-between items-center">
+                            <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="250">$199</span>
+                        </div>
+                        <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
+                            2 horas completas para grupos grandes y competitivos.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <span class="text-xs uppercase tracking-widest text-white/40 font-bold font-[family-name:var(--font-principal)]">Selecciona tu grupo:</span>
+                        <div class="flex flex-col gap-2">
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200 active" data-players="10" data-card="pro">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">10</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">10 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$1,990</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="11" data-card="pro">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">11</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">11 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,189</span>
+                            </div>
+                            <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="12" data-card="pro">
+                                <div class="flex items-center gap-3">
+                                    <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">12</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">12 personas</span>
+                                </div>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,388</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 rounded-xl border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:bg-[var(--brand-interactive-base)] hover:text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider transition-all duration-300 mt-2 card-action-btn">
+                        Reservar Pro (10 pers) →
+                    </button>
+                </div>
+
+            </div>
+
+            {/* Bottom Info Banner */}
+            <div class="w-full rounded-2xl border border-[var(--surface-brand-primary)] bg-[var(--surface-brand-primary)] p-5 flex flex-col sm:flex-row justify-between items-center gap-4 mt-2 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">💡</span>
+                    <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/80 leading-relaxed text-center sm:text-left">
+                        El precio por persona <strong class="text-white font-bold">siempre es el mismo</strong> — $199 Lun-Jue / $250 Vie-Dom. Lo que cambia con el grupo es el tiempo total de juego: más jugadores, más minutos.
+                    </p>
+                </div>
+                <span class="bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-full tracking-widest shrink-0 shadow-sm">
+                    Sin Costos Ocultos
+                </span>
+            </div>
+
+        </div>
+
+        {/* --- SECCIÓN 2: TODO LO QUE NECESITAS (Features Grid) --- */}
+        <div class="flex flex-col gap-10 pt-8 border-t border-[var(--surface-brand-primary)]/20">
+            <div class="flex flex-col items-start gap-2">
+                <span class="text-xs uppercase tracking-widest text-[var(--surface-brand-primary)]/60 font-bold font-[family-name:var(--font-principal)]">¿Qué Incluye?</span>
+                <h2 class="font-[family-name:var(--font-principal)] text-[40px] md:text-[48px] font-bold uppercase text-[var(--surface-brand-primary)]">
+                    Todo lo que necesitas
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Feature 1 */}
+                <div class="bg-[var(--surface-brand-primary)] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-300 shadow-md text-white">
+                    <div class="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center text-2xl border border-[var(--brand-interactive-base)]/20 text-[var(--brand-interactive-base)]">
+                        ⚽
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase text-white">
+                            Tecnología MLS / Premier League
+                        </h4>
+                        <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/60 leading-relaxed">
+                            Los mismos sistemas interactivos usados en las mejores ligas del mundo. Sin importar tu nivel.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 2 */}
+                <div class="bg-[var(--surface-brand-primary)] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-300 shadow-md text-white">
+                    <div class="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center text-2xl border border-[var(--brand-interactive-base)]/20 text-[var(--brand-interactive-base)]">
+                        🍽️
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase text-white">
+                            Menú de autor incluido
+                        </h4>
+                        <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/60 leading-relaxed">
+                            Cocina de autor y coctelería premium. Puedes ordenar antes, durante y después de tu sesión.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 3 */}
+                <div class="bg-[var(--surface-brand-primary)] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-300 shadow-md text-white">
+                    <div class="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center text-2xl border border-[var(--brand-interactive-base)]/20 text-[var(--brand-interactive-base)]">
+                        📺
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase text-white">
+                            Pantallas gigantes y ambiente
+                        </h4>
+                        <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/60 leading-relaxed">
+                            Transmisiones en vivo, playlists curadas y el ambiente perfecto para que la sesión sea memorable.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 4 */}
+                <div class="bg-[var(--surface-brand-primary)] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-300 shadow-md text-white">
+                    <div class="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center text-2xl border border-[var(--brand-interactive-base)]/20 text-[var(--brand-interactive-base)]">
+                        👟
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase text-white">
+                            Sin equipo especial
+                        </h4>
+                        <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/60 leading-relaxed">
+                            Llega como estás. No necesitas ropa deportiva, tenis especiales ni experiencia previa.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 5 */}
+                <div class="bg-[var(--surface-brand-primary)] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-300 shadow-md text-white">
+                    <div class="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center text-2xl border border-[var(--brand-interactive-base)]/20 text-[var(--brand-interactive-base)]">
+                        🎂
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase text-white">
+                            Ideal para grupos y eventos
+                        </h4>
+                        <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/60 leading-relaxed">
+                            Cumpleaños, team buildings, despedidas, convivencias corporativas. Lo hacemos especial.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 6 */}
+                <div class="bg-[var(--surface-brand-primary)] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-300 shadow-md text-white">
+                    <div class="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center text-2xl border border-[var(--brand-interactive-base)]/20 text-[var(--brand-interactive-base)]">
+                        📍
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase text-white">
+                            Galerías Valle Oriente
+                        </h4>
+                        <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/60 leading-relaxed">
+                            Ubicación premium en el corazón de San Pedro. Estacionamiento disponible en el centro comercial.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* --- SECCIÓN 3: LO QUE TODOS PREGUNTAN (Accordion FAQs) & FINAL CALL TO ACTION --- */}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-8 border-t border-[var(--surface-brand-primary)]/20">
+            {/* Left FAQs Area (7 cols) */}
+            <div class="lg:col-span-7 flex flex-col gap-8">
+                <div class="flex flex-col gap-2">
+                    <h2 class="font-[family-name:var(--font-principal)] text-[40px] md:text-[48px] font-bold uppercase text-[var(--surface-brand-primary)]">
+                        Lo que todos preguntan
+                    </h2>
+                    <p class="font-[family-name:var(--font-secundaria)] text-sm text-[var(--surface-brand-primary)]/75">
+                        Resolvemos las dudas más comunes antes de que llegues a tu sesión. Si tienes algo más, escríbenos.
+                    </p>
+                </div>
+
+                {/* Accordion list */}
+                <div class="flex flex-col border-t border-[var(--surface-brand-primary)]/20">
+                    
+                    {/* FAQ 1 */}
+                    <div class="faq-item border-b border-[var(--surface-brand-primary)]/20 py-5 cursor-pointer group">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-[family-name:var(--font-principal)] text-lg font-medium text-[var(--surface-brand-primary)] group-hover:opacity-80 transition-colors duration-200">
+                                ¿El precio incluye comida y bebidas?
+                            </span>
+                            <span class="faq-icon text-xl text-[var(--surface-brand-primary)]/50 group-hover:opacity-100 transition-all duration-300">
+                                +
+                            </span>
+                        </div>
+                        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <p class="font-[family-name:var(--font-secundaria)] text-sm text-[var(--surface-brand-primary)]/80 pt-4 leading-relaxed">
+                                No, el precio por persona cubre únicamente la renta del box de juego y el sistema interactivo. Los alimentos y bebidas se cobran por separado de acuerdo con el consumo en tu mesa.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* FAQ 2 */}
+                    <div class="faq-item border-b border-[var(--surface-brand-primary)]/20 py-5 cursor-pointer group">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-[family-name:var(--font-principal)] text-lg font-medium text-[var(--surface-brand-primary)] group-hover:opacity-80 transition-colors duration-200">
+                                ¿Qué pasa si somos más de 12 personas?
+                            </span>
+                            <span class="faq-icon text-xl text-[var(--surface-brand-primary)]/50 group-hover:opacity-100 transition-all duration-300">
+                                +
+                            </span>
+                        </div>
+                        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <p class="font-[family-name:var(--font-secundaria)] text-sm text-[var(--surface-brand-primary)]/80 pt-4 leading-relaxed">
+                                Nuestros boxes tienen una capacidad máxima sugerida de 12 jugadores activos por comodidad y tiempo de juego. Si tu grupo es mayor, te recomendamos reservar múltiples boxes contiguos o contactar a nuestro equipo de eventos grupales para una cotización personalizada.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* FAQ 3 */}
+                    <div class="faq-item border-b border-[var(--surface-brand-primary)]/20 py-5 cursor-pointer group">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-[family-name:var(--font-principal)] text-lg font-medium text-[var(--surface-brand-primary)] group-hover:opacity-80 transition-colors duration-200">
+                                ¿Puedo cambiar o cancelar mi reserva?
+                            </span>
+                            <span class="faq-icon text-xl text-[var(--surface-brand-primary)]/50 group-hover:opacity-100 transition-all duration-300">
+                                +
+                            </span>
+                        </div>
+                        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <p class="font-[family-name:var(--font-secundaria)] text-sm text-[var(--surface-brand-primary)]/80 pt-4 leading-relaxed">
+                                Sí, puedes realizar cambios o cancelaciones hasta 48 horas antes de tu reservación directamente desde tu cuenta o contactando a nuestro equipo de soporte técnico.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* FAQ 4 */}
+                    <div class="faq-item border-b border-[var(--surface-brand-primary)]/20 py-5 cursor-pointer group">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-[family-name:var(--font-principal)] text-lg font-medium text-[var(--surface-brand-primary)] group-hover:opacity-80 transition-colors duration-200">
+                                ¿Los niños pueden jugar?
+                            </span>
+                            <span class="faq-icon text-xl text-[var(--surface-brand-primary)]/50 group-hover:opacity-100 transition-all duration-300">
+                                +
+                            </span>
+                        </div>
+                        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <p class="font-[family-name:var(--font-secundaria)] text-sm text-[var(--surface-brand-primary)]/80 pt-4 leading-relaxed">
+                                ¡Claro que sí! TOCA Social es una experiencia familiar. Los niños de todas las edades son bienvenidos, especialmente en nuestros horarios diurnos y familiares.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* FAQ 5 */}
+                    <div class="faq-item border-b border-[var(--surface-brand-primary)]/20 py-5 cursor-pointer group">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-[family-name:var(--font-principal)] text-lg font-medium text-[var(--surface-brand-primary)] group-hover:opacity-80 transition-colors duration-200">
+                                ¿Necesito pagar en línea para reservar?
+                            </span>
+                            <span class="faq-icon text-xl text-[var(--surface-brand-primary)]/50 group-hover:opacity-100 transition-all duration-300">
+                                +
+                            </span>
+                        </div>
+                        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <p class="font-[family-name:var(--font-secundaria)] text-sm text-[var(--surface-brand-primary)]/80 pt-4 leading-relaxed">
+                                Sí, para confirmar tu horario de juego requerimos el pago del costo de reserva a través de nuestra plataforma segura de pagos en línea.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* Right Call To Action Box (5 cols) */}
+            <div class="lg:col-span-5 flex items-center justify-center">
+                <div class="w-full bg-[var(--surface-brand-primary)] border-2 border-[var(--brand-interactive-base)] rounded-3xl p-8 sm:p-10 text-center flex flex-col items-center justify-center gap-6 relative shadow-lg text-white">
+                    <span class="text-[var(--brand-interactive-base)] text-xs font-bold uppercase tracking-widest font-[family-name:var(--font-principal)]">
+                        ¿Ya Decidiste?
+                    </span>
+                    <h3 class="font-[family-name:var(--font-principal)] text-[32px] sm:text-[40px] font-bold uppercase text-white leading-none">
+                        Reserva tu <span class="text-[var(--brand-interactive-base)]">sesión</span> ahora
+                    </h3>
+                    <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/70 max-w-sm leading-relaxed">
+                        Elige fecha, hora y tamaño de grupo. En menos de 3 minutos tienes tu lugar asegurado.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center mt-2">
+                        <a 
+                            href="#"
+                            class="inline-block px-8 py-3 rounded-xl bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider hover:bg-white hover:scale-[1.03] transition-all duration-300 text-center shadow-[3px_3px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                        >
+                            Ir al booking →
+                        </a>
+                        <a 
+                            href="#"
+                            class="inline-block px-8 py-3 rounded-xl border border-white/30 text-white font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider hover:border-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)] hover:scale-[1.03] transition-all duration-300 text-center"
+                        >
+                            Tengo preguntas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{/* Styling for Active State classes & dynamics */}
+<style>
+    .tab-btn.active {
+        background-color: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+    }
+</style>
+
+{/* Interactive JavaScript */}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Day selector tabs ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        let currentDayTab = 'lun-jue'; // Default state
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabValue = btn.getAttribute('data-tab-value');
+                if (!tabValue || tabValue === currentDayTab) return;
+
+                // Toggle active class on tabs
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.classList.remove('text-[var(--surface-brand-primary)]');
+                    b.classList.add('text-white/60');
+                });
+                btn.classList.add('active');
+                btn.classList.remove('text-white/60');
+
+                currentDayTab = tabValue;
+
+                // Update prices
+                updateBookingPrices(currentDayTab);
+            });
+        });
+
+        // --- Option Selector Rows ---
+        const groupRows = document.querySelectorAll('.group-row');
+        groupRows.forEach(row => {
+            row.addEventListener('click', () => {
+                const cardName = row.getAttribute('data-card');
+                if (!cardName) return;
+
+                // Deselect other rows inside this card
+                const siblingRows = document.querySelectorAll(`.group-row[data-card="${cardName}"]`);
+                siblingRows.forEach(r => {
+                    r.classList.remove('active');
+                    r.classList.remove('border-[var(--brand-interactive-base)]');
+                    r.classList.remove('bg-black/50');
+                    r.classList.add('border-white/10');
+                    r.classList.add('bg-black/30');
+
+                    const badge = r.querySelector('.player-badge');
+                    if (badge) {
+                        badge.classList.remove('bg-[var(--brand-interactive-base)]');
+                        badge.classList.remove('text-[var(--surface-brand-primary)]');
+                        badge.classList.add('bg-black/40');
+                        badge.classList.add('text-white/60');
+                    }
+
+                    const total = r.querySelector('.row-total');
+                    if (total) {
+                        total.classList.remove('text-[var(--brand-interactive-base)]');
+                        total.classList.add('text-white/80');
+                    }
+                });
+
+                // Select current clicked row
+                row.classList.add('active');
+                row.classList.add('border-[var(--brand-interactive-base)]');
+                row.classList.add('bg-black/50');
+                row.classList.remove('border-white/10');
+                row.classList.remove('bg-black/30');
+
+                const badge = row.querySelector('.player-badge');
+                if (badge) {
+                    badge.classList.add('bg-[var(--brand-interactive-base)]');
+                    badge.classList.add('text-[var(--surface-brand-primary)]');
+                    badge.classList.remove('bg-black/40');
+                    badge.classList.remove('text-white/60');
+                }
+
+                const total = row.querySelector('.row-total');
+                if (total) {
+                    total.classList.add('text-[var(--brand-interactive-base)]');
+                    total.classList.remove('text-white/80');
+                }
+
+                // Update bottom card button text
+                const players = row.getAttribute('data-players');
+                const cardElement = document.querySelector(`.card-booking[data-card-id="${cardName}"]`);
+                if (cardElement) {
+                    const actionBtn = cardElement.querySelector('.card-action-btn');
+                    if (actionBtn) {
+                        const cardTitle = cardName.charAt(0).toUpperCase() + cardName.slice(1);
+                        actionBtn.textContent = `Reservar ${cardTitle} (${players} pers) →`;
+                    }
+                }
+            });
+        });
+
+        // --- Recalculate Prices Function ---
+        function updateBookingPrices(dayTab: string) {
+            const basePrice = dayTab === 'lun-jue' ? 199 : 250;
+
+            // 1. Update Card level price labels
+            const cardPriceLabels = document.querySelectorAll('.card-price-label');
+            cardPriceLabels.forEach(label => {
+                label.textContent = `$${basePrice}`;
+            });
+
+            // 2. Update Group rows calculations
+            const allRows = document.querySelectorAll('.group-row');
+            allRows.forEach(row => {
+                const playerCountAttr = row.getAttribute('data-players');
+                if (!playerCountAttr) return;
+
+                const playersCount = parseInt(playerCountAttr, 10);
+                const newTotal = basePrice * playersCount;
+
+                // Update row-total label text formatted with comma if necessary
+                const totalLabel = row.querySelector('.row-total');
+                if (totalLabel) {
+                    totalLabel.textContent = `$${newTotal.toLocaleString()}`;
+                }
+            });
+        }
+
+        // --- Accordion FAQs ---
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const answer = item.querySelector('.faq-answer') as HTMLElement;
+                const icon = item.querySelector('.faq-icon') as HTMLElement;
+                if (!answer || !icon) return;
+
+                const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+
+                // Close other accordion items
+                faqItems.forEach(otherItem => {
+                    const otherAnswer = otherItem.querySelector('.faq-answer') as HTMLElement;
+                    const otherIcon = otherItem.querySelector('.faq-icon') as HTMLElement;
+                    if (otherAnswer && otherIcon) {
+                        otherAnswer.style.maxHeight = '0px';
+                        otherIcon.style.transform = 'rotate(0deg)';
+                        otherIcon.classList.remove('text-[var(--surface-brand-primary)]');
+                    }
+                });
+
+                if (!isOpen) {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(45deg)';
+                    icon.classList.add('text-[var(--surface-brand-primary)]');
+                } else {
+                    answer.style.maxHeight = '0px';
+                    icon.style.transform = 'rotate(0deg)';
+                    icon.classList.remove('text-[var(--surface-brand-primary)]');
+                }
+            });
+        });
+    });
+</script>
