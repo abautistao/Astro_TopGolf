@@ -13,8 +13,8 @@ interface CardData {
     title: any;
     subtitle: any;
     subtitle_2: string
-    text: string
-    text_2: string
+    description: string
+    description_2: string
     linkUrl: string;
 }
 
@@ -42,7 +42,7 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
 
 <section class="trigger-anim-events bg-[var(--surface-brand-primary)] py-4 px-4 md:px-12 w-full relative">
 
-    <div class="font-(family-name:--font-titling-gothic-fb-extended-bold) anim-element relative flex justify-end items-center mb-6 max-w-[1600px] mx-auto">
+    <div class="font-(family-name:--font-titling-gothic-fb-extended-bold) anim-element relative flex justify-end items-center  max-w-[1600px] mx-auto">
 
         <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold) hidden md:block text-lg md:text-xl font-bold uppercase tracking-wide text-[var(--accent-feedback-strong)]
             absolute left-1/2 -translate-x-1/2 text-center w-full pointer-events-none">
@@ -62,7 +62,7 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
 
     <div
             id="sliderContainer" 
-            class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 max-w-400 mx-auto scrollbar-hide"
+            class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 max-w-400 mx-auto scrollbar-hide pt-6"
             style="--anim-delay: 0.2s;"
         >
             {
@@ -73,29 +73,69 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                     const Tag = isLink ? "a" : "div";
 
                     return (
-                        <Tag
-                            href={isLink ? item.linkUrl : undefined}
-                            class={`basis-1/3 min-w-full md:min-w-[calc(33%-18px)] h-full snap-start group ${isLink ? "cursor-pointer" : ""}`}
-                        >
-                            <!-- IMAGEN CON OVERLAY CYAN -->
-                            <div class="overflow-hidden mb-5 relative bg-(--accent-highlight-primary)">
-                                {imgSrc && (
-                                    <Image
-                                        src={imgSrc}
-                                        alt={item.title_1}
-                                        width={800}
-                                        height={480}
-                                        class="w-full h-full transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                )}
+                        <div class="basis-1/3 min-w-full md:min-w-[calc(25%-18px)] h-full snap-start">
+                            <div class="snap-center flex flex-col h-full group w-full">
+
+                            <Tag
+                                href={isLink ? item.linkUrl : undefined}
+                                class={`transition-all duration-300 group-hover:-translate-y-3 ${isLink ? "cursor-pointer" : ""}`}
+                            >
+                                <!-- IMAGEN CON OVERLAY CYAN -->
+                                <div class="mb-4">
+                                    <div class="flex flex-col min-h-64.25 p-4 justify-between relative overflow-hidden border-[6px] border-(--brand-interactive-base)">
+                                        <div class="flex gap-4 flex-wrap mb-4 mr-auto relative">
+                                            <div class="font-(family-name:--font-sharp-sans-medium) bg-(--surface-brand-secondary) min-h-[35px] text-[1.125rem] py-[.25rem] px-[.5rem] decoration-none text-(--accent-feedback-strong)">{item.badge}</div>
+                                        </div>
+
+                                        <div class="grid grid-rows-auto grid-cols-[1fr_auto_1fr] self-stretch items-end gap-2 font-(family-name:--font-titling-gothic-fb-extended-bold)">
+                                            <div class="flex flex-col gap-2">
+                                                {imgSrc && (
+                                                    <Image
+                                                        src={imgSrc}
+                                                        alt={item.title_1}
+                                                        width={800}
+                                                        height={480}
+                                                        class="w-full h-full"
+                                                    />
+                                                )}
+                                                <span class="text-(--accent-feedback-strong) text-center">{item.title_1}</span>
+                                            </div>
+
+                                            <span class="text-[.5rem] text-(--accent-feedback-strong)">VS</span>
+
+                                            <div class="flex flex-col gap-2">
+                                                {img2Src && (
+                                                    <Image
+                                                        src={img2Src}
+                                                        alt={item.title_2}
+                                                        width={800}
+                                                        height={480}
+                                                        class="w-full h-full"
+                                                    />
+                                                )}
+                                                <span class="text-(--accent-feedback-strong) text-center">{item.title_2}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TÍTULO -->
+                                <h3 class="text-left font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[.875rem] lg:text-base text-(--brand-interactive-base) uppercase tracking-wide">
+                                    {item.title}
+                                </h3>
+                                <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong) uppercase tracking-wide">
+                                    {item.subtitle}
+                                </h4>
+                                <p class="text-left ont-(family-name:--font-sharp-sans-medium) text-base text-(--surface-brand-secondary) uppercase tracking-wide">
+                                    {item.description}
+                                </p>
+                                <p class="text-left font-(family-name:--font-sharp-sans-medium) italic text-base text-(--surface-brand-secondary) uppercase tracking-wide">
+                                    {item.description_2}
+                                </p>
+
+                            </Tag>
                             </div>
-
-                            <!-- TÍTULO -->
-                            <h3 class="font-montserrat font-bold text-[20px] text-[var(--surface-brand-secondary)] mb-3 uppercase tracking-wide group-hover:text-[var(--accent-highlight-primary)] transition-colors duration-300">
-                                {item.title}
-                            </h3>
-
-                        </Tag>
+                        </div>
                     );
                 })
             }
