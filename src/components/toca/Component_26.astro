@@ -68,19 +68,19 @@ if (finalBotonSecundario) buttonsToRender.push(finalBotonSecundario);
     <div class="w-full max-w-[1100px] border-[4px] md:border-[6px] border-[var(--brand-interactive-base)] bg-[var(--surface-brand-primary)] p-8 sm:p-12 md:py-16 md:px-20 text-center flex flex-col items-center justify-center">
         
         {subtituloMostrar && (
-            <SubtitleTag class="block font-[family-name:var(--font-principal)] text-[20px] font-medium text-[var(--accent-feedback-strong)] uppercase tracking-wider mb-2">
+            <SubtitleTag class="block font-(family-name:--font-titling-gothic-fb-extended-bold) text-[.7rem] md:text-[.875rem] font-medium text-[var(--accent-feedback-strong)] uppercase tracking-wider">
                 {subtituloMostrar}
             </SubtitleTag>
         )}
 
         {tituloMostrar && (
-            <TitleTag class="block font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold text-[var(--accent-feedback-strong)] leading-[1.1] uppercase mb-8">
+            <TitleTag class="block font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] md:text-[2.5rem] font-bold text-[var(--accent-feedback-strong)] leading-[1.1] uppercase mb-8">
                 {tituloMostrar}
             </TitleTag>
         )}
 
         {descriptionToRender && (
-            <div class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--accent-feedback-strong)] leading-relaxed mb-10 max-w-3xl mx-auto strapi-rich-text [&_p]:font-[family-name:var(--font-secundaria)] [&_p]:text-[16px] [&_p]:font-normal [&_p]:text-[var(--accent-feedback-strong)] [&_p]:mb-6 [&_p:last-child]:mb-0">
+            <div class="font-(family-name:--font-sharp-sans-medium) text-[14px] font-normal text-[var(--accent-feedback-strong)] leading-relaxed mb-10 max-w-3xl mx-auto strapi-rich-text [&_p]:font-(family-name:--font-sharp-sans-medium)">
                 <Fragment set:html={descriptionToRender} />
             </div>
         )}

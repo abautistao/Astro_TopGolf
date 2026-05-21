@@ -48,7 +48,7 @@ const TitleTag = titulo_seccionHtmlTag || 'h2';
 <section class="w-full bg-[var(--surface-brand-primary)] py-16 overflow-hidden">
     <div class="max-w-[1280px] mx-auto px-6 sm:px-8 mb-10">
         {titulo_seccion && (
-            <TitleTag class="text-center font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--accent-feedback-strong)] uppercase leading-[1.1] tracking-wide">
+            <TitleTag class="text-center font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] md:text-[2rem] font-bold text-[var(--accent-feedback-strong)] uppercase leading-[1.1] tracking-wide">
                 {titulo_seccion}
             </TitleTag>
         )}
@@ -74,7 +74,7 @@ const TitleTag = titulo_seccionHtmlTag || 'h2';
                         </div>
 
                         {/* Comment text */}
-                        <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--accent-feedback-strong)] leading-relaxed">
+                        <p class="font-(family-name:--font-sharp-sans-medium) text-[14px] font-normal text-[var(--accent-feedback-strong)] leading-relaxed">
                             {item.comentario}
                         </p>
                     </div>
