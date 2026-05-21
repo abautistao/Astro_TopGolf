@@ -127,8 +127,12 @@ if (boton_secundario) {
 </section>
 
 <style define:vars={{ margin_top, padding_top, padding_bottom }}>
+    .strapi-rich-text :global(h3) {
+        font-family: var(--font-sharp-sans-bold); 
+        font-size: 1.3rem;
+    }
     .strapi-rich-text :global(strong) {
-        color: var(--surface-brand-primary);
+        color: var(--surface-brand-primary) !important;
         font-weight: bold;
     }
     .strapi-rich-text :global(u) {
@@ -141,6 +145,8 @@ if (boton_secundario) {
         text-decoration-thickness: 2px;
         text-underline-offset: 3px;
     }
+
+    
 
     #featured-section {
         padding-top: var(--padding_top);
