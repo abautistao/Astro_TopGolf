@@ -12,10 +12,11 @@ interface TarjetaData {
     link: string
 }
 interface Props {
+    titulo_seccion: string;
     Tarjetas: TarjetaData[];
 }
 
-const { Tarjetas = [] } = Astro.props;
+const { titulo_seccion, Tarjetas = [] } = Astro.props;
 
 const defaultCards = [
     {
@@ -52,7 +53,13 @@ const ProcessedTarjetas = rawData.map((card) => ({
 ---
 
 <section class="trigger-anim-cards w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 relative">
-
+    <div class="max-w-[1400px] mx-auto px-6 sm:px-8 mb-10">
+        {titulo_seccion && (
+            <h2 class="text-center font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] md:text-[2rem] font-bold text-[var(--accent-feedback-strong)] uppercase leading-[1.1] tracking-wide">
+                {titulo_seccion}
+            </h2>
+        )}
+    </div>
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full fade-in-up">
 
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
