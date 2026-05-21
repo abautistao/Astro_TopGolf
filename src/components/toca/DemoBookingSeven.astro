@@ -53,6 +53,75 @@
                 </div>
             </div>
 
+        <!-- CALENDAR SECTION -->
+        <div class="bg-[var(--surface-brand-primary)] border border-white/10 rounded-3xl p-6 md:p-8 shadow-xl text-white mb-8 transition-colors duration-300 flex flex-col gap-6">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-6">
+                <div class="flex flex-col gap-1">
+                    <h3 class="font-[family-name:var(--font-principal)] text-[28px] md:text-[32px] font-bold uppercase tracking-tight text-white leading-none">
+                        TOCA SOCIAL MONTERREY
+                    </h3>
+                    <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-white/60">
+                        Galerías Valle Oriente · Reserva
+                    </p>
+                </div>
+                <!-- Month Selector Badge -->
+                <div class="flex items-center gap-3 bg-black/40 border border-white/10 px-4 py-2 rounded-full">
+                    <button type="button" id="prev-month-btn" class="text-white hover:text-[var(--brand-interactive-base)] transition-colors duration-200 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <span id="current-month-label" class="font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider text-[var(--brand-interactive-base)] min-w-[100px] text-center">
+                        Mayo 2026
+                    </span>
+                    <button type="button" id="next-month-btn" class="text-white hover:text-[var(--brand-interactive-base)] transition-colors duration-200 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Content Columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Date Selector (Left) -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    <h4 class="font-[family-name:var(--font-principal)] text-xs font-bold uppercase tracking-widest text-white/50">
+                        Selecciona una fecha
+                    </h4>
+                    
+                    <div class="flex flex-col gap-4">
+                        <!-- Weekday Headers -->
+                        <div class="grid grid-cols-7 text-center font-[family-name:var(--font-principal)] text-xs font-bold text-white/40 uppercase">
+                            <div>L</div>
+                            <div>M</div>
+                            <div>X</div>
+                            <div>J</div>
+                            <div>V</div>
+                            <div>S</div>
+                            <div>D</div>
+                        </div>
+                        <!-- Days Grid -->
+                        <div id="calendar-days-grid" class="grid grid-cols-7 gap-y-3 gap-x-2 text-center">
+                            <!-- Dynamic rendering in JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Selector (Right) -->
+                <div class="lg:col-span-5 flex flex-col gap-6 lg:border-l lg:border-white/10 lg:pl-8">
+                    <h4 class="font-[family-name:var(--font-principal)] text-xs font-bold uppercase tracking-widest text-white/50">
+                        Horarios disponibles
+                    </h4>
+                    
+                    <div id="calendar-times-grid" class="grid grid-cols-2 gap-4">
+                        <!-- Dynamic rendering in JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
             {/* Cards Grid */}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
                 
@@ -511,7 +580,7 @@
                     <div class="flex flex-col sm:flex-row gap-4 w-full justify-center mt-2">
                         <a 
                             href="/reservar"
-                            class="inline-block px-8 py-3 rounded-xl bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider hover:bg-white hover:scale-[1.03] transition-all duration-300 text-center shadow-[3px_3px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                            class="final-booking-btn inline-block px-8 py-3 rounded-xl bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold uppercase text-xs tracking-wider hover:bg-white hover:scale-[1.03] transition-all duration-300 text-center shadow-[3px_3px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                         >
                             Ir al booking →
                         </a>
@@ -620,9 +689,12 @@
                     if (actionBtn) {
                         const cardTitle = cardName.charAt(0).toUpperCase() + cardName.slice(1);
                         actionBtn.textContent = `Reservar ${cardTitle} (${players} pers) →`;
-                        actionBtn.setAttribute('href', '/reservar?party_size=' + players)
+                        actionBtn.setAttribute('href', '/reservar?party_size=' + players);
                     }
                 }
+
+                // Sync with calendar date and time
+                updateAllBookingUrls();
             });
         });
 
@@ -685,5 +757,286 @@
                 }
             });
         });
+
+        // ==========================================
+        // --- CALENDAR LOGIC ---
+        // ==========================================
+        const today = new Date();
+        // Default to May 29, 2026 as per mockup, or today if that date is in the past
+        let selectedDate = new Date(2026, 4, 29);
+        let displayDate = new Date(2026, 4, 1);
+
+        if (today > new Date(2026, 4, 29)) {
+            selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            displayDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        }
+
+        let selectedTime = '5:00 PM'; // Default selected time slot
+
+        const monthNames = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        // Deterministic slot generation based on date to keep UI alive and dynamic
+        function getSlotsForDate(date: Date) {
+            const day = date.getDate();
+            const baseTimes = [
+                '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', 
+                '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM'
+            ];
+            
+            return baseTimes.map(time => {
+                let status = 'Disponible';
+                
+                if (time === '2:00 PM' || time === '6:00 PM') {
+                    status = (day % 2 === 1) ? 'Agotado' : 'Disponible';
+                } else if (time === '12:00 PM') {
+                    status = (day % 3 === 0) ? 'Agotado' : 'Disponible';
+                } else if (time === '7:00 PM') {
+                    status = (day % 4 === 0) ? 'Agotado' : 'Disponible';
+                }
+                
+                return { time, status };
+            });
+        }
+
+        function renderCalendar() {
+            const currentMonthLabel = document.getElementById('current-month-label');
+            const daysGrid = document.getElementById('calendar-days-grid');
+            if (!currentMonthLabel || !daysGrid) return;
+
+            const year = displayDate.getFullYear();
+            const monthIndex = displayDate.getMonth();
+            currentMonthLabel.textContent = `${monthNames[monthIndex]} ${year}`;
+
+            daysGrid.innerHTML = '';
+
+            const firstDay = new Date(year, monthIndex, 1);
+            const lastDay = new Date(year, monthIndex + 1, 0);
+            const totalDays = lastDay.getDate();
+
+            // Monday-first offset
+            let startOffset = firstDay.getDay();
+            startOffset = startOffset === 0 ? 6 : startOffset - 1;
+
+            // Offset padding
+            for (let i = 0; i < startOffset; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'py-2.5';
+                daysGrid.appendChild(emptyCell);
+            }
+
+            const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+            // Days cells
+            for (let day = 1; day <= totalDays; day++) {
+                const cellDate = new Date(year, monthIndex, day);
+                const dayBtn = document.createElement('button');
+                dayBtn.textContent = day.toString();
+                dayBtn.type = 'button';
+
+                const isPast = todayNormalized > cellDate;
+                const isToday = today.getFullYear() === year && today.getMonth() === monthIndex && today.getDate() === day;
+                const isSelected = selectedDate.getFullYear() === year && selectedDate.getMonth() === monthIndex && selectedDate.getDate() === day;
+
+                let classes = 'w-10 h-10 mx-auto flex items-center justify-center rounded-xl text-sm font-semibold transition-all duration-200 ';
+
+                if (isPast) {
+                    classes += 'text-white/20 cursor-not-allowed pointer-events-none';
+                } else if (isSelected) {
+                    classes += 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-bold shadow-md shadow-[var(--brand-interactive-base)]/20';
+                } else {
+                    classes += 'text-white/80 hover:bg-white/10 hover:text-white cursor-pointer';
+                    if (isToday) {
+                        classes += ' border border-[var(--brand-interactive-base)]/50 text-[var(--brand-interactive-base)]';
+                    }
+                }
+
+                dayBtn.className = classes;
+
+                if (!isPast) {
+                    dayBtn.addEventListener('click', () => {
+                        selectedDate = cellDate;
+                        
+                        // Check if selected time is valid for the new date, otherwise pick first available
+                        const newSlots = getSlotsForDate(selectedDate);
+                        const existsAndAvailable = newSlots.some(s => s.time === selectedTime && s.status !== 'Agotado');
+                        if (!existsAndAvailable) {
+                            const firstAvailable = newSlots.find(s => s.status !== 'Agotado');
+                            if (firstAvailable) {
+                                selectedTime = firstAvailable.time;
+                            }
+                        }
+
+                        syncTabAndPriceWithDate(selectedDate);
+                        renderCalendar();
+                        renderTimeSlots();
+                        updateAllBookingUrls();
+                    });
+                }
+
+                daysGrid.appendChild(dayBtn);
+            }
+        }
+
+        function renderTimeSlots() {
+            const timesGrid = document.getElementById('calendar-times-grid');
+            if (!timesGrid) return;
+
+            timesGrid.innerHTML = '';
+            const slots = getSlotsForDate(selectedDate);
+
+            slots.forEach(slot => {
+                const slotBtn = document.createElement('button');
+                slotBtn.type = 'button';
+                
+                const isSelected = selectedTime === slot.time && slot.status !== 'Agotado';
+                const isAgotado = slot.status === 'Agotado';
+
+                let btnClasses = 'flex flex-col items-start p-4 rounded-2xl border transition-all duration-300 text-left w-full ';
+                let timeClasses = 'font-[family-name:var(--font-principal)] text-base font-bold ';
+                let statusClasses = 'font-[family-name:var(--font-secundaria)] text-xs mt-1 ';
+
+                if (isAgotado) {
+                    btnClasses += 'bg-black/10 border-white/5 opacity-30 cursor-not-allowed';
+                    timeClasses += 'text-white/40';
+                    statusClasses += 'text-white/30';
+                } else if (isSelected) {
+                    btnClasses += 'bg-[var(--brand-interactive-base)] border-transparent text-[var(--surface-brand-primary)] shadow-lg shadow-[var(--brand-interactive-base)]/10 scale-[1.02]';
+                    timeClasses += 'text-[var(--surface-brand-primary)]';
+                    statusClasses += 'text-[var(--surface-brand-primary)]/80 font-medium';
+                } else {
+                    btnClasses += 'bg-black/30 border-white/10 text-white hover:border-[var(--brand-interactive-base)]/50 hover:bg-black/50 cursor-pointer';
+                    timeClasses += 'text-white';
+                    statusClasses += 'text-white/50';
+                }
+
+                slotBtn.className = btnClasses;
+
+                const timeSpan = document.createElement('span');
+                timeSpan.className = timeClasses;
+                timeSpan.textContent = slot.time;
+                slotBtn.appendChild(timeSpan);
+
+                const statusSpan = document.createElement('span');
+                statusSpan.className = statusClasses;
+                statusSpan.textContent = isSelected ? 'Seleccionado' : slot.status;
+                slotBtn.appendChild(statusSpan);
+
+                if (!isAgotado) {
+                    slotBtn.addEventListener('click', () => {
+                        selectedTime = slot.time;
+                        renderTimeSlots();
+                        updateAllBookingUrls();
+                    });
+                }
+
+                timesGrid.appendChild(slotBtn);
+            });
+        }
+
+        function syncTabAndPriceWithDate(date: Date) {
+            const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6;
+            const targetTabValue = isWeekend ? 'vie-dom' : 'lun-jue';
+            
+            if (currentDayTab !== targetTabValue) {
+                currentDayTab = targetTabValue;
+                
+                tabBtns.forEach(btn => {
+                    const val = btn.getAttribute('data-tab-value');
+                    if (val === targetTabValue) {
+                        btn.classList.add('active');
+                        btn.classList.remove('text-white/60');
+                    } else {
+                        btn.classList.remove('active');
+                        btn.classList.remove('text-[var(--surface-brand-primary)]');
+                        btn.classList.add('text-white/60');
+                    }
+                });
+                
+                updateBookingPrices(currentDayTab);
+            }
+        }
+
+        function updateAllBookingUrls() {
+            const year = selectedDate.getFullYear();
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+
+            let timeStr = '';
+            const match = selectedTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (match) {
+                let hour = parseInt(match[1], 10);
+                const min = match[2];
+                const ampm = match[3].toUpperCase();
+                if (ampm === 'PM' && hour < 12) hour += 12;
+                if (ampm === 'AM' && hour === 12) hour = 0;
+                timeStr = `${String(hour).padStart(2, '0')}:${min}`;
+            } else {
+                timeStr = selectedTime;
+            }
+
+            // Update card action buttons
+            const cardActionBtns = document.querySelectorAll('.card-action-btn');
+            cardActionBtns.forEach(btn => {
+                const href = btn.getAttribute('href');
+                if (href) {
+                    try {
+                        const url = new URL(href, window.location.origin);
+                        url.searchParams.set('date', dateStr);
+                        url.searchParams.set('time', timeStr);
+                        btn.setAttribute('href', url.pathname + url.search);
+                    } catch (e) {
+                        btn.setAttribute('href', `/reservar?date=${dateStr}&time=${timeStr}`);
+                    }
+                }
+            });
+
+            // Update final booking button
+            const finalBookingBtns = document.querySelectorAll('.final-booking-btn');
+            finalBookingBtns.forEach(btn => {
+                const href = btn.getAttribute('href');
+                if (href) {
+                    try {
+                        const url = new URL(href, window.location.origin);
+                        url.searchParams.set('date', dateStr);
+                        url.searchParams.set('time', timeStr);
+                        btn.setAttribute('href', url.pathname + url.search);
+                    } catch (e) {
+                        btn.setAttribute('href', `/reservar?date=${dateStr}&time=${timeStr}`);
+                    }
+                }
+            });
+        }
+
+        // Navigation
+        const prevMonthBtn = document.getElementById('prev-month-btn');
+        const nextMonthBtn = document.getElementById('next-month-btn');
+
+        if (prevMonthBtn) {
+            prevMonthBtn.addEventListener('click', () => {
+                const minMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const prevMonth = new Date(displayDate.getFullYear(), displayDate.getMonth() - 1, 1);
+                if (prevMonth >= minMonth) {
+                    displayDate = prevMonth;
+                    renderCalendar();
+                }
+            });
+        }
+
+        if (nextMonthBtn) {
+            nextMonthBtn.addEventListener('click', () => {
+                displayDate = new Date(displayDate.getFullYear(), displayDate.getMonth() + 1, 1);
+                renderCalendar();
+            });
+        }
+
+        // Initialize Calendar
+        renderCalendar();
+        renderTimeSlots();
+        updateAllBookingUrls();
     });
 </script>
