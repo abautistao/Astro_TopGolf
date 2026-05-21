@@ -1,16 +1,21 @@
 ---
 // src/components/toca/Component_5.astro
-import EventCard from '../toca/elements/EventCard.astro';
-import EventModal from '../toca/elements/EventModal.astro';
+import { getStrapiUrl, stringifyRichText, getLocalizedUrl } from '../../lib/strapi.js';
+import { Image } from "astro:assets";
 
 interface CardData {
     id: number;
     badge: string;
+    image_1: any;
+    image_2: any;
+    title_1: string;
+    title_2: string;
     title: any;
     subtitle: any;
     subtitle_2: string
     text: string
     text_2: string
+    linkUrl: string;
 }
 
 interface Props {
@@ -56,23 +61,45 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
     </div>
 
     <div
-        id="sliderContainer"
-        class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6
-            max-w-400 mx-auto scrollbar-hide"
-        style="--anim-delay: 0.2s;"
-    >
-        {dataToRender.map((evento) => (
+            id="sliderContainer" 
+            class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 max-w-400 mx-auto scrollbar-hide"
+            style="--anim-delay: 0.2s;"
+        >
+            {
+                Array.isArray(tarjetas) && tarjetas.map((item) => {
+                    const imgSrc = getStrapiUrl(item.image_1) || item.image_1;
+                    const img2Src = getStrapiUrl(item.image_2) || item.image_2;
+                    const isLink = item.linkUrl && item.linkUrl !== "#";
+                    const Tag = isLink ? "a" : "div";
 
-            <div class="basis-1/3 min-w-full md:min-w-[calc(25%-18px)] h-full snap-start">
-                <EventCard
-                    evento={evento}
-                    tipo="version_1"
-                />
-            </div>
-        ))}
-    </div>
+                    return (
+                        <Tag
+                            href={isLink ? item.linkUrl : undefined}
+                            class={`basis-1/3 min-w-full md:min-w-[calc(33%-18px)] h-full snap-start group ${isLink ? "cursor-pointer" : ""}`}
+                        >
+                            <!-- IMAGEN CON OVERLAY CYAN -->
+                            <div class="overflow-hidden mb-5 relative bg-(--accent-highlight-primary)">
+                                {imgSrc && (
+                                    <Image
+                                        src={imgSrc}
+                                        alt={item.title_1}
+                                        width={800}
+                                        height={480}
+                                        class="w-full h-full transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                )}
+                            </div>
 
-    <EventModal />
+                            <!-- TÍTULO -->
+                            <h3 class="font-montserrat font-bold text-[20px] text-[var(--surface-brand-secondary)] mb-3 uppercase tracking-wide group-hover:text-[var(--accent-highlight-primary)] transition-colors duration-300">
+                                {item.title}
+                            </h3>
+
+                        </Tag>
+                    );
+                })
+            }
+        </div>
 
 </section>
 
