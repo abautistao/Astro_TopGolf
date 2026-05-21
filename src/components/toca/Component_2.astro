@@ -38,24 +38,17 @@ const mainTextHtml  = stringifyRichText(descripcion_principal);
 const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
 ---
 
-<section class="trigger-anim-split section-animate w-full bg-split pt-12 pb-12 lg:pt-5 lg:pb-28 overflow-visible relative">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+<section class="trigger-anim-split section-animate w-full bg-[var(--surface-brand-primary)] overflow-visible relative">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 bg-split pt-12 pb-12 lg:pt-26 lg:pb-40">
         <div class="flex flex-col lg:flex-row items-end justify-between gap-8 lg:gap-4">
 
-            <div class="hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-end order-2 lg:order-1 -mb-12 lg:-mb-24 z-30 relative">
-                <div class="photo-card rotate-card-left">
-                    <div class="bg-[var(--surface-brand-primary)] border-2 border-[var(--surface-brand-primary)] shadow-xl">
-                        <div class="overflow-hidden aspect-[3/4] relative w-[260px] sm:w-[300px]">
-                            <Image
-                                src={imgLeftUrl || "https://placehold.co/100x720/2d3748/ffffff?text=Imagen+Fondo"}
-                                alt="Playing"
-                                class="w-full h-full object-cover"
-                                width={400}
-                                height={600}
-                            />
-                        </div>
-                    </div>
-                </div>
+            <div class="image-left hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-end order-2 lg:order-1 -mb-12 lg:-mb-24 z-30 absolute left-0 2xl:left-[10%]">
+                 <Image
+                    src={imgLeftUrl || "https://placehold.co/100x720/2d3748/ffffff?text=Imagen+Fondo"}
+                    alt="Playing"
+                    class="w-full"
+                    inferSize={true}
+                />
             </div>
 
             <div class="w-full text-center flex flex-col items-center justify-center order-1 lg:order-2 z-20 mb-0 lg:mb-0 pb-0 lg:pb-0">
@@ -63,30 +56,24 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
                 <div class="prose font-(family-name:--font-sharp-sans-bold) font-bold text-[var(--surface-brand-primary)] text-base md:text-base mb-4 mx-auto px-8 lg:px-12 text-center">
                     <Fragment set:html={mainTextHtml} />
                 </div>
-
-                <div class="font-(family-name:--font-sharp-sans-medium) font-normal text-[var(--surface-brand-primary)] text-base md:text-base mb-4 mx-auto px-8 lg:px-20 text-center">
-                    <Fragment set:html={secondaryTextHtml} />
-                </div>
-
+                
                 <Button
                     botones={[boton_primario, boton_secundario].filter(Boolean)}
-                    clase="flex flex-row gap-4 sm:gap-6 w-full md:w-1/2 justify-center items-center flex-wrap sm:flex-nowrap"
+                    clase="flex flex-row gap-4 sm:gap-6 w-full md:w-1/4 justify-center items-center flex-wrap sm:flex-nowrap mb-6"
                 />
-            </div>
-            <div class="hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-start order-3 -mb-12 lg:-mb-24 z-30 relative">
-                <div class="photo-card rotate-card-right">
-                    <div class="bg-[var(--surface-brand-primary)] border-2 border-[var(--surface-brand-primary)] shadow-xl">
-                        <div class="overflow-hidden aspect-[3/4] relative w-[260px] sm:w-[300px]">
-                            <Image
-                                src={imgRightUrl || "https://placehold.co/100x720/2d3748/ffffff?text=Imagen+Fondo"}
-                                alt="Dining"
-                                class="w-full h-full object-cover"
-                                inferSize={true}
-                                loading="lazy"
-                            />
-                        </div>
-                    </div>
+
+                <div class="font-(family-name:--font-sharp-sans-medium) font-normal text-[var(--surface-brand-primary)] text-base md:text-sm mb-4 mx-auto px-8 lg:px-20 text-center">
+                    <Fragment set:html={secondaryTextHtml} />
                 </div>
+            </div>
+            <div class="image-right hidden lg:flex w-full lg:w-1/4 justify-center lg:justify-start order-3 -mb-12 lg:-mb-24 z-30 absolute right-0 2xl:right-[10%]">
+                <Image
+                    src={imgRightUrl || "https://placehold.co/100x720/2d3748/ffffff?text=Imagen+Fondo"}
+                    alt="Dining"
+                    class="w-full "
+                    inferSize={true}
+                    loading="lazy"
+                />
             </div>
 
         </div>
@@ -126,8 +113,14 @@ const secondaryTextHtml = stringifyRichText(descripcion_secundaria);
         }
     }
 
-    .rotate-card-left { transform: rotate(-6deg); }
-    .rotate-card-right { transform: rotate(6deg); }
+    .image-left, .image-right{ 
+        border: 6px solid var(--surface-brand-primary);
+        object-fit: contain;
+        min-width: 200px;
+        max-width: 280px;
+        top: 50%;
+        margin-top: -204px;
+     }
 
 
     @keyframes fadeInUp {

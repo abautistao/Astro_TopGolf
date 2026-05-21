@@ -1,0 +1,104 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import type { Boton } from "./elements/Button.astro";
+import Button from './elements/Button.astro';
+export interface Props {
+    background: any;
+    title: string;
+    subtitle: string;
+    description: string;
+    Boton: Boton;
+}
+
+const {
+    background,
+    title,
+    subtitle,
+    description,
+    Boton
+} = Astro.props;
+
+const heroBackgroundUrl = getStrapiUrl(background);
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(heroBackgroundUrl);
+const heroDescription = stringifyRichText(description);
+---
+<section class="relative w-full min-h-[550px] md:min-h-[650px] flex flex-col-reverse lg:block lg:flex-none">
+    {
+        showVideo ? (
+            <video
+                src={heroBackgroundUrl}
+                autoplay
+                loop
+                muted
+                playsinline
+                class="relative lg:absolute inset-0 w-full h-full object-cover"
+            />
+        ) : (
+            <Image
+                src={heroBackgroundUrl}
+                alt={"Imagen de fondo de TOCA Social"}
+                class="relative lg:absolute inset-0 object-cover w-full h-full"
+                inferSize={true}
+            />
+        )
+    }
+
+    <!-- Contenido central -->
+    <div
+        class="relative z-10 flex flex-col items-center justify-center h-full md:h-[650px] text-center px-4 lg-px-0 bg-[var(--surface-brand-primary)] lg:bg-transparent py-6 lg:py-0"
+    >
+        <h1
+            class="block font-bold uppercase tracking-wider
+                    text-[10px] sm:text-xs lg:text-sm
+                    mt-0 lg:-mt-5
+                    text-[var(--accent-feedback-strong)]
+                    font-(family-name:--font-titling-gothic-fb-extended-bold)
+                    whitespace-normal md:whitespace-nowrap
+                    w-auto md:w-max
+                    max-w-full md:max-w-none
+                    relative z-50"
+        >
+            {title || ""}
+        </h1>
+
+        <h2
+            class="font-bold uppercase leading-[0.85] tracking-tighter mb-6 flex flex-col text-[var(--accent-feedback-strong)] relative z-40 w-[60vw] min-w-[300px]"
+        >
+            <span
+                class="whitespace-pre-line text-xl lg:text-[58px] font-(family-name:--font-titling-gothic-fb-extended-bold)"
+                aria-label={subtitle}
+            >{subtitle}</span>
+        </h2>
+
+        <div class="text-[var(--accent-feedback-strong)] text-sm lg:text-sm font-bold leading-relaxed strapi-rich-text font-(family-name:--font-sharp-sans-bold) mb-10 lg:w-[60vw]" set:html={heroDescription}></div>
+
+        {
+            Boton && (
+                <Button
+                    botones={[Boton]}
+                    clase="flex justify-start w-fit lg:justify-start"
+                />
+            )
+        }
+    </div>
+</section>
+
+<style>
+    .strapi-rich-text :global(p) {
+        font-size: 1.125rem;
+        font-weight: 700;
+    }
+</style>
