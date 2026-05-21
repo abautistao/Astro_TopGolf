@@ -66,21 +66,21 @@ if (boton_secundario) {
     <div id="featured-content" class="relative flex flex-col lg:flex-row lg:items-stretch w-full max-w-[1200px] mx-auto border-2 border-[var(--surface-brand-primary)]" style="background-color: var(--accent-feedback-strong);">
         
         {/* Left Column (Text box) */}
-        <div class="order-2 lg:order-1 w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col relative justify-center text-center lg:text-left border-t-2 lg:border-t-0 lg:border-r-2 border-[var(--surface-brand-primary)]">
+        <div class="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col relative justify-center text-center lg:text-left border-t-2 lg:border-t-0 lg:border-r-2 border-[var(--surface-brand-primary)]">
             {subtituloMostrar && (
-                <SubtitleTag class="block font-[family-name:var(--font-principal)] text-[20px] font-medium text-[var(--surface-brand-primary)] uppercase tracking-wider mb-2">
+                <SubtitleTag class="block font-(family-name:--font-titling-gothic-fb-extended-bold) text-[.7rem] lg:text-[.875rem] font-medium text-[var(--surface-brand-primary)] uppercase tracking-wider mb-2">
                     {subtituloMostrar}
                 </SubtitleTag>
             )}
 
             {tituloMostrar && (
-                <TitleTag class="block font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--surface-brand-primary)] leading-[1.1] uppercase mb-6">
+                <TitleTag class="block font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] lg:text-[2.5rem] font-bold text-[var(--surface-brand-primary)] leading-[1.1] uppercase mb-6">
                     {tituloMostrar}
                 </TitleTag>
             )}
 
             {descripcionHtml && (
-                <div class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)] leading-relaxed mb-6 strapi-rich-text [&_p]:font-[family-name:var(--font-secundaria)] [&_p]:text-[16px] [&_p]:font-normal [&_p]:text-[var(--surface-brand-primary)] [&_p]:mb-4 [&_p:last-child]:mb-0">
+                <div class="font-(family-name:--font-sharp-sans-medium) text-[16px] font-normal text-[var(--surface-brand-primary)] leading-relaxed mb-3 strapi-rich-text [&_p]:font-[family-name:var(--font-secundaria)] [&_p]:text-[16px] [&_p]:font-normal [&_p]:text-[var(--surface-brand-primary)] [&_p]:mb-4 [&_p:last-child]:mb-0">
                     <Fragment set:html={descripcionHtml} />
                 </div>
             )}
@@ -96,7 +96,7 @@ if (boton_secundario) {
         </div>
 
         {/* Right Column (Media) */}
-        <div class="order-1 lg:order-2 w-full lg:w-1/2 min-h-[300px] md:min-h-[450px] lg:min-h-auto relative overflow-hidden flex items-center justify-center bg-[var(--surface-brand-primary)]">
+        <div class="w-full lg:w-1/2 min-h-[300px] md:min-h-[450px] lg:min-h-auto relative overflow-hidden flex items-center justify-center bg-[var(--surface-brand-primary)]">
             {strapiImageUrl ? (
                 isVideo ? (
                     <video
