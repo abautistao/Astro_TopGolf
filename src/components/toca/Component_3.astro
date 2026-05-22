@@ -164,7 +164,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
         cards.forEach(card => {
             card.addEventListener('click', function(e){
                 const link = card.getAttribute('data-href');
-
+ 
                 if(link)
                     window.location.href = link;
             })
