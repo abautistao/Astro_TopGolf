@@ -73,7 +73,7 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                     const Tag = isLink ? "a" : "div";
 
                     return (
-                        <div class="basis-1/3 min-w-full md:min-w-[calc(25%-18px)] h-full snap-start">
+                        <div class="basis-1/3 min-w-full md:min-w-[calc(33%-12px)] h-full snap-start">
                             <div class="snap-center flex flex-col h-full group w-full">
 
                             <Tag
@@ -123,13 +123,16 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                                 <h3 class="text-left font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[.875rem] lg:text-base text-(--brand-interactive-base) uppercase tracking-wide">
                                     {item.title}
                                 </h3>
-                                <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong) uppercase tracking-wide">
+                                <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong)  tracking-wide">
                                     {item.subtitle}
                                 </h4>
-                                <p class="text-left ont-(family-name:--font-sharp-sans-medium) text-base text-(--surface-brand-secondary) uppercase tracking-wide">
+                                <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong)  tracking-wide">
+                                    {item.subtitle_2}
+                                </h4>
+                                <p class="text-left ont-(family-name:--font-sharp-sans-medium) text-base text-(--surface-brand-secondary)  tracking-wide">
                                     {item.description}
                                 </p>
-                                <p class="text-left font-(family-name:--font-sharp-sans-medium) italic text-base text-(--surface-brand-secondary) uppercase tracking-wide">
+                                <p class="text-left font-(family-name:--font-sharp-sans-medium) italic text-base text-(--surface-brand-secondary)  tracking-wide">
                                     {item.description_2}
                                 </p>
 

@@ -1,0 +1,354 @@
+---
+// src/components/toca/Component_25.astro
+
+interface Review {
+    id: number;
+    estrellas?: number;
+    comentario?: string;
+}
+
+interface Props {
+    titulo_seccion?: string;
+    titulo_seccionHtmlTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
+    reviews?: Review[];
+}
+
+const {
+    titulo_seccion = "1000'S OF 5 STAR REVIEWS",
+    titulo_seccionHtmlTag = "h2",
+    reviews = []
+} = Astro.props;
+
+const defaultReviews: Review[] = [
+    {
+        id: 1,
+        estrellas: 5,
+        comentario: "We had an amazing experience today, Molly and Maria made it extra special with their amazing customer service and friendly nature. Will definitely be back because of these 2 employees, nothing was too much trouble for them. Thanks again guys! :)"
+    },
+    {
+        id: 2,
+        estrellas: 5,
+        comentario: "Brilliant experience at TOCA Social O2! The atmosphere was great and everything ran smoothly. Huge shoutout to Dana and Amy for their amazing service - they were friendly, attentive, and really made our visit special. Will definitely be back!"
+    },
+    {
+        id: 3,
+        estrellas: 5,
+        comentario: "Brilliant atmosphere and the interactive football games are so much fun! Great for groups, birthdays, or just hanging out. Food and drinks were fantastic too."
+    }
+];
+
+const dataToRender = reviews && reviews.length > 0 ? reviews : defaultReviews;
+
+// Triplicamos la lista para garantizar el efecto sin fin y cubrir toda la pantalla
+const marqueeItems = [...dataToRender, ...dataToRender, ...dataToRender];
+
+const TitleTag = titulo_seccionHtmlTag || 'h2';
+---
+
+<section class="w-full bg-(--surface-brand-secondary) py-14 overflow-hidden">
+    <div class="max-w-[1280px] mx-auto px-6 sm:px-8">
+        {titulo_seccion && (
+            <TitleTag class="text-center font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] md:text-[2rem] font-bold text-(--surface-brand-primary) uppercase leading-[1.1] tracking-wide mb-12">
+                {titulo_seccion}
+            </TitleTag>
+        )}
+
+        <div id="grid-cards" class="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] lg:grid-cols-3 gap-6 overflow-scroll scroll-">
+            <div class="">
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo A</h3>
+                </div>
+
+                <div class="flex flex-col ">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_mexico_0a0ddac2bc.png" alt="País México">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-0">MÉXICO</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_sudafrica_2a5dcc6963.png" alt="País Sudáfrica">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">SUDÁFRICA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_corea_9045c8d797.png" alt="País Corea">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">COREA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_republica_checa_86df63f9db.png" alt="País República Checa">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">REPÚBLICA CHECA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo B</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_canada_6d5837fe85.png" alt="País Canadá">
+                        <h4 class="text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">CANADÁ</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/bosnia_736390b155.png" alt="País Bosnia">
+                        <h4 class="text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">BOSNIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_catar_2f9f794be1.png" alt="País Qatar">
+                        <h4 class="text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">QATAR</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_suiza_696d806ddf.png" alt="País Suiza">
+                        <h4 class="text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">SUIZA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo C</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_brasil_941bd15ba3.png" alt="País Brasil">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">BRASIL</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_marruecos_eeb1dc93b6.png" alt="País Marruecos">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">MARRUECOS</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_haiti_dc31779455.png" alt="País Haití">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">HAITÍ</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_escocia_5a9261adf0.png" alt="País Escocia">
+                        <h4 class="text-[.75rem] lg:ext-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ESCOCIA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo D</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_usa_a7d6b81f66.png" alt="País USA">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">USA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_paraguay_456b685899.png" alt="País Paraguay">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">PARAGUAY</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_australia_939e05e8f1.png" alt="País Australia">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">AUSTRALIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_turquia_1579c0e94b.png" alt="País Turquía">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">TURQUÍA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo E</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_alemania_03202b7b03.png" alt="País Alemania">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ALEMANIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_curazao_174b1d0f9f.png" alt="País Curazao">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">CURAZAO</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_costa_de_marfil_1bcceb869d.png" alt="País Costa de MArfil">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">COSTA DE MARFIL</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_ecuador_a71a457ddb.png" alt="País Ecuador">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ECUADOR</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo F</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_paises_bajos_862402af52.png" alt="Países Bajos">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">Países Bajos</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_japon_627af615da.png" alt="País Japón">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">JAPÓN</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_suecia_3efbb07c51.png" alt="País Suecia">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">SUECIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_tunez_a8b54707d8.png" alt="País Túnez">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">TÚNEZ</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo G</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_belgica_852e6952f2.png" alt="">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">BÉLGICA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_egipto_bca04ba8aa.png" alt="País Egipto">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">EGIPTO</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_iran_116588d49d.png" alt="País Irán">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">IRÁN</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_nva_zelanda_5cf59600ca.png" alt="País Nueva Zelanda">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">NUEVA ZELANDA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo H</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_espana_ace0ac0ba8.png" alt="País España">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ESPAÑA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_cabo_verde_c43b4373f7.png" alt="País Cabo Verde">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">CABO VERDE</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_arabia_saudita_02a1607a59.png" alt="País Araba Saudita">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ARABIA SAUDITA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_uruguay_11de17018a.png" alt="País Uruguay">
+                        <h4 class="ttext-[.75rem] lg:ext-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">URUGUAY</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo I</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_francia_aa493aba79.png" alt="País Francia">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">FRANCIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_senegal_1422c897a1.png" alt="País Senegeal">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">SENEGEAL</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_irak_d5d6c5538b.png" alt="País Irak">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">IRAK</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_noruega_dfb4674fef.png" alt="País Noruega">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">NORUEGA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo J</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_argentina_2e5edb53f4.png" alt="País Argentina">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ARGENTINA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_argelia_594c460730.png" alt="País Argelia">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">ARGELIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_austria_1c09c8f773.png" alt="País Austria">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">AUSTRIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_jordan_957d7842b0.png" alt="País Jordania">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">JORDANIA</h4>
+                    </div>
+                </div> 
+                
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo K</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_portugal_bd1e94154f.png" alt="País Portugal">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">PORTUGAL</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_rd_congo_b7aa4e8a5b.png" alt="País RD Congo">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">RD CONGO</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_uzbekistan_0a7efa8513.png" alt="País Uzbekistán">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">UZBEKISTÁN</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_colombia_462c6626cd.png" alt="País Colombia">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">COLOMBIA</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="p-4  bg-(--surface-brand-primary) ">
+                    <h3 class="text-[1.5rem] uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) text-(--accent-feedback-strong)">Grupo L</h3>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary)">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_inglaterra_32e2af9760.png" alt="País Inglaterra">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">INGLATERRA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_croacia_46a80db592.png" alt="País Croacia">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">CROACIA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_ghana_11df7a7fda.png" alt="País Ghana">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">GHANA</h4>
+                    </div>
+                    <div class="p-4 flex items-center gap-6 border-2 border-(--surface-brand-primary) border-t-0">
+                        <img class="min-w-[45px] max-w-[45px] min-h-[26px] max-h-[45px]" src="https://cms.tocasocial.com.mx/uploads/pais_panama_b980348cb7.png" alt="País Panamá">
+                        <h4 class="text-[.75rem] lg:text-sm uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)">PANAMÁ</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="w-full bg-(--surface-brand-primary) py-16 overflow-hidden"></section>
+<style>
+    #grid-cards::-webkit-scrollbar {
+        display: none;
+    }
+</style>
