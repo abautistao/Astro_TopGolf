@@ -1,15 +1,17 @@
 ---
 // src/components/toca/Component_3.astro
-import { lazy } from 'astro:schema';
 import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
 import { Image } from 'astro:assets';
+import Button from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
 
 interface TarjetaData {
     id: number;
     titulo: string;
     descripcion: any;
     imagen: any;
-    link: string
+    link: string;
+    btn: Boton;
 }
 interface Props {
     titulo_seccion: string;
@@ -23,19 +25,22 @@ const defaultCards = [
         titulo: "Titulo Ejemplo 1",
         descripcion: "Descripción de ejemplo para el titulo 1...",
         imagen: null,
-        link: '#'
+        link: '#',
+        btn: null
     },
     {
         titulo: "Titulo Ejemplo 2",
         descripcion: "Descripción de ejemplo para el titulo 2...",
         imagen: null,
-        link: '#'
+        link: '#',
+        btn: null
     },
     {
         titulo: "Titulo Ejemplo 3",
         descripcion: "Descripción de ejemplo para el titulo 3...",
         imagen: null,
-        link: '#'
+        link: '#',
+        btn: null
     }
 ];
 
@@ -48,7 +53,8 @@ const ProcessedTarjetas = rawData.map((card) => ({
         : stringifyRichText(card.descripcion),
     img: getStrapiUrl(card.imagen),
     alt: card.titulo || "Toca Social Image",
-    link: card.link || "#"
+    link: card.link || "#",
+    btn: card.btn || null
 }));
 ---
 
@@ -65,7 +71,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
         <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
 
             {ProcessedTarjetas.map((item, index) => (
-                <a href={item.link}>
+                <div class="card-link" data-href={item.link}>
                             
                     <div
                         class={`carousel-item flex-col h-full group
@@ -78,7 +84,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
                         
                     <div class="mb-6">
                         <div class="flex justify-between items-start gap-2 mb-1">
-                            <h3 class="w-full lg:w-[55%] min-w-0 font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--accent-feedback-strong)] text-base lg:text-lg tracking-tighter break-words text-ellipsis overflow-hidden">
+                            <h3 class="w-full min-w-0 font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[var(--accent-feedback-strong)] text-base lg:text-lg tracking-tighter break-words text-ellipsis overflow-hidden uppercase">
                                 {item.title}
                             </h3>
 
@@ -96,6 +102,15 @@ const ProcessedTarjetas = rawData.map((card) => ({
                         <div class="mt-2 md:mt-5 font-(family-name:--font-sharp-sans-medium) text-[var(--brand-interactive-base)] text-base lg:text-base font-medium leading-tight w-full strapi-rich-text">
                             <Fragment set:html={item.desc} />
                         </div>
+                        {item.btn && (
+
+                        <div class="mt-4">
+                            <Button 
+                                botones={[item.btn]} 
+                                clase="w-full"
+                            />
+                        </div>
+                        )}
                     </div>
 
                     <div class="w-full aspect-square relative overflow-hidden shadow-lg border-2 border-transparent mt-auto">
@@ -108,7 +123,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
                         />
                     </div>
                 </div>
-                </a>
+                </div>
             ))}
 
         </div>
@@ -144,6 +159,16 @@ const ProcessedTarjetas = rawData.map((card) => ({
 
         const targets = document.querySelectorAll('.trigger-anim-cards');
         targets.forEach(target => observer.observe(target));
+
+        const cards = document.querySelectorAll('.card-link');
+        cards.forEach(card => {
+            card.addEventListener('click', function(e){
+                const link = card.getAttribute('data-href');
+
+                if(link)
+                    window.location.href = link;
+            })
+        })
     }
 
     // --- LÓGICA DE CARRUSEL (EXISTENTE) ---
