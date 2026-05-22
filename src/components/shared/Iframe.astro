@@ -8,7 +8,13 @@ const { codigo, url_seven_rooms} = Astro.props;
 const partySize = Astro.url.searchParams.get('party_size') || 1;
 const date = Astro.url.searchParams.get('date');
 const time = Astro.url.searchParams.get('time') || 1;
-let sevenRoomsUrl = url_seven_rooms + '?party_size='  + partySize
+let sevenRoomsUrl = url_seven_rooms 
+
+if(url_seven_rooms.includes('client_id')) {
+    sevenRoomsUrl += '&party_size='  + partySize
+}else {
+    sevenRoomsUrl += '?party_size='  + partySize
+}
 
 if(date) {
     sevenRoomsUrl += '&date=' + date
@@ -18,6 +24,7 @@ if(time) {
     sevenRoomsUrl += '&start_time=' + time
 }
 
+console.log(sevenRoomsUrl)
 ---
 
 <div class="w-full iframe-container">
