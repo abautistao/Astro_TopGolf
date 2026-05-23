@@ -794,9 +794,10 @@
             const day = date.getDay();
             
             const isWeekend=(day===5||day===6);
-            const endHour=isWeekend ? 24 : 23;
+            const isSunday=(day===0);
+            const endHour= isSunday ? 22 : isWeekend ? 24 : 23;
             
-            
+            console.log(day)
             const slots=[];
             const seed=date.getDate()*31+date.getMonth()*7;
             for(let h=10;h<=endHour;h++){
