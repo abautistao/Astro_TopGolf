@@ -38,19 +38,23 @@
             {/* Tab Selector */}
             <div class="flex justify-center mt-4">
                 <div class="inline-flex bg-[var(--surface-brand-primary)] border border-white/10 p-1.5 rounded-full shadow-md">
-                    <button 
-                        class="tab-btn active px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-300"
-                        data-tab-value="lun-jue"
-                    >
-                        Lunes - Jueves
-                    </button>
-                    <button 
-                        class="tab-btn px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-300 text-white/60 hover:text-white"
-                        data-tab-value="vie-dom"
-                    >
-                        Viernes - Domingo
-                    </button>
-                </div>
+    <button 
+        class="tab-btn active relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000"
+        data-tab-value="lun-jue"
+    >
+        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
+        
+        <span class="relative z-10">Lunes - Jueves</span>
+    </button>
+    
+    <button 
+        class="tab-btn relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000 text-white/60 hover:text-white"
+        data-tab-value="vie-dom"
+    >
+        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
+        <span class="relative z-10">Viernes - Domingo</span>
+    </button>
+</div>
             </div>
 
             <div class="hidden">
@@ -58,7 +62,7 @@
             </div> 
 
         <!-- CALENDAR SECTION -->
-        <div class="hidden bg-[var(--surface-brand-primary)] border border-white/10 rounded-3xl p-6 md:p-8 shadow-xl text-white mb-8 transition-colors duration-300 flex flex-col gap-6">
+        <div class=" bg-[var(--surface-brand-primary)] border border-white/10 rounded-3xl p-6 md:p-8 shadow-xl text-white mb-8 transition-colors duration-300 flex flex-col gap-6">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-6">
                 <div class="flex flex-col gap-1">
@@ -119,7 +123,7 @@
                         Horarios disponibles
                     </h4>
                     
-                    <div id="calendar-times-grid" class="grid grid-cols-2 gap-4">
+                    <div id="calendar-times-grid" class="grid grid-cols-3 gap-4">
                         <!-- Dynamic rendering in JS -->
                     </div>
                 </div>
@@ -787,25 +791,25 @@
 
         // Deterministic slot generation based on date to keep UI alive and dynamic
         function getSlotsForDate(date: Date) {
-            const day = date.getDate();
-            const baseTimes = [
-                '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', 
-                '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM'
-            ];
+            const day = date.getDay();
             
-            return baseTimes.map(time => {
-                let status = 'Disponible';
-                
-                if (time === '2:00 PM' || time === '6:00 PM') {
-                    status = (day % 2 === 1) ? 'Agotado' : 'Disponible';
-                } else if (time === '12:00 PM') {
-                    status = (day % 3 === 0) ? 'Agotado' : 'Disponible';
-                } else if (time === '7:00 PM') {
-                    status = (day % 4 === 0) ? 'Agotado' : 'Disponible';
-                }
-                
-                return { time, status };
-            });
+            const isWeekend=(day===5||day===6);
+            const endHour=isWeekend ? 24 : 23;
+            
+            
+            const slots=[];
+            const seed=date.getDate()*31+date.getMonth()*7;
+            for(let h=10;h<=endHour;h++){
+                const soldout=false;
+                let label;
+                if(h<12) label=h+':00 AM';
+                else if(h===12) label='12:00 PM';
+                else if(h<24) label=(h-12)+':00 PM';
+                else label='12:00 AM';
+                slots.push({time:label,status:soldout?'Agotado':'Disponible'});
+            }
+            return slots;
+
         }
 
         function renderCalendar() {
@@ -865,7 +869,7 @@
                 if (!isPast) {
                     dayBtn.addEventListener('click', () => {
                         selectedDate = cellDate;
-                        
+                        console.log(selectedDate)
                         // Check if selected time is valid for the new date, otherwise pick first available
                         const newSlots = getSlotsForDate(selectedDate);
                         const existsAndAvailable = newSlots.some(s => s.time === selectedTime && s.status !== 'Agotado');
