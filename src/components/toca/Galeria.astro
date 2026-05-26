@@ -1,0 +1,176 @@
+---
+// src/components/dolphinaris/Component_12_Dolphinaris.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+// Reusing GaleriaItem from Component 46
+export interface GaleriaItem {
+    image: string;
+    title: string;
+    is_video: boolean;
+    cover: string;
+    is_youtube: boolean;
+    youtube_url: string;
+}
+
+export interface TabGaleria {
+    id: number;
+    nombre_tab: string;
+    descripcion: any; // rich text
+    imagenes: GaleriaItem[];
+}
+
+export interface Props {
+    titulo_seccion?: string;
+    tabs?: TabGaleria[];
+}
+
+const { titulo_seccion = "GALERÍA", tabs = [] } = Astro.props;
+
+const placeholderImage = "https://placehold.co/600x400?text=No+Image";
+---
+
+<section class="w-full bg-(--surface-brand-primary) py-12 md:py-24" x-data="{ activeTab: 0 }">
+    <div class="max-w-360 mx-auto px-6">
+        <!-- Título -->
+        <div class="text-center mb-10 md:mb-16">
+            <h2
+                class="text-(--accent-feedback-strong) text-4xl lg:text-4xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold)"
+            >
+                {titulo_seccion}
+            </h2>
+        </div>
+
+        <div class="w-full dolphinaris-gallery-tabs">
+            <!-- Navegación de Tabs -->
+            <div
+                class="flex flex-wrap border border-(--brand-interactive-base) mb-12"
+            >
+                {
+                    tabs.map((tab, index) => (
+                        <button
+                            class="flex-1 py-3 px-6 text-center text-base lg:text-xl font-bold uppercase transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border-r border-(--brand-interactive-base) last:border-r-0 hover:bg-(--brand-interactive-base) hover:text-(--surface-brand-primary)"
+                            :class={`activeTab === ${index} ? 'bg-(--brand-interactive-base) text-(--surface-brand-primary)' : 'text-(--accent-feedback-strong) bg-transparent cursor-pointer'`}
+                            @click={`activeTab = ${index}`}
+                        >
+                            {tab.nombre_tab}
+                        </button>
+                    ))
+                }
+            </div>
+
+            <!-- Contenido de los Tabs -->
+            <div class="relative">
+                {
+                    tabs.map((tab, index) => (
+                        <div
+                            x-show={`activeTab === ${index}`}
+                            class={`tab-content transition-opacity duration-300`}
+                        >
+                            <!-- Descripción -->
+                            {tab.descripcion && (
+                                <div class="font-(family-name:--font-sharp-sans-medium) text-[16px] font-normal text-(--accent-feedback-strong) text-center max-w-4xl mx-auto mb-10 prose prose-lg" set:html={stringifyRichText(tab.descripcion)}>
+                                </div>
+                            )}
+
+                            <!-- Grid de Galería -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {tab.imagenes && tab.imagenes.map((img, i) => (
+                                    <div class="overflow-hidden rounded-xl shadow-md group relative">
+                                        <!-- Enlace para Lightbox (Fancybox) -->
+                                        <a
+                                            href={(img.is_video ? (img.is_youtube ? img.youtube_url : getStrapiUrl(img.image)) : getStrapiUrl(img.cover || img.image)) || placeholderImage}
+                                            data-fancybox={`gallery-tab-${index}`}
+                                            data-caption={img.title}
+                                            class="block w-full h-full relative"
+                                        >
+                                            <Image
+                                                src={getStrapiUrl(img.cover || img.image) || placeholderImage}
+                                                alt={img.title || "Galería Dolphinaris"}
+                                                width={600}
+                                                height={400}
+                                                class="w-full h-64 md:h-72 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                            {/* Efecto de Hover (Overlay sutil) */}
+                                            <div class="absolute inset-0 bg-[var(--surface-brand-primary)]/0 group-hover:bg-[var(--surface-brand-primary)]/20 transition-colors duration-300 pointer-events-none"></div>
+
+                                            <!-- Botón Play si es video -->
+                                            {img.is_video && (
+                                                <button
+                                                    class="absolute inset-0 !m-auto bg-white/90 text-[var(--surface-brand-primary)] rounded-full w-14 h-14 flex items-center justify-center shadow-2xl pointer-events-none"
+                                                >
+                                                    <i class="fa-solid fa-play text-xl pl-1"></i>
+                                                </button>
+                                            )}
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vanilla JS para Tabs y Lightbox -->
+<script>
+    import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
+
+    // 1. Inicializar Fancybox
+    Fancybox.bind("[data-fancybox]", {});
+
+    // 2. Lógica Vanilla JS para mostrar y ocultar Tabs
+    document.addEventListener("DOMContentLoaded", () => {
+        const galleries = document.querySelectorAll('.dolphinaris-gallery-tabs');
+
+        galleries.forEach(gallery => {
+            const tabButtons = gallery.querySelectorAll('.tab-button');
+            const tabContents = gallery.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetIndex = button.getAttribute('data-tab-index');
+
+                    // Resetear todos los tabs a estado inactivo
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('bg-[var(--surface-brand-primary)]', 'text-white');
+                        btn.classList.add('bg-[var(--neutral-background-subtle)]', 'text-[var(--surface-brand-primary)]', 'hover:bg-white');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                        content.classList.remove('block', 'animate-fade-in');
+                    });
+
+                    // Activar el tab seleccionado
+                    button.classList.add('bg-[var(--surface-brand-primary)]', 'text-white');
+                    button.classList.remove('bg-[var(--neutral-background-subtle)]', 'text-[var(--surface-brand-primary)]', 'hover:bg-white');
+
+                    const targetContent = gallery.querySelector(`[data-tab-content="${targetIndex}"]`);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        targetContent.classList.add('block', 'animate-fade-in');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+</style>
