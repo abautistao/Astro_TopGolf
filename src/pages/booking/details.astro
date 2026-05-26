@@ -1,0 +1,97 @@
+---
+import BookingLayout from '../../layouts/Booking.astro';
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout>
+    <BookingLayout title="Configura tu Experiencia" stepDescription="Paso 1: Configuración">
+      <div class="flex flex-col gap-3 p-2">
+        
+        <div class="flex flex-col">
+          <h2 class="text-md font-(family-name:--font-titling-gothic-fb-extended-bold) px-12">Número de Jugadores</h2>
+          <div class="bg-(--accent-feedback-strong) font-(family-name:--font-sharp-sans-medium) text-(--surface-brand-primary) py-4 px-12">
+              <p class="text-sm">TOCA Social is great for groups of all sizes, but we find it most fun with 4 or more.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <h2 class="text-md font-(family-name:--font-titling-gothic-fb-extended-bold) px-12">Seleccionar fecha y horario</h2>
+          <div class="bg-(--accent-feedback-strong) font-(family-name:--font-sharp-sans-medium) text-(--surface-brand-primary) py-4 px-12">
+                <div class="grid grid-cols-2 gap-6">
+                    <input class="hidden flatpickr-input appearance-none! min-w-27.5 sm:min-w-40 md:min-w-0 w-full! h-12! md:h-10! lg:h-12! px-2.5! py-2! md:pl-5! mb-0! rounded! md:rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-white leading-none" name="reservacion_fecha" id="date" readonly="" tabindex="-1" value="12/15/2025"/>
+                    <p class="text-sm">TOCA Social is great for groups of all sizes, but we find it most fun with 4 or more.</p>
+                </div>
+          </div>
+        </div>
+    
+        <button 
+          id="btn-submit-details"
+          class="w-full py-4 bg-lime-400 text-black font-black text-center rounded-xl tracking-wider uppercase hover:bg-lime-300 active:scale-[0.99] transition-all cursor-pointer"
+        >
+          Seleccionar Paquetes →
+        </button>
+      </div>
+    </Layout>
+    
+    <script>
+        import flatpickr from "flatpickr";
+  import 'flatpickr/dist/flatpickr.min.css';
+  import { Spanish } from "flatpickr/dist/l10n/es.js"; // Importar idioma español
+
+  // Función de inicialización para soportar View Transitions de Astro 5
+  function initDatePickers() {
+    const inputs = document.querySelectorAll('.flatpickr-input');
+
+    inputs.forEach((input) => {
+      // Leemos los datos que Astro inyectó en el HTML
+      const disabledDatesRaw = input.getAttribute('data-disabled');
+
+      flatpickr(input as HTMLInputElement, {
+        locale: Spanish,
+        dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
+        altFormat: "Y-m-d", // Ej: Octubre 25, 2024
+        minDate: "today",    // Opcional: no permitir fechas pasadas
+        defaultDate: 'today',
+        inline: true,
+        monthSelectorType: 'static'
+      });
+    });
+  }
+
+  // Ejecutar al cargar
+  initDatePickers();
+
+      let count = 2;
+      const btnMinus = document.getElementById('btn-minus') as HTMLButtonElement;
+      const btnPlus = document.getElementById('btn-plus') as HTMLButtonElement;
+      const valDisplay = document.getElementById('counter-value');
+      const submitBtn = document.getElementById('btn-submit-details');
+    
+      // Cargar estado inicial si ya existía
+      const currentData = JSON.parse(sessionStorage.getItem('toca_booking') || '{}');
+      if (currentData.players) {
+        count = parseInt(currentData.players);
+        if(valDisplay) valDisplay.textContent = count.toString();
+        updateButtons();
+      }
+    
+      function updateButtons() {
+        if (btnMinus) btnMinus.disabled = count <= 1;
+        if (btnPlus) btnPlus.disabled = count >= 12;
+        if (valDisplay) valDisplay.textContent = count.toString();
+        
+        // Guardar temporalmente en Session y avisar al layout
+        const data = JSON.parse(sessionStorage.getItem('toca_booking') || '{}');
+        data.players = count;
+        sessionStorage.setItem('toca_booking', JSON.stringify(data));
+        window.dispatchEvent(new Event('storage_updated'));
+      }
+    
+      btnPlus?.addEventListener('click', () => { count++; updateButtons(); });
+      btnMinus?.addEventListener('click', () => { if(count > 1) { count--; updateButtons(); } });
+    
+      submitBtn?.addEventListener('click', () => {
+        window.location.href = '/booking/packages';
+      });
+    </script>
+</Layout>

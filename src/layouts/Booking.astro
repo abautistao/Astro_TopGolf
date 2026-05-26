@@ -1,0 +1,65 @@
+---
+import Stepper from '../components/toca/booking/Stepper.astro';
+import BookingSummary from '../components/toca/booking/BookingSummary.astro';
+
+interface Props {
+  title: string;
+  stepDescription: string;
+}
+
+const { title, stepDescription } = Astro.props;
+---
+<section class="bg-(--surface-brand-primary) py-6">
+    <div class="max-w-360 mx-auto">
+        <div class="flex justify-start">
+          <Stepper />
+        </div>
+        
+        <main class="max-w-7xl mx-auto px-4 py-8 lg:py-12">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
+            <div class="bg-(--surface-brand-secondary) lg:col-span-2 space-y-8">
+              <slot />
+            </div>
+        
+            <aside class="lg:col-span-1 lg:sticky lg:top-24">
+              <BookingSummary />
+            </aside>
+        
+          </div>
+        </main>
+    </div>
+</section>
+<script>
+    // Inicializar sessionStorage si no existe
+    if (!sessionStorage.getItem('toca_booking')) {
+    sessionStorage.setItem('toca_booking', JSON.stringify({
+        players: 2,
+        date: '',
+        timeSlot: '',
+        addons: []
+    }));
+    }
+
+    // Evento personalizado para avisar a la UI que el Storage cambió
+    window.addEventListener('storage_updated', () => {
+    const data = JSON.parse(sessionStorage.getItem('toca_booking') || '{}');
+    
+    // Actualizar elementos del resumen que escuchen cambios
+    const summaryPlayers = document.getElementById('summary-players-val');
+    const summaryBoxPrice = document.getElementById('summary-box-price');
+    
+    if (summaryPlayers) summaryPlayers.textContent = `${data.players || 2} Jugadores`;
+    if (summaryBoxPrice) {
+        // Simulación de precio dinámico basado en jugadores ($200 por jugador base)
+        const totalBase = (data.players || 2) * 200;
+        summaryBoxPrice.textContent = `$${totalBase}.00`;
+        
+        const totalPay = document.getElementById('summary-total-pay');
+        if (totalPay) totalPay.textContent = `$${totalBase}.00`;
+    }
+    });
+
+    // Disparar una vez al cargar para poblar datos iniciales
+    window.dispatchEvent(new Event('storage_updated'));
+</script>

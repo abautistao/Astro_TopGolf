@@ -1,0 +1,56 @@
+---
+const { pathname } = Astro.url;
+
+const steps = [
+  { name: 'Detalles', path: '/booking/details', label: '1' },
+  { name: 'Paquetes', path: '/booking/packages', label: '2' },
+  { name: 'Pago', path: '/booking/checkout', label: '3' },
+];
+
+const currentStepIndex = steps.findIndex(step => pathname.startsWith(step.path));
+---
+
+<nav aria-label="Progreso" class="w-full max-w-xl mx-auto px-6 py-2">
+  <ol class="flex items-center justify-between w-full relative">
+    <div class="absolute top-5 left-0 right-0 h-0.5 bg-neutral-900 -translate-y-1/2 z-0"></div>
+    <div 
+      class="absolute top-5 left-0 h-0.5 bg-lime-400 -translate-y-1/2 z-0 transition-all duration-500 ease-in-out"
+      style={`width: ${(currentStepIndex / (steps.length - 1)) * 100}%`}
+    ></div>
+
+    {steps.map((step, index) => {
+      const isCurrent = index === currentStepIndex;
+      const isCompleted = index < currentStepIndex;
+      
+      return (
+        <li class="relative z-10 flex flex-col items-center gap-1.5">
+          <a 
+            href={isCompleted ? step.path : undefined} 
+            class:list={[
+              "w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 border-2",
+              isCompleted && "bg-lime-400 border-lime-400 text-black hover:bg-lime-300 cursor-pointer",
+              isCurrent && "bg-neutral-950 border-lime-400 text-lime-400 shadow-[0_0_15px_rgba(163,230,53,0.3)]",
+              (!isCurrent && !isCompleted) && "bg-neutral-900 border-neutral-800 text-neutral-600 pointer-events-none"
+            ]}
+          >
+            {isCompleted ? (
+              <svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            ) : (
+              step.label
+            )}
+          </a>
+          <span class:list={[
+            "text-[10px] font-bold tracking-wider uppercase",
+            isCurrent && "text-lime-400",
+            isCompleted && "text-neutral-400",
+            (!isCurrent && !isCompleted) && "text-neutral-600"
+          ]}>
+            {step.name}
+          </span>
+        </li>
+      );
+    })}
+  </ol>
+</nav>
