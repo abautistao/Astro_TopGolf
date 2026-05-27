@@ -103,7 +103,7 @@ const mockButton: Boton = {
 const data = {
     title: title || "DETALLES DEL EVENTO",
     fields: fields || mockFields,
-    submitUrl: submitUrl || "",
+    submitUrl: submitUrl || "/api/events-email",
     button: submitButton || mockButton,
 };
 
@@ -225,7 +225,7 @@ const getOptions = (optionsStr?: string) => {
         {/* Submit Button Section */}
         {
             data.button && (
-                <div class="col-span-1 md:col-span-2 mt-4 flex justify-end">
+                <div class="col-span-1 md:col-span-2 mt-4 flex justify-center">
                     <button
                         type="submit"
                         class:list={[
@@ -282,7 +282,13 @@ const getOptions = (optionsStr?: string) => {
                 'button[type="submit"]',
             );
 
-            if (submitButton) submitButton.disabled = true;
+            // Loading state
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = "Enviando...";
+                submitButton.classList.add("opacity-60", "cursor-not-allowed")
+            }
+
             if (messageDiv) {
                 messageDiv.classList.add("hidden");
                 messageDiv.textContent = "";
@@ -291,7 +297,7 @@ const getOptions = (optionsStr?: string) => {
             }
 
             try {
-                const response = await fetch("/api/events-email", {
+                const response = await fetch(submitUrl, {
                     method: "POST",
                     body: formData,
                 });
@@ -325,7 +331,11 @@ const getOptions = (optionsStr?: string) => {
                     messageDiv.classList.add("text-red-400");
                 }
             } finally {
-                if (submitButton) submitButton.disabled = false;
+                if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Enviar";
+                submitButton.classList.remove("opacity-60", "cursor-not-allowed")
+            }
             }
         });
     }
