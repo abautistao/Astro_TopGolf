@@ -1,0 +1,1152 @@
+---
+// src/components/toca/BookingSeven2.astro
+---
+
+<section class="min-h-screen bg-[var(--surface-brand-primary)] text-white w-full overflow-hidden font-[family-name:var(--font-secundaria)]">
+    {/* TOP STEPPER */}
+    <div class="w-full max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-b border-white/10">
+        <button id="b7-btn-back" class="flex items-center gap-2 text-[var(--brand-interactive-base)] hover:text-white uppercase font-[family-name:var(--font-principal)] font-bold text-xl transition-colors opacity-50 pointer-events-none">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M15 19l-7-7 7-7" />
+            </svg>
+            BACK
+        </button>
+        <div class="hidden md:flex flex-1 justify-center items-center gap-8 px-8">
+            {/* Steps line */}
+            <div class="flex items-center w-full max-w-2xl justify-between relative">
+                <div class="absolute left-0 right-0 top-6 h-0.5 bg-white/20 -z-10"></div>
+                {/* Step 1: Details */}
+                <div id="step1-wrap" class="flex flex-col items-center gap-2">
+                    <div id="step1-icon" class="w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--brand-interactive-base)] z-10 transition-colors">
+                        <i class="fa-solid fa-user-group text-xl"></i>
+                    </div>
+                    <span id="step1-text" class="text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-colors">Details</span>
+                </div>
+                {/* Step 2: Extra Time */}
+                <div id="step2-wrap" class="flex flex-col items-center gap-2 opacity-50 transition-opacity">
+                    <div id="step2-icon" class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors">
+                        <i class="fa-regular fa-clock text-xl"></i>
+                    </div>
+                    <span id="step2-text" class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors">Extra Time</span>
+                </div>
+                {/* Step 3: Packages */}
+                <div id="step3-wrap" class="flex flex-col items-center gap-2 opacity-50 transition-opacity">
+                    <div id="step3-icon" class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors">
+                        <div class="flex gap-1"><i class="fa-solid fa-wine-bottle text-lg"></i><i class="fa-solid fa-wine-bottle text-lg"></i></div>
+                    </div>
+                    <span id="step3-text" class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors">Packages</span>
+                </div>
+                {/* Step 4: Payment */}
+                <div id="step4-wrap" class="flex flex-col items-center gap-2 opacity-50 transition-opacity">
+                    <div id="step4-icon" class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors">
+                        <i class="fa-regular fa-credit-card text-xl"></i>
+                    </div>
+                    <span id="step4-text" class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors">Payment</span>
+                </div>
+                {/* Step 5: Confirmation */}
+                <div id="step5-wrap" class="flex flex-col items-center gap-2 opacity-50 transition-opacity">
+                    <div id="step5-icon" class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors">
+                        <i class="fa-solid fa-medal text-xl"></i>
+                    </div>
+                    <span id="step5-text" class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors">Confirmation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {/* MAIN CONTENT GRID */}
+    <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        
+        {/* RIGHT COLUMN (OVERVIEW) - Stacks on top on mobile */}
+        <div class="lg:col-span-4 lg:col-start-9 flex flex-col gap-6 order-1 lg:order-2">
+            
+            {/* OVERVIEW PANEL STEP 1 */}
+            <div id="overview-step-1" class="flex flex-col gap-6">
+                <div class="bg-white text-black neo-shadow border-2 border-black w-full relative">
+                    <div class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-black">
+                        <h3 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">Overview</h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4 relative">
+                        <div class="flex flex-col sm:flex-row lg:flex-col justify-between sm:gap-8 lg:gap-4">
+                            <div class="flex flex-col gap-4 flex-1">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-solid fa-location-dot"></i></span>
+                                    <span class="font-bold text-lg">-</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-solid fa-users"></i></span>
+                                    <span class="font-bold text-lg" id="overview-players">-</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-4 flex-1 mt-4 sm:mt-0 lg:mt-0">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-solid fa-calendar-days"></i></span>
+                                    <span class="font-bold text-lg">--/--/--</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-solid fa-clock"></i></span>
+                                    <span class="font-bold text-lg">--:--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mt-6 border-t-2 border-dashed border-gray-300 pt-6">
+                            <span class="font-[family-name:var(--font-principal)] text-[32px] font-bold uppercase">Total</span>
+                            <span class="font-[family-name:var(--font-principal)] text-[32px] font-bold">$ --.--</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* EVENT BOOKINGS PANEL */}
+                <div class="bg-[var(--brand-interactive-base)] text-black neo-shadow border-2 border-black w-full">
+                    <div class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-black">
+                        <h3 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">Event Bookings</h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4">
+                        <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium leading-relaxed">
+                            Want to elevate your experience or plan something bigger? Contact our dedicated sales team to discuss the needs of your event!
+                        </p>
+                        <a href="#" class="inline-block mt-2 bg-[var(--surface-brand-secondary)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-6 py-2 border-2 border-black neo-shadow self-start hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                            Inquire Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            {/* OVERVIEW PANEL STEP 2 */}
+            <div id="overview-step-2" class="hidden flex-col gap-6">
+                <div class="bg-white text-black w-full relative">
+                    <div class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-transparent">
+                        <h3 class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">OVERVIEW</h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4 relative">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-4">
+                                <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-solid fa-location-dot"></i></span>
+                                <span class="font-[family-name:var(--font-principal)] font-bold text-sm">Grandscape, Dallas</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-solid fa-users"></i></span>
+                                <span class="font-[family-name:var(--font-principal)] font-bold text-sm" id="overview-step2-players">2</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-regular fa-calendar-days"></i></span>
+                                <span class="font-[family-name:var(--font-principal)] font-bold text-sm">05/28/2026</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"><i class="fa-regular fa-clock"></i></span>
+                                <span class="font-[family-name:var(--font-principal)] font-bold text-sm">6:45 PM</span>
+                            </div>
+                            <div class="ml-10 text-[11px] font-[family-name:var(--font-secundaria)] text-gray-500 mt-1" id="overview-step2-duration">Duration: 75 minutes</div>
+                            <div class="ml-10 text-[11px] font-[family-name:var(--font-secundaria)] italic text-gray-400" id="overview-step2-extra-text">Including 30 minutes extra time</div>
+                        </div>
+                        
+                        <div class="bg-[var(--surface-brand-primary)] text-white p-4 flex flex-col gap-4 mt-2">
+                            <div class="font-[family-name:var(--font-secundaria)] text-[11px] font-bold border-b border-white/20 pb-2">
+                                1 x Game Box
+                            </div>
+                            <div class="flex justify-between items-center font-[family-name:var(--font-secundaria)] text-[11px]">
+                                <span id="overview-step2-desc">2 Ages 18-21 - $16 per person</span>
+                                <span class="font-bold" id="overview-step2-price">$32.00</span>
+                            </div>
+                            
+                            <div id="overview-extra-row" class="flex flex-col gap-3 pt-3 border-t border-white/20">
+                                <span class="font-bold font-[family-name:var(--font-secundaria)] text-[11px]">Extra time</span>
+                                <div class="flex justify-between items-center font-[family-name:var(--font-secundaria)] text-[11px]">
+                                    <div class="flex items-center gap-2 text-[var(--surface-brand-secondary)]">
+                                        <i class="fa-regular fa-clock text-base"></i>
+                                        <span class="text-white font-medium">30 minutes more of playing</span>
+                                    </div>
+                                    <span class="font-bold">$30.00</span>
+                                </div>
+                            </div>
+                            <div id="overview-packages-list" class="flex flex-col gap-3 pt-3 border-t border-white/20 empty:hidden"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="font-[family-name:var(--font-principal)] text-[36px] font-bold uppercase tracking-tight">TOTAL</span>
+                            <span class="font-[family-name:var(--font-principal)] text-[36px] font-bold tracking-tight" id="overview-step2-total">$67.12</span>
+                        </div>
+                    </div>
+                    <div id="overview-step2-tax" class="bg-[var(--brand-interactive-base)] text-black p-3 text-[12px] font-bold uppercase w-full">
+                        *TAX OF $5.12 ADDED (8.25%)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {/* LEFT COLUMN */}
+        <div class="lg:col-span-8 lg:col-start-1 lg:row-start-1 flex flex-col gap-8 order-2 lg:order-1">
+            
+            <div id="step-1-details" class="flex flex-col gap-8">
+                {/* SELECT LOCATION */}
+            <div class="bg-white w-full border-2 border-black flex flex-col">
+                <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black">
+                    <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase">Select Location</h2>
+                </div>
+                <div class="p-6 md:p-8 bg-white text-black">
+                    <button id="location-btn" class="bg-white text-black font-[family-name:var(--font-principal)] text-[24px] md:text-[32px] font-bold uppercase px-8 py-4 border-2 border-black neo-shadow hover:bg-gray-50 transition-colors tracking-tight text-center lg:text-left inline-block">
+                        Grandscape, Dallas
+                    </button>
+                </div>
+            </div>
+
+            {/* HOW MANY PLAYERS? */}
+            <div class="bg-white w-full border-2 border-black flex flex-col">
+                <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black">
+                    <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase">How Many Players?</h2>
+                </div>
+                <div class="p-6 md:p-8 bg-white text-black flex flex-col gap-6">
+                    <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium">
+                        TOCA Social is great for groups of all sizes, but we find it most fun with 4 or more.
+                    </p>
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-8 justify-start">
+                        
+                        {/* Group 1 */}
+                        <div class="flex flex-col gap-2">
+                            <span class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide">21's and over</span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="player-btn minus-btn bg-[var(--surface-brand-secondary)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none">-</button>
+                                <div class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none">0</div>
+                                <button type="button" class="player-btn plus-btn bg-[var(--surface-brand-secondary)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none">+</button>
+                            </div>
+                        </div>
+
+                        {/* Group 2 */}
+                        <div class="flex flex-col gap-2">
+                            <span class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide">Age 18 - 20</span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="player-btn minus-btn bg-[var(--brand-interactive-base)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none">-</button>
+                                <div class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none">0</div>
+                                <button type="button" class="player-btn plus-btn bg-[var(--brand-interactive-base)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none">+</button>
+                            </div>
+                        </div>
+
+                        {/* Group 3 */}
+                        <div class="flex flex-col gap-2">
+                            <span class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide">UNDER 18's</span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="player-btn minus-btn bg-[#B975FF] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none">-</button>
+                                <div class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none">0</div>
+                                <button type="button" class="player-btn plus-btn bg-[#B975FF] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none">+</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="border-2 border-black p-4 mt-2 max-w-lg">
+                        <div class="flex items-start gap-3 text-black/80 font-[family-name:var(--font-secundaria)]">
+                            <div class="w-5 h-5 rounded-full bg-[var(--surface-brand-primary)] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                                <i class="fa-solid fa-info"></i>
+                            </div>
+                            <p class="text-[14px] leading-relaxed italic">
+                                Players under 21 years of age must always be supervised by at least one adult (no payment required for non playing adults)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* SELECT DATE AND TIME */}
+            <div class="bg-white w-full border-2 border-black flex flex-col mb-12">
+                <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black">
+                    <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase">Select Date and Time</h2>
+                </div>
+                <div class="p-6 md:p-8 bg-white text-black flex flex-col lg:flex-row gap-6">
+                    {/* Calendar Outline */}
+                    <div class="border-2 border-black w-full lg:w-[55%] shrink-0 h-fit">
+                        <div class="bg-[var(--surface-brand-primary)] text-white p-3 flex justify-between items-center relative border-b-2 border-black">
+                            <button id="b7-prev-month" class="w-8 h-8 flex items-center justify-center text-[var(--brand-interactive-base)] hover:text-white transition-colors">
+                                <i class="fa-solid fa-play fa-rotate-180 text-sm"></i>
+                            </button>
+                            <span id="b7-calendar-month-year" class="font-[family-name:var(--font-principal)] text-[22px] font-bold uppercase tracking-widest">MAY 2026</span>
+                            <button id="b7-next-month" class="w-8 h-8 flex items-center justify-center text-[var(--brand-interactive-base)] hover:text-white transition-colors">
+                                <i class="fa-solid fa-play text-sm"></i>
+                            </button>
+                        </div>
+                        <div id="b7-calendar-days-grid" class="p-4 grid grid-cols-7 gap-y-4 gap-x-2 text-center font-[family-name:var(--font-principal)] text-[14px] font-bold uppercase">
+                            {/* Injected by JS */}
+                        </div>
+                    </div>
+                    
+                    {/* Placeholder before selection */}
+                    <div id="time-slots-placeholder" class="w-full lg:w-[45%] flex flex-col justify-center items-center text-center p-8 border-2 border-dashed border-gray-300 bg-gray-50/50 min-h-[300px]">
+                        <i class="fa-regular fa-calendar-check text-4xl text-gray-300 mb-4"></i>
+                        <p class="font-[family-name:var(--font-secundaria)] text-gray-500 font-medium">Please select a date to view available times.</p>
+                    </div>
+
+                    {/* Time Slots */}
+                    <div id="time-slots-container" class="hidden w-full lg:w-[45%] flex-col gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        
+                        {/* Slot 1 */}
+                        <button type="button" class="time-slot-btn bg-white text-black py-3 px-4 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-gray-300 slot-dot transition-colors"></div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">11:00</span>
+                                    <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold">AM</span>
+                                </div>
+                                <div class="flex flex-col ml-3">
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">45 minutes</span>
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">1 x Game Box</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-baseline">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold">$16</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] ml-1">p.p</span>
+                                </div>
+                                <i class="slot-info fa-solid fa-circle-info text-black text-lg transition-colors"></i>
+                            </div>
+                        </button>
+
+                        {/* Slot 2 */}
+                        <button type="button" class="time-slot-btn bg-white text-black py-3 px-4 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-gray-300 slot-dot transition-colors"></div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">11:15</span>
+                                    <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold">AM</span>
+                                </div>
+                                <div class="flex flex-col ml-3">
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">45 minutes</span>
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">1 x Game Box</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-baseline">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold">$16</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] ml-1">p.p</span>
+                                </div>
+                                <i class="slot-info fa-solid fa-circle-info text-black text-lg transition-colors"></i>
+                            </div>
+                        </button>
+
+                        {/* Slot 3 */}
+                        <button type="button" class="time-slot-btn bg-white text-black py-3 px-4 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-gray-300 slot-dot transition-colors"></div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">11:30</span>
+                                    <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold">AM</span>
+                                </div>
+                                <div class="flex flex-col ml-3">
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">45 minutes</span>
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">1 x Game Box</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-baseline">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold">$16</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] ml-1">p.p</span>
+                                </div>
+                                <i class="slot-info fa-solid fa-circle-info text-black text-lg transition-colors"></i>
+                            </div>
+                        </button>
+
+                        {/* Slot 4 */}
+                        <button type="button" class="time-slot-btn bg-white text-black py-3 px-4 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-gray-300 slot-dot transition-colors"></div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">11:45</span>
+                                    <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold">AM</span>
+                                </div>
+                                <div class="flex flex-col ml-3">
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">45 minutes</span>
+                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">1 x Game Box</span>
+                                </div>
+                            </div>
+                        <div class="flex items-center gap-3">
+                                <div class="flex items-baseline">
+                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold">$16</span>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] ml-1">p.p</span>
+                                </div>
+                                <i class="slot-info fa-solid fa-circle-info text-black text-lg transition-colors"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+            <div id="step-2-extra" class="hidden flex-col gap-8">
+                <div class="bg-white w-full flex flex-col border border-gray-200">
+                    <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent">
+                        <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">UPGRADE - GET 30 MINUTES EXTRA PLAY!</h2>
+                    </div>
+                    <div class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 relative min-h-[400px]">
+                        <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium text-black">
+                            This time slot qualifies for 30 minutes extra playtime
+                        </p>
+                        
+                        <div class="bg-[var(--surface-brand-primary)] text-white py-2 px-4 uppercase font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-wide">
+                            OPTIONS
+                        </div>
+                        
+                        <p class="font-[family-name:var(--font-secundaria)] text-[14px] text-black -mt-2">
+                            This will be applied to all boxes on your booking
+                        </p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2">
+                            {/* Card 1: EXTRA TIME */}
+                            <div class="w-full flex flex-col group border border-gray-300">
+                                <div class="h-40 bg-gray-200 overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=600&auto=format&fit=crop" alt="Extra time" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    <div class="absolute bottom-0 left-0 right-0 bg-[var(--surface-brand-primary)] p-2">
+                                        <span class="text-white font-[family-name:var(--font-principal)] text-[18px] md:text-[20px] font-bold uppercase tracking-wide">EXTRA TIME!</span>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-white text-black border-b border-gray-300 flex items-center gap-3">
+                                    <i class="fa-regular fa-clock text-xl"></i>
+                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-600">30 minutes extra</span>
+                                </div>
+                                <div class="p-4 bg-white flex justify-between items-center group-hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="font-[family-name:var(--font-principal)] text-[28px] font-bold tracking-tight">$30</span>
+                                        <span class="font-[family-name:var(--font-secundaria)] text-[12px] font-medium text-gray-500">per booking</span>
+                                    </div>
+                                    <button id="btn-add-extra" class="w-10 h-10 border-2 border-black bg-[var(--surface-brand-secondary)] flex items-center justify-center text-xl font-bold transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">-</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-6 right-6">
+                            <button id="b7-btn-nothanks" class="bg-white text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-6 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 transition-colors tracking-tight">
+                                CONFIRM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- STEP 3: PACKAGES --- */}
+            <div id="step-3-packages" class="hidden flex-col gap-8 w-full">
+                <div class="bg-white w-full flex flex-col border border-gray-200">
+                    <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent">
+                        <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">PACKAGES - FOR THE WHOLE SQUAD</h2>
+                    </div>
+                    <div class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 relative">
+                        <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium text-black max-w-4xl">
+                            Upgrade your booking with some pre-booked food and drinks at exclusive online rates (All food and beverage items are subjected to a 20% service charge):
+                        </p>
+                        
+                        {/* Adult Packages Header */}
+                        <div class="bg-[var(--surface-brand-primary)] text-white py-3 px-4 flex justify-between items-center mt-2">
+                            <h3 class="font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase tracking-wide">ADULT PACKAGES</h3>
+                            <i class="fa-solid fa-caret-down text-2xl"></i>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+                            {/* Package 1 */}
+                            <div class="w-full flex flex-col group border border-gray-300">
+                                <div class="h-48 bg-gray-200 overflow-hidden relative border-b-4 border-[var(--surface-brand-primary)]">
+                                    <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=600&auto=format&fit=crop" alt="Milkshake" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <div class="bg-[var(--surface-brand-primary)] text-white p-3">
+                                    <span class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">MILKSHAKE</span>
+                                </div>
+                                <div class="p-4 bg-white text-black flex items-start gap-3 flex-1 border-x border-gray-300">
+                                    <div class="flex flex-col gap-3 w-full">
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-bottle-water text-xl w-5 text-center"></i>
+                                            <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800 underline decoration-gray-400">A choice of Oreo, Biscoff or Jammie Dodger flavour</span>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-medal text-xl w-5 text-center"></i>
+                                            <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-600">(Flavour choice to be confirmed in venue)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-white flex justify-between items-center border border-gray-300 border-t-0 group-hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="font-[family-name:var(--font-principal)] text-[28px] font-bold tracking-tight">$8</span>
+                                    </div>
+                                    <div class="flex items-center border-2 border-black" data-pkg-name="Milkshake" data-pkg-price="8">
+                                        <button class="pkg-minus-btn w-8 h-8 bg-[var(--surface-brand-secondary)] flex items-center justify-center font-bold text-xl hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">-</button>
+                                        <div class="pkg-qty w-8 h-8 bg-white flex items-center justify-center font-bold font-[family-name:var(--font-principal)]">0</div>
+                                        <button class="pkg-plus-btn w-8 h-8 bg-[var(--surface-brand-secondary)] flex items-center justify-center font-bold text-xl hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Package 2 */}
+                            <div class="w-full flex flex-col group border border-[var(--surface-brand-secondary)]">
+                                <div class="h-48 bg-gray-200 overflow-hidden relative border-b-4 border-[var(--surface-brand-primary)]">
+                                    <div class="absolute top-0 left-0 bg-[var(--surface-brand-secondary)] text-black p-2 max-w-[60%] z-10 font-[family-name:var(--font-principal)] font-bold text-sm uppercase leading-tight">
+                                        ONLINE SPECIAL - 10% OFF
+                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop" alt="Burger" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <div class="bg-[var(--surface-brand-primary)] text-white p-3">
+                                    <span class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">ANY MAIN & SIDE</span>
+                                </div>
+                                <div class="p-4 bg-white text-black flex items-start gap-3 flex-1 border-x border-[var(--surface-brand-secondary)]">
+                                    <div class="flex flex-col gap-3 w-full">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid fa-user text-xl w-5 text-center"></i>
+                                            <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800">1 person</span>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-utensils text-xl w-5 text-center"></i>
+                                            <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800 underline decoration-gray-400">Your choice of a Main & Side from the main menu</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-white flex justify-between items-center border border-[var(--surface-brand-secondary)] border-t-0 group-hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="font-[family-name:var(--font-principal)] text-[28px] text-[var(--surface-brand-primary)] font-bold tracking-tight line-through opacity-50">$15</span>
+                                        <span class="font-[family-name:var(--font-principal)] text-[28px] font-bold tracking-tight">$13.5</span>
+                                    </div>
+                                    <div class="flex items-center border-2 border-black" data-pkg-name="Any Main & Side" data-pkg-price="13.5">
+                                        <button class="pkg-minus-btn w-8 h-8 bg-[var(--surface-brand-secondary)] flex items-center justify-center font-bold text-xl hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">-</button>
+                                        <div class="pkg-qty w-8 h-8 bg-white flex items-center justify-center font-bold font-[family-name:var(--font-principal)]">0</div>
+                                        <button class="pkg-plus-btn w-8 h-8 bg-[var(--surface-brand-secondary)] flex items-center justify-center font-bold text-xl hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Package 3 */}
+                            <div class="w-full flex flex-col group border border-[var(--surface-brand-secondary)]">
+                                <div class="h-48 bg-gray-200 overflow-hidden relative border-b-4 border-[var(--surface-brand-primary)]">
+                                    <div class="absolute top-0 left-0 bg-[var(--surface-brand-secondary)] text-black p-2 max-w-[60%] z-10 font-[family-name:var(--font-principal)] font-bold text-sm uppercase leading-tight">
+                                        ONLINE SPECIAL - 15% OFF
+                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=600&auto=format&fit=crop" alt="Chicken Tenders" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <div class="bg-[var(--surface-brand-primary)] text-white p-3 flex items-center h-[56px]">
+                                    <span class="font-[family-name:var(--font-principal)] text-[16px] md:text-[18px] font-bold uppercase tracking-wide leading-tight">TRAY OF TOCA CHICKEN TENDERS</span>
+                                </div>
+                                <div class="p-4 bg-white text-black flex items-start gap-3 flex-1 border-x border-[var(--surface-brand-secondary)]">
+                                    <div class="flex flex-col gap-3 w-full">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid fa-user-group text-xl w-5 text-center"></i>
+                                            <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800">Suitable for 2-3 people</span>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-utensils text-xl w-5 text-center"></i>
+                                            <span class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800">A tray of 10 chicken tenders, with a choice of sauce</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-white flex justify-between items-center border border-[var(--surface-brand-secondary)] border-t-0 group-hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="font-[family-name:var(--font-principal)] text-[28px] text-[var(--surface-brand-primary)] font-bold tracking-tight line-through opacity-50">$25</span>
+                                        <span class="font-[family-name:var(--font-principal)] text-[28px] font-bold tracking-tight">$21</span>
+                                    </div>
+                                    <div class="flex items-center border-2 border-black" data-pkg-name="Tray of Toca Chicken Tenders" data-pkg-price="21">
+                                        <button class="pkg-minus-btn w-8 h-8 bg-[var(--surface-brand-secondary)] flex items-center justify-center font-bold text-xl hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">-</button>
+                                        <div class="pkg-qty w-8 h-8 bg-white flex items-center justify-center font-bold font-[family-name:var(--font-principal)]">0</div>
+                                        <button class="pkg-plus-btn w-8 h-8 bg-[var(--surface-brand-secondary)] flex items-center justify-center font-bold text-xl hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button id="b7-btn-packages-confirm" class="bg-white text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 transition-colors tracking-tight">
+                                NEXT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- STEP 4: PAYMENT --- */}
+            <div id="step-4-payment" class="hidden flex-col gap-8 w-full">
+                {/* YOUR INFORMATION */}
+                <div class="bg-white w-full flex flex-col border border-gray-200">
+                    <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent">
+                        <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">YOUR INFORMATION</h2>
+                    </div>
+                    <div class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-secundaria)]">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">First Name*</label>
+                                <input type="text" class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]" />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Last Name*</label>
+                                <input type="text" class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]" />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Email Address*</label>
+                                <input type="email" class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]" />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Phone Number*</label>
+                                <div class="flex border border-gray-400">
+                                    <div class="bg-gray-100 border-r border-gray-400 p-2 flex items-center gap-2 cursor-pointer">
+                                        <img src="https://flagcdn.com/w20/us.png" alt="US" class="w-4 h-3 object-cover" />
+                                        <i class="fa-solid fa-caret-down text-xs"></i>
+                                        <span class="text-sm">+1</span>
+                                    </div>
+                                    <input type="tel" class="p-2 flex-1 focus:outline-none focus:border-[var(--surface-brand-primary)]" />
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Dietary requirements</label>
+                                <div class="relative">
+                                    <select class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none">
+                                        <option></option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Date of Birth</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="relative">
+                                        <select class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"><option></option></select>
+                                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                                    </div>
+                                    <div class="relative">
+                                        <select class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"><option></option></select>
+                                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                                    </div>
+                                    <div class="relative">
+                                        <select class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"><option></option></select>
+                                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-1 mt-2">
+                            <label class="text-[14px] font-medium">Reservation notes</label>
+                            <input type="text" class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]" />
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-2">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Special occasion?</label>
+                                <div class="relative">
+                                    <select class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none">
+                                        <option></option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium">Voucher code</label>
+                                <div class="flex">
+                                    <input type="text" class="border border-gray-400 border-r-0 p-2 flex-1 focus:outline-none focus:border-[var(--surface-brand-primary)]" />
+                                    <button class="bg-[var(--surface-brand-secondary)] px-4 flex items-center justify-center border border-black hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* PAYMENT */}
+                <div class="bg-white w-full flex flex-col border border-gray-200">
+                    <div class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent">
+                        <h2 class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide">PAYMENT</h2>
+                    </div>
+                    <div class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-secundaria)]">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-4">
+                            <div class="flex flex-col gap-1 md:col-span-6">
+                                <label class="text-[14px] font-medium">Número de tarjeta</label>
+                                <div class="border border-gray-400 p-2 flex items-center focus-within:border-[var(--surface-brand-primary)]">
+                                    <input type="text" placeholder="1234 1234 1234 1234" class="flex-1 focus:outline-none placeholder-gray-400" />
+                                    <div class="flex gap-1 ml-2 text-xl text-[var(--surface-brand-primary)]">
+                                        <i class="fa-brands fa-cc-visa"></i>
+                                        <i class="fa-brands fa-cc-mastercard"></i>
+                                        <i class="fa-brands fa-cc-amex"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1 md:col-span-3">
+                                <label class="text-[14px] font-medium">Fecha de vencimiento</label>
+                                <input type="text" placeholder="MM/AA" class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)] placeholder-gray-400" />
+                            </div>
+                            <div class="flex flex-col gap-1 md:col-span-3">
+                                <label class="text-[14px] font-medium">Código de seguridad</label>
+                                <div class="border border-gray-400 p-2 flex items-center focus-within:border-[var(--surface-brand-primary)]">
+                                    <input type="text" placeholder="CVC" class="flex-1 focus:outline-none placeholder-gray-400 min-w-0" />
+                                    <i class="fa-regular fa-credit-card text-gray-400 ml-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-1 mt-2">
+                            <label class="text-[14px] font-medium">País</label>
+                            <div class="relative">
+                                <select class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none">
+                                    <option>México</option>
+                                    <option>Estados Unidos</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3 mt-4 text-[13px] text-gray-700">
+                            <p>Al suministrar tus datos de tarjeta, le permites a Toca Social Grandscape efectuar futuros cargos en tu tarjeta conforme a las condiciones estipuladas.</p>
+                            
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded-sm border-gray-400 accent-[var(--surface-brand-primary)]" />
+                                <span class="underline">Cancellation Policy*</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded-sm border-gray-400 accent-[var(--surface-brand-primary)]" />
+                                <span>I agree to the <span class="underline">venue's required policy*</span></span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded-sm border-gray-400 accent-[var(--surface-brand-primary)]" />
+                                <span>I certify I am above the age of 18*</span>
+                            </label>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .neo-shadow {
+        box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+    }
+    #location-btn.active-location {
+        background-color: var(--surface-brand-primary) !important;
+        color: white !important;
+        text-shadow: -1px 0px 0px var(--brand-interactive-base), 1.5px 0px 0px var(--surface-brand-secondary);
+    }
+    
+    .time-slot-btn.active-slot {
+        background-color: var(--surface-brand-primary) !important;
+        color: white !important;
+        border-color: transparent !important;
+    }
+    .time-slot-btn.active-slot .slot-dot {
+        background-color: rgba(255,255,255,0.5) !important;
+    }
+    .time-slot-btn.active-slot .slot-subtext {
+        color: rgba(255,255,255,0.8) !important;
+    }
+    .time-slot-btn.active-slot .slot-info {
+        color: rgba(255,255,255,0.8) !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.05);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--surface-brand-secondary);
+        border-radius: 10px;
+    }
+</style>
+
+<script>
+    // Astro scripts run as deferred modules, so DOM is already available
+    const initBooking = () => {
+        // Find a specific wrapper for this component to know if we are on the page
+        const bookingWrapper = document.getElementById('step-1-details');
+        if (!bookingWrapper) return; // Not on this page, exit
+
+        let currentStep = 1;
+        const totalSteps = 4;
+        
+        const goToStep = (stepIndex) => {
+            if (stepIndex < 1 || stepIndex > totalSteps) return;
+            
+            // Hide all steps
+            for(let i=1; i<=totalSteps; i++) {
+                const s = document.getElementById(`step-${i}${i===1?'-details':i===2?'-extra':i===3?'-packages':'-payment'}`);
+                if(s) {
+                    s.classList.add('hidden');
+                    s.classList.remove('flex');
+                }
+            }
+            
+            // Show current step
+            const target = document.getElementById(`step-${stepIndex}${stepIndex===1?'-details':stepIndex===2?'-extra':stepIndex===3?'-packages':'-payment'}`);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('flex');
+            }
+            
+            // Update Overview
+            const overview1 = document.getElementById('overview-step-1');
+            const overview2 = document.getElementById('overview-step-2');
+            if (stepIndex === 1) {
+                if(overview2) { overview2.classList.add('hidden'); overview2.classList.remove('flex'); }
+                if(overview1) { overview1.classList.remove('hidden'); overview1.classList.add('flex'); }
+            } else {
+                if(overview1) { overview1.classList.add('hidden'); overview1.classList.remove('flex'); }
+                if(overview2) { overview2.classList.remove('hidden'); overview2.classList.add('flex'); }
+            }
+            
+            // Update Stepper
+            for (let i = 1; i <= 5; i++) {
+                const wrap = document.getElementById(`step${i}-wrap`);
+                const icon = document.getElementById(`step${i}-icon`);
+                const text = document.getElementById(`step${i}-text`);
+                if (!wrap || !icon || !text) continue;
+                
+                // Reset classes
+                wrap.classList.add('opacity-50');
+                icon.classList.remove('border-[var(--brand-interactive-base)]', 'text-[var(--brand-interactive-base)]', 'bg-[var(--brand-interactive-base)]', 'text-[var(--surface-brand-primary)]');
+                icon.classList.add('border-white/50', 'text-white', 'bg-[var(--surface-brand-primary)]');
+                text.classList.remove('text-[var(--brand-interactive-base)]', 'font-bold');
+                text.classList.add('text-white/50');
+                
+                if (i < stepIndex) {
+                    // Completed step
+                    wrap.classList.remove('opacity-50');
+                    icon.classList.remove('border-white/50', 'text-white', 'bg-[var(--surface-brand-primary)]');
+                    icon.classList.add('bg-[var(--brand-interactive-base)]', 'text-[var(--surface-brand-primary)]');
+                    text.classList.remove('text-white/50');
+                    text.classList.add('text-[var(--brand-interactive-base)]', 'font-bold');
+                } else if (i === stepIndex) {
+                    // Current step
+                    wrap.classList.remove('opacity-50');
+                    icon.classList.remove('border-white/50', 'text-white');
+                    icon.classList.add('border-[var(--brand-interactive-base)]', 'text-[var(--brand-interactive-base)]');
+                    text.classList.remove('text-white/50');
+                    text.classList.add('text-[var(--brand-interactive-base)]', 'font-bold');
+                }
+            }
+
+            // Update back button
+            const btnBack = document.getElementById('b7-btn-back');
+            if (btnBack) {
+                if (stepIndex > 1) {
+                    btnBack.classList.remove('opacity-50', 'pointer-events-none', 'text-white/50');
+                    btnBack.classList.add('text-[var(--brand-interactive-base)]');
+                } else {
+                    btnBack.classList.add('opacity-50', 'pointer-events-none');
+                    btnBack.classList.remove('text-[var(--brand-interactive-base)]');
+                }
+            }
+            
+            currentStep = stepIndex;
+        };
+
+        const btnBack = document.getElementById('b7-btn-back');
+        if (btnBack) {
+            btnBack.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    goToStep(currentStep - 1);
+                }
+            });
+        }
+
+        const calendarGrid = document.getElementById('b7-calendar-days-grid');
+        if (!calendarGrid) return;
+        
+        if (calendarGrid.dataset.initialized) {
+            return;
+        }
+        calendarGrid.dataset.initialized = 'true';
+
+        const minusBtns = document.querySelectorAll('.minus-btn');
+        const plusBtns = document.querySelectorAll('.plus-btn');
+        const overviewPlayers = document.getElementById('overview-players');
+        const locationBtn = document.getElementById('location-btn');
+
+        if (locationBtn) {
+            locationBtn.addEventListener('click', () => {
+                locationBtn.classList.toggle('active-location');
+            });
+        }
+
+        function updateTotalPlayers() {
+            let total = 0;
+            document.querySelectorAll('.player-count').forEach(el => {
+                total += parseInt(el.textContent || '0', 10);
+            });
+            if (overviewPlayers) {
+                overviewPlayers.textContent = total > 0 ? total.toString() : '-';
+            }
+        }
+
+        minusBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const countEl = (e.target as HTMLElement).nextElementSibling;
+                if (countEl) {
+                    let val = parseInt(countEl.textContent || '0', 10);
+                    if (val > 0) {
+                        val--;
+                        countEl.textContent = val.toString();
+                        updateTotalPlayers();
+                    }
+                }
+            });
+        });
+
+        plusBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const countEl = (e.target as HTMLElement).previousElementSibling;
+                if (countEl) {
+                    let val = parseInt(countEl.textContent || '0', 10);
+                    val++;
+                    countEl.textContent = val.toString();
+                    updateTotalPlayers();
+                }
+            });
+        });
+
+        const timeSlots = document.querySelectorAll('.time-slot-btn');
+        const step1Details = document.getElementById('step-1-details');
+        const step2Extra = document.getElementById('step-2-extra');
+        const overviewStep1 = document.getElementById('overview-step-1');
+        const overviewStep2 = document.getElementById('overview-step-2');
+
+        timeSlots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                timeSlots.forEach(s => s.classList.remove('active-slot'));
+                slot.classList.add('active-slot');
+                
+                // Switch to Extra Time step after a brief delay
+                setTimeout(() => {
+                    goToStep(2);
+                }, 400); // 400ms delay to feel the click
+            });
+        });
+
+        // JS Generated Calendar
+        const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+        let currentDate = new Date(2026, 4, 1); // Start at May 2026 (Month is 0-indexed)
+
+        const calendarMonthYear = document.getElementById('b7-calendar-month-year');
+        const timeSlotsContainer = document.getElementById('time-slots-container');
+        const timeSlotsPlaceholder = document.getElementById('time-slots-placeholder');
+
+        function renderCalendar() {
+            console.log("renderCalendar called. Month year element:", !!calendarMonthYear, "Grid element:", !!calendarGrid);
+            if (!calendarMonthYear || !calendarGrid) return;
+            
+            calendarMonthYear.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            calendarGrid.innerHTML = '';
+            
+            // Header row
+            const daysOfWeek = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+            daysOfWeek.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'text-black';
+                div.textContent = d;
+                calendarGrid.appendChild(div);
+            });
+            
+            const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+            console.log("Calendar bounds: firstDayIndex =", firstDayIndex, "lastDay =", lastDay);
+            
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'text-gray-300 py-2';
+                calendarGrid.appendChild(emptyDiv);
+            }
+            
+            for (let i = 1; i <= lastDay; i++) {
+                const dayDiv = document.createElement('div');
+                // Fake today is May 27, 2026
+                const isToday = (currentDate.getMonth() === 4 && currentDate.getFullYear() === 2026 && i === 27);
+                const isPast = (currentDate.getFullYear() < 2026) || 
+                               (currentDate.getFullYear() === 2026 && currentDate.getMonth() < 4) ||
+                               (currentDate.getFullYear() === 2026 && currentDate.getMonth() === 4 && i < 27);
+                
+                let baseClasses = 'calendar-day py-2 transition-all select-none ';
+                
+                if (isPast) {
+                    baseClasses += 'text-gray-300 font-medium';
+                } else if (isToday) {
+                    baseClasses += 'current-date bg-[var(--surface-brand-secondary)] border-2 border-black text-black cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold scale-110 relative z-10';
+                } else {
+                    baseClasses += 'text-black font-bold cursor-pointer hover:bg-gray-100';
+                }
+                
+                dayDiv.className = baseClasses;
+                dayDiv.textContent = i;
+                
+                if (!isPast) {
+                    dayDiv.addEventListener('click', () => {
+                        // Deselect all
+                        const allDays = calendarGrid.querySelectorAll('.calendar-day');
+                        allDays.forEach(d => {
+                            d.classList.remove('shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]', 'scale-110', 'relative', 'z-10');
+                            if (!d.classList.contains('current-date')) {
+                                d.classList.remove('bg-[var(--surface-brand-secondary)]', 'border-2', 'border-black');
+                                d.classList.add('hover:bg-gray-100', 'font-bold');
+                            }
+                        });
+                        
+                        // Select clicked
+                        dayDiv.classList.add('bg-[var(--surface-brand-secondary)]', 'border-2', 'border-black', 'shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]', 'scale-110', 'relative', 'z-10');
+                        dayDiv.classList.remove('hover:bg-gray-100');
+                        
+                        // Show time slots
+                        if (timeSlotsPlaceholder) timeSlotsPlaceholder.classList.add('hidden');
+                        if (timeSlotsContainer) {
+                            timeSlotsContainer.classList.remove('hidden');
+                            timeSlotsContainer.classList.add('flex');
+                        }
+                    });
+                }
+                
+                calendarGrid.appendChild(dayDiv);
+            }
+        }
+        
+        // Month Navigation
+        const prevMonthBtn = document.getElementById('b7-prev-month');
+        const nextMonthBtn = document.getElementById('b7-next-month');
+        
+        if (prevMonthBtn) {
+            prevMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+        }
+        if (nextMonthBtn) {
+            nextMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+        }
+        
+        // Initial Render
+        renderCalendar();
+
+        const btnConfirmExtra = document.getElementById('b7-btn-nothanks');
+        if (btnConfirmExtra) {
+            btnConfirmExtra.addEventListener('click', () => {
+                goToStep(3);
+            });
+        }
+
+        const btnPackagesConfirm = document.getElementById('b7-btn-packages-confirm');
+        if (btnPackagesConfirm) {
+            btnPackagesConfirm.addEventListener('click', () => {
+                goToStep(4);
+            });
+        }
+
+        let extraAdded = false;
+
+        const updateTotals = () => {
+            const basePrice = 32.00;
+            const extraPrice = extraAdded ? 30.00 : 0.00;
+            
+            let packagesTotal = 0.00;
+            const packagesListEl = document.getElementById('overview-packages-list');
+            if (packagesListEl) {
+                packagesListEl.innerHTML = '';
+            }
+            
+            const pkgContainers = document.querySelectorAll('[data-pkg-name]');
+            pkgContainers.forEach(container => {
+                const qtyEl = container.querySelector('.pkg-qty');
+                if (qtyEl) {
+                    const qty = parseInt(qtyEl.textContent || '0', 10);
+                    if (qty > 0) {
+                        const name = container.getAttribute('data-pkg-name');
+                        const price = parseFloat(container.getAttribute('data-pkg-price') || '0');
+                        packagesTotal += (qty * price);
+                        
+                        if (packagesListEl) {
+                            const row = document.createElement('div');
+                            row.className = "flex justify-between items-center font-[family-name:var(--font-secundaria)] text-[11px]";
+                            row.innerHTML = `
+                                <div class="flex items-center gap-2 text-[var(--surface-brand-secondary)]">
+                                    <i class="fa-solid fa-wine-bottle text-base"></i>
+                                    <span class="text-white font-medium">${qty} x ${name}</span>
+                                </div>
+                                <span class="font-bold">$${(qty * price).toFixed(2)}</span>
+                            `;
+                            packagesListEl.appendChild(row);
+                        }
+                    }
+                }
+            });
+            
+            const subtotal = basePrice + extraPrice + packagesTotal;
+            const tax = subtotal * 0.0825;
+            const total = subtotal + tax;
+            
+            const overviewTotalEl = document.getElementById('overview-step2-total');
+            const overviewTaxEl = document.getElementById('overview-step2-tax');
+            
+            if (overviewTotalEl) overviewTotalEl.textContent = '$' + total.toFixed(2);
+            if (overviewTaxEl) overviewTaxEl.textContent = `*TAX OF $${tax.toFixed(2)} ADDED (8.25%)`;
+        };
+
+        // Toggle Extra Time
+        const btnAddExtra = document.getElementById('btn-add-extra');
+        const overviewDuration = document.getElementById('overview-step2-duration');
+        const overviewExtraText = document.getElementById('overview-step2-extra-text');
+        const overviewExtraRow = document.getElementById('overview-extra-row');
+        
+        if (btnAddExtra) {
+            btnAddExtra.addEventListener('click', () => {
+                extraAdded = !extraAdded;
+                if (extraAdded) {
+                    btnAddExtra.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    btnAddExtra.classList.add('bg-white', 'text-[var(--surface-brand-primary)]');
+                    btnAddExtra.classList.remove('bg-[var(--surface-brand-secondary)]');
+                    
+                    if (overviewDuration) overviewDuration.textContent = 'Duration: 75 minutes';
+                    if (overviewExtraText) overviewExtraText.classList.remove('hidden');
+                    if (overviewExtraRow) {
+                        overviewExtraRow.classList.remove('hidden');
+                        overviewExtraRow.classList.add('flex');
+                    }
+                } else {
+                    btnAddExtra.textContent = '+';
+                    btnAddExtra.classList.remove('bg-white', 'text-[var(--surface-brand-primary)]');
+                    btnAddExtra.classList.add('bg-[var(--surface-brand-secondary)]');
+                    
+                    if (overviewDuration) overviewDuration.textContent = 'Duration: 45 minutes';
+                    if (overviewExtraText) overviewExtraText.classList.add('hidden');
+                    if (overviewExtraRow) {
+                        overviewExtraRow.classList.add('hidden');
+                        overviewExtraRow.classList.remove('flex');
+                    }
+                }
+                updateTotals();
+            });
+        }
+
+        // Package minus/plus buttons
+        document.querySelectorAll('.pkg-minus-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const qtyEl = btn.nextElementSibling;
+                if (qtyEl) {
+                    let val = parseInt(qtyEl.textContent || '0', 10);
+                    if (val > 0) {
+                        val--;
+                        qtyEl.textContent = val.toString();
+                        updateTotals();
+                    }
+                }
+            });
+        });
+        document.querySelectorAll('.pkg-plus-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const qtyEl = btn.previousElementSibling;
+                if (qtyEl) {
+                    let val = parseInt(qtyEl.textContent || '0', 10);
+                    val++;
+                    qtyEl.textContent = val.toString();
+                    updateTotals();
+                }
+            });
+        });
+    };
+    
+    // Run on initial load and after Astro View Transitions
+    initBooking();
+    document.addEventListener('astro:page-load', initBooking);
+</script>

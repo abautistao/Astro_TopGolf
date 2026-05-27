@@ -614,7 +614,19 @@
 
 {/* Interactive JavaScript */}
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    const initDemoBooking = () => {
+        const calendarGrid = document.getElementById('calendar-days-grid');
+        if (!calendarGrid) {
+            console.log("DemoBookingSeven: calendar-days-grid not found yet, retrying in 50ms...");
+            setTimeout(initDemoBooking, 50);
+            return;
+        }
+        if (calendarGrid.dataset.initialized) {
+            console.log("DemoBookingSeven calendar already initialized, skipping duplicate setup.");
+            return;
+        }
+        calendarGrid.dataset.initialized = 'true';
+
         // --- Day selector tabs ---
         const tabBtns = document.querySelectorAll('.tab-btn');
         let currentDayTab = 'lun-jue'; // Default state
@@ -1050,5 +1062,9 @@
         renderCalendar();
         renderTimeSlots();
         updateAllBookingUrls();
-    });
+    };
+
+    // Run on initial load and after Astro View Transitions
+    initDemoBooking();
+    document.addEventListener('astro:page-load', initDemoBooking);
 </script>
