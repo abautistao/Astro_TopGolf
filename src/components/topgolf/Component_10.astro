@@ -42,11 +42,13 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
       </div>
     </div>
   </div>
-  <p
-    class="font-(family-name:--font-tee-line-bold-italic) mt-8 text-center text-lg md:text-xl font-bold text-[--neutral-background-strong)]"
-  >
-    {texto_final || "Así es como funciona Topgolf:"}
-  </p>
+  {texto_final && (
+    <p
+        class="font-(family-name:--font-tee-line-bold-italic) mt-8 text-center text-lg md:text-xl font-bold text-[--neutral-background-strong)]"
+      >
+        {texto_final || "Así es como funciona Topgolf:"}
+    </p>
+  )}
 </section>
 <style>
   .text-shadow-md {
