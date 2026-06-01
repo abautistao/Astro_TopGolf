@@ -17,7 +17,7 @@ const descriptionHtml = stringifyRichText(descripcion);
 const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a Topgolf,</strong> tu principal destino de entretenimiento. Y por destino de entretenimiento nos referimos a un lugar donde puedes venir para festejar un cumpleaños, despedidas de soltero o soltera, eventos corporativos, citas nocturnas o simplemente para divertirte con tus amigos y pasarla en grande.</p>`;
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+<section class="w-full bg-[var(--neutral-text-inverted)] py-12">
   <div
     class="mx-auto flex w-11/12 max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row"
   >
@@ -35,11 +35,14 @@ const placeholderDescriptionHtml = `<p><strong class="font-bold">Bienvenido a To
           {subtitulo || "de Topgolf"}
         </h3>
       </div>
-      <div
-        class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text"
-      >
-        <div set:html={descriptionHtml || placeholderDescriptionHtml} />
-      </div>
+
+      {texto_final && (
+        <div
+          class="max-w-6xl font-(family-name:--font-shields-sans-regular) mt-12 text-balance text-lg font-light leading-relaxed text-[var(--neutral-text-default)] prose lg:prose-lg strapi-rich-text"
+        >
+          <div set:html={descriptionHtml || placeholderDescriptionHtml} />
+        </div>
+      )}
     </div>
   </div>
   {texto_final && (
