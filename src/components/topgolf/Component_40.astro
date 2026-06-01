@@ -8,6 +8,7 @@ import type { Boton } from "./elements/Button.astro";
 // 1. Definimos la interfaz para las props de Strapi
 export interface Props {
   titulo_principal: string;
+  titulo_seccion: string;
   subtitulo_superior?: string;
   color_etiqueta?: string; // Mantenemos por compatibilidad, aunque el diseño tiene colores fijos
   descripcion: any; // Rich Text
@@ -15,6 +16,7 @@ export interface Props {
   Boton: Boton[];
   lista_beneficios?: { texto: string }[];
   imagen: any;
+  is_reverse: boolean;
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -26,6 +28,8 @@ const {
   texto_final,
   Boton,
   imagen,
+  titulo_seccion,
+  is_reverse
 } = Astro.props;
 
 // Placeholders
@@ -77,13 +81,25 @@ const beneficios =
 
 const imageUrl = imagen?.data?.attributes?.url || imagePlaceholder;
 ---
-
+{titulo_seccion && (
+    <section class="pt-8 pb-2">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-[29px] text-center lg:text-[54px] font-semibold tracking-normal uppercase leading-none font-(family-name:--font-shields-sans-semibold-condensed) whitespace-normal mb-0">
+          {titulo_seccion}
+        </h2>
+      </div>
+    </section>
+  )}
 <section
   class="w-full flex items-center justify-center p-4 font-(family-name:--font-shields-sans-regular)"
 >
+  
   <!-- Contenedor Principal de la Tarjeta -->
   <div
     class="bg-slate-50 rounded-3xl overflow-hidden shadow-xl max-w-6xl w-full flex flex-col lg:flex-row min-h-[400px]"
+    class:list={[
+    {'lg:flex-row-reverse': is_reverse}
+  ]}
   >
     <!-- Columna Izquierda: Contenido -->
     <div
