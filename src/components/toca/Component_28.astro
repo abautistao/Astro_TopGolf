@@ -16,6 +16,7 @@ interface CardData {
     description: string
     description_2: string
     linkUrl: string;
+    cover_image: string;
 }
 
 interface Props {
@@ -69,6 +70,7 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                 Array.isArray(tarjetas) && tarjetas.map((item) => {
                     const imgSrc = getStrapiUrl(item.image_1) || item.image_1;
                     const img2Src = getStrapiUrl(item.image_2) || item.image_2;
+                    const coverImage = getStrapiUrl(item.cover_image) || item.cover_image;
                     const isLink = item.linkUrl && item.linkUrl !== "#";
                     const Tag = isLink ? "a" : "div";
 
@@ -83,13 +85,24 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                                 <!-- IMAGEN CON OVERLAY CYAN -->
                                 <div class="mb-4">
                                     <div class="flex flex-col min-h-64.25 p-4 justify-between relative overflow-hidden border-[6px] border-(--brand-interactive-base)">
-                                        <div class="flex gap-4 flex-wrap mb-4 mr-auto relative">
-                                            <div class="font-(family-name:--font-sharp-sans-medium) bg-(--surface-brand-secondary) min-h-[35px] text-[1.125rem] py-[.25rem] px-[.5rem] decoration-none text-(--accent-feedback-strong)">{item.badge}</div>
-                                        </div>
-
-                                        <div class="grid grid-rows-auto grid-cols-[1fr_auto_1fr] self-stretch items-end gap-2 font-(family-name:--font-titling-gothic-fb-extended-bold)">
+                                        {item.badge && (
+                                            <div class="flex gap-4 flex-wrap mb-4 mr-auto relative">
+                                                <div class="font-(family-name:--font-sharp-sans-medium) bg-(--surface-brand-secondary) min-h-[35px] text-[1.125rem] py-[.25rem] px-[.5rem] decoration-none text-(--accent-feedback-strong)">{item.badge}</div>
+                                            </div>
+                                        )}
+                                        {coverImage && (
+                                            <Image
+                                                src={coverImage}
+                                                alt={item.title}
+                                                width={800}
+                                                height={480}
+                                                class="w-full h-full"
+                                            />
+                                        )}
+                                        {imgSrc && img2Src && (
+                                            <div class="grid grid-rows-auto grid-cols-[1fr_auto_1fr] self-stretch items-end gap-2 font-(family-name:--font-titling-gothic-fb-extended-bold)">
                                             <div class="flex flex-col gap-2">
-                                                {imgSrc && (
+                                                
                                                     <Image
                                                         src={imgSrc}
                                                         alt={item.title_1}
@@ -97,14 +110,14 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                                                         height={480}
                                                         class="w-full h-full"
                                                     />
-                                                )}
+                                                
                                                 <span class="text-(--accent-feedback-strong) text-center">{item.title_1}</span>
                                             </div>
 
                                             <span class="text-[.5rem] text-(--accent-feedback-strong)">VS</span>
 
                                             <div class="flex flex-col gap-2">
-                                                {img2Src && (
+                                                
                                                     <Image
                                                         src={img2Src}
                                                         alt={item.title_2}
@@ -112,29 +125,44 @@ const dataToRender = tarjetas.length > 0 ? tarjetas : defaultEvents;
                                                         height={480}
                                                         class="w-full h-full"
                                                     />
-                                                )}
+                                                
                                                 <span class="text-(--accent-feedback-strong) text-center">{item.title_2}</span>
                                             </div>
                                         </div>
+                                        )} 
                                     </div>
                                 </div>
 
                                 <!-- TÍTULO -->
-                                <h3 class="text-left font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[.875rem] lg:text-base text-(--brand-interactive-base) uppercase tracking-wide">
-                                    {item.title}
-                                </h3>
-                                <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong)  tracking-wide">
-                                    {item.subtitle}
-                                </h4>
-                                <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong)  tracking-wide">
-                                    {item.subtitle_2}
-                                </h4>
-                                <p class="text-left ont-(family-name:--font-sharp-sans-medium) text-base text-(--surface-brand-secondary)  tracking-wide">
-                                    {item.description}
-                                </p>
-                                <p class="text-left font-(family-name:--font-sharp-sans-medium) italic text-base text-(--surface-brand-secondary)  tracking-wide">
-                                    {item.description_2}
-                                </p>
+                                {item.title && (
+                                    <h3 class="text-left font-(family-name:--font-titling-gothic-fb-extended-bold) font-bold text-[.875rem] lg:text-base text-(--brand-interactive-base) uppercase tracking-wide">
+                                        {item.title}
+                                    </h3>
+                                )}
+
+                                {item.subtitle && (
+                                    <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong)  tracking-wide">
+                                        {item.subtitle}
+                                    </h4>
+                                )}
+
+                                {item.subtitle_2 && (
+                                    <h4 class="text-left font-(family-name:--font-sharp-sans-medium) text-base text-(--accent-feedback-strong)  tracking-wide">
+                                        {item.subtitle_2}
+                                    </h4>
+                                )}
+
+                                {item.description && (
+                                    <p class="text-left ont-(family-name:--font-sharp-sans-medium) text-base text-(--surface-brand-secondary)  tracking-wide">
+                                        {item.description}
+                                    </p>
+                                )}
+
+                                {item.description_2 && (
+                                    <p class="text-left font-(family-name:--font-sharp-sans-medium) italic text-base text-(--surface-brand-secondary)  tracking-wide">
+                                        {item.description_2}
+                                    </p>
+                                )}
 
                             </Tag>
                             </div>
