@@ -78,9 +78,11 @@ const botonesToRender =
             set:html={contentHtml}
         />
 
-        <div class="w-full flex flex-row flex-wrap justify-center gap-4">
-            <ButtonGroup botones={botonesToRender} />
-        </div>
+        {botones.length > 0 && (
+            <div class="w-full flex flex-row flex-wrap justify-center gap-4">
+                <ButtonGroup botones={botonesToRender} />
+            </div>
+        )}
     </div>
 </section>
 
