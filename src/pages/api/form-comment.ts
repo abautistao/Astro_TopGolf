@@ -86,7 +86,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
         return new Response(
             JSON.stringify({
-                message: "Correo enviado exitosamente",
+                message: "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.",
                 id: emailData?.id
             }),
             { status: 200 }

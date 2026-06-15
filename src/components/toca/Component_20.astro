@@ -425,9 +425,10 @@ const getOptions = (optionsStr?: string) => {
                     body: formData,
                 });
 
+                const data = await response.json()
                 if (response.ok) {
-                    feedback.textContent =
-                        "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.";
+                    
+                    feedback.textContent = data.message;
                     feedback.classList.remove("hidden");
                     feedback.classList.add("bg-green-100", "text-green-800");
                     form.reset();
