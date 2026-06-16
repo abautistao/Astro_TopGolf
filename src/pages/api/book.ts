@@ -26,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        const SEVENROOMS_TOKEN = '04c41842431648454421b764fb415a1e9c05dc32e28b2d469b6cd6eaa7ffc9965ef637a7d8142bcb03d906a92838da28b7e99c120038145532aa4650c1212dfe';
+        const SEVENROOMS_TOKEN = import.meta.env.PUBLIC_SEVENROOMS_TOKEN;
         const url = `https://api.sevenrooms.com/2_4/venues/${venue_id}/book`;
 
         // The SevenRooms API expects application/x-www-form-urlencoded
