@@ -79,82 +79,78 @@ try {
             VOLVER
         </button>
         <div
-            class="hidden md:flex flex-1 justify-center items-center gap-8 px-8"
+            class="flex flex-1 justify-start md:justify-center items-center gap-6 md:gap-12 px-4 md:px-8 overflow-x-auto custom-scrollbar pb-2 md:pb-0 relative"
         >
             {/* Steps line */}
             <div
-                class="flex items-center w-full max-w-2xl justify-between relative"
+                class="absolute left-10 right-10 top-6 h-[2px] bg-white/10 -z-10"
+            >
+            </div>
+            {/* Step 1: Details */}
+            <div id="step1-wrap" class="flex flex-col items-center gap-2 relative min-w-[70px]">
+                <div
+                    id="step1-icon"
+                    class="w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_15px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110"
+                >
+                    <i class="fa-solid fa-user-group text-xl"></i>
+                </div>
+                <span
+                    id="step1-text"
+                    class="text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1"
+                    >Detalles</span
+                >
+            </div>
+
+            {/* Step 2: Extra */}
+            <div
+                id="step2-wrap"
+                class="flex flex-col items-center gap-2 opacity-50 transition-all duration-300 min-w-[70px]"
             >
                 <div
-                    class="absolute left-0 right-0 top-6 h-0.5 bg-white/20 -z-10"
+                    id="step2-icon"
+                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
                 >
+                    <i class="fa-solid fa-star text-xl"></i>
                 </div>
-                {/* Step 1: Details */}
-                <div id="step1-wrap" class="flex flex-col items-center gap-2">
-                    <div
-                        id="step1-icon"
-                        class="w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--surface-brand-primary)] flex items-center justify-center text-[var(--brand-interactive-base)] z-10 transition-colors"
-                    >
-                        <i class="fa-solid fa-user-group text-xl"></i>
-                    </div>
-                    <span
-                        id="step1-text"
-                        class="text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-colors"
-                        >Detalles</span
-                    >
-                </div>
-
-                {/* Step 2: Extra */}
+                <span
+                    id="step2-text"
+                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Extras</span
+                >
+            </div>
+            {/* Step 3: Payment */}
+            <div
+                id="step3-wrap"
+                class="flex flex-col items-center gap-2 opacity-50 transition-all duration-300 min-w-[70px]"
+            >
                 <div
-                    id="step2-wrap"
-                    class="flex flex-col items-center gap-2 opacity-50 transition-opacity"
+                    id="step3-icon"
+                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
                 >
-                    <div
-                        id="step2-icon"
-                        class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors"
-                    >
-                        <i class="fa-solid fa-star text-xl"></i>
-                    </div>
-                    <span
-                        id="step2-text"
-                        class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors"
-                        >Extras</span
-                    >
+                    <i class="fa-regular fa-credit-card text-xl"></i>
                 </div>
-                {/* Step 3: Payment */}
+                <span
+                    id="step3-text"
+                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Pago</span
+                >
+            </div>
+            {/* Step 4: Confirmation */}
+            <div
+                id="step4-wrap"
+                class="flex flex-col items-center gap-2 opacity-50 transition-all duration-300 min-w-[70px]"
+            >
                 <div
-                    id="step3-wrap"
-                    class="flex flex-col items-center gap-2 opacity-50 transition-opacity"
+                    id="step4-icon"
+                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
                 >
-                    <div
-                        id="step3-icon"
-                        class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors"
-                    >
-                        <i class="fa-regular fa-credit-card text-xl"></i>
-                    </div>
-                    <span
-                        id="step3-text"
-                        class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors"
-                        >Pago</span
-                    >
+                    <i class="fa-solid fa-medal text-xl"></i>
                 </div>
-                {/* Step 4: Confirmation */}
-                <div
-                    id="step4-wrap"
-                    class="flex flex-col items-center gap-2 opacity-50 transition-opacity"
+                <span
+                    id="step4-text"
+                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Confirmación</span
                 >
-                    <div
-                        id="step4-icon"
-                        class="w-12 h-12 rounded-full border-2 border-white/50 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white z-10 transition-colors"
-                    >
-                        <i class="fa-solid fa-medal text-xl"></i>
-                    </div>
-                    <span
-                        id="step4-text"
-                        class="text-white/50 text-xs font-[family-name:var(--font-principal)] transition-colors"
-                        >Confirmación</span
-                    >
-                </div>
             </div>
         </div>
     </div>
@@ -163,9 +159,9 @@ try {
     <div
         class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12"
     >
-        {/* RIGHT COLUMN (OVERVIEW) - Stacks on top on mobile */}
+        {/* RIGHT COLUMN (OVERVIEW) - Stacks at bottom on mobile */}
         <div
-            class="lg:col-span-4 lg:col-start-9 flex flex-col gap-6 order-1 lg:order-2"
+            class="lg:col-span-4 lg:col-start-9 flex flex-col gap-6 order-2"
         >
             {/* OVERVIEW PANEL STEP 1 */}
             <div id="overview-step-1" class="flex flex-col gap-6">
@@ -243,6 +239,9 @@ try {
                                 >$ --.--</span
                             >
                         </div>
+                        <p class="text-[10px] text-gray-500 italic mt-1 leading-tight text-right">
+                            *El pago inicial solo cubre la reserva base. Los extras se pagarán en sucursal.
+                        </p>
                     </div>
                 </div>
 
@@ -363,6 +362,9 @@ try {
                                     >$ --.--</span
                                 >
                             </div>
+                            <p class="text-[10px] text-gray-500 italic mt-1 leading-tight text-right">
+                                *El pago inicial solo cubre la reserva base. Los extras se pagarán en sucursal.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -371,7 +373,7 @@ try {
 
         {/* LEFT COLUMN */}
         <div
-            class="lg:col-span-8 lg:col-start-1 lg:row-start-1 flex flex-col gap-8 order-2 lg:order-1"
+            class="lg:col-span-8 lg:col-start-1 lg:row-start-1 flex flex-col gap-8 order-1"
         >
             <div id="step-1-details" class="flex flex-col gap-8">
                 {/* SELECT LOCATION */}
@@ -1163,55 +1165,21 @@ try {
                 const text = document.getElementById(`step${i}-text`);
                 if (!wrap || !icon || !text) continue;
 
-                // Reset classes
+                // Reset classes (Inactive)
                 wrap.classList.add("opacity-50");
-                icon.classList.remove(
-                    "border-[var(--brand-interactive-base)]",
-                    "text-[var(--brand-interactive-base)]",
-                    "bg-[var(--brand-interactive-base)]",
-                    "text-[var(--surface-brand-primary)]",
-                );
-                icon.classList.add(
-                    "border-white/50",
-                    "text-white",
-                    "bg-[var(--surface-brand-primary)]",
-                );
-                text.classList.remove(
-                    "text-[var(--brand-interactive-base)]",
-                    "font-bold",
-                );
-                text.classList.add("text-white/50");
+                icon.className = "w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300 transform scale-100";
+                text.className = "text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1";
 
                 if (i < stepIndex) {
                     // Completed step
                     wrap.classList.remove("opacity-50");
-                    icon.classList.remove(
-                        "border-white/50",
-                        "text-white",
-                        "bg-[var(--surface-brand-primary)]",
-                    );
-                    icon.classList.add(
-                        "bg-[var(--brand-interactive-base)]",
-                        "text-[var(--surface-brand-primary)]",
-                    );
-                    text.classList.remove("text-white/50");
-                    text.classList.add(
-                        "text-[var(--brand-interactive-base)]",
-                        "font-bold",
-                    );
+                    icon.className = "w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black z-10 transition-all duration-300 transform scale-100";
+                    text.className = "text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1";
                 } else if (i === stepIndex) {
                     // Current step
                     wrap.classList.remove("opacity-50");
-                    icon.classList.remove("border-white/50", "text-white");
-                    icon.classList.add(
-                        "border-[var(--brand-interactive-base)]",
-                        "text-[var(--brand-interactive-base)]",
-                    );
-                    text.classList.remove("text-white/50");
-                    text.classList.add(
-                        "text-[var(--brand-interactive-base)]",
-                        "font-bold",
-                    );
+                    icon.className = "w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_15px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110";
+                    text.className = "text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1";
                 }
             }
 
@@ -1793,6 +1761,17 @@ try {
                                                     if (overviewTime) overviewTime.textContent = timeStr;
                                                     const overviewStep2Time = document.getElementById("overview-step2-time");
                                                     if (overviewStep2Time) overviewStep2Time.textContent = timeStr;
+
+                                                    // Update duration dynamically
+                                                    const overviewStep2Duration = document.getElementById("overview-step2-duration");
+                                                    if (overviewStep2Duration) {
+                                                        const dur = selectedTime.duration ? `${selectedTime.duration} minutos` : "1 x Caja de Juego";
+                                                        overviewStep2Duration.textContent = `Duración: ${dur}`;
+                                                    }
+                                                    
+                                                    // Hide extra text since it's hardcoded and not provided by API
+                                                    const overviewStep2ExtraText = document.getElementById("overview-step2-extra-text");
+                                                    if (overviewStep2ExtraText) overviewStep2ExtraText.style.display = 'none';
 
                                                     // Update overview total (base cost + upgrades)
                                                     if ((window as any)._updateOverviewTotal) {
