@@ -1768,8 +1768,7 @@ try {
                                                     bookableTimes.forEach(
                                                         (t: any) =>
                                                             (t.shiftUpsells =
-                                                                shift.upsell_categories ||
-                                                                []),
+                                                                (t.upsell_categories && t.upsell_categories.length > 0) ? t.upsell_categories : (shift.upsell_categories || [])),
                                                     );
                                                     allTimes.push(
                                                         ...bookableTimes,
