@@ -1,0 +1,2343 @@
+---
+// src/components/toca/BookingSeven2.astro
+const token = import.meta.env.PUBLIC_SEVENROOMS_TOKEN;
+let venues = [];
+let apiError = null;
+try {
+    console.log("\n--- [DEBUG SERVER-SIDE] GET /venues Request starting ---");
+    const res = await fetch("https://api.sevenrooms.com/2_4/venues", {
+        headers: {
+            Authorization: token,
+        },
+    });
+    const json = await res.json();
+    console.log(
+        `--- [DEBUG SERVER-SIDE] GET /venues Response Status: ${res.status} ---`,
+    );
+    console.log("Response Body:", JSON.stringify(json, null, 2));
+
+    if (json.data && json.data.results) {
+        venues = json.data.results;
+
+        // Debug GET /venues/{venue_id} for the first venue in the list
+        if (venues.length > 0) {
+            const firstVenueId = venues[0].id;
+            console.log(
+                `\n--- [DEBUG SERVER-SIDE] GET /venues/${firstVenueId} Request starting ---`,
+            );
+            const venueDetailRes = await fetch(
+                `https://api.sevenrooms.com/2_4/venues/${firstVenueId}`,
+                {
+                    headers: { Authorization: token },
+                },
+            );
+            const venueDetailJson = await venueDetailRes.json();
+            console.log(
+                `--- [DEBUG SERVER-SIDE] GET /venues/${firstVenueId} Response Status: ${venueDetailRes.status} ---`,
+            );
+            console.log(
+                "Response Body:",
+                JSON.stringify(venueDetailJson, null, 2),
+            );
+        }
+    } else {
+        apiError = json.msg || "Unknown error from API";
+        console.error("SevenRooms API Error:", json);
+    }
+} catch (e) {
+    console.error("Error fetching venues", e);
+    apiError = e.message;
+}
+---
+
+<section
+    id="b7-main-section"
+    data-token={token}
+    class="min-h-screen bg-[var(--surface-brand-primary)] text-white w-full overflow-hidden font-[family-name:var(--font-secundaria)]"
+>
+    {/* TOP STEPPER */}
+    <div
+        class="w-full max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-b border-white/10"
+    >
+        <button
+            id="b7-btn-back"
+            class="flex items-center gap-2 text-[var(--brand-interactive-base)] hover:text-white uppercase font-[family-name:var(--font-principal)] font-bold text-xl transition-colors opacity-50 pointer-events-none"
+        >
+            <svg
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="square"
+                    stroke-linejoin="miter"
+                    stroke-width="3"
+                    d="M15 19l-7-7 7-7"></path>
+            </svg>
+            VOLVER
+        </button>
+        <div
+            class="flex flex-1 justify-start md:justify-center items-center gap-6 md:gap-12 px-4 md:px-8 overflow-x-auto custom-scrollbar pb-2 md:pb-0 relative"
+        >
+            {/* Steps line */}
+            <div
+                class="absolute left-10 right-10 top-6 h-[2px] bg-white/10 -z-10"
+            >
+            </div>
+            {/* Step 1: Details */}
+            <div
+                id="step1-wrap"
+                class="flex flex-col items-center gap-2 relative min-w-[70px]"
+            >
+                <div
+                    id="step1-icon"
+                    class="w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_15px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110"
+                >
+                    <i class="fa-solid fa-user-group text-xl"></i>
+                </div>
+                <span
+                    id="step1-text"
+                    class="text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1"
+                    >Detalles</span
+                >
+            </div>
+
+            {/* Step 2: Extra */}
+            <div
+                id="step2-wrap"
+                class="flex flex-col items-center gap-2 opacity-50 transition-all duration-300 min-w-[70px]"
+            >
+                <div
+                    id="step2-icon"
+                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
+                >
+                    <i class="fa-solid fa-star text-xl"></i>
+                </div>
+                <span
+                    id="step2-text"
+                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Extras</span
+                >
+            </div>
+            {/* Step 3: Payment */}
+            <div
+                id="step3-wrap"
+                class="flex flex-col items-center gap-2 opacity-50 transition-all duration-300 min-w-[70px]"
+            >
+                <div
+                    id="step3-icon"
+                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
+                >
+                    <i class="fa-regular fa-credit-card text-xl"></i>
+                </div>
+                <span
+                    id="step3-text"
+                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Pago</span
+                >
+            </div>
+            {/* Step 4: Confirmation */}
+            <div
+                id="step4-wrap"
+                class="flex flex-col items-center gap-2 opacity-50 transition-all duration-300 min-w-[70px]"
+            >
+                <div
+                    id="step4-icon"
+                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
+                >
+                    <i class="fa-solid fa-medal text-xl"></i>
+                </div>
+                <span
+                    id="step4-text"
+                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Confirmación</span
+                >
+            </div>
+        </div>
+    </div>
+
+    {/* MAIN CONTENT GRID */}
+    <div
+        class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12"
+    >
+        {/* RIGHT COLUMN (OVERVIEW) - Stacks at bottom on mobile */}
+        <div class="lg:col-span-4 lg:col-start-9 flex flex-col gap-6 order-2">
+            {/* OVERVIEW PANEL STEP 1 */}
+            <div id="overview-step-1" class="flex flex-col gap-6">
+                <div
+                    class="bg-white text-black neo-shadow border-2 border-black w-full relative"
+                >
+                    <div
+                        class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-black"
+                    >
+                        <h3
+                            class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                        >
+                            Resumen
+                        </h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4 relative">
+                        <div
+                            class="flex flex-col sm:flex-row lg:flex-col justify-between sm:gap-8 lg:gap-4"
+                        >
+                            <div class="flex flex-col gap-4 flex-1">
+                                <div class="flex items-center gap-4">
+                                    <span
+                                        class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                        ><i class="fa-solid fa-location-dot"
+                                        ></i></span
+                                    >
+                                    <span
+                                        class="font-bold text-lg"
+                                        id="overview-location">-</span
+                                    >
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span
+                                        class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                        ><i class="fa-solid fa-users"></i></span
+                                    >
+                                    <span
+                                        class="font-bold text-lg"
+                                        id="overview-players">-</span
+                                    >
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-col gap-4 flex-1 mt-4 sm:mt-0 lg:mt-0"
+                            >
+                                <div class="flex items-center gap-4">
+                                    <span
+                                        class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                        ><i class="fa-solid fa-calendar-days"
+                                        ></i></span
+                                    >
+                                    <span
+                                        id="overview-date"
+                                        class="font-bold text-lg">--/--/--</span
+                                    >
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span
+                                        class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                        ><i class="fa-solid fa-clock"></i></span
+                                    >
+                                    <span
+                                        id="overview-time"
+                                        class="font-bold text-lg">--:--</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex justify-between items-center mt-6 border-t-2 border-dashed border-gray-300 pt-6"
+                        >
+                            <span
+                                class="font-[family-name:var(--font-principal)] text-[32px] font-bold uppercase"
+                                >Total</span
+                            >
+                            <span
+                                id="overview-total"
+                                class="font-[family-name:var(--font-principal)] text-[32px] font-bold"
+                                >$ --.--</span
+                            >
+                        </div>
+                        <p
+                            class="text-[10px] text-gray-500 italic mt-1 leading-tight text-right"
+                        >
+                            *El pago inicial solo cubre la reserva base. Los
+                            extras se pagarán en sucursal.
+                        </p>
+                    </div>
+                </div>
+
+                {/* EVENT BOOKINGS PANEL */}
+                <div
+                    class="bg-[var(--brand-interactive-base)] text-black neo-shadow border-2 border-black w-full"
+                >
+                    <div
+                        class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-black"
+                    >
+                        <h3
+                            class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                        >
+                            Reserva de Eventos
+                        </h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4">
+                        <p
+                            class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium leading-relaxed"
+                        >
+                            ¿Quieres mejorar tu experiencia o planear algo más
+                            grande? ¡Contacta a nuestro equipo de ventas para
+                            discutir las necesidades de tu evento!
+                        </p>
+                        <a
+                            href="#"
+                            class="inline-block mt-2 bg-[var(--surface-brand-secondary)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-6 py-2 border-2 border-black neo-shadow self-start hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+                        >
+                            Consultar Ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {/* OVERVIEW PANEL STEP 2 */}
+            <div id="overview-step-2" class="hidden flex-col gap-6">
+                <div class="bg-white text-black w-full relative">
+                    <div
+                        class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-transparent"
+                    >
+                        <h3
+                            class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                        >
+                            RESUMEN
+                        </h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4 relative">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-4">
+                                <span
+                                    class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                    ><i class="fa-solid fa-location-dot"
+                                    ></i></span
+                                >
+                                <span
+                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    id="overview-step2-location">-</span
+                                >
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span
+                                    class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                    ><i class="fa-solid fa-users"></i></span
+                                >
+                                <span
+                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    id="overview-step2-players">2</span
+                                >
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span
+                                    class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                    ><i class="fa-regular fa-calendar-days"
+                                    ></i></span
+                                >
+                                <span
+                                    id="overview-step2-date"
+                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    >--/--/--</span
+                                >
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span
+                                    class="text-[var(--surface-brand-secondary)] w-6 text-center text-xl"
+                                    ><i class="fa-regular fa-clock"></i></span
+                                >
+                                <span
+                                    id="overview-step2-time"
+                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    >--:--</span
+                                >
+                            </div>
+                            <div
+                                class="ml-10 text-[11px] font-[family-name:var(--font-secundaria)] text-gray-500 mt-1"
+                                id="overview-step2-duration"
+                            >
+                                Duración: 75 minutos
+                            </div>
+                            <div
+                                class="ml-10 text-[11px] font-[family-name:var(--font-secundaria)] italic text-gray-400"
+                                id="overview-step2-extra-text"
+                            >
+                                Incluye 30 minutos de tiempo extra
+                            </div>
+                            <div
+                                class="border-t border-gray-200 mt-2 pt-4 flex flex-col gap-2"
+                                id="overview-upgrades-list"
+                            >
+                                <span class="text-sm italic text-gray-500"
+                                    >Ningún extra seleccionado</span
+                                >
+                            </div>
+                            <div
+                                class="flex justify-between items-center mt-4 border-t-2 border-dashed border-gray-300 pt-4"
+                            >
+                                <span
+                                    class="font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase"
+                                    >Total</span
+                                >
+                                <span
+                                    id="overview-step2-total"
+                                    class="font-[family-name:var(--font-principal)] text-[24px] font-bold"
+                                    >$ --.--</span
+                                >
+                            </div>
+                            <p
+                                class="text-[10px] text-gray-500 italic mt-1 leading-tight text-right"
+                            >
+                                *El pago inicial solo cubre la reserva base. Los
+                                extras se pagarán en sucursal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* LEFT COLUMN */}
+        <div
+            class="lg:col-span-8 lg:col-start-1 lg:row-start-1 flex flex-col gap-8 order-1"
+        >
+            <div id="step-1-details" class="flex flex-col gap-8">
+                {/* SELECT LOCATION */}
+                <div
+                    class="bg-white w-full border-2 border-black flex flex-col"
+                >
+                    <div
+                        class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black"
+                    >
+                        <h2
+                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase"
+                        >
+                            Seleccionar Ubicación
+                        </h2>
+                    </div>
+                    <div class="p-6 md:p-8 bg-white text-black">
+                        {
+                            venues.length > 0 ? (
+                                <div class="relative w-full max-w-2xl inline-block">
+                                    <select
+                                        id="location-select"
+                                        class="w-full bg-white text-black font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] font-bold uppercase px-6 py-4 border-2 border-black neo-shadow hover:bg-gray-50 transition-colors tracking-tight appearance-none cursor-pointer outline-none focus:ring-4 focus:ring-[var(--brand-interactive-base)]"
+                                    >
+                                        <option value="" disabled selected>
+                                            Seleccionar una Ubicación...
+                                        </option>
+                                        {venues.map((venue: any) => (
+                                            <option
+                                                value={venue.id}
+                                                data-name={
+                                                    venue.name ||
+                                                    venue.neighborhood ||
+                                                    venue.venue_group_name
+                                                }
+                                                data-venue-group-id={
+                                                    venue.venue_group_id
+                                                }
+                                            >
+                                                {venue.name ||
+                                                    venue.neighborhood ||
+                                                    venue.venue_group_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-6 text-black">
+                                        <i class="fa-solid fa-chevron-down text-2xl" />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div class="bg-red-100 text-red-800 p-4 border-2 border-red-800 font-[family-name:var(--font-principal)] font-bold">
+                                    No se pudieron cargar las ubicaciones desde
+                                    la API de SevenRooms. Error: {apiError}.
+                                    Verifica tu token o conexión de red.
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+
+                {/* HOW MANY PLAYERS? */}
+                <div
+                    class="bg-white w-full border-2 border-black flex flex-col"
+                >
+                    <div
+                        class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black"
+                    >
+                        <h2
+                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase"
+                        >
+                            ¿Cuántos Jugadores?
+                        </h2>
+                    </div>
+                    <div
+                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6"
+                    >
+                        <p
+                            class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium"
+                        >
+                            TOCA Social es genial para grupos de todos los
+                            tamaños, pero consideramos que es más divertido con
+                            4 o más.
+                        </p>
+                        <div
+                            class="flex flex-col sm:flex-row flex-wrap gap-8 justify-start"
+                        >
+                            {/* Group 1 */}
+                            <div class="flex flex-col gap-2">
+                                <span
+                                    class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide"
+                                    >Mayores de 21</span
+                                >
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        class="player-btn minus-btn bg-[var(--surface-brand-secondary)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none"
+                                        >-</button
+                                    >
+                                    <div
+                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none"
+                                    >
+                                        0
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="player-btn plus-btn bg-[var(--surface-brand-secondary)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none"
+                                        >+</button
+                                    >
+                                </div>
+                            </div>
+
+                            {/* Group 2 */}
+                            <div class="flex flex-col gap-2">
+                                <span
+                                    class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide"
+                                    >Edad 18 - 20</span
+                                >
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        class="player-btn minus-btn bg-[var(--brand-interactive-base)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none"
+                                        >-</button
+                                    >
+                                    <div
+                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none"
+                                    >
+                                        0
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="player-btn plus-btn bg-[var(--brand-interactive-base)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none"
+                                        >+</button
+                                    >
+                                </div>
+                            </div>
+
+                            {/* Group 3 */}
+                            <div class="flex flex-col gap-2">
+                                <span
+                                    class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide"
+                                    >Menores de 18</span
+                                >
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        class="player-btn minus-btn bg-[var(--accent-highlight-primary)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none"
+                                        >-</button
+                                    >
+                                    <div
+                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none"
+                                    >
+                                        0
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="player-btn plus-btn bg-[var(--accent-highlight-primary)] w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-bold text-2xl hover:translate-y-px hover:translate-x-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all select-none"
+                                        >+</button
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-2 border-black p-4 mt-2 max-w-lg">
+                            <div
+                                class="flex items-start gap-3 text-black/80 font-[family-name:var(--font-secundaria)]"
+                            >
+                                <div
+                                    class="w-5 h-5 rounded-full bg-[var(--surface-brand-primary)] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5"
+                                >
+                                    <i class="fa-solid fa-info"></i>
+                                </div>
+                                <p class="text-[14px] leading-relaxed italic">
+                                    Los jugadores menores de 21 años deben estar
+                                    supervisados en todo momento por al menos un
+                                    adulto (los adultos que no juegan no pagan)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* SELECT DATE AND TIME */}
+                <div
+                    class="bg-white w-full border-2 border-black flex flex-col mb-12"
+                >
+                    <div
+                        class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black"
+                    >
+                        <h2
+                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase"
+                        >
+                            Seleccionar Fecha y Hora
+                        </h2>
+                    </div>
+                    <div
+                        class="p-6 md:p-8 bg-white text-black flex flex-col lg:flex-row gap-6"
+                    >
+                        {/* Calendar Outline */}
+                        <div
+                            id="b7-calendar-container"
+                            class="border-2 border-black w-full lg:w-[55%] shrink-0 h-fit relative opacity-50 pointer-events-none transition-all duration-300"
+                        >
+                            {/* OVERLAY MESSAGE */}
+                            <div
+                                id="b7-calendar-overlay"
+                                class="absolute inset-0 z-20 flex items-center justify-center bg-white/40 backdrop-blur-[2px]"
+                            >
+                                <span
+                                    class="bg-[var(--surface-brand-secondary)] text-white font-[family-name:var(--font-principal)] font-bold text-sm md:text-base px-6 py-3 border-2 border-black neo-shadow text-center uppercase tracking-wide"
+                                >
+                                    Selecciona Jugadores Primero
+                                </span>
+                            </div>
+                            <div
+                                class="bg-[var(--surface-brand-primary)] text-white p-3 flex justify-between items-center relative border-b-2 border-black"
+                            >
+                                <button
+                                    id="b7-prev-month"
+                                    class="w-8 h-8 flex items-center justify-center text-[var(--brand-interactive-base)] hover:text-white transition-colors"
+                                >
+                                    <i
+                                        class="fa-solid fa-play fa-rotate-180 text-sm"
+                                    ></i>
+                                </button>
+                                <span
+                                    id="b7-calendar-month-year"
+                                    class="font-[family-name:var(--font-principal)] text-[22px] font-bold uppercase tracking-widest"
+                                    >MAY 2026</span
+                                >
+                                <button
+                                    id="b7-next-month"
+                                    class="w-8 h-8 flex items-center justify-center text-[var(--brand-interactive-base)] hover:text-white transition-colors"
+                                >
+                                    <i class="fa-solid fa-play text-sm"></i>
+                                </button>
+                            </div>
+                            <div
+                                id="b7-calendar-days-grid"
+                                class="p-4 grid grid-cols-7 gap-y-4 gap-x-2 text-center font-[family-name:var(--font-principal)] text-[14px] font-bold uppercase"
+                            >
+                                {/* Injected by JS */}
+                            </div>
+                        </div>
+
+                        {/* Placeholder before selection */}
+                        <div
+                            id="time-slots-placeholder"
+                            class="w-full lg:w-[45%] flex flex-col justify-center items-center text-center p-8 border-2 border-dashed border-gray-300 bg-gray-50/50 min-h-[300px]"
+                        >
+                            <i
+                                class="fa-regular fa-calendar-check text-4xl text-gray-300 mb-4"
+                            ></i>
+                            <p
+                                class="font-[family-name:var(--font-secundaria)] text-gray-500 font-medium"
+                            >
+                                Por favor, selecciona una fecha para ver los
+                                horarios disponibles.
+                            </p>
+                        </div>
+
+                        {/* Time Slots */}
+                        <div
+                            id="time-slots-container"
+                            class="hidden w-full lg:w-[45%] flex-col gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"
+                        >
+                            {/* Injected by JS */}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- STEP 2: EXTRA --- */}
+            <div id="step-2-extra" class="hidden flex-col gap-8 w-full">
+                <div
+                    class="bg-white w-full flex flex-col border border-gray-200"
+                >
+                    <div
+                        class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent"
+                    >
+                        <h2
+                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                        >
+                            EXTRAS Y MEJORAS
+                        </h2>
+                    </div>
+                    <div
+                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 relative min-h-[300px]"
+                    >
+                        <p
+                            class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium text-black"
+                        >
+                            Selecciona cualquier extra que desees añadir a tu
+                            reservación.
+                        </p>
+
+                        <div
+                            id="step2-upgrades-container"
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2"
+                        >
+                            {/* Injected dynamically */}
+                            <div
+                                class="col-span-full p-8 text-center text-gray-500 font-bold"
+                            >
+                                Cargando extras...
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-8">
+                            <button
+                                id="b7-btn-extra-confirm"
+                                class="bg-white text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 transition-colors tracking-tight"
+                            >
+                                SIGUIENTE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- STEP 3: PAYMENT --- */}
+            <div id="step-3-payment" class="hidden flex-col gap-8 w-full">
+                {/* TU INFORMACIÓN */}
+                <div
+                    class="bg-white w-full flex flex-col border border-gray-200"
+                >
+                    <div
+                        class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent"
+                    >
+                        <h2
+                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                        >
+                            TU INFORMACIÓN
+                        </h2>
+                    </div>
+                    <div
+                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-secundaria)]"
+                    >
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4"
+                        >
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Nombre*</label
+                                >
+                                <input
+                                    id="b7-fname"
+                                    type="text"
+                                    class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]"
+                                />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Apellido*</label
+                                >
+                                <input
+                                    id="b7-lname"
+                                    type="text"
+                                    class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]"
+                                />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Correo Electrónico*</label
+                                >
+                                <input
+                                    id="b7-email"
+                                    type="email"
+                                    class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]"
+                                />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Número de Teléfono*</label
+                                >
+                                <div
+                                    class="flex border border-gray-400 relative"
+                                >
+                                    <div
+                                        class="bg-gray-100 border-r border-gray-400 flex items-center relative"
+                                    >
+                                        <select
+                                            id="b7-phone-prefix"
+                                            class="appearance-none bg-transparent pl-3 pr-8 py-2 outline-none text-sm cursor-pointer z-10 w-[80px]"
+                                        >
+                                            <option value="+52">🇲🇽 +52</option>
+                                            <option value="+1">🇺🇸 +1</option>
+                                            <option value="+34">🇪🇸 +34</option>
+                                            <option value="+44">🇬🇧 +44</option>
+                                            <option value="+54">🇦🇷 +54</option>
+                                            <option value="+57">🇨🇴 +57</option>
+                                            <option value="+56">🇨🇱 +56</option>
+                                            <option value="+51">🇵🇪 +51</option>
+                                        </select>
+                                        <i
+                                            class="fa-solid fa-caret-down text-xs absolute right-2 pointer-events-none z-0"
+                                        ></i>
+                                    </div>
+                                    <input
+                                        id="b7-phone"
+                                        type="tel"
+                                        class="p-2 flex-1 focus:outline-none focus:border-[var(--surface-brand-primary)]"
+                                    />
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Requisitos dietéticos</label
+                                >
+                                <div class="relative">
+                                    <select
+                                        id="b7-diet"
+                                        class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"
+                                    >
+                                        <option value="">Ninguno</option>
+                                        <option value="Vegetariano"
+                                            >Vegetariano</option
+                                        >
+                                        <option value="Vegano">Vegano</option>
+                                        <option value="Sin gluten"
+                                            >Sin gluten</option
+                                        >
+                                        <option value="Alergia a nueces"
+                                            >Alergia a nueces</option
+                                        >
+                                        <option value="Alergia a mariscos"
+                                            >Alergia a mariscos</option
+                                        >
+                                        <option value="Otro"
+                                            >Otro (Especificar en notas)</option
+                                        >
+                                    </select>
+                                    <i
+                                        class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"
+                                    ></i>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Fecha de Nacimiento</label
+                                >
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="relative">
+                                        <select
+                                            id="b7-dob-day"
+                                            class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"
+                                        >
+                                            <option value="" disabled selected
+                                                >Día</option
+                                            >
+                                            {
+                                                Array.from(
+                                                    { length: 31 },
+                                                    (_, i) => i + 1,
+                                                ).map((d) => (
+                                                    <option value={d}>
+                                                        {d}
+                                                    </option>
+                                                ))
+                                            }
+                                        </select>
+                                        <i
+                                            class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"
+                                        ></i>
+                                    </div>
+                                    <div class="relative">
+                                        <select
+                                            id="b7-dob-month"
+                                            class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"
+                                        >
+                                            <option value="" disabled selected
+                                                >Mes</option
+                                            >
+                                            <option value="01">Ene</option>
+                                            <option value="02">Feb</option>
+                                            <option value="03">Mar</option>
+                                            <option value="04">Abr</option>
+                                            <option value="05">May</option>
+                                            <option value="06">Jun</option>
+                                            <option value="07">Jul</option>
+                                            <option value="08">Ago</option>
+                                            <option value="09">Sep</option>
+                                            <option value="10">Oct</option>
+                                            <option value="11">Nov</option>
+                                            <option value="12">Dic</option>
+                                        </select>
+                                        <i
+                                            class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"
+                                        ></i>
+                                    </div>
+                                    <div class="relative">
+                                        <select
+                                            id="b7-dob-year"
+                                            class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"
+                                        >
+                                            <option value="" disabled selected
+                                                >Año</option
+                                            >
+                                            {
+                                                Array.from(
+                                                    { length: 100 },
+                                                    (_, i) =>
+                                                        new Date().getFullYear() -
+                                                        i,
+                                                ).map((y) => (
+                                                    <option value={y}>
+                                                        {y}
+                                                    </option>
+                                                ))
+                                            }
+                                        </select>
+                                        <i
+                                            class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"
+                                        ></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1 mt-2">
+                            <label class="text-[14px] font-medium"
+                                >Notas de la reserva</label
+                            >
+                            <input
+                                id="b7-notes"
+                                type="text"
+                                class="border border-gray-400 p-2 focus:outline-none focus:border-[var(--surface-brand-primary)]"
+                            />
+                        </div>
+
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-2"
+                        >
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >¿Ocasión especial?</label
+                                >
+                                <div class="relative">
+                                    <select
+                                        id="b7-occasion"
+                                        class="w-full appearance-none border border-gray-400 p-2 pr-8 focus:outline-none focus:border-[var(--surface-brand-primary)] bg-white rounded-none"
+                                    >
+                                        <option value="">Ninguna</option>
+                                        <option value="Cumpleaños"
+                                            >Cumpleaños</option
+                                        >
+                                        <option value="Aniversario"
+                                            >Aniversario</option
+                                        >
+                                        <option value="Cita">Cita</option>
+                                        <option value="Evento corporativo"
+                                            >Evento corporativo</option
+                                        >
+                                        <option value="Despedida"
+                                            >Despedida de soltero/a</option
+                                        >
+                                        <option value="Graduación"
+                                            >Graduación</option
+                                        >
+                                    </select>
+                                    <i
+                                        class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"
+                                    ></i>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[14px] font-medium"
+                                    >Código de cupón</label
+                                >
+                                <div class="flex">
+                                    <input
+                                        type="text"
+                                        class="border border-gray-400 border-r-0 p-2 flex-1 focus:outline-none focus:border-[var(--surface-brand-primary)]"
+                                    />
+                                    <button
+                                        class="bg-[var(--surface-brand-secondary)] px-4 flex items-center justify-center border border-black hover:bg-[var(--surface-brand-primary)] hover:text-white transition-colors"
+                                    >
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* PAYMENT */}
+                <div
+                    class="bg-white w-full flex flex-col border border-gray-200"
+                >
+                    <div
+                        class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent"
+                    >
+                        <h2
+                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                        >
+                            PAYMENT
+                        </h2>
+                    </div>
+                    <div
+                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-secundaria)]"
+                    >
+                        <div
+                            class="bg-[var(--surface-brand-secondary)]/10 border border-[var(--surface-brand-secondary)] p-6 mb-4 flex flex-col gap-3"
+                        >
+                            <div
+                                class="flex items-center gap-3 text-[var(--brand-interactive-base)] text-2xl mb-2"
+                            >
+                                <i class="fa-solid fa-envelope-open-text"></i>
+                                <h3
+                                    class="font-[family-name:var(--font-principal)] font-bold text-[24px] text-black"
+                                >
+                                    Pago seguro por enlace
+                                </h3>
+                            </div>
+                            <p class="text-black/80">
+                                Para asegurar el cumplimiento de las normativas
+                                de seguridad (PCI), no solicitamos tu tarjeta
+                                por este medio. Al confirmar, <strong
+                                    >recibirás inmediatamente un enlace de pago
+                                    seguro en tu correo electrónico</strong
+                                >.
+                            </p>
+                            <p
+                                class="text-[var(--accent-feedback-strong)] font-bold text-sm"
+                            >
+                                Cuentas con 60 minutos para completar el pago o
+                                la reserva se cancelará automáticamente.
+                            </p>
+                        </div>
+
+                        <div
+                            class="flex flex-col gap-3 mt-4 text-[13px] text-gray-700"
+                        >
+                            <p>
+                                Al suministrar tus datos de tarjeta, le permites
+                                a Toca Social Grandscape efectuar futuros cargos
+                                en tu tarjeta conforme a las condiciones
+                                estipuladas.
+                            </p>
+
+                            <label
+                                class="flex items-center gap-3 cursor-pointer"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="w-4 h-4 rounded-sm border-gray-400 accent-[var(--surface-brand-primary)]"
+                                />
+                                <span class="underline"
+                                    >Política de Cancelación*</span
+                                >
+                            </label>
+                            <label
+                                class="flex items-center gap-3 cursor-pointer"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="w-4 h-4 rounded-sm border-gray-400 accent-[var(--surface-brand-primary)]"
+                                />
+                                <span
+                                    >Acepto la <span class="underline"
+                                        >política requerida por la ubicación*</span
+                                    ></span
+                                >
+                            </label>
+                            <label
+                                class="flex items-center gap-3 cursor-pointer"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="w-4 h-4 rounded-sm border-gray-400 accent-[var(--surface-brand-primary)]"
+                                />
+                                <span>Certifico que soy mayor de 18 años*</span>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button
+                                id="b7-btn-submit"
+                                class="bg-[var(--brand-interactive-base)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all tracking-tight flex items-center justify-center gap-2"
+                            >
+                                CONFIRMAR PAGO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- STEP 5: CONFIRMATION --- */}
+            <div
+                id="step-4-confirmation"
+                class="hidden flex-col gap-8 w-full text-center py-12"
+            >
+                <div
+                    class="bg-white border-2 border-black neo-shadow p-12 flex flex-col items-center justify-center gap-6"
+                >
+                    <div
+                        class="w-20 h-20 bg-[var(--surface-brand-secondary)] text-white rounded-full flex items-center justify-center text-4xl mb-4 border-4 border-black"
+                    >
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h2
+                        class="text-black font-[family-name:var(--font-principal)] text-[32px] md:text-[48px] font-bold uppercase tracking-wide"
+                    >
+                        ¡Reserva Confirmada!
+                    </h2>
+                    <p
+                        class="font-[family-name:var(--font-secundaria)] text-[18px] text-gray-700 max-w-lg"
+                    >
+                        Tu reserva ha sido registrada exitosamente. <strong
+                            >Revisa tu correo electrónico</strong
+                        > para encontrar el enlace de pago seguro.
+                    </p>
+                    <p
+                        class="font-bold text-[var(--accent-feedback-strong)] text-sm"
+                    >
+                        Recuerda completar el pago en los próximos 60 minutos
+                        para asegurar tu lugar.
+                    </p>
+                    <button
+                        class="mt-4 bg-[var(--brand-interactive-base)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all tracking-tight"
+                        onclick="window.location.reload()"
+                    >
+                        Hacer otra reserva
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .neo-shadow {
+        box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+    }
+    #location-btn.active-location {
+        background-color: var(--surface-brand-primary) !important;
+        color: white !important;
+        text-shadow:
+            -1px 0px 0px var(--brand-interactive-base),
+            1.5px 0px 0px var(--surface-brand-secondary);
+    }
+
+    .time-slot-btn.active-slot {
+        background-color: var(--surface-brand-primary) !important;
+        color: white !important;
+        border-color: transparent !important;
+    }
+    .time-slot-btn.active-slot .slot-dot {
+        background-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    .time-slot-btn.active-slot .slot-subtext {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    .time-slot-btn.active-slot .slot-info {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--surface-brand-secondary);
+        border-radius: 10px;
+    }
+</style>
+
+<script>
+    // Astro scripts run as deferred modules, so DOM is already available
+    const initBooking = () => {
+        // Find a specific wrapper for this component to know if we are on the page
+        const bookingWrapper = document.getElementById("step-1-details");
+        if (!bookingWrapper) return; // Not on this page, exit
+
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        const goToStep = (stepIndex) => {
+            if (stepIndex < 1 || stepIndex > totalSteps) return;
+
+            // Hide all steps
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepSuffix =
+                    i === 1
+                        ? "-details"
+                        : i === 2
+                          ? "-extra"
+                          : i === 3
+                            ? "-payment"
+                            : "-confirmation";
+                const s = document.getElementById(`step-${i}${stepSuffix}`);
+                if (s) {
+                    s.classList.add("hidden");
+                    s.classList.remove("flex");
+                }
+            }
+
+            // Show current step
+            const currentSuffix =
+                stepIndex === 1
+                    ? "-details"
+                    : stepIndex === 2
+                      ? "-extra"
+                      : stepIndex === 3
+                        ? "-payment"
+                        : "-confirmation";
+            const target = document.getElementById(
+                `step-${stepIndex}${currentSuffix}`,
+            );
+            if (target) {
+                target.classList.remove("hidden");
+                target.classList.add("flex");
+            }
+
+            // Update Overview
+            const overview1 = document.getElementById("overview-step-1");
+            const overview2 = document.getElementById("overview-step-2");
+            if (stepIndex === 1) {
+                if (overview2) {
+                    overview2.classList.add("hidden");
+                    overview2.classList.remove("flex");
+                }
+                if (overview1) {
+                    overview1.classList.remove("hidden");
+                    overview1.classList.add("flex");
+                }
+            } else {
+                if (overview1) {
+                    overview1.classList.add("hidden");
+                    overview1.classList.remove("flex");
+                }
+                if (overview2) {
+                    overview2.classList.remove("hidden");
+                    overview2.classList.add("flex");
+                }
+            }
+
+            // Update Stepper
+            for (let i = 1; i <= totalSteps; i++) {
+                const wrap = document.getElementById(`step${i}-wrap`);
+                const icon = document.getElementById(`step${i}-icon`);
+                const text = document.getElementById(`step${i}-text`);
+                if (!wrap || !icon || !text) continue;
+
+                // Reset classes (Inactive)
+                wrap.classList.add("opacity-50");
+                icon.className =
+                    "w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300 transform scale-100";
+                text.className =
+                    "text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1";
+
+                if (i < stepIndex) {
+                    // Completed step
+                    wrap.classList.remove("opacity-50");
+                    icon.className =
+                        "w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black z-10 transition-all duration-300 transform scale-100";
+                    text.className =
+                        "text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1";
+                } else if (i === stepIndex) {
+                    // Current step
+                    wrap.classList.remove("opacity-50");
+                    icon.className =
+                        "w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_15px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110";
+                    text.className =
+                        "text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1";
+                }
+            }
+
+            // Update back button
+            const btnBack = document.getElementById("b7-btn-back");
+            if (btnBack) {
+                if (stepIndex > 1) {
+                    btnBack.classList.remove(
+                        "opacity-50",
+                        "pointer-events-none",
+                        "text-white/50",
+                    );
+                    btnBack.classList.add(
+                        "text-[var(--brand-interactive-base)]",
+                    );
+                } else {
+                    btnBack.classList.add("opacity-50", "pointer-events-none");
+                    btnBack.classList.remove(
+                        "text-[var(--brand-interactive-base)]",
+                    );
+                }
+            }
+
+            currentStep = stepIndex;
+        };
+
+        const btnBack = document.getElementById("b7-btn-back");
+        if (btnBack) {
+            btnBack.addEventListener("click", () => {
+                if (currentStep > 1) {
+                    goToStep(currentStep - 1);
+                }
+            });
+        }
+
+        const calendarGrid = document.getElementById("b7-calendar-days-grid");
+        if (!calendarGrid) return;
+
+        if (calendarGrid.dataset.initialized) {
+            return;
+        }
+        calendarGrid.dataset.initialized = "true";
+
+        const minusBtns = document.querySelectorAll(".minus-btn");
+        const plusBtns = document.querySelectorAll(".plus-btn");
+        const overviewPlayers = document.getElementById("overview-players");
+        const locationSelect = document.getElementById(
+            "location-select",
+        ) as HTMLSelectElement;
+        const overviewLocation = document.getElementById("overview-location");
+        const overviewStep2Location = document.getElementById(
+            "overview-step2-location",
+        );
+
+        // Function to calculate and update global totals
+        (window as any)._updateOverviewTotal = function () {
+            let totalBaseCost = 0;
+            const overviewPlayersEl =
+                document.getElementById("overview-players");
+            const pSize = parseInt(overviewPlayersEl?.textContent || "0", 10);
+
+            if ((window as any)._selectedSlot) {
+                const costPerPerson = (window as any)._selectedSlot.cost || 0;
+                totalBaseCost = costPerPerson * pSize;
+            }
+
+            let upgradesTotalCost = 0;
+            const allUpgrades = (window as any)._allUpgrades || [];
+            const container = document.getElementById(
+                "step2-upgrades-container",
+            );
+            if (container) {
+                const selectedCards = container.querySelectorAll(
+                    ".upgrade-card.border-black",
+                );
+                selectedCards.forEach((c) => {
+                    const qtyEl = c.querySelector(".qty-val");
+                    const qty = parseInt(qtyEl?.textContent || "1", 10);
+                    const id = c.getAttribute("data-id");
+                    const upgrade = allUpgrades.find((u: any) => u.id === id);
+                    if (upgrade) {
+                        upgradesTotalCost += (upgrade.price || 0) * qty;
+                    }
+                });
+            }
+
+            const finalTotal = totalBaseCost + upgradesTotalCost;
+            const overviewTotal = document.getElementById("overview-total");
+            if (overviewTotal)
+                overviewTotal.textContent = `$${finalTotal.toFixed(2)}`;
+            const overviewStep2Total = document.getElementById(
+                "overview-step2-total",
+            );
+            if (overviewStep2Total)
+                overviewStep2Total.textContent = `$${finalTotal.toFixed(2)}`;
+        };
+
+        if (locationSelect) {
+            locationSelect.addEventListener("change", (e) => {
+                const target = e.target as HTMLSelectElement;
+                const selectedOption = target.options[target.selectedIndex];
+                const venueName =
+                    selectedOption.getAttribute("data-name") || target.value;
+                console.log("Selected venue:", venueName); // debugging
+                if (overviewLocation) overviewLocation.textContent = venueName;
+                if (overviewStep2Location)
+                    overviewStep2Location.textContent = venueName;
+            });
+            // Initial call if already selected
+            if (locationSelect.value) {
+                const selectedOption =
+                    locationSelect.options[locationSelect.selectedIndex];
+                const venueName =
+                    selectedOption.getAttribute("data-name") ||
+                    locationSelect.value;
+                if (overviewLocation) overviewLocation.textContent = venueName;
+                if (overviewStep2Location)
+                    overviewStep2Location.textContent = venueName;
+            }
+        }
+
+        function updateTotalPlayers() {
+            let total = 0;
+            document.querySelectorAll(".player-count").forEach((el) => {
+                total += parseInt(el.textContent || "0", 10);
+            });
+            if (overviewPlayers) {
+                overviewPlayers.textContent =
+                    total > 0 ? total.toString() : "-";
+            }
+            const overviewStep2Players = document.getElementById(
+                "overview-step2-players",
+            );
+            if (overviewStep2Players) {
+                overviewStep2Players.textContent =
+                    total > 0 ? total.toString() : "-";
+            }
+            if ((window as any)._updateOverviewTotal) {
+                (window as any)._updateOverviewTotal();
+            }
+
+            // Toggle calendar disabled state
+            const calendarContainer = document.getElementById(
+                "b7-calendar-container",
+            );
+            const calendarOverlay = document.getElementById(
+                "b7-calendar-overlay",
+            );
+            if (calendarContainer && calendarOverlay) {
+                if (total > 0) {
+                    calendarContainer.classList.remove(
+                        "opacity-50",
+                        "pointer-events-none",
+                    );
+                    calendarOverlay.classList.add("hidden");
+                } else {
+                    calendarContainer.classList.add(
+                        "opacity-50",
+                        "pointer-events-none",
+                    );
+                    calendarOverlay.classList.remove("hidden");
+                }
+            }
+        }
+
+        minusBtns.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const countEl = (e.target as HTMLElement).nextElementSibling;
+                if (countEl) {
+                    let val = parseInt(countEl.textContent || "0", 10);
+                    if (val > 0) {
+                        val--;
+                        countEl.textContent = val.toString();
+                        updateTotalPlayers();
+                    }
+                }
+            });
+        });
+
+        plusBtns.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const countEl = (e.target as HTMLElement)
+                    .previousElementSibling;
+                if (countEl) {
+                    let val = parseInt(countEl.textContent || "0", 10);
+                    val++;
+                    countEl.textContent = val.toString();
+                    updateTotalPlayers();
+                }
+            });
+        });
+
+        const timeSlots = document.querySelectorAll(".time-slot-btn");
+        const step1Details = document.getElementById("step-1-details");
+        const step2Extra = document.getElementById("step-2-extra");
+        const overviewStep1 = document.getElementById("overview-step-1");
+        const overviewStep2 = document.getElementById("overview-step-2");
+
+        timeSlots.forEach((slot) => {
+            slot.addEventListener("click", () => {
+                timeSlots.forEach((s) => s.classList.remove("active-slot"));
+                slot.classList.add("active-slot");
+
+                // Switch to Extra Time step after a brief delay
+
+                renderUpgrades(selectedTime.shiftUpsells || []);
+                setTimeout(() => {
+                    goToStep(2);
+                }, 400); // 400ms delay to feel the click
+            });
+        });
+
+        // JS Generated Calendar
+        const monthNames = [
+            "JANUARY",
+            "FEBRUARY",
+            "MARCH",
+            "APRIL",
+            "MAY",
+            "JUNE",
+            "JULY",
+            "AUGUST",
+            "SEPTEMBER",
+            "OCTOBER",
+            "NOVEMBER",
+            "DECEMBER",
+        ];
+        let currentDate = new Date();
+        currentDate.setDate(1); // Start at current month
+
+        const calendarMonthYear = document.getElementById(
+            "b7-calendar-month-year",
+        );
+        const timeSlotsContainer = document.getElementById(
+            "time-slots-container",
+        );
+        const timeSlotsPlaceholder = document.getElementById(
+            "time-slots-placeholder",
+        );
+
+        function renderCalendar() {
+            console.log(
+                "renderCalendar called. Month year element:",
+                !!calendarMonthYear,
+                "Grid element:",
+                !!calendarGrid,
+            );
+            if (!calendarMonthYear || !calendarGrid) return;
+
+            calendarMonthYear.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            calendarGrid.innerHTML = "";
+
+            // Header row
+            const daysOfWeek = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+            daysOfWeek.forEach((d) => {
+                const div = document.createElement("div");
+                div.className = "text-black";
+                div.textContent = d;
+                calendarGrid.appendChild(div);
+            });
+
+            const firstDayIndex = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                1,
+            ).getDay();
+            const lastDay = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() + 1,
+                0,
+            ).getDate();
+            console.log(
+                "Calendar bounds: firstDayIndex =",
+                firstDayIndex,
+                "lastDay =",
+                lastDay,
+            );
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDiv = document.createElement("div");
+                emptyDiv.className = "text-gray-300 py-2";
+                calendarGrid.appendChild(emptyDiv);
+            }
+
+            for (let i = 1; i <= lastDay; i++) {
+                const dayDiv = document.createElement("div");
+                // Use actual today
+                const today = new Date();
+                const isToday =
+                    currentDate.getMonth() === today.getMonth() &&
+                    currentDate.getFullYear() === today.getFullYear() &&
+                    i === today.getDate();
+                const isPast =
+                    currentDate.getFullYear() < today.getFullYear() ||
+                    (currentDate.getFullYear() === today.getFullYear() &&
+                        currentDate.getMonth() < today.getMonth()) ||
+                    (currentDate.getFullYear() === today.getFullYear() &&
+                        currentDate.getMonth() === today.getMonth() &&
+                        i < today.getDate());
+
+                let baseClasses =
+                    "calendar-day py-2 transition-all select-none ";
+
+                if (isPast) {
+                    baseClasses += "text-gray-300 font-medium";
+                } else if (isToday) {
+                    baseClasses +=
+                        "current-date bg-[var(--surface-brand-secondary)] border-2 border-black text-black cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold scale-110 relative z-10";
+                } else {
+                    baseClasses +=
+                        "text-black font-bold cursor-pointer hover:bg-gray-100";
+                }
+
+                dayDiv.className = baseClasses;
+                dayDiv.textContent = i;
+
+                if (!isPast) {
+                    dayDiv.addEventListener("click", () => {
+                        // Deselect all
+                        const allDays =
+                            calendarGrid.querySelectorAll(".calendar-day");
+                        allDays.forEach((d) => {
+                            d.classList.remove(
+                                "active-date",
+                                "shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]",
+                                "scale-110",
+                                "relative",
+                                "z-10",
+                            );
+                            if (!d.classList.contains("current-date")) {
+                                d.classList.remove(
+                                    "bg-[var(--surface-brand-secondary)]",
+                                    "border-2",
+                                    "border-black",
+                                );
+                                d.classList.add(
+                                    "hover:bg-gray-100",
+                                    "font-bold",
+                                );
+                            }
+                        });
+
+                        // Select clicked
+                        dayDiv.classList.add(
+                            "active-date",
+                            "bg-[var(--surface-brand-secondary)]",
+                            "border-2",
+                            "border-black",
+                            "shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]",
+                            "scale-110",
+                            "relative",
+                            "z-10",
+                        );
+                        dayDiv.classList.remove("hover:bg-gray-100");
+
+                        // Update overview date
+                        const mStr = String(
+                            currentDate.getMonth() + 1,
+                        ).padStart(2, "0");
+                        const dStr = String(i).padStart(2, "0");
+                        const yStr = currentDate.getFullYear();
+                        const selectedDate = `${yStr}-${mStr}-${dStr}`;
+
+                        const overviewDate =
+                            document.getElementById("overview-date");
+                        if (overviewDate)
+                            overviewDate.textContent = selectedDate;
+                        const overviewStep2Date = document.getElementById(
+                            "overview-step2-date",
+                        );
+                        if (overviewStep2Date)
+                            overviewStep2Date.textContent = selectedDate;
+
+                        // Show time slots loading state
+                        if (timeSlotsPlaceholder)
+                            timeSlotsPlaceholder.classList.add("hidden");
+                        if (timeSlotsContainer) {
+                            timeSlotsContainer.classList.remove("hidden");
+                            timeSlotsContainer.classList.add("flex");
+                            timeSlotsContainer.innerHTML =
+                                '<div class="p-8 text-center w-full"><i class="fa-solid fa-spinner fa-spin text-4xl mb-4 text-[var(--brand-interactive-base)]"></i><p class="font-bold text-gray-500">Cargando disponibilidad...</p></div>';
+
+                            // Fetch from SevenRooms
+                            const mainSec =
+                                document.getElementById("b7-main-section");
+                            const srToken = mainSec
+                                ? mainSec.dataset.token
+                                : "";
+                            const locationSelect = document.getElementById(
+                                "location-select",
+                            ) as HTMLSelectElement;
+                            const venueId = locationSelect
+                                ? locationSelect.value
+                                : "";
+
+                            const overviewPlayers =
+                                document.getElementById("overview-players");
+                            let totalPlayers = parseInt(
+                                overviewPlayers?.textContent || "0",
+                                10,
+                            );
+
+                            if (!venueId) {
+                                timeSlotsContainer.innerHTML =
+                                    '<div class="p-8 text-center text-red-500 font-bold w-full">Por favor selecciona una ubicación primero.</div>';
+                                return;
+                            }
+                            if (totalPlayers <= 0) {
+                                timeSlotsContainer.innerHTML =
+                                    '<div class="p-8 text-center text-red-500 font-bold w-full">Por favor selecciona el número de jugadores primero.</div>';
+                                return;
+                            }
+
+                            const mStr = String(
+                                currentDate.getMonth() + 1,
+                            ).padStart(2, "0");
+                            const dStr = String(i).padStart(2, "0");
+                            const yStr = currentDate.getFullYear();
+                            const dateStr = `${yStr}-${mStr}-${dStr}`;
+
+                            let startTime = "00:00";
+                            const now = new Date();
+                            // If the selected date is today, use current time as start_time
+                            if (
+                                now.getFullYear() === yStr &&
+                                now.getMonth() === currentDate.getMonth() &&
+                                now.getDate() === i
+                            ) {
+                                const hours = String(now.getHours()).padStart(
+                                    2,
+                                    "0",
+                                );
+                                const minutes = String(
+                                    now.getMinutes(),
+                                ).padStart(2, "0");
+                                startTime = `${hours}:${minutes}`;
+                            }
+
+                            const url = `https://api.sevenrooms.com/2_4/venues/${venueId}/availability?date=${dateStr}&start_time=${startTime}&end_time=23:59&party_size=${totalPlayers}`;
+                            console.log(
+                                "\n--- [DEBUG CLIENT-SIDE] GET /venues/{venue_id}/availability Request starting ---",
+                            );
+                            console.log("URL:", url);
+                            console.log(
+                                "Authorization Token:",
+                                srToken.substring(0, 10) + "...",
+                            );
+
+                            // Fetch and log Venue Group Availability if venue_group_id is available
+                            if (locationSelect) {
+                                const selectedOption =
+                                    locationSelect.options[
+                                        locationSelect.selectedIndex
+                                    ];
+                                const venueGroupId =
+                                    selectedOption.getAttribute(
+                                        "data-venue-group-id",
+                                    );
+                                if (venueGroupId) {
+                                    const groupUrl = `https://api.sevenrooms.com/2_4/venue_groups/${venueGroupId}/availability?date=${dateStr}&start_time=${startTime}&end_time=23:59&party_size=${totalPlayers}`;
+                                    console.log(
+                                        "--- [DEBUG CLIENT-SIDE] GET /venue_groups/{venue_group_id}/availability Request starting ---",
+                                    );
+                                    console.log("Group URL:", groupUrl);
+                                    fetch(groupUrl, {
+                                        headers: { Authorization: srToken },
+                                    })
+                                        .then((gRes) => {
+                                            console.log(
+                                                `--- [DEBUG CLIENT-SIDE] GET /venue_groups/{venue_group_id}/availability Response Status: ${gRes.status} ---`,
+                                            );
+                                            return gRes.json();
+                                        })
+                                        .then((gJson) => {
+                                            console.log(
+                                                "Group Response Body:",
+                                                gJson,
+                                            );
+                                        })
+                                        .catch((gErr) =>
+                                            console.error(
+                                                "Error debugging Venue Group Availability:",
+                                                gErr,
+                                            ),
+                                        );
+                                }
+                            }
+
+                            fetch(url, {
+                                headers: { Authorization: srToken },
+                            })
+                                .then((res) => {
+                                    console.log(
+                                        `--- [DEBUG CLIENT-SIDE] GET /venues/{venue_id}/availability Response Status: ${res.status} ---`,
+                                    );
+                                    return res.json();
+                                })
+                                .then((json) => {
+                                    console.log("Response Body:", json);
+                                    if (json.data && json.data.availability) {
+                                        let allTimes = [];
+                                        json.data.availability.forEach(
+                                            (shift: any) => {
+                                                if (shift.times) {
+                                                    const bookableTimes =
+                                                        shift.times.filter(
+                                                            (t: any) =>
+                                                                t.type ===
+                                                                "book",
+                                                        );
+                                                    bookableTimes.forEach(
+                                                        (t: any) =>
+                                                            (t.shiftUpsells =
+                                                                (t.upsell_categories && t.upsell_categories.length > 0) ? t.upsell_categories : (shift.upsell_categories || [])),
+                                                    );
+                                                    allTimes.push(
+                                                        ...bookableTimes,
+                                                    );
+                                                }
+                                            },
+                                        );
+
+                                        if (allTimes.length === 0) {
+                                            timeSlotsContainer.innerHTML =
+                                                '<div class="p-8 text-center text-gray-500 font-bold w-full">No hay disponibilidad para esta fecha.</div>';
+                                            return;
+                                        }
+
+                                        // Render time slots
+                                        (window as any)._lastTimes = allTimes;
+                                        timeSlotsContainer.innerHTML = allTimes
+                                            .map((t: any, idx: number) => {
+                                                const timeParts =
+                                                    t.time.split(" ");
+                                                const timeVal = timeParts[0];
+                                                const timeAmPm =
+                                                    timeParts[1] || "";
+                                                const cost = t.cost
+                                                    ? `$${t.cost}`
+                                                    : "Gratis";
+                                                const duration = t.duration
+                                                    ? `${t.duration} minutos`
+                                                    : " ";
+
+                                                return `
+                                        <button type="button" data-index="${idx}" class="time-slot-btn bg-white text-black py-3 px-4 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-3 h-3 rounded-full bg-gray-300 slot-dot transition-colors"></div>
+                                                <div class="flex items-baseline gap-1">
+                                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">${timeVal}</span>
+                                                    <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold">${timeAmPm}</span>
+                                                </div>
+                                                <div class="flex flex-col ml-3">
+                                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">${duration}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex items-baseline">
+                                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold">${cost}</span>
+                                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] ml-1">p.p</span>
+                                                </div
+                                            </div>
+                                        </button>
+                                        `;
+                                            })
+                                            .join("");
+
+                                        // Rebind click events
+                                        const newlyRenderedSlots =
+                                            timeSlotsContainer.querySelectorAll(
+                                                ".time-slot-btn",
+                                            );
+                                        newlyRenderedSlots.forEach((slot) => {
+                                            slot.addEventListener(
+                                                "click",
+                                                () => {
+                                                    newlyRenderedSlots.forEach(
+                                                        (s) =>
+                                                            s.classList.remove(
+                                                                "active-slot",
+                                                            ),
+                                                    );
+                                                    slot.classList.add(
+                                                        "active-slot",
+                                                    );
+
+                                                    const idx = parseInt(
+                                                        slot.getAttribute(
+                                                            "data-index",
+                                                        ) || "0",
+                                                        10,
+                                                    );
+                                                    const selectedTime = (
+                                                        window as any
+                                                    )._lastTimes[idx];
+                                                    (
+                                                        window as any
+                                                    )._selectedSlot =
+                                                        selectedTime;
+
+                                                    // Update overview time
+                                                    const timeStr =
+                                                        selectedTime.time; // e.g. "12:00 PM"
+                                                    const overviewTime =
+                                                        document.getElementById(
+                                                            "overview-time",
+                                                        );
+                                                    if (overviewTime)
+                                                        overviewTime.textContent =
+                                                            timeStr;
+                                                    const overviewStep2Time =
+                                                        document.getElementById(
+                                                            "overview-step2-time",
+                                                        );
+                                                    if (overviewStep2Time)
+                                                        overviewStep2Time.textContent =
+                                                            timeStr;
+
+                                                    // Update duration dynamically
+                                                    const overviewStep2Duration =
+                                                        document.getElementById(
+                                                            "overview-step2-duration",
+                                                        );
+                                                    if (overviewStep2Duration) {
+                                                        const dur =
+                                                            selectedTime.duration
+                                                                ? `${selectedTime.duration} minutos`
+                                                                : "1 x Caja de Juego";
+                                                        overviewStep2Duration.textContent = `Duración: ${dur}`;
+                                                    }
+
+                                                    // Hide extra text since it's hardcoded and not provided by API
+                                                    const overviewStep2ExtraText =
+                                                        document.getElementById(
+                                                            "overview-step2-extra-text",
+                                                        );
+                                                    if (overviewStep2ExtraText)
+                                                        overviewStep2ExtraText.style.display =
+                                                            "none";
+
+                                                    // Update overview total (base cost + upgrades)
+                                                    if (
+                                                        (window as any)
+                                                            ._updateOverviewTotal
+                                                    ) {
+                                                        (
+                                                            window as any
+                                                        )._updateOverviewTotal();
+                                                    }
+
+                                                    renderUpgrades(
+                                                        selectedTime.shiftUpsells ||
+                                                            [],
+                                                    );
+                                                    setTimeout(() => {
+                                                        goToStep(2);
+                                                    }, 400);
+                                                },
+                                            );
+                                        });
+                                    } else {
+                                        timeSlotsContainer.innerHTML = `<div class="p-8 text-center text-red-500 font-bold w-full">Error: ${json.msg || "No se encontró disponibilidad."}</div>`;
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.error(
+                                        "Availability fetch error:",
+                                        err,
+                                    );
+                                    timeSlotsContainer.innerHTML =
+                                        '<div class="p-8 text-center text-red-500 font-bold w-full">Error de red</div>';
+                                });
+                        }
+                    });
+                }
+
+                calendarGrid.appendChild(dayDiv);
+            }
+        }
+
+        // Month Navigation
+        const prevMonthBtn = document.getElementById("b7-prev-month");
+        const nextMonthBtn = document.getElementById("b7-next-month");
+
+        if (prevMonthBtn) {
+            prevMonthBtn.addEventListener("click", () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+        }
+        if (nextMonthBtn) {
+            nextMonthBtn.addEventListener("click", () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+        }
+
+        // Initial Render
+        renderCalendar();
+
+        const btnExtraConfirm = document.getElementById("b7-btn-extra-confirm");
+        if (btnExtraConfirm) {
+            btnExtraConfirm.addEventListener("click", () => {
+                goToStep(3);
+            });
+        }
+
+        async function renderUpgrades(upsellCategories) {
+            const container = document.getElementById(
+                "step2-upgrades-container",
+            );
+            if (!container) return;
+
+            // PREGUNTA PARA EL CLIENTE (A resolver mañana):
+            // TODO: Consultar cómo se deben enviar las mejoras en el Payload de PUT /book.
+            // Posibles campos: client_upgrades, upgrades, client_requests...
+
+            if (!upsellCategories || upsellCategories.length === 0) {
+                container.innerHTML =
+                    '<div class="col-span-full p-8 text-center text-gray-500 font-bold border-2 border-dashed border-gray-300 bg-gray-50/50">No hay extras disponibles.</div>';
+                return;
+            }
+
+            container.innerHTML =
+                '<div class="col-span-full p-8 text-center"><i class="fa-solid fa-spinner fa-spin text-4xl mb-4 text-[var(--brand-interactive-base)]"></i></div>';
+
+            try {
+                let allUpgrades = [];
+                const mainSec = document.getElementById("b7-main-section");
+                const srToken = mainSec ? mainSec.dataset.token : "";
+
+                // Fetch each category
+                for (const catId of upsellCategories) {
+                    const res = await fetch(
+                        `https://api.sevenrooms.com/2_4/upgrade_categories/${catId}/upgrades`,
+                        {
+                            headers: { Authorization: srToken },
+                        },
+                    );
+                    const json = await res.json();
+                    if (json.data && json.data.upgrades) {
+                        allUpgrades.push(...json.data.upgrades);
+                    }
+                }
+
+                if (allUpgrades.length === 0) {
+                    container.innerHTML =
+                        '<div class="col-span-full p-8 text-center text-gray-500 font-bold border-2 border-dashed border-gray-300 bg-gray-50/50">No se encontraron extras.</div>';
+                    return;
+                }
+
+                window._selectedUpgrades = [];
+                (window as any)._allUpgrades = allUpgrades;
+
+                container.innerHTML = allUpgrades
+                    .map((u, idx) => {
+                        const priceStr = u.price > 0 ? `${u.price}` : "Gratis";
+                        return `
+                    <div class="upgrade-card w-full flex flex-col group border border-gray-300 cursor-pointer hover:border-black transition-colors" data-id="${u.id}">
+                        <div class="bg-[var(--surface-brand-primary)] text-white p-3 flex justify-between items-center h-[60px]">
+                            <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase tracking-wide leading-tight">${u.name}</span>
+                            <div class="checkbox-ui w-6 h-6 border-2 border-white flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-check text-white opacity-0 transition-opacity"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white text-black flex items-start flex-1 border-x border-gray-300">
+                            <div class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800 line-clamp-4">
+                                ${u.description || ""}
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white flex justify-between items-center border border-gray-300 border-t-0 group-hover:bg-gray-50 transition-colors">
+                            <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">${priceStr}</span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="qty-minus bg-gray-200 text-black w-8 h-8 flex items-center justify-center font-bold border border-gray-300 hover:bg-gray-300 transition-colors">-</button>
+                                <span class="qty-val font-bold text-lg w-4 text-center">1</span>
+                                <button type="button" class="qty-plus bg-[var(--brand-interactive-base)] text-black w-8 h-8 flex items-center justify-center font-bold border border-black hover:opacity-80 transition-opacity">+</button>
+                            </div>
+                        </div>
+                    </div>`;
+                    })
+                    .join("");
+
+                // Function to update overview upgrades
+                function updateOverviewUpgrades() {
+                    const overviewList = document.getElementById(
+                        "overview-upgrades-list",
+                    );
+                    if (!overviewList) return;
+
+                    const selectedCards = container.querySelectorAll(
+                        ".upgrade-card.border-black",
+                    );
+                    if (selectedCards.length === 0) {
+                        overviewList.innerHTML = `<span class="text-sm italic text-gray-500">Ningún extra seleccionado</span>`;
+                        return;
+                    }
+
+                    let html = "";
+                    selectedCards.forEach((c) => {
+                        const name = c.querySelector("span").textContent;
+                        const qty = c.querySelector(".qty-val").textContent;
+                        html += `<div class="flex justify-between text-sm"><span>${qty}x ${name}</span></div>`;
+                    });
+                    overviewList.innerHTML = html;
+
+                    if ((window as any)._updateOverviewTotal) {
+                        (window as any)._updateOverviewTotal();
+                    }
+                }
+
+                // Add toggle logic
+                const cards = container.querySelectorAll(".upgrade-card");
+                cards.forEach((card) => {
+                    card.addEventListener("click", (e) => {
+                        // Prevent toggling if clicked on +/- buttons
+                        if (
+                            (e.target as HTMLElement).closest(".qty-minus") ||
+                            (e.target as HTMLElement).closest(".qty-plus")
+                        ) {
+                            return;
+                        }
+
+                        const isSelected =
+                            card.classList.contains("border-black") &&
+                            card.classList.contains("border-2");
+                        const checkIcon = card.querySelector(".fa-check");
+                        const checkUi = card.querySelector(".checkbox-ui");
+
+                        if (isSelected) {
+                            card.classList.remove("border-black", "border-2");
+                            card.classList.add("border-gray-300", "border");
+                            checkIcon.classList.add("opacity-0");
+                            checkUi.classList.remove(
+                                "bg-[var(--brand-interactive-base)]",
+                                "border-[var(--brand-interactive-base)]",
+                            );
+                        } else {
+                            card.classList.remove("border-gray-300", "border");
+                            card.classList.add("border-black", "border-2");
+                            checkIcon.classList.remove("opacity-0");
+                            checkUi.classList.add(
+                                "bg-[var(--brand-interactive-base)]",
+                                "border-[var(--brand-interactive-base)]",
+                            );
+                        }
+                        updateOverviewUpgrades();
+                    });
+
+                    // Quantity logic
+                    const qtyMinus = card.querySelector(".qty-minus");
+                    const qtyPlus = card.querySelector(".qty-plus");
+                    const qtyVal = card.querySelector(".qty-val");
+
+                    if (qtyMinus && qtyPlus && qtyVal) {
+                        qtyMinus.addEventListener("click", (e) => {
+                            let val = parseInt(qtyVal.textContent || "1", 10);
+                            if (val > 1) {
+                                qtyVal.textContent = (val - 1).toString();
+                                updateOverviewUpgrades();
+                            }
+                        });
+                        qtyPlus.addEventListener("click", (e) => {
+                            let val = parseInt(qtyVal.textContent || "1", 10);
+                            qtyVal.textContent = (val + 1).toString();
+                            updateOverviewUpgrades();
+                        });
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                container.innerHTML =
+                    '<div class="col-span-full p-8 text-center text-red-500 font-bold">Error cargando mejoras.</div>';
+            }
+        }
+
+        // Booking Submission Logic
+        const submitBtn = document.getElementById("b7-btn-submit");
+        if (submitBtn) {
+            submitBtn.addEventListener("click", async () => {
+                // Collect Form Data
+                const locationSelect = document.getElementById(
+                    "location-select",
+                ) as HTMLSelectElement;
+                const venue_id = locationSelect ? locationSelect.value : "";
+
+                const playersEl = document.getElementById("overview-players");
+                const party_size = parseInt(playersEl?.textContent || "0", 10);
+
+                // Date and Time (we need to parse it from the active slot and selected day)
+                const activeSlot = document.querySelector(
+                    ".time-slot-btn.active-slot",
+                );
+                let time = "00:00";
+                if (activeSlot) {
+                    const timeEl = activeSlot.querySelector(".tracking-tight");
+                    const ampmEl = timeEl?.nextElementSibling;
+                    if (timeEl && ampmEl) {
+                        time = `${timeEl.textContent} ${ampmEl.textContent}`;
+                    }
+                }
+
+                // Get selected date from calendar
+                const activeDay = document.querySelector(
+                    ".calendar-day.active-date",
+                );
+                const monthYearText =
+                    document.getElementById("b7-calendar-month-year")
+                        ?.textContent || "";
+                const fallbackToday = new Date();
+                let date = `${fallbackToday.getFullYear()}-${String(fallbackToday.getMonth() + 1).padStart(2, "0")}-${String(fallbackToday.getDate()).padStart(2, "0")}`;
+                if (activeDay && monthYearText) {
+                    const day = String(activeDay.textContent).padStart(2, "0");
+                    const [monthName, year] = monthYearText.split(" ");
+                    const monthNames = [
+                        "JANUARY",
+                        "FEBRUARY",
+                        "MARCH",
+                        "APRIL",
+                        "MAY",
+                        "JUNE",
+                        "JULY",
+                        "AUGUST",
+                        "SEPTEMBER",
+                        "OCTOBER",
+                        "NOVEMBER",
+                        "DECEMBER",
+                    ];
+                    const monthIdx = monthNames.indexOf(monthName) + 1;
+                    const monthStr = String(monthIdx).padStart(2, "0");
+                    date = `${year}-${monthStr}-${day}`;
+                }
+
+                // Personal Info
+                const fname =
+                    (document.getElementById("b7-fname") as HTMLInputElement)
+                        ?.value || "";
+                const lname =
+                    (document.getElementById("b7-lname") as HTMLInputElement)
+                        ?.value || "";
+                const email =
+                    (document.getElementById("b7-email") as HTMLInputElement)
+                        ?.value || "";
+                const phoneInput =
+                    (document.getElementById("b7-phone") as HTMLInputElement)
+                        ?.value || "";
+                const phonePrefix =
+                    (
+                        document.getElementById(
+                            "b7-phone-prefix",
+                        ) as HTMLSelectElement
+                    )?.value || "+52";
+                const phone = phoneInput ? `${phonePrefix}${phoneInput}` : "";
+
+                const diet =
+                    (document.getElementById("b7-diet") as HTMLSelectElement)
+                        ?.value || "";
+                const dobDay =
+                    (document.getElementById("b7-dob-day") as HTMLSelectElement)
+                        ?.value || "";
+                const dobMonth =
+                    (
+                        document.getElementById(
+                            "b7-dob-month",
+                        ) as HTMLSelectElement
+                    )?.value || "";
+                const dobYear =
+                    (
+                        document.getElementById(
+                            "b7-dob-year",
+                        ) as HTMLSelectElement
+                    )?.value || "";
+                const dob =
+                    dobDay && dobMonth && dobYear
+                        ? `${dobYear}-${dobMonth}-${dobDay}`
+                        : "";
+
+                const rawNotes =
+                    (document.getElementById("b7-notes") as HTMLInputElement)
+                        ?.value || "";
+                const occasion =
+                    (
+                        document.getElementById(
+                            "b7-occasion",
+                        ) as HTMLSelectElement
+                    )?.value || "";
+
+                let combinedNotes = rawNotes || "Reservado vía Web";
+                if (diet) combinedNotes += ` | Dieta: ${diet}`;
+                if (occasion) combinedNotes += ` | Ocasión: ${occasion}`;
+                if (dob) combinedNotes += ` | Cumpleaños: ${dob}`;
+
+                if (!fname || !lname || !phoneInput) {
+                    alert(
+                        "Por favor, completa los campos requeridos (Nombre, Apellido, Teléfono).",
+                    );
+                    return;
+                }
+
+                const selectedSlot = (window as any)._selectedSlot;
+                const access_persistent_id = selectedSlot
+                    ? selectedSlot.access_persistent_id
+                    : "";
+
+                let costPerPerson = selectedSlot ? selectedSlot.cost || 0 : 0;
+                const allUpgrades = (window as any)._allUpgrades || [];
+                const client_upgrades = [];
+                const selectedCards = document.querySelectorAll(
+                    ".upgrade-card.border-black",
+                );
+
+                selectedCards.forEach((card) => {
+                    const id = card.getAttribute("data-id");
+                    const qtyEl = card.querySelector(".qty-val");
+                    const quantity = parseInt(qtyEl?.textContent || "1", 10);
+                    const upgrade = allUpgrades.find((u: any) => u.id === id);
+                    if (upgrade) {
+                        client_upgrades.push({
+                            id: id,
+                            price: upgrade.price || 0,
+                            quantity: quantity,
+                        });
+                    }
+                });
+
+                const payment_subtotal = costPerPerson * party_size * 100;
+
+                submitBtn.setAttribute("disabled", "true");
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML =
+                    '<i class="fa-solid fa-spinner fa-spin"></i> PROCESANDO...';
+                submitBtn.classList.add("opacity-50", "pointer-events-none");
+
+                try {
+                    const response = await fetch("/api/book", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            venue_id,
+                            date,
+                            time,
+                            party_size,
+                            first_name: fname,
+                            last_name: lname,
+                            email,
+                            phone,
+                            notes: combinedNotes,
+                            access_persistent_id,
+                            payment_subtotal,
+                            client_upgrades: client_upgrades,
+                        }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        goToStep(4); // Show confirmation step
+                    } else {
+                        alert(
+                            "Error al procesar la reserva: " +
+                                (result.error || "Intenta nuevamente.") +
+                                (result.sent_payload
+                                    ? "\n\nPayload Enviado:\n" +
+                                      decodeURIComponent(result.sent_payload)
+                                    : ""),
+                        );
+                        console.error("Booking Error:", result);
+                    }
+                } catch (error) {
+                    console.error("Network error", error);
+                    alert("Error de red al procesar la reserva.");
+                } finally {
+                    submitBtn.removeAttribute("disabled");
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.classList.remove(
+                        "opacity-50",
+                        "pointer-events-none",
+                    );
+                }
+            });
+        }
+    };
+
+    // Run on initial load and after Astro View Transitions
+    initBooking();
+    document.addEventListener("astro:page-load", initBooking);
+</script>
