@@ -13,7 +13,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const EMAILS_BCC = runtime?.env?.EMAIL_BCC || import.meta.env.EMAIL_BCC;
     const FROM_EMAIL = runtime?.env?.FROM_EMAIL || import.meta.env.FROM_EMAIL;
     const FROM_NAME = runtime?.env?.FROM_NAME || import.meta.env.FROM_NAME;
-    const GOOGLE_SHEETS_URL = runtime?.env?.GOOGLE_SHEETS_EVENTS_URL || import.meta.env.GOOGLE_SHEETS_EVENTS_URL;
+    const GOOGLE_SHEETS_URL = runtime?.env?.GOOGLE_SHEETS_MESAS || import.meta.env.GOOGLE_SHEETS_MESAS;
     const referer = request.headers.get('referer') || 'Directo/Desconocido';
 
     if (!RESEND_KEY) {
@@ -77,8 +77,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         `;
     }).join('');
 
-    const subjectData = base64File ? `Nueva postulación: Bolsa de Trabajo` : 
-        `Nuevo Lead: ${data.get('Tipo de Evento') || 'General'} - ${data.get('Nombre') || ''}`;
+    const subjectData =  `Reservación Mesa: ${data.get('Nombre') || ''}`;
         
     try {
         const { data: emailData, error } = await resend.emails.send({

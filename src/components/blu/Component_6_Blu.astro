@@ -238,11 +238,11 @@ const {
         </h2>
 
         <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto"
+            class="flex justify-center"
         >
             {
                 experiencias.map((exp) => (
-                    <div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-2xl border border-white/10 experience-card-premium group">
+                    <div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-2xl border border-white/10 experience-card-premium group lg:max-w-1/3">
                         <div class="relative h-64 md:h-80 overflow-hidden">
                             <Image
                                 src={getStrapiUrl(exp.imagen) || exp.imagen}

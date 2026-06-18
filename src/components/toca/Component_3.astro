@@ -58,20 +58,31 @@ const ProcessedTarjetas = rawData.map((card) => ({
 }));
 ---
 
-<section class="trigger-anim-cards w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 relative">
-    <div class="max-w-[1400px] mx-auto px-6 sm:px-8 mb-10">
+<section id="paquetes" class="trigger-anim-cards w-full bg-[var(--surface-brand-primary)] py-5 lg:py-10 relative">
+    <div class="max-w-[1400px] mx-auto px-4 mb-10 flex items-center">
         {titulo_seccion && (
-            <h2 class="text-center lg:text-left font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] md:text-[2rem] font-bold text-[var(--accent-feedback-strong)] uppercase leading-[1.1] tracking-wide">
+            <h2 class="text-left font-(family-name:--font-titling-gothic-fb-extended-bold) text-[1.5rem] md:text-2xl font-bold text-[var(--accent-feedback-strong)] uppercase leading-[1.1] tracking-wide">
                 {titulo_seccion}
             </h2>
         )}
+
+        <div class="flex gap-4 lg:hidden shrink-0 pt-2">
+            <button class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
+                <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
+            </button>
+
+            <button class="next-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
+                <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
+            </button>
+        </div>
     </div>
+
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-full fade-in-up">
 
-        <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full">
+        <div id="cards-container" class="lg:grid lg:grid-cols-3 lg:gap-8 h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide">
 
             {ProcessedTarjetas.map((item, index) => (
-                <div class="card-link" data-href={item.link}>
+                <div class="card-link snap-start" data-href={item.link}>
                             
                     <div
                         class={`carousel-item flex-col h-full group
@@ -88,15 +99,7 @@ const ProcessedTarjetas = rawData.map((card) => ({
                                 {item.title}
                             </h3>
 
-                            <div class="flex gap-4 lg:hidden shrink-0 pt-2">
-                                <button class="prev-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
-                                    <i class="fa-solid fa-caret-left text-4xl leading-none"></i>
-                                </button>
-
-                                <button class="next-btn text-[var(--brand-interactive-base)] hover:text-[var(--accent-feedback-strong)] transition-colors focus:outline-none p-1">
-                                    <i class="fa-solid fa-caret-right text-4xl leading-none"></i>
-                                </button>
-                            </div>
+                            
                         </div>
 
                         <div class="mt-2 md:mt-5 font-(family-name:--font-sharp-sans-medium) text-[var(--brand-interactive-base)] text-base lg:text-base font-medium leading-tight w-full strapi-rich-text">
@@ -227,6 +230,10 @@ const ProcessedTarjetas = rawData.map((card) => ({
     .strapi-rich-text :global(p) {
         margin-bottom: 0;
         color: inherit;
+    }
+
+    .strapi-rich-text :global(h3) {
+        font-size: 1.25rem;
     }
 
 
