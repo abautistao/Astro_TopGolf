@@ -53,18 +53,18 @@ try {
 <section
     id="b7-main-section"
     data-token={token}
-    class="min-h-screen bg-[var(--surface-brand-primary)] text-white w-full overflow-hidden font-[family-name:var(--font-secundaria)]"
+    class="min-h-screen bg-[var(--surface-brand-primary)] text-white w-full font-[family-name:var(--font-sharp-sans-medium)]"
 >
     {/* TOP STEPPER */}
     <div
-        class="w-full max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-b border-white/10"
+        class="w-full max-w-7xl mx-auto px-4 py-4 md:py-6 flex items-center justify-between gap-4 border-b border-white/10 sticky top-0 bg-[var(--surface-brand-primary)] z-50 md:relative md:top-auto md:z-auto"
     >
         <button
             id="b7-btn-back"
-            class="flex items-center gap-2 text-[var(--brand-interactive-base)] hover:text-white uppercase font-[family-name:var(--font-principal)] font-bold text-xl transition-colors opacity-50 pointer-events-none"
+            class="flex items-center gap-2 text-[var(--brand-interactive-base)] hover:text-white uppercase font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-xl transition-colors opacity-50 pointer-events-none shrink-0"
         >
             <svg
-                class="w-6 h-6"
+                class="w-6 h-6 md:w-8 md:h-8"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -75,14 +75,14 @@ try {
                     stroke-width="3"
                     d="M15 19l-7-7 7-7"></path>
             </svg>
-            VOLVER
+            <span class="hidden md:inline">VOLVER</span>
         </button>
         <div
-            class="flex flex-1 justify-start md:justify-center items-center gap-6 md:gap-12 px-4 md:px-8 overflow-x-auto custom-scrollbar pb-2 md:pb-0 relative"
+            class="flex flex-1 justify-start md:justify-center items-center gap-6 md:gap-12 px-0 md:px-8 overflow-x-auto custom-scrollbar pb-2 md:pb-0 relative"
         >
             {/* Steps line */}
             <div
-                class="absolute left-10 right-10 top-6 h-[2px] bg-white/10 -z-10"
+                class="absolute left-10 right-10 top-[14px] md:top-6 h-[2px] bg-white/10 -z-10"
             >
             </div>
             {/* Step 1: Details */}
@@ -92,13 +92,13 @@ try {
             >
                 <div
                     id="step1-icon"
-                    class="w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_15px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110"
+                    class="w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_10px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110"
                 >
-                    <i class="fa-solid fa-user-group text-xl"></i>
+                    <i class="fa-solid fa-user-group text-xs md:text-xl"></i>
                 </div>
                 <span
                     id="step1-text"
-                    class="text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1"
+                    class="text-[var(--brand-interactive-base)] text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold transition-all duration-300 tracking-wide mt-1"
                     >Detalles</span
                 >
             </div>
@@ -110,13 +110,13 @@ try {
             >
                 <div
                     id="step2-icon"
-                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
+                    class="w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-white/20 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white/50 z-10 transition-all duration-300"
                 >
-                    <i class="fa-solid fa-star text-xl"></i>
+                    <i class="fa-solid fa-star text-xs md:text-xl"></i>
                 </div>
                 <span
                     id="step2-text"
-                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    class="text-white/50 text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-medium transition-all duration-300 tracking-wide mt-1"
                     >Extras</span
                 >
             </div>
@@ -127,13 +127,13 @@ try {
             >
                 <div
                     id="step3-icon"
-                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
+                    class="w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-white/20 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white/50 z-10 transition-all duration-300"
                 >
-                    <i class="fa-regular fa-credit-card text-xl"></i>
+                    <i class="fa-solid fa-credit-card text-xs md:text-xl"></i>
                 </div>
                 <span
                     id="step3-text"
-                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    class="text-white/50 text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-medium transition-all duration-300 tracking-wide mt-1"
                     >Pago</span
                 >
             </div>
@@ -144,14 +144,14 @@ try {
             >
                 <div
                     id="step4-icon"
-                    class="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300"
+                    class="w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-white/20 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white/50 z-10 transition-all duration-300"
                 >
-                    <i class="fa-solid fa-medal text-xl"></i>
+                    <i class="fa-solid fa-medal text-xs md:text-xl"></i>
                 </div>
                 <span
                     id="step4-text"
-                    class="text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1"
-                    >Confirmación</span
+                    class="text-white/50 text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-medium transition-all duration-300 tracking-wide mt-1"
+                    >Confirm</span
                 >
             </div>
         </div>
@@ -172,7 +172,7 @@ try {
                         class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-black"
                     >
                         <h3
-                            class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                            class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase tracking-wide"
                         >
                             Resumen
                         </h3>
@@ -234,12 +234,12 @@ try {
                             class="flex justify-between items-center mt-6 border-t-2 border-dashed border-gray-300 pt-6"
                         >
                             <span
-                                class="font-[family-name:var(--font-principal)] text-[32px] font-bold uppercase"
+                                class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[24px] font-bold uppercase"
                                 >Total</span
                             >
                             <span
                                 id="overview-total"
-                                class="font-[family-name:var(--font-principal)] text-[32px] font-bold"
+                                class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[24px] font-bold"
                                 >$ --.--</span
                             >
                         </div>
@@ -260,14 +260,14 @@ try {
                         class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-black"
                     >
                         <h3
-                            class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                            class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase tracking-wide"
                         >
                             Reserva de Eventos
                         </h3>
                     </div>
                     <div class="p-6 flex flex-col gap-4">
                         <p
-                            class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium leading-relaxed"
+                            class="font-[family-name:var(--font-sharp-sans-medium)] text-[16px] font-medium leading-relaxed"
                         >
                             ¿Quieres mejorar tu experiencia o planear algo más
                             grande? ¡Contacta a nuestro equipo de ventas para
@@ -275,7 +275,7 @@ try {
                         </p>
                         <a
                             href="#"
-                            class="inline-block mt-2 bg-[var(--surface-brand-secondary)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-6 py-2 border-2 border-black neo-shadow self-start hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+                            class="inline-block mt-2 bg-[var(--surface-brand-secondary)] text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase px-6 py-2 border-2 border-black neo-shadow self-start hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
                         >
                             Consultar Ahora
                         </a>
@@ -290,7 +290,7 @@ try {
                         class="bg-[var(--brand-interactive-base)] py-2 px-4 border-b-2 border-transparent"
                     >
                         <h3
-                            class="font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                            class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase tracking-wide"
                         >
                             RESUMEN
                         </h3>
@@ -304,7 +304,7 @@ try {
                                     ></i></span
                                 >
                                 <span
-                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-sm"
                                     id="overview-step2-location">-</span
                                 >
                             </div>
@@ -314,7 +314,7 @@ try {
                                     ><i class="fa-solid fa-users"></i></span
                                 >
                                 <span
-                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-sm"
                                     id="overview-step2-players">2</span
                                 >
                             </div>
@@ -326,7 +326,7 @@ try {
                                 >
                                 <span
                                     id="overview-step2-date"
-                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-sm"
                                     >--/--/--</span
                                 >
                             </div>
@@ -337,18 +337,18 @@ try {
                                 >
                                 <span
                                     id="overview-step2-time"
-                                    class="font-[family-name:var(--font-principal)] font-bold text-sm"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-sm"
                                     >--:--</span
                                 >
                             </div>
                             <div
-                                class="ml-10 text-[11px] font-[family-name:var(--font-secundaria)] text-gray-500 mt-1"
+                                class="ml-10 text-[11px] font-[family-name:var(--font-sharp-sans-medium)] text-gray-500 mt-1"
                                 id="overview-step2-duration"
                             >
                                 Duración: 75 minutos
                             </div>
                             <div
-                                class="ml-10 text-[11px] font-[family-name:var(--font-secundaria)] italic text-gray-400"
+                                class="ml-10 text-[11px] font-[family-name:var(--font-sharp-sans-medium)] italic text-gray-400"
                                 id="overview-step2-extra-text"
                             >
                                 Incluye 30 minutos de tiempo extra
@@ -365,12 +365,12 @@ try {
                                 class="flex justify-between items-center mt-4 border-t-2 border-dashed border-gray-300 pt-4"
                             >
                                 <span
-                                    class="font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase"
                                     >Total</span
                                 >
                                 <span
                                     id="overview-step2-total"
-                                    class="font-[family-name:var(--font-principal)] text-[24px] font-bold"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold"
                                     >$ --.--</span
                                 >
                             </div>
@@ -399,7 +399,7 @@ try {
                         class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black"
                     >
                         <h2
-                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase"
+                            class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase"
                         >
                             Seleccionar Ubicación
                         </h2>
@@ -410,14 +410,12 @@ try {
                                 <div class="relative w-full max-w-2xl inline-block">
                                     <select
                                         id="location-select"
-                                        class="w-full bg-white text-black font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] font-bold uppercase px-6 py-4 border-2 border-black neo-shadow hover:bg-gray-50 transition-colors tracking-tight appearance-none cursor-pointer outline-none focus:ring-4 focus:ring-[var(--brand-interactive-base)]"
+                                        class="w-full bg-white text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] md:text-[20px] font-bold uppercase px-4 py-3 md:px-6 md:py-4 border-2 border-black neo-shadow hover:bg-gray-50 transition-colors tracking-tight appearance-none cursor-pointer outline-none focus:ring-4 focus:ring-[var(--brand-interactive-base)]"
                                     >
-                                        <option value="" disabled selected>
-                                            Seleccionar una Ubicación...
-                                        </option>
-                                        {venues.map((venue: any) => (
+                                        {venues.map((venue: any, index: number) => (
                                             <option
                                                 value={venue.id}
+                                                selected={index === 0}
                                                 data-name={
                                                     venue.name ||
                                                     venue.neighborhood ||
@@ -433,12 +431,12 @@ try {
                                             </option>
                                         ))}
                                     </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-6 text-black">
-                                        <i class="fa-solid fa-chevron-down text-2xl" />
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 md:px-6 text-black">
+                                        <i class="fa-solid fa-chevron-down text-lg md:text-2xl" />
                                     </div>
                                 </div>
                             ) : (
-                                <div class="bg-red-100 text-red-800 p-4 border-2 border-red-800 font-[family-name:var(--font-principal)] font-bold">
+                                <div class="bg-red-100 text-red-800 p-4 border-2 border-red-800 font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold">
                                     No se pudieron cargar las ubicaciones desde
                                     la API de SevenRooms. Error: {apiError}.
                                     Verifica tu token o conexión de red.
@@ -456,7 +454,7 @@ try {
                         class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black"
                     >
                         <h2
-                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase"
+                            class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase"
                         >
                             ¿Cuántos Jugadores?
                         </h2>
@@ -465,7 +463,7 @@ try {
                         class="p-6 md:p-8 bg-white text-black flex flex-col gap-6"
                     >
                         <p
-                            class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium"
+                            class="font-[family-name:var(--font-sharp-sans-medium)] text-[16px] font-medium"
                         >
                             TOCA Social es genial para grupos de todos los
                             tamaños, pero consideramos que es más divertido con
@@ -477,7 +475,7 @@ try {
                             {/* Group 1 */}
                             <div class="flex flex-col gap-2">
                                 <span
-                                    class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] font-medium uppercase tracking-wide"
                                     >Mayores de 21</span
                                 >
                                 <div class="flex items-center gap-2">
@@ -487,7 +485,7 @@ try {
                                         >-</button
                                     >
                                     <div
-                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none"
+                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-2xl select-none"
                                     >
                                         0
                                     </div>
@@ -502,7 +500,7 @@ try {
                             {/* Group 2 */}
                             <div class="flex flex-col gap-2">
                                 <span
-                                    class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] font-medium uppercase tracking-wide"
                                     >Edad 18 - 20</span
                                 >
                                 <div class="flex items-center gap-2">
@@ -512,7 +510,7 @@ try {
                                         >-</button
                                     >
                                     <div
-                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none"
+                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-2xl select-none"
                                     >
                                         0
                                     </div>
@@ -527,7 +525,7 @@ try {
                             {/* Group 3 */}
                             <div class="flex flex-col gap-2">
                                 <span
-                                    class="font-[family-name:var(--font-principal)] text-[16px] font-medium uppercase tracking-wide"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] font-medium uppercase tracking-wide"
                                     >Menores de 18</span
                                 >
                                 <div class="flex items-center gap-2">
@@ -537,7 +535,7 @@ try {
                                         >-</button
                                     >
                                     <div
-                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-2xl select-none"
+                                        class="player-count bg-white w-12 h-12 border-2 border-black neo-shadow flex items-center justify-center font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-2xl select-none"
                                     >
                                         0
                                     </div>
@@ -552,7 +550,7 @@ try {
 
                         <div class="border-2 border-black p-4 mt-2 max-w-lg">
                             <div
-                                class="flex items-start gap-3 text-black/80 font-[family-name:var(--font-secundaria)]"
+                                class="flex items-start gap-3 text-black/80 font-[family-name:var(--font-sharp-sans-medium)]"
                             >
                                 <div
                                     class="w-5 h-5 rounded-full bg-[var(--surface-brand-primary)] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5"
@@ -577,7 +575,7 @@ try {
                         class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-black"
                     >
                         <h2
-                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase"
+                            class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase"
                         >
                             Seleccionar Fecha y Hora
                         </h2>
@@ -596,7 +594,7 @@ try {
                                 class="absolute inset-0 z-20 flex items-center justify-center bg-white/40 backdrop-blur-[2px]"
                             >
                                 <span
-                                    class="bg-[var(--surface-brand-secondary)] text-white font-[family-name:var(--font-principal)] font-bold text-sm md:text-base px-6 py-3 border-2 border-black neo-shadow text-center uppercase tracking-wide"
+                                    class="bg-[var(--surface-brand-secondary)] text-white font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-sm md:text-base px-6 py-3 border-2 border-black neo-shadow text-center uppercase tracking-wide"
                                 >
                                     Selecciona Jugadores Primero
                                 </span>
@@ -614,7 +612,7 @@ try {
                                 </button>
                                 <span
                                     id="b7-calendar-month-year"
-                                    class="font-[family-name:var(--font-principal)] text-[22px] font-bold uppercase tracking-widest"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[22px] font-bold uppercase tracking-widest"
                                     >MAY 2026</span
                                 >
                                 <button
@@ -626,7 +624,7 @@ try {
                             </div>
                             <div
                                 id="b7-calendar-days-grid"
-                                class="p-4 grid grid-cols-7 gap-y-4 gap-x-2 text-center font-[family-name:var(--font-principal)] text-[14px] font-bold uppercase"
+                                class="p-4 grid grid-cols-7 gap-y-4 gap-x-2 text-center font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[14px] font-bold uppercase"
                             >
                                 {/* Injected by JS */}
                             </div>
@@ -641,7 +639,7 @@ try {
                                 class="fa-regular fa-calendar-check text-4xl text-gray-300 mb-4"
                             ></i>
                             <p
-                                class="font-[family-name:var(--font-secundaria)] text-gray-500 font-medium"
+                                class="font-[family-name:var(--font-sharp-sans-medium)] text-gray-500 font-medium"
                             >
                                 Por favor, selecciona una fecha para ver los
                                 horarios disponibles.
@@ -649,12 +647,28 @@ try {
                         </div>
 
                         {/* Time Slots */}
-                        <div
-                            id="time-slots-container"
-                            class="hidden w-full lg:w-[45%] flex-col gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"
-                        >
-                            {/* Injected by JS */}
+                        <div id="time-slots-wrapper" class="hidden w-full lg:w-[45%] relative flex-col">
+                            <div
+                                id="time-slots-container"
+                                class="w-full flex-col gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar flex"
+                            >
+                                {/* Injected by JS */}
+                            </div>
+                            {/* Scroll Indicator */}
+                            <div id="time-slots-scroll-indicator" class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none flex justify-center items-end pb-2 opacity-0 transition-opacity duration-300 z-10">
+                                <i class="fa-solid fa-caret-down text-[#EA6CF6] animate-bounce text-4xl drop-shadow-md"></i>
+                            </div>
                         </div>
+                    </div>
+                    {/* Boton Siguiente para Horarios */}
+                    <div class="bg-white p-6 border-t border-gray-200 flex justify-end">
+                        <button
+                            id="b7-btn-time-next"
+                            class="bg-white text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-[var(--brand-interactive-base)] transition-colors tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            SIGUIENTE
+                        </button>
                     </div>
                 </div>
             </div>
@@ -668,7 +682,7 @@ try {
                         class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent"
                     >
                         <h2
-                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                            class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase tracking-wide"
                         >
                             EXTRAS Y MEJORAS
                         </h2>
@@ -677,7 +691,7 @@ try {
                         class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 relative min-h-[300px]"
                     >
                         <p
-                            class="font-[family-name:var(--font-secundaria)] text-[16px] font-medium text-black"
+                            class="font-[family-name:var(--font-sharp-sans-medium)] text-[16px] font-medium text-black"
                         >
                             Selecciona cualquier extra que desees añadir a tu
                             reservación.
@@ -685,7 +699,7 @@ try {
 
                         <div
                             id="step2-upgrades-container"
-                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2"
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2"
                         >
                             {/* Injected dynamically */}
                             <div
@@ -698,7 +712,7 @@ try {
                         <div class="flex justify-end mt-8">
                             <button
                                 id="b7-btn-extra-confirm"
-                                class="bg-white text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 transition-colors tracking-tight"
+                                class="bg-white text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-[var(--brand-interactive-base)] transition-colors tracking-tight"
                             >
                                 SIGUIENTE
                             </button>
@@ -717,13 +731,13 @@ try {
                         class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent"
                     >
                         <h2
-                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                            class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase tracking-wide"
                         >
                             TU INFORMACIÓN
                         </h2>
                     </div>
                     <div
-                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-secundaria)]"
+                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-sharp-sans-medium)]"
                     >
                         <div
                             class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4"
@@ -980,13 +994,13 @@ try {
                         class="bg-[var(--surface-brand-secondary)] py-2 px-4 border-b-2 border-transparent"
                     >
                         <h2
-                            class="text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase tracking-wide"
+                            class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase tracking-wide"
                         >
                             PAYMENT
                         </h2>
                     </div>
                     <div
-                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-secundaria)]"
+                        class="p-6 md:p-8 bg-white text-black flex flex-col gap-6 font-[family-name:var(--font-sharp-sans-medium)]"
                     >
                         <div
                             class="bg-[var(--surface-brand-secondary)]/10 border border-[var(--surface-brand-secondary)] p-6 mb-4 flex flex-col gap-3"
@@ -996,7 +1010,7 @@ try {
                             >
                                 <i class="fa-solid fa-envelope-open-text"></i>
                                 <h3
-                                    class="font-[family-name:var(--font-principal)] font-bold text-[24px] text-black"
+                                    class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold text-[24px] text-black"
                                 >
                                     Pago seguro por enlace
                                 </h3>
@@ -1065,7 +1079,7 @@ try {
                         <div class="flex justify-end mt-4">
                             <button
                                 id="b7-btn-submit"
-                                class="bg-[var(--brand-interactive-base)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all tracking-tight flex items-center justify-center gap-2"
+                                class="bg-[var(--brand-interactive-base)] text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase px-8 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all tracking-tight flex items-center justify-center gap-2"
                             >
                                 CONFIRMAR PAGO
                             </button>
@@ -1088,12 +1102,12 @@ try {
                         <i class="fa-solid fa-check"></i>
                     </div>
                     <h2
-                        class="text-black font-[family-name:var(--font-principal)] text-[32px] md:text-[48px] font-bold uppercase tracking-wide"
+                        class="text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[32px] md:text-[48px] font-bold uppercase tracking-wide"
                     >
                         ¡Reserva Confirmada!
                     </h2>
                     <p
-                        class="font-[family-name:var(--font-secundaria)] text-[18px] text-gray-700 max-w-lg"
+                        class="font-[family-name:var(--font-sharp-sans-medium)] text-[18px] text-gray-700 max-w-lg"
                     >
                         Tu reserva ha sido registrada exitosamente. <strong
                             >Revisa tu correo electrónico</strong
@@ -1106,7 +1120,7 @@ try {
                         para asegurar tu lugar.
                     </p>
                     <button
-                        class="mt-4 bg-[var(--brand-interactive-base)] text-black font-[family-name:var(--font-principal)] text-[20px] font-bold uppercase px-8 py-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all tracking-tight"
+                        class="mt-4 bg-[var(--brand-interactive-base)] text-black font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[20px] font-bold uppercase px-8 py-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all tracking-tight"
                         onclick="window.location.reload()"
                     >
                         Hacer otra reserva
@@ -1117,7 +1131,7 @@ try {
     </div>
 </section>
 
-<style>
+<style is:global>
     .neo-shadow {
         box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
     }
@@ -1130,18 +1144,18 @@ try {
     }
 
     .time-slot-btn.active-slot {
-        background-color: var(--surface-brand-primary) !important;
-        color: white !important;
-        border-color: transparent !important;
+        background-color: var(--surface-brand-secondary) !important;
+        color: black !important;
+        border-color: black !important;
     }
     .time-slot-btn.active-slot .slot-dot {
-        background-color: rgba(255, 255, 255, 0.5) !important;
+        background-color: var(--brand-interactive-base) !important;
     }
     .time-slot-btn.active-slot .slot-subtext {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
     }
     .time-slot-btn.active-slot .slot-info {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
     }
 
     .custom-scrollbar::-webkit-scrollbar {
@@ -1237,24 +1251,24 @@ try {
                 // Reset classes (Inactive)
                 wrap.classList.add("opacity-50");
                 icon.className =
-                    "w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center text-white z-10 transition-all duration-300 transform scale-100";
+                    "w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-white/20 bg-[var(--surface-brand-primary)] flex items-center justify-center text-white/50 z-10 transition-all duration-300 transform scale-100";
                 text.className =
-                    "text-white/50 text-xs font-[family-name:var(--font-principal)] font-medium transition-all duration-300 tracking-wide mt-1";
+                    "text-white/50 text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-medium transition-all duration-300 tracking-wide mt-1";
 
                 if (i < stepIndex) {
                     // Completed step
                     wrap.classList.remove("opacity-50");
                     icon.className =
-                        "w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black z-10 transition-all duration-300 transform scale-100";
+                        "w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black z-10 transition-all duration-300 transform scale-100";
                     text.className =
-                        "text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1";
+                        "text-[var(--brand-interactive-base)] text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold transition-all duration-300 tracking-wide mt-1";
                 } else if (i === stepIndex) {
                     // Current step
                     wrap.classList.remove("opacity-50");
                     icon.className =
-                        "w-12 h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_15px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform scale-110";
+                        "w-7 h-7 md:w-12 md:h-12 rounded-full border-2 border-[var(--brand-interactive-base)] bg-[var(--brand-interactive-base)] flex items-center justify-center text-black shadow-[0_0_10px_var(--brand-interactive-base)] z-10 transition-all duration-300 transform md:scale-110";
                     text.className =
-                        "text-[var(--brand-interactive-base)] text-xs font-[family-name:var(--font-principal)] font-bold transition-all duration-300 tracking-wide mt-1";
+                        "text-[var(--brand-interactive-base)] text-[9px] md:text-xs font-[family-name:var(--font-titling-gothic-fb-extended-bold)] font-bold transition-all duration-300 tracking-wide mt-1";
                 }
             }
 
@@ -1277,8 +1291,10 @@ try {
                     );
                 }
             }
-
             currentStep = stepIndex;
+
+            // Scroll to top when changing steps (important for mobile usability)
+            window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
         const btnBack = document.getElementById("b7-btn-back");
@@ -1453,17 +1469,25 @@ try {
         const overviewStep1 = document.getElementById("overview-step-1");
         const overviewStep2 = document.getElementById("overview-step-2");
 
+        const btnTimeNext = document.getElementById("b7-btn-time-next") as HTMLButtonElement;
+        if (btnTimeNext) {
+            btnTimeNext.addEventListener("click", () => {
+                if ((window as any)._selectedSlot) {
+                    goToStep(2);
+                }
+            });
+        }
+
         timeSlots.forEach((slot) => {
             slot.addEventListener("click", () => {
                 timeSlots.forEach((s) => s.classList.remove("active-slot"));
                 slot.classList.add("active-slot");
 
-                // Switch to Extra Time step after a brief delay
+                if (btnTimeNext) {
+                    btnTimeNext.disabled = false;
+                }
 
                 renderUpgrades(selectedTime.shiftUpsells || []);
-                setTimeout(() => {
-                    goToStep(2);
-                }, 400); // 400ms delay to feel the click
             });
         });
 
@@ -1488,12 +1512,74 @@ try {
         const calendarMonthYear = document.getElementById(
             "b7-calendar-month-year",
         );
+        const timeSlotsWrapper = document.getElementById(
+            "time-slots-wrapper",
+        );
         const timeSlotsContainer = document.getElementById(
             "time-slots-container",
+        );
+        const timeSlotsIndicator = document.getElementById(
+            "time-slots-scroll-indicator",
         );
         const timeSlotsPlaceholder = document.getElementById(
             "time-slots-placeholder",
         );
+
+        function updateTimeSlotsScrollIndicator() {
+            if (!timeSlotsContainer || !timeSlotsIndicator) return;
+            const { scrollTop, scrollHeight, clientHeight } = timeSlotsContainer;
+            // Show indicator if there is scrollable content and we haven't reached the bottom
+            if (scrollHeight > clientHeight && Math.ceil(scrollTop + clientHeight) < scrollHeight) {
+                timeSlotsIndicator.classList.remove("opacity-0");
+                timeSlotsIndicator.classList.add("opacity-100");
+            } else {
+                timeSlotsIndicator.classList.add("opacity-0");
+                timeSlotsIndicator.classList.remove("opacity-100");
+            }
+        }
+        
+        if (timeSlotsContainer) {
+            timeSlotsContainer.addEventListener("scroll", updateTimeSlotsScrollIndicator);
+            window.addEventListener("resize", updateTimeSlotsScrollIndicator);
+        }
+
+        // --- Auto-scroll Animation Logic ---
+        let autoScrollInterval = null;
+        let hasUserInteractedWithScroll = false;
+
+        function stopAutoScroll() {
+            hasUserInteractedWithScroll = true;
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+            }
+        }
+
+        function startAutoScroll() {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+            hasUserInteractedWithScroll = false;
+            
+            // Solo auto-scroll si hay scroll disponible
+            setTimeout(() => {
+                if (!hasUserInteractedWithScroll && timeSlotsContainer && timeSlotsContainer.scrollHeight > timeSlotsContainer.clientHeight) {
+                    autoScrollInterval = setInterval(() => {
+                        if (!hasUserInteractedWithScroll && timeSlotsContainer) {
+                            timeSlotsContainer.scrollTop += 1;
+                            // Si llega al final, paramos
+                            if (Math.ceil(timeSlotsContainer.scrollTop + timeSlotsContainer.clientHeight) >= timeSlotsContainer.scrollHeight) {
+                                stopAutoScroll();
+                            }
+                        }
+                    }, 40); // Velocidad lenta y suave (1px cada 40ms)
+                }
+            }, 1000); // Esperar 1 segundo antes de empezar a mover
+        }
+
+        if (timeSlotsContainer) {
+            timeSlotsContainer.addEventListener("touchstart", stopAutoScroll, { passive: true });
+            timeSlotsContainer.addEventListener("mouseenter", stopAutoScroll);
+            timeSlotsContainer.addEventListener("wheel", stopAutoScroll, { passive: true });
+        }
 
         function renderCalendar() {
             console.log(
@@ -1631,11 +1717,12 @@ try {
                         // Show time slots loading state
                         if (timeSlotsPlaceholder)
                             timeSlotsPlaceholder.classList.add("hidden");
-                        if (timeSlotsContainer) {
-                            timeSlotsContainer.classList.remove("hidden");
-                            timeSlotsContainer.classList.add("flex");
+                        if (timeSlotsWrapper && timeSlotsContainer) {
+                            timeSlotsWrapper.classList.remove("hidden");
+                            timeSlotsWrapper.classList.add("flex");
                             timeSlotsContainer.innerHTML =
-                                '<div class="p-8 text-center w-full"><i class="fa-solid fa-spinner fa-spin text-4xl mb-4 text-[var(--brand-interactive-base)]"></i><p class="font-bold text-gray-500">Cargando disponibilidad...</p></div>';
+                                '<div class="p-8 text-center text-gray-500 font-bold w-full"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Buscando horarios...</div>';
+                            updateTimeSlotsScrollIndicator();
 
                             // Fetch from SevenRooms
                             const mainSec =
@@ -1800,27 +1887,32 @@ try {
                                                     : " ";
 
                                                 return `
-                                        <button type="button" data-index="${idx}" class="time-slot-btn bg-white text-black py-3 px-4 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-3 h-3 rounded-full bg-gray-300 slot-dot transition-colors"></div>
+                                        <button type="button" data-index="${idx}" class="time-slot-btn bg-white text-black py-2 px-3 border-2 border-black transition-all w-full text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:bg-gray-50 hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] relative flex flex-row items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-2 h-2 rounded-full bg-gray-300 slot-dot transition-colors"></div>
                                                 <div class="flex items-baseline gap-1">
-                                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">${timeVal}</span>
-                                                    <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold">${timeAmPm}</span>
+                                                    <span class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] font-bold tracking-tight">${timeVal}</span>
+                                                    <span class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[11px] font-bold">${timeAmPm}</span>
                                                 </div>
-                                                <div class="flex flex-col ml-3">
-                                                    <span class="slot-subtext font-[family-name:var(--font-secundaria)] text-[11px] text-black/60 leading-tight transition-colors">${duration}</span>
+                                                <div class="flex flex-col ml-1">
+                                                    <span class="slot-subtext font-[family-name:var(--font-sharp-sans-medium)] text-[10px] text-black/60 leading-tight transition-colors">${duration}</span>
                                                 </div>
                                             </div>
-                                            <div class="flex items-center gap-3">
+                                            <div class="flex items-center gap-2">
                                                 <div class="flex items-baseline">
-                                                    <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold">${cost}</span>
-                                                    <span class="font-[family-name:var(--font-secundaria)] text-[12px] ml-1">p.p</span>
+                                                    <span class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] font-bold">${cost}</span>
+                                                    <span class="font-[family-name:var(--font-sharp-sans-medium)] text-[10px] ml-1">p.p</span>
                                                 </div
                                             </div>
                                         </button>
                                         `;
                                             })
                                             .join("");
+                                        
+                                        setTimeout(() => {
+                                            updateTimeSlotsScrollIndicator();
+                                            startAutoScroll();
+                                        }, 50);
 
                                         // Rebind click events
                                         const newlyRenderedSlots =
@@ -1909,9 +2001,11 @@ try {
                                                         selectedTime.shiftUpsells ||
                                                             [],
                                                     );
-                                                    setTimeout(() => {
-                                                        goToStep(2);
-                                                    }, 400);
+                                                    
+                                                    const btnTimeNext = document.getElementById("b7-btn-time-next") as HTMLButtonElement;
+                                                    if (btnTimeNext) {
+                                                        btnTimeNext.disabled = false;
+                                                    }
                                                 },
                                             );
                                         });
@@ -1975,6 +2069,9 @@ try {
             if (!upsellCategories || upsellCategories.length === 0) {
                 container.innerHTML =
                     '<div class="col-span-full p-8 text-center text-gray-500 font-bold border-2 border-dashed border-gray-300 bg-gray-50/50">No hay extras disponibles.</div>';
+                const overviewList = document.getElementById("overview-upgrades-list");
+                if (overviewList) overviewList.innerHTML = `<span class="text-sm italic text-gray-500">Ningún extra seleccionado</span>`;
+                if ((window as any)._updateOverviewTotal) (window as any)._updateOverviewTotal();
                 return;
             }
 
@@ -2003,6 +2100,9 @@ try {
                 if (allUpgrades.length === 0) {
                     container.innerHTML =
                         '<div class="col-span-full p-8 text-center text-gray-500 font-bold border-2 border-dashed border-gray-300 bg-gray-50/50">No se encontraron extras.</div>';
+                    const overviewList = document.getElementById("overview-upgrades-list");
+                    if (overviewList) overviewList.innerHTML = `<span class="text-sm italic text-gray-500">Ningún extra seleccionado</span>`;
+                    if ((window as any)._updateOverviewTotal) (window as any)._updateOverviewTotal();
                     return;
                 }
 
@@ -2011,25 +2111,25 @@ try {
 
                 container.innerHTML = allUpgrades
                     .map((u, idx) => {
-                        const priceStr = u.price > 0 ? `${u.price}` : "Gratis";
+                        const priceStr = u.price > 0 ? `$${parseFloat(u.price).toFixed(2)}` : "Gratis";
                         return `
                     <div class="upgrade-card w-full flex flex-col group border border-gray-300 cursor-pointer hover:border-black transition-colors" data-id="${u.id}">
-                        <div class="bg-[var(--surface-brand-primary)] text-white p-3 flex justify-between items-center h-[60px]">
-                            <span class="font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase tracking-wide leading-tight">${u.name}</span>
-                            <div class="checkbox-ui w-6 h-6 border-2 border-white flex items-center justify-center transition-colors">
+                        <div class="bg-[var(--surface-brand-primary)] text-white p-3 flex justify-between items-center min-h-[60px] gap-4">
+                            <span class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[16px] font-bold uppercase tracking-wide leading-tight flex-1">${u.name}</span>
+                            <div class="checkbox-ui shrink-0 w-6 h-6 border-2 border-white flex items-center justify-center transition-colors">
                                 <i class="fa-solid fa-check text-white opacity-0 transition-opacity"></i>
                             </div>
                         </div>
                         <div class="p-4 bg-white text-black flex items-start flex-1 border-x border-gray-300">
-                            <div class="font-[family-name:var(--font-secundaria)] text-[12px] text-gray-800 line-clamp-4">
+                            <div class="font-[family-name:var(--font-sharp-sans-medium)] text-[12px] text-gray-800 line-clamp-4">
                                 ${u.description || ""}
                             </div>
                         </div>
-                        <div class="p-4 bg-white flex justify-between items-center border border-gray-300 border-t-0 group-hover:bg-gray-50 transition-colors">
-                            <span class="font-[family-name:var(--font-principal)] text-[24px] font-bold tracking-tight">${priceStr}</span>
-                            <div class="flex items-center gap-2">
+                        <div class="p-4 bg-white flex flex-wrap justify-between items-center gap-3 border border-gray-300 border-t-0 group-hover:bg-gray-50 transition-colors">
+                            <span class="font-[family-name:var(--font-titling-gothic-fb-extended-bold)] text-[24px] font-bold tracking-tight truncate flex-1">${priceStr}</span>
+                            <div class="flex items-center gap-2 shrink-0">
                                 <button type="button" class="qty-minus bg-gray-200 text-black w-8 h-8 flex items-center justify-center font-bold border border-gray-300 hover:bg-gray-300 transition-colors">-</button>
-                                <span class="qty-val font-bold text-lg w-4 text-center">1</span>
+                                <span class="qty-val font-bold text-lg w-4 text-center" data-min="${u.min_qty || 1}" data-max="${u.max_qty || 99}">0</span>
                                 <button type="button" class="qty-plus bg-[var(--brand-interactive-base)] text-black w-8 h-8 flex items-center justify-center font-bold border border-black hover:opacity-80 transition-opacity">+</button>
                             </div>
                         </div>
@@ -2049,6 +2149,9 @@ try {
                     );
                     if (selectedCards.length === 0) {
                         overviewList.innerHTML = `<span class="text-sm italic text-gray-500">Ningún extra seleccionado</span>`;
+                        if ((window as any)._updateOverviewTotal) {
+                            (window as any)._updateOverviewTotal();
+                        }
                         return;
                     }
 
@@ -2064,6 +2167,9 @@ try {
                         (window as any)._updateOverviewTotal();
                     }
                 }
+                
+                // Reset summary and total when re-rendering
+                updateOverviewUpgrades();
 
                 // Add toggle logic
                 const cards = container.querySelectorAll(".upgrade-card");
@@ -2082,23 +2188,28 @@ try {
                             card.classList.contains("border-2");
                         const checkIcon = card.querySelector(".fa-check");
                         const checkUi = card.querySelector(".checkbox-ui");
+                        const qtyVal = card.querySelector(".qty-val");
 
                         if (isSelected) {
                             card.classList.remove("border-black", "border-2");
                             card.classList.add("border-gray-300", "border");
-                            checkIcon.classList.add("opacity-0");
-                            checkUi.classList.remove(
+                            if (checkIcon) checkIcon.classList.add("opacity-0");
+                            if (checkUi) checkUi.classList.remove(
                                 "bg-[var(--brand-interactive-base)]",
                                 "border-[var(--brand-interactive-base)]",
                             );
+                            if (qtyVal) qtyVal.textContent = "0";
                         } else {
                             card.classList.remove("border-gray-300", "border");
                             card.classList.add("border-black", "border-2");
-                            checkIcon.classList.remove("opacity-0");
-                            checkUi.classList.add(
+                            if (checkIcon) checkIcon.classList.remove("opacity-0");
+                            if (checkUi) checkUi.classList.add(
                                 "bg-[var(--brand-interactive-base)]",
                                 "border-[var(--brand-interactive-base)]",
                             );
+                            if (qtyVal && parseInt(qtyVal.textContent || "0", 10) === 0) {
+                                qtyVal.textContent = qtyVal.getAttribute("data-min") || "1";
+                            }
                         }
                         updateOverviewUpgrades();
                     });
@@ -2110,15 +2221,39 @@ try {
 
                     if (qtyMinus && qtyPlus && qtyVal) {
                         qtyMinus.addEventListener("click", (e) => {
-                            let val = parseInt(qtyVal.textContent || "1", 10);
-                            if (val > 1) {
+                            let val = parseInt(qtyVal.textContent || "0", 10);
+                            const min = parseInt(qtyVal.getAttribute("data-min") || "1", 10);
+                            if (val > min) {
                                 qtyVal.textContent = (val - 1).toString();
-                                updateOverviewUpgrades();
+                            } else if (val <= min && val > 0) {
+                                qtyVal.textContent = "0";
+                                // Uncheck visually
+                                card.classList.remove("border-black", "border-2");
+                                card.classList.add("border-gray-300", "border");
+                                const checkIcon = card.querySelector(".fa-check");
+                                const checkUi = card.querySelector(".checkbox-ui");
+                                if (checkIcon) checkIcon.classList.add("opacity-0");
+                                if (checkUi) checkUi.classList.remove("bg-[var(--brand-interactive-base)]", "border-[var(--brand-interactive-base)]");
                             }
+                            updateOverviewUpgrades();
                         });
                         qtyPlus.addEventListener("click", (e) => {
-                            let val = parseInt(qtyVal.textContent || "1", 10);
-                            qtyVal.textContent = (val + 1).toString();
+                            let val = parseInt(qtyVal.textContent || "0", 10);
+                            const max = parseInt(qtyVal.getAttribute("data-max") || "99", 10);
+                            
+                            if (val === 0) {
+                                const min = parseInt(qtyVal.getAttribute("data-min") || "1", 10);
+                                qtyVal.textContent = min.toString();
+                                // Check visually
+                                card.classList.remove("border-gray-300", "border");
+                                card.classList.add("border-black", "border-2");
+                                const checkIcon = card.querySelector(".fa-check");
+                                const checkUi = card.querySelector(".checkbox-ui");
+                                if (checkIcon) checkIcon.classList.remove("opacity-0");
+                                if (checkUi) checkUi.classList.add("bg-[var(--brand-interactive-base)]", "border-[var(--brand-interactive-base)]");
+                            } else if (val < max) {
+                                qtyVal.textContent = (val + 1).toString();
+                            }
                             updateOverviewUpgrades();
                         });
                     }
