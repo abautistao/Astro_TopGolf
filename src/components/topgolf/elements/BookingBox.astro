@@ -16,8 +16,9 @@ const { url_submit } = Astro.props;
     <label>
         <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Fecha</div>
         <div role="application" class="datecalendar">
-            <div role="button" aria-label="Spacer" tabindex="0" class="hidden">
-                <div class="button" role="button" aria-label="Date picker" aria-expanded="false">
+            <div role="button" aria-label="Spacer" class="hidden">
+                <input tabindex="-1"/></div>
+                <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
                     <input class="flatpickr-input !appearance-none min-w-[110px] sm:min-w-40 md:min-w-0 !w-full !h-12 md:!h-10 lg:!h-12 !px-2.5 !py-2 md:!pl-5 !mb-0 !rounded md:!rounded-full cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-white leading-none md:!text-sm" name="reservacion_fecha" id="date" readonly="" tabindex="-1" value="12/15/2025"/>
                 </div> 
             </div>
