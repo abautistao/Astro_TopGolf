@@ -81,7 +81,7 @@ const linksWithDropdowns = links.filter(link => link.tiene_dropdown && link.drop
 
         <div class="flex items-center justify-between w-full lg:hidden">
             <div class="flex items-center">
-                <button id="mobile-menu-toggle" class="w-12 h-12 flex items-center justify-center text-[var(--accent-feedback-strong)]">
+                <button role="button" aria-label="Mobile Menu" id="mobile-menu-toggle" class="w-12 h-12 flex items-center justify-center text-[var(--accent-feedback-strong)]">
                     <i class="fa-solid fa-bars text-2xl"></i>
                 </button>
                 <a href="/" class="block">
