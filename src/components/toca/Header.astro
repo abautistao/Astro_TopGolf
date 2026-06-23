@@ -1,10 +1,16 @@
 ---
 // src/components/toca/Header.astro
-import { getHeaderData, getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
+import { getHeaderData, getStrapiUrl, getLocalizedUrl, stringifyRichText } from "../../lib/strapi";
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 import defaultLogoImg from "../../assets/TOCA_Social_One_Color.png";
 import { getLottiePath } from "../../utils/iconMapper";
+
+interface Promo {
+    id: number
+    titulo: string
+    descripcion: object
+}
 
 const { data, locale = "en" } = Astro.props;
 const headerData = data || (await getHeaderData());
@@ -63,7 +69,40 @@ const ctaButtons: Boton[] = [
         tipo: rawButton?.tipo || "version_1",
     },
 ];
+
+const promos: Promo[] = headerData?.Slider_promos || [];
 ---
+{promos.length > 0 && (
+    <section id="slider-promos" class="splide bg-[var(--surface-brand-primary)] min-h-[34px] text-sm md:text-base" aria-label="Splide Basic HTML Example">
+        <div class="splide__arrows splide__arrows--ltr">
+            <button
+                class="splide__arrow splide__arrow--prev"
+                type="button"
+                aria-label="Previous slide"
+                aria-controls="splide01-track"
+            >
+                
+                <i class="fa-solid fa-chevron-left fa-md font-bold"></i>
+            </button>
+            <button
+                class="splide__arrow splide__arrow--next"
+                type="button"
+                aria-label="Next slide"
+                aria-controls="splide01-track"
+            >
+                <i class="fa-solid fa-chevron-right fa-md font-bold"></i>
+            </button>
+        </div>
+      <div class="splide__track">
+            <div class="splide__list">
+                {promos.map(promo => (
+                    <div class="splide__slide text-center prose" set:html={stringifyRichText(promo.descripcion)}></div>
+                ))}
+    
+                </div>
+      </div>
+    </section>
+)}
 
 <header
     class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)"
@@ -411,12 +450,45 @@ const ctaButtons: Boton[] = [
         </div>
     </div>
 </header>
+<style>
+    #slider-promos .splide__arrow {
+        background-color: transparent !important;
+        height: 16px !important;
+    }
+
+    #slider-promos {
+        font-family: var(--font-sharp-sans-medium) !important;
+        color: var(--accent-feedback-strong) !important;
+        width: 100%;
+        padding: 6px 12px !important;
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin: 0 auto !important;
+        text-align: center !important; 
+    }
+
+    #slider-promos .prose :global(p > a)  {
+        text-decoration: underline !important;
+        text-decoration-color: var(--surface-brand-secondary) !important;
+        color: var(--surface-brand-secondary) !important;
+        text-decoration-thickness: 3px !important;
+        font-family: var(--font-sharp-sans-bold) !important;
+    }
+   
+    #slider-promos .prose :global(p)  {
+        margin-bottom: 0 !important;
+    }
+</style>
 
 <script>
     /**
      * OPTIMIZACIÓN DE LOTTIE:
      * Cargamos la librería y los JSON solo cuando el navegador está libre (Idle).
      */
+    import '@splidejs/splide/css';
+    import Splide from '@splidejs/splide';
     const initLotties = async () => {
         const lottieContainers = document.querySelectorAll(".js-lottie-anim");
         if (lottieContainers.length === 0) return;
@@ -537,7 +609,11 @@ const ctaButtons: Boton[] = [
      */
     const runAll = () => {
         initMenus();
-
+        new Splide( '.splide', {
+        pagination: false,
+        autoplay: true, 
+        rewind: true
+    } ).mount();
         // Cargamos Lotties cuando el navegador termine de pintar (Idle)
         if ('requestIdleCallback' in window) {
             window.requestIdleCallback(() => initLotties());
