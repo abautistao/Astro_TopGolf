@@ -53,7 +53,7 @@ const configs: any = {
         // (Azul - Imagen Izquierda)
         bg:         'bg-[var(--surface-brand-primary)]',
         textTitle:  'text-[var(--accent-feedback-strong)]',
-        textContent:'text-[var(--accent-feedback-strong)]',
+        textContent:'text-[var(--neutral-text-inverted)]',
         direction:  'md:flex-row-reverse',
         textPadding:'md:pr-16 md:pl-8',
         showDecoration: false,
@@ -65,14 +65,14 @@ const configs: any = {
 const currentStyle: any = configs[tipo] || configs.version_1;
 ---
 
-<section class={`flex flex-col w-full min-h-112.5 md:min-h-137.5 overflow-visible ${currentStyle.direction} ${currentStyle.bg}`}>
+<section class={`flex flex-col w-full min-h-112.5 md:min-h-137.5 overflow-visible ${currentStyle.direction} ${currentStyle.bg} ${tipo ?? 'version_1'}`}>
 
   {/* LADO DE TEXTO */}
     <div class={`w-full md:w-1/2 flex flex-col justify-center md:justify-start items-start pt-10 pb-0 md:pt-20 md:pb-10 px-6 z-10 ${currentStyle.textPadding}`}>
 
-        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium uppercase text-3xl md:text-4xl leading-none mb-5 tracking-wide`}>
+        <h1 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium uppercase text-3xl md:text-4xl leading-none mb-5 tracking-wide`}>
             {titulo}
-        </h2>
+        </h1>
 
         <div class={`${currentStyle.textContent} strapi-rich-text font-(family-name:--font-sharp-sans-medium) w-full text-base font-medium leading-relaxed mb-8 [&>p]:mb-4 [&>p:last-child]:mb-0`}>
             <Fragment set:html={stringifyRichText(descripcion)} />
@@ -111,13 +111,17 @@ const currentStyle: any = configs[tipo] || configs.version_1;
 <style>
     .strapi-rich-text :global(p) { margin-bottom: 0; }
     .strapi-rich-text :global(strong) {
-        color: var(--accent-feedback-strong) !important; font-weight: bold;
+        color: var(--accent-feedback-strong); font-weight: bold;
     }
     .strapi-rich-text :global(u) {
         text-decoration-thickness: 2px; text-underline-offset: 3px;
     }
     .strapi-rich-text :global(a) {
-        color: var(--accent-feedback-strong) !important;
+        color: var(--accent-feedback-strong);
         text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px;
+    }
+
+    .version_1 .strapi-rich-text :global(a), .version_1 .strapi-rich-text :global(strong)  {
+        color: var(--surface-brand-primary) !important;
     }
 </style>
