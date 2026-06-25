@@ -13,22 +13,27 @@ interface Props {
     id?: number;
     titulo?: string;
     descripcion?: any[];
-    imagen: StrapiMedia;
+    image: StrapiMedia;
+    image_mobile: StrapiMedia;
     tipo?: string;
 }
 
 const {
     titulo = "Ejemplo Título",
     descripcion = [],
-    imagen,
+    image,
+    image_mobile,
     tipo = "version_1",
 } = Astro.props;
 
 
 const DEFAULT_IMAGE = "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo";
 
-const finalImgUrl = imagen;
-const finalImgAlt = imagen;
+const finalImgUrl = image;
+const finalImgAlt = image;
+
+const finalImgUrlMobile = image_mobile;
+const finalImgAltMobile = image_mobile;
 
 console.log(finalImgUrl)
 
@@ -88,7 +93,14 @@ const currentStyle: any = configs[tipo] || configs.version_1;
             <Image
                 src={getStrapiUrl(finalImgUrl)}
                 alt={finalImgAlt}
-                class="w-full aspect-3/2 object-cover relative z-10 shadow-lg"
+                class="w-full aspect-3/2 object-cover relative z-10 shadow-lg hidden md:block"
+                inferSize={true}
+            />
+
+            <Image
+                src={getStrapiUrl(finalImgUrlMobile)}
+                alt={finalImgAltMobile}
+                class="w-full aspect-3/2 object-cover relative z-10 shadow-lg block md:hidden"
                 inferSize={true}
             />
         </div>
