@@ -85,7 +85,7 @@ const renderMarkdown = (text) => {
                             )}
                             {!tarjeta.icono_destacado && (
                                 /* Fallback SVG de la cinta con estrella si no se sube imagen */
-                                <div class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] text-[var(--brand-interactive-base,#F5A623)] drop-shadow-md translate-y-[-5%]">
+                                <div class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] text-[var(--brand-interactive-base,#FBF21A)] drop-shadow-md translate-y-[-5%]">
                                     <svg viewBox="0 0 100 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10,0 L90,0 L90,100 L50,80 L10,100 Z" />
                                         <circle cx="50" cy="40" r="25" fill="none" stroke="var(--surface-brand-primary,#003F7F)" stroke-width="4" />
@@ -229,7 +229,7 @@ const renderMarkdown = (text) => {
                                 <div class="w-full flex justify-center md:justify-start">
                                     <a 
                                         href={tarjeta.boton.url || "#"} 
-                                        class="w-full md:w-auto min-w-[280px] flex items-center justify-center bg-[var(--brand-interactive-base,#F5A623)] hover:bg-[var(--surface-brand-primary,#003F7F)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#F5A623)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#F5A623)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-3 md:py-4 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
+                                        class="w-full md:w-auto min-w-[280px] flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-[var(--surface-brand-primary,#003F7F)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#FBF21A)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#FBF21A)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-3 md:py-4 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
                                     >
                                         {tarjeta.boton.texto || "COMPRA TU ENTRADA"}
                                     </a>
