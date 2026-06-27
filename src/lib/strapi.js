@@ -206,34 +206,61 @@ export const getStrapiUrl = (media) => {
   return null;
 }
 
+const FONT_FORMAT_MAP = {
+  woff2: 'woff2',
+  woff: 'woff',
+  ttf: 'truetype',
+  otf: 'opentype',
+  eot: 'embedded-opentype',
+  svg: 'svg',
+};
+
+const getFontFormat = (url) => {
+  if (!url) return '';
+  const cleanUrl = url.split('?')[0].split('#')[0];
+  const ext = cleanUrl.split('.').pop().toLowerCase();
+  return FONT_FORMAT_MAP[ext] || ext;
+};
+
+const VALID_FONT_WEIGHTS = new Set(['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset', 'revert']);
+const sanitizeFontWeight = (peso) => {
+  if (peso == null) return 'normal';
+  const trimmed = String(peso).trim();
+  if (VALID_FONT_WEIGHTS.has(trimmed)) return trimmed;
+  if (/^\d{1,3}$/.test(trimmed)) {
+    const n = +trimmed;
+    if (n >= 100 && n <= 900) return trimmed;
+  }
+  return 'normal';
+};
+
 export const generateFontFaces = (tipografias) => {
   if (!tipografias || tipografias.length === 0) {
     return "";
   }
 
   const fontFaces = tipografias.map(font => {
-    const { familia, peso, estilo, archivo_fuente } = font;
-    const url = getStrapiUrl(archivo_fuente.data.attributes);
-    const format = url.split('.').pop();
+    const { familia, peso, estilo } = font;
+    const url = getStrapiUrl(font.archivo_fuente);
+    if (!url || !familia) return '';
+    const format = getFontFormat(url);
 
     return `
       @font-face {
         font-family: '${familia}';
         src: url('${url}') format('${format}');
-        font-weight: ${peso || 'normal'};
+        font-weight: ${sanitizeFontWeight(peso)};
         font-style: ${estilo || 'normal'};
         font-display: swap;
       }
     `;
-  }).join('');
+  }).filter(Boolean).join('');
 
-  const fontFamilies = tipografias.reduce((acc, font) => {
-    const { familia } = font;
-    if (familia && !acc.includes(familia)) {
-      acc.push(familia);
-    }
-    return acc;
-  }, []);
+  const fontFamilies = [...new Set(
+    tipografias
+      .map(f => f.familia)
+      .filter(Boolean)
+  )];
 
   const rootStyles = `
     :root {
