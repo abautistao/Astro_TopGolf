@@ -40,56 +40,49 @@ export async function getPageBySlug(slug, locale = 'en') {
   const deepDataResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
-  // 3. Merge deep populated fields into the main object using ID matching
+  // 3. Merge deep populated fields into the main object using INDEX matching
+  // (Strapi 5 returns the parent entity's id for every dynamic zone item, so id-based matching
+  // always matches the first item and overwrites every component with that one's data.)
   if (deepPage && deepPage.ContenidoPagina) {
-    page.ContenidoPagina = page.ContenidoPagina.map((component) => {
-      const deepComponent = deepPage.ContenidoPagina.find((c) => c.id === component.id);
-      
-      if (deepComponent) {
-        if (component.__component === 'secciones.componente-1-acuario') {
-          return { ...component, slides: deepComponent.slides };
-        }
-        if (component.__component === 'secciones.componente-3-acuario') {
-          return { 
-            ...component, 
-            slides: deepComponent.slides, 
-            imagen_decorativa: deepComponent.imagen_decorativa, 
-            boton: deepComponent.boton 
-          };
-        }
-        if (component.__component === 'secciones.componente-4-acuario') {
-          return { 
-            ...component, 
-            tarjetas: deepComponent.tarjetas,
-            imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo,
-            icono_decorativo_hover: deepComponent.icono_decorativo_hover
-          };
-        }
-        if (component.__component === 'secciones.componente-5-acuario') {
-          return { 
-            ...component, 
-            tarjetas: deepComponent.tarjetas,
-            imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo
-          };
-        }
-        if (component.__component === 'secciones.componente-12-acuario') {
-          return {
-            ...component,
-            tarjetas: deepComponent.tarjetas
-          };
-        }
-        if (component.__component === 'secciones.componente-13-acuario') {
-          return {
-            ...component,
-            galeria: deepComponent.galeria
-          };
-        }
-        if (component.__component === 'secciones.componente-15-acuario') {
-          return {
-            ...component,
-            bloques_contenido: deepComponent.bloques_contenido
-          };
-        }
+    page.ContenidoPagina = page.ContenidoPagina.map((component, index) => {
+      const deepComponent = deepPage.ContenidoPagina[index];
+      if (!deepComponent || deepComponent.__component !== component.__component) {
+        return component;
+      }
+      if (component.__component === 'secciones.componente-1-acuario') {
+        return { ...component, slides: deepComponent.slides };
+      }
+      if (component.__component === 'secciones.componente-3-acuario') {
+        return {
+          ...component,
+          slides: deepComponent.slides,
+          imagen_decorativa: deepComponent.imagen_decorativa,
+          boton: deepComponent.boton
+        };
+      }
+      if (component.__component === 'secciones.componente-4-acuario') {
+        return {
+          ...component,
+          tarjetas: deepComponent.tarjetas,
+          imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo,
+          icono_decorativo_hover: deepComponent.icono_decorativo_hover
+        };
+      }
+      if (component.__component === 'secciones.componente-5-acuario') {
+        return {
+          ...component,
+          tarjetas: deepComponent.tarjetas,
+          imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo
+        };
+      }
+      if (component.__component === 'secciones.componente-12-acuario') {
+        return { ...component, tarjetas: deepComponent.tarjetas };
+      }
+      if (component.__component === 'secciones.componente-13-acuario') {
+        return { ...component, galeria: deepComponent.galeria };
+      }
+      if (component.__component === 'secciones.componente-15-acuario') {
+        return { ...component, bloques_contenido: deepComponent.bloques_contenido };
       }
       return component;
     });
@@ -140,23 +133,21 @@ export async function getPaseBySlug(slug, locale = 'en') {
   const deepDataResponse = await fetchAPI(`/pases?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
-  // Merge deep populated fields
+  // Merge deep populated fields using INDEX matching (Strapi 5 returns parent's id for all dynamic zone items)
   if (deepPage && deepPage.ContenidoPagina) {
-    page.ContenidoPagina = page.ContenidoPagina.map((component) => {
-      const deepComponent = deepPage.ContenidoPagina.find((c) => c.id === component.id);
-      
-      if (deepComponent) {
-        if (component.__component === 'secciones.componente-1-acuario') return { ...component, slides: deepComponent.slides };
-        if (component.__component === 'secciones.componente-3-acuario') return { ...component, slides: deepComponent.slides, imagen_decorativa: deepComponent.imagen_decorativa, boton: deepComponent.boton };
-        if (component.__component === 'secciones.componente-4-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo, icono_decorativo_hover: deepComponent.icono_decorativo_hover };
-        if (component.__component === 'secciones.componente-5-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo };
-        if (component.__component === 'secciones.componente-9-acuario') return { ...component, elementos_lista: deepComponent.elementos_lista, galeria: deepComponent.galeria };
-        if (component.__component === 'secciones.componente-10-acuario') return { ...component, acordeones: deepComponent.acordeones };
-        if (component.__component === 'secciones.componente-11-acuario') return { ...component, galeria: deepComponent.galeria };
-        if (component.__component === 'secciones.componente-12-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
-        if (component.__component === 'secciones.componente-13-acuario') return { ...component, galeria: deepComponent.galeria };
-        if (component.__component === 'secciones.componente-15-acuario') return { ...component, bloques_contenido: deepComponent.bloques_contenido };
-      }
+    page.ContenidoPagina = page.ContenidoPagina.map((component, index) => {
+      const deepComponent = deepPage.ContenidoPagina[index];
+      if (!deepComponent || deepComponent.__component !== component.__component) return component;
+      if (component.__component === 'secciones.componente-1-acuario') return { ...component, slides: deepComponent.slides };
+      if (component.__component === 'secciones.componente-3-acuario') return { ...component, slides: deepComponent.slides, imagen_decorativa: deepComponent.imagen_decorativa, boton: deepComponent.boton };
+      if (component.__component === 'secciones.componente-4-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo, icono_decorativo_hover: deepComponent.icono_decorativo_hover };
+      if (component.__component === 'secciones.componente-5-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo };
+      if (component.__component === 'secciones.componente-9-acuario') return { ...component, elementos_lista: deepComponent.elementos_lista, galeria: deepComponent.galeria };
+      if (component.__component === 'secciones.componente-10-acuario') return { ...component, acordeones: deepComponent.acordeones };
+      if (component.__component === 'secciones.componente-11-acuario') return { ...component, galeria: deepComponent.galeria };
+      if (component.__component === 'secciones.componente-12-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
+      if (component.__component === 'secciones.componente-13-acuario') return { ...component, galeria: deepComponent.galeria };
+      if (component.__component === 'secciones.componente-15-acuario') return { ...component, bloques_contenido: deepComponent.bloques_contenido };
       return component;
     });
   }
@@ -274,7 +265,22 @@ export const generateFontFaces = (tipografias) => {
 
 export const stringifyRichText = (richText) => {
   if (!richText) return '';
-  if (typeof richText === 'string') return richText;
+  if (typeof richText === 'string') {
+    let html = richText
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    const paragraphs = html.split(/\n\s*\n/).filter(p => p.trim());
+    if (paragraphs.length === 0) return '';
+    if (paragraphs.length === 1 && !paragraphs[0].includes('\n')) return paragraphs[0];
+    return paragraphs.map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('');
+  }
 
   // Helper to process individual text nodes (bold, italic, etc.)
   const processTextNode = (node) => {
