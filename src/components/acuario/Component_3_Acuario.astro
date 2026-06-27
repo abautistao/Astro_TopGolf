@@ -40,6 +40,21 @@ const isVideo = (url: string) => {
     return url?.match(/\.(mp4|webm|ogg)$/i);
 };
 
+const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const patterns = [
+        /youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+        /youtu\.be\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/,
+    ];
+    for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return m[1];
+    }
+    return null;
+};
+
 // Normalize button
 const btn = Array.isArray(boton) ? boton[0] : boton;
 
@@ -106,14 +121,24 @@ const HeadingTag = etiqueta_titulo;
                 <div class="swiper acuario-componente-3-swiper w-full h-full absolute inset-0">
                     <div class="swiper-wrapper h-full">
                         {slides.map((slide) => {
+                            const youtubeId = slide.youtube_url ? getYoutubeId(slide.youtube_url) : null;
                             const bgUrl = getStrapiUrl(slide.fondo);
                             const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
                             const altText = slide.fondo?.alternativeText || "Acuario Media";
-                            const isBgVideo = isVideo(bgUrl);
-                            
+                            const isBgVideo = !youtubeId && isVideo(bgUrl);
+
                             return (
                                 <div class="swiper-slide w-full h-full relative bg-black">
-                                    {isBgVideo ? (
+                                    {youtubeId ? (
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${youtubeId}`}
+                                            title={slide.texto_principal || "YouTube video"}
+                                            class="absolute inset-0 w-full h-full"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen
+                                        />
+                                    ) : isBgVideo ? (
                                         <video
                                             src={bgUrl}
                                             autoplay
