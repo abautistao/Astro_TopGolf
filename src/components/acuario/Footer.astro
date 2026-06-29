@@ -1,197 +1,240 @@
 ---
 import { getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
 import { Image } from "astro:assets";
+import Separadores from "./Separadores.astro";
 
 const { data, locale = "es" } = Astro.props;
 
 const logoPrincipal = getStrapiUrl(data?.logo_principal);
 const logoSecundario = getStrapiUrl(data?.logo_secundario);
 const columnasEnlaces = data?.columnas_enlaces || [];
-const contactoDireccion = data?.contacto_direccion || "";
-const contactoTelefono = data?.contacto_telefono || "";
+
 const newsletterTitulo = data?.newsletter_titulo || "NEWSLATER";
 const newsletterDesc = data?.newsletter_descripcion || "¡Lo mejor del mar en tu correo! Lo último en el Acuario Inbursa.";
 const newsletterBoton = data?.newsletter_boton_texto || "Suscríbete";
 
+const ctaTitulo = data?.cta_titulo;
+const ctaBotonTexto = data?.cta_boton_texto;
+const ctaBotonUrl = data?.cta_boton_url || "#";
+const ctaColorFondo = data?.cta_color_fondo || "#4BC0E5";
+
 const franjaTitulo = data?.franja_seguridad_titulo || "¡Aparta tu lugar comprando en línea!";
 const franjaTexto = data?.franja_seguridad_texto || "Normas de Seguridad de la Industria de Tarjetas de Pago\nOpciones de Pago";
-const logosPagos = data?.logos_pagos?.data || [];
+const logosPagos = data?.logos_pagos?.data || data?.logos_pagos || [];
 
 const textoMarcas = data?.texto_marcas || "Acuario Inbursa y Acuario Interactivo son marcas de Ventura Entertainment";
 const tituloParques = data?.otros_parques_titulo || "Otros Parques";
-const logosParques = data?.logos_parques?.data || [];
+const logosParques = data?.logos_parques?.data || data?.logos_parques || [];
 
 const social = data?.social || [];
 const copyright = data?.copyright || "© Acuario Inbursa. Todos los derechos reservados";
 const enlacesLegales = data?.enlaces_legales || [];
 
 const imagenFondo = getStrapiUrl(data?.imagen_fondo);
+
+const separadorInferior = data?.separador_inferior;
+const separadorColorInicio = separadorInferior?.color_inicio || "var(--surface-brand-primary)";
+const separadorColorFinal = separadorInferior?.color_final || "var(--accent-highlight-primary)";
+const separadorTipo = separadorInferior?.tipo || "tipo_1";
 ---
 
-<footer class="w-full relative font-[family-name:var(--font-secundaria)] bg-[var(--surface-brand-primary)]">
-    
-    <!-- Top Section -->
-    <div class="max-w-[1440px] mx-auto px-6 py-12 md:py-16">
-        <div class="flex flex-col md:flex-row justify-between gap-12 md:gap-8">
-            
-            <!-- Logos -->
-            <div class="flex flex-row md:flex-col items-center justify-center gap-6 md:gap-4 shrink-0">
-                {logoPrincipal && (
-                    <Image src={logoPrincipal} alt="Logo Principal" width={180} height={100} class="w-32 md:w-40 h-auto object-contain" />
+<footer class="w-full relative font-[family-name:var(--font-secundaria)]">
+
+    <!-- SECCIÓN 1 — Banner CTA superior (tarjetahabientes) -->
+    {(ctaTitulo || ctaBotonTexto) && (
+        <section
+            class="w-full py-6 md:py-8 text-center"
+            style={`background-color: ${ctaColorFondo};`}
+        >
+            <div class="container mx-auto px-4 max-w-5xl flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                {ctaTitulo && (
+                    <h2 class="font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[22px] uppercase tracking-wide text-[var(--surface-brand-primary)]">
+                        {ctaTitulo}
+                    </h2>
                 )}
-                {logoSecundario && (
-                    <Image src={logoSecundario} alt="Logo Secundario" width={180} height={100} class="w-24 md:w-32 h-auto object-contain" />
+                {ctaBotonTexto && (
+                    <a
+                        href={ctaBotonUrl}
+                        class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[16px] uppercase px-6 md:px-8 py-3 rounded transition-opacity hover:opacity-90 tracking-wide"
+                    >
+                        {ctaBotonTexto}
+                    </a>
                 )}
             </div>
+        </section>
+    )}
 
-            <!-- Enlaces (Desktop: row, Mobile: Accordion) -->
-            <div class="w-full md:w-auto flex flex-col md:flex-row gap-4 md:gap-16 flex-grow md:justify-center">
-                {columnasEnlaces.map((columna: any, index: number) => (
-                    <div class="footer-accordion-group border-b border-white/20 md:border-none pb-2 md:pb-0">
-                        <button class="footer-accordion-btn w-full md:w-auto flex justify-between items-center text-left md:cursor-default focus:outline-none">
-                            <h3 class="text-[var(--accent-highlight-primary)] font-[family-name:var(--font-principal)] font-bold text-xl md:text-lg mb-0 md:mb-4 border-b-2 border-[var(--accent-highlight-primary)] pb-1 inline-block">
-                                {columna.titulo}
-                            </h3>
-                            <i class="fa-solid fa-chevron-down text-[var(--accent-highlight-primary)] md:hidden transition-transform duration-300"></i>
-                        </button>
-                        <ul class="footer-accordion-content hidden md:flex flex-col gap-2 mt-4 md:mt-0">
-                            {columna.enlaces?.map((link: any) => (
-                                <li>
-                                    <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class="text-white hover:text-[var(--accent-highlight-primary)] transition-colors text-base md:text-sm">
-                                        {link.texto}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
-            </div>
+    <!-- SECCIÓN 2 — Logos + columnas de enlaces + Newsletter -->
+    <section class="w-full py-10 md:py-14 bg-[var(--surface-brand-primary)] text-white">
+        <div class="container mx-auto px-6 max-w-[1280px]">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-start">
 
-            <!-- Contact Info (Mobile Only by design reference) -->
-            {(contactoDireccion || contactoTelefono) && (
-                <div class="flex md:hidden flex-col gap-4 text-[var(--accent-highlight-primary)] font-medium text-base">
-                    {contactoDireccion && (
-                        <div class="flex items-start gap-3">
-                            <i class="fa-solid fa-location-dot mt-1 text-xl"></i>
-                            <p>{contactoDireccion}</p>
-                        </div>
+                <!-- Columna 1: Logos -->
+                <div class="md:col-span-3 flex flex-row md:flex-col items-center md:items-start justify-center md:justify-start gap-6 md:gap-4">
+                    {logoPrincipal && (
+                        <Image src={logoPrincipal} alt="Logo principal" width={200} height={120} class="h-12 md:h-16 w-auto object-contain" />
                     )}
-                    {contactoTelefono && (
-                        <div class="flex items-center gap-3">
-                            <i class="fa-solid fa-phone text-xl"></i>
-                            <a href={`tel:${contactoTelefono}`}>{contactoTelefono}</a>
-                        </div>
+                    {logoSecundario && (
+                        <Image src={logoSecundario} alt="Logo secundario" width={200} height={120} class="h-12 md:h-14 w-auto object-contain" />
                     )}
                 </div>
-            )}
 
-            <!-- Newsletter -->
-            <div class="w-full md:w-auto md:max-w-sm shrink-0">
-                <h3 class="text-white font-[family-name:var(--font-principal)] font-bold text-xl md:text-lg mb-2 uppercase">{newsletterTitulo}</h3>
-                <p class="text-white text-sm mb-4">{newsletterDesc}</p>
-                <form class="flex flex-row w-full h-12" onsubmit="event.preventDefault();">
-                    <input type="email" placeholder="Email" class="w-full px-4 text-black outline-none font-[family-name:var(--font-secundaria)]" required />
-                    <button type="submit" class="bg-[var(--accent-highlight-primary)] text-[var(--neutral-background-strong)] font-bold px-6 uppercase hover:brightness-110 transition-all font-[family-name:var(--font-principal)]">
-                        {newsletterBoton}
-                    </button>
-                </form>
+                <!-- Columna 2: Menús (Nosotros / Beneficios) -->
+                    <div class="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10">
+                    {columnasEnlaces.length > 0 ? (
+                        columnasEnlaces.map((columna: any) => (
+                            <div class="footer-accordion-group border-b border-white/20 md:border-0 pb-3 md:pb-0">
+                                <button class="footer-accordion-btn w-full md:w-auto flex justify-between items-center text-left md:cursor-default focus:outline-none">
+                                    <h3 class="text-[var(--accent-highlight-primary)] font-[family-name:var(--font-principal)] font-bold text-base md:text-lg uppercase border-b-2 border-[var(--accent-highlight-primary)] pb-1 inline-block">
+                                        {columna.titulo}
+                                    </h3>
+                                    <i class="fa-solid fa-chevron-down text-[var(--accent-highlight-primary)] md:hidden transition-transform duration-300 text-sm"></i>
+                                </button>
+                                <ul class="footer-accordion-content hidden md:flex flex-col gap-2 mt-3 md:mt-4">
+                                    {columna.enlaces?.map((link: any) => (
+                                        <li>
+                                            <a
+                                                href={link.url ? getLocalizedUrl(link.url, locale) : "#"}
+                                                class="text-white hover:text-[var(--accent-highlight-primary)] transition-colors text-sm"
+                                            >
+                                                {link.texto}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))
+                    ) : (
+                        <p class="text-white/60 text-sm md:col-span-2">Configura las columnas de enlaces desde Strapi → Footer.</p>
+                    )}
+                </div>
+
+                <!-- Columna 3: Newsletter -->
+                <div class="md:col-span-4">
+                    <h3 class="font-[family-name:var(--font-principal)] font-bold text-base md:text-lg uppercase mb-2 text-white tracking-wide">
+                        {newsletterTitulo}
+                    </h3>
+                    <p class="text-white/90 text-sm mb-4 leading-snug">{newsletterDesc}</p>
+                    <form class="flex flex-row w-full h-11" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Email" class="w-full px-4 text-black outline-none font-[family-name:var(--font-secundaria)] text-sm" required />
+                        <button
+                            type="submit"
+                            class="bg-[var(--accent-highlight-primary)] text-[var(--surface-brand-primary)] font-bold px-5 uppercase hover:brightness-110 transition-all font-[family-name:var(--font-principal)] text-xs md:text-sm whitespace-nowrap"
+                        >
+                            {newsletterBoton}
+                        </button>
+                    </form>
+                </div>
             </div>
-
         </div>
-    </div>
+    </section>
 
-    <!-- Middle Section (Pagos) -->
-    <div class="bg-[var(--surface-brand-secondary)] py-8 text-center px-4">
-        <h2 class="text-white font-[family-name:var(--font-principal)] font-bold text-2xl md:text-xl mb-1">{franjaTitulo}</h2>
-        <div class="text-white text-sm mb-6 whitespace-pre-line leading-snug">
-            {franjaTexto}
-        </div>
+    <!-- SECCIÓN 3 — Franja de pagos -->
+    <section class="w-full bg-[var(--surface-brand-secondary)] py-8 text-center px-4 text-white">
+        <h2 class="font-[family-name:var(--font-principal)] font-bold text-lg md:text-xl mb-2">{franjaTitulo}</h2>
+        <p class="text-white/90 text-xs md:text-sm mb-6 whitespace-pre-line leading-snug">{franjaTexto}</p>
         {logosPagos.length > 0 && (
-            <div class="flex flex-wrap justify-center items-center gap-6">
+            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-10">
                 {logosPagos.map((logoItem: any) => {
                     const url = getStrapiUrl(logoItem);
                     return url ? (
-                        <Image src={url} alt="Logo de Pago" width={80} height={40} class="h-8 md:h-10 w-auto object-contain" />
+                        <Image src={url} alt="Logo de pago" width={120} height={48} class="h-6 md:h-8 w-auto object-contain" />
                     ) : null;
                 })}
             </div>
         )}
-    </div>
+    </section>
 
-    <!-- Bottom Section -->
-    <div class="relative w-full overflow-hidden pt-12 pb-8 bg-[var(--surface-brand-primary)]">
-        <!-- Optional Wave Background -->
-        {imagenFondo && (
-            <div class="absolute inset-0 z-0 bottom-0 top-auto">
-                <Image src={imagenFondo} alt="Fondo" width={1920} height={400} class="w-full h-auto object-cover object-bottom" />
-            </div>
-        )}
-        
-        <div class="relative z-10 max-w-[1440px] mx-auto px-6 text-center text-white">
-            <p class="text-sm font-bold mb-1">{textoMarcas}</p>
-            <p class="text-sm font-bold mb-6">{tituloParques}</p>
-            
+    <!-- SECCIÓN 4 — Otros Parques -->
+    <section class="w-full bg-[var(--surface-brand-primary)] py-10 md:py-14 text-center text-white px-6">
+        <div class="container mx-auto max-w-[1280px]">
+            <p class="text-sm md:text-base font-bold mb-2">{textoMarcas}</p>
+            <p class="text-sm md:text-base font-bold mb-8 uppercase tracking-wide text-[var(--accent-highlight-primary)]">{tituloParques}</p>
             {logosParques.length > 0 && (
-                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 mb-12">
+                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-14 mb-2">
                     {logosParques.map((logoItem: any) => {
                         const url = getStrapiUrl(logoItem);
                         return url ? (
-                            <Image src={url} alt="Parque Aliado" width={120} height={60} class="h-10 md:h-12 w-auto object-contain" />
+                            <Image src={url} alt="Parque aliado" width={140} height={80} class="h-10 md:h-12 w-auto object-contain" />
                         ) : null;
                     })}
                 </div>
             )}
+        </div>
+    </section>
 
-            <!-- Social Icons -->
+    <!-- Separador decorativo (onda) entre sección 4 y 5 -->
+    {separadorInferior && (
+        <Separadores
+            tipo={separadorTipo}
+            color_inicio={separadorColorInicio}
+            color_final={separadorColorFinal}
+        />
+    )}
+
+    <!-- SECCIÓN 5 — Banda cyan inferior con imagen decorativa -->
+    <section class="w-full relative overflow-hidden py-12 md:py-16 bg-[var(--accent-highlight-primary)] text-[var(--surface-brand-primary)]">
+        {imagenFondo && (
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <Image src={imagenFondo} alt="" width={1920} height={600} class="w-full h-full object-cover opacity-60 mix-blend-multiply" />
+            </div>
+        )}
+
+        <div class="relative z-10 container mx-auto px-6 max-w-[1280px] text-center">
             {social.length > 0 && (
-                <div class="flex justify-center items-center gap-6 mb-6">
+                <div class="flex justify-center items-center gap-6 md:gap-10 mb-6">
                     {social.map((item: any) => (
-                        <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--brand-interactive-base)] transition-colors">
-                            <i class={`${item.icono_clase} text-2xl`}></i>
+                        <a
+                            href={item.url || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-[var(--surface-brand-primary)] hover:text-white transition-colors text-2xl"
+                            aria-label={item.icono_clase || "social"}
+                        >
+                            <i class={item.icono_clase || "fa-solid fa-share-nodes"}></i>
                         </a>
                     ))}
                 </div>
             )}
 
-            <p class="text-xs text-white/80 mb-6">{copyright}</p>
-            
-            <div class="w-full max-w-4xl mx-auto border-t border-white/30 pt-6">
-                <ul class="flex flex-wrap justify-center items-center text-xs text-white/90 gap-y-3 gap-x-0">
+            <p class="text-xs md:text-sm font-bold mb-6">{copyright}</p>
+
+            <div class="w-full max-w-3xl mx-auto border-t border-[var(--surface-brand-primary)]/30 pt-5">
+                <ul class="flex flex-wrap justify-center items-center text-xs md:text-sm font-bold gap-y-2">
                     {enlacesLegales.map((link: any, index: number) => (
                         <li class="flex items-center">
-                            <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class="hover:text-[var(--brand-interactive-base)] transition-colors px-3">
+                            <a
+                                href={link.url ? getLocalizedUrl(link.url, locale) : "#"}
+                                class="hover:underline transition-colors px-3"
+                            >
                                 {link.texto}
                             </a>
                             {index < enlacesLegales.length - 1 && (
-                                <span class="text-white/40">|</span>
+                                <span class="text-[var(--surface-brand-primary)]/40">|</span>
                             )}
                         </li>
                     ))}
                 </ul>
             </div>
         </div>
-    </div>
+    </section>
 </footer>
 
 <script>
-    // Accordion Logic for Mobile Links
     const accordions = document.querySelectorAll('.footer-accordion-btn');
-    
     accordions.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // Only act as accordion on mobile (window width < 768px)
+        btn.addEventListener('click', () => {
             if (window.innerWidth >= 768) return;
-
-            const content = btn.nextElementSibling;
+            const content = btn.nextElementSibling as HTMLElement | null;
             const icon = btn.querySelector('i');
-            
-            if (content?.classList.contains('hidden')) {
+            if (!content) return;
+            if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
                 content.classList.add('flex');
                 if (icon) icon.style.transform = 'rotate(180deg)';
             } else {
-                content?.classList.add('hidden');
-                content?.classList.remove('flex');
+                content.classList.add('hidden');
+                content.classList.remove('flex');
                 if (icon) icon.style.transform = 'rotate(0deg)';
             }
         });
