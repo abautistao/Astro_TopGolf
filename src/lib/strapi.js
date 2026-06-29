@@ -111,6 +111,16 @@ export async function getAllBlogs(locale = 'en') {
   return await fetchAPI(`/blogs?locale=${locale}`);
 }
 
+export async function getBlogsForListing(locale = 'es') {
+  return await fetchAPI(
+    `/blogs?locale=${locale}` +
+      `&populate=*` +
+      `&sort=fecha_publicacion:desc` +
+      `&pagination[pageSize]=100` +
+      `&publicationState=live`
+  );
+}
+
 export async function getPromocionBySlug(slug, locale = 'en') {
   const pages = await fetchAPI(`/promociones?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
   return pages?.[0];

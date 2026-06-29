@@ -1,0 +1,306 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl, getLocalizedUrl, getBlogsForListing } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo_seccion_1?: string;
+    titulo_seccion_2?: string;
+    titulo_seccion_3?: string;
+    color_fondo_seccion_1?: string;
+    color_fondo_seccion_2?: string;
+    color_fondo_seccion_3?: string;
+    imagen_fondo_seccion_3?: any;
+    color_boton_hero?: string;
+    mostrar_seccion_1?: boolean;
+    mostrar_seccion_2?: boolean;
+    mostrar_seccion_3?: boolean;
+    items_iniciales_seccion_3?: number;
+    items_por_carga_seccion_3?: number;
+}
+
+const {
+    titulo_seccion_1 = "Últimas Noticias",
+    titulo_seccion_2 = "Los Más Populares",
+    titulo_seccion_3 = "Descubre Más",
+    color_fondo_seccion_1,
+    color_fondo_seccion_2,
+    color_fondo_seccion_3,
+    imagen_fondo_seccion_3,
+    color_boton_hero,
+    mostrar_seccion_1 = true,
+    mostrar_seccion_2 = true,
+    mostrar_seccion_3 = true,
+    items_iniciales_seccion_3 = 6,
+    items_por_carga_seccion_3 = 6,
+} = Astro.props;
+
+const locale = (Astro as any).currentLocale || "es";
+const allBlogs: any[] = (await getBlogsForListing(locale)) || [];
+
+const sortedBlogs = allBlogs.filter((b: any) => b && b.publishedAt);
+const latestBlog: any = sortedBlogs[0];
+const popularBlogs: any[] = sortedBlogs.filter(
+    (b: any) => b.popular && b.id !== latestBlog?.id
+);
+const remainingBlogs: any[] = sortedBlogs.filter(
+    (b: any) => b.id !== latestBlog?.id && !b.popular
+);
+
+const formatDate = (iso?: string): string => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    });
+};
+
+const heroBtnBg = color_boton_hero || "#FBF21A";
+const bgSec1 = color_fondo_seccion_1 || "var(--surface-brand-primary)";
+const bgSec2 = color_fondo_seccion_2 || "var(--surface-brand-secondary)";
+const bgSec3 = color_fondo_seccion_3 || "#FFFFFF";
+const blogHref = (slug?: string) => (slug ? getLocalizedUrl(`/blog/${slug}`, locale) : "#");
+
+const getBlogImage = (b: any) =>
+    b?.imagen_destacada?.data?.attributes || b?.imagen_destacada || null;
+---
+
+<!-- SECCIÓN 1 — Última noticia (hero) -->
+{mostrar_seccion_1 && latestBlog && (
+    <section
+        class="w-full py-10 md:py-16 text-white"
+        style={`background-color: ${bgSec1};`}
+    >
+        <div class="container mx-auto px-6 max-w-[1280px]">
+            <h2 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-3xl uppercase text-center mb-8 md:mb-10 tracking-wide">
+                {titulo_seccion_1}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center">
+                <div class="md:col-span-6 order-2 md:order-1">
+                    <span class="inline-block text-[11px] md:text-xs uppercase tracking-wider font-bold text-[var(--brand-interactive-base)] mb-3">
+                        {latestBlog.categoria || "Noticia"}
+                    </span>
+                    <h3 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-4xl uppercase leading-tight mb-4">
+                        {latestBlog.titulo}
+                    </h3>
+                    <p class="text-xs md:text-sm text-white/80 mb-2">
+                        {latestBlog.autor ? `De ${latestBlog.autor}` : ""}{" "}
+                        {formatDate(latestBlog.fecha_publicacion || latestBlog.publishedAt)
+                            ? `· ${formatDate(latestBlog.fecha_publicacion || latestBlog.publishedAt)}`
+                            : ""}
+                    </p>
+                    {latestBlog.resumen && (
+                        <p class="text-sm md:text-base text-white/90 leading-relaxed mb-6">
+                            {latestBlog.resumen}
+                        </p>
+                    )}
+                    <a
+                        href={blogHref(latestBlog.slug)}
+                        class="inline-block font-[family-name:var(--font-principal)] font-bold text-sm md:text-base uppercase px-8 py-3 text-[var(--surface-brand-primary)] transition-opacity hover:opacity-90"
+                        style={`background-color: ${heroBtnBg};`}
+                    >
+                        Leer más
+                    </a>
+                </div>
+                <div class="md:col-span-6 order-1 md:order-2">
+                    {getBlogImage(latestBlog) && (
+                        <Image
+                            src={getStrapiUrl(latestBlog.imagen_destacada)}
+                            alt={latestBlog.titulo}
+                            width={720}
+                            height={420}
+                            class="w-full h-56 md:h-80 lg:h-[420px] object-cover rounded-md"
+                        />
+                    )}
+                </div>
+            </div>
+        </div>
+    </section>
+)}
+
+<!-- SECCIÓN 2 — Más populares (carrusel) -->
+{mostrar_seccion_2 && popularBlogs.length > 0 && (
+    <section
+        class="w-full py-10 md:py-14 text-white"
+        style={`background-color: ${bgSec2};`}
+    >
+        <div class="container mx-auto px-6 max-w-[1280px]">
+            <h2 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-3xl uppercase text-center mb-2 tracking-wide">
+                {titulo_seccion_2}
+            </h2>
+            <p class="text-center text-white/90 text-sm md:text-base mb-8">
+                La inspiración para construir Acuario Inbursa es producto del grave deterioro de los ecosistemas marinos y de la necesidad de concientizar a la gente y ayudar a conservar el mundo marino.
+            </p>
+            <div class="blog-popular-swiper relative">
+                <div class="swiper-wrapper">
+                    {popularBlogs.map((blog: any) => {
+                        const img = getBlogImage(blog);
+                        return (
+                            <div class="swiper-slide">
+                                <article class="bg-white text-[var(--surface-brand-primary)] rounded-md overflow-hidden h-full flex flex-col">
+                                    {img && (
+                                        <div class="aspect-[16/10] overflow-hidden">
+                                            <Image
+                                                src={getStrapiUrl(blog.imagen_destacada)}
+                                                alt={blog.titulo}
+                                                width={480}
+                                                height={300}
+                                                class="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    )}
+                                    <div class="p-5 flex flex-col flex-grow">
+                                        {blog.categoria && (
+                                            <span class="inline-block self-start text-[11px] uppercase font-bold text-white bg-[var(--brand-interactive-base)] px-2 py-1 mb-3 tracking-wider" style={`color: var(--surface-brand-primary);`}>
+                                                {blog.categoria}
+                                            </span>
+                                        )}
+                                        <h3 class="font-[family-name:var(--font-principal)] font-bold text-lg md:text-xl leading-snug mb-2">
+                                            {blog.titulo}
+                                        </h3>
+                                        {blog.resumen && (
+                                            <p class="text-sm text-[var(--surface-brand-primary)]/80 leading-relaxed mb-4 line-clamp-3">
+                                                {blog.resumen}
+                                            </p>
+                                        )}
+                                        <a
+                                            href={blogHref(blog.slug)}
+                                            class="mt-auto text-sm font-bold uppercase text-[var(--brand-interactive-base)] hover:underline"
+                                        >
+                                            Leer más
+                                        </a>
+                                    </div>
+                                </article>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div class="blog-popular-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 hover:bg-white text-[var(--surface-brand-primary)] rounded-full cursor-pointer shadow-md">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="blog-popular-next absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 hover:bg-white text-[var(--surface-brand-primary)] rounded-full cursor-pointer shadow-md">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+                <div class="blog-popular-pagination flex justify-center gap-2 mt-6"></div>
+            </div>
+        </div>
+    </section>
+)}
+
+<!-- SECCIÓN 3 — Descubre más (grid con load more) -->
+{mostrar_seccion_3 && remainingBlogs.length > 0 && (
+    <section
+        class="w-full py-10 md:py-14 relative overflow-hidden"
+        style={`background-color: ${bgSec3};`}
+    >
+        {imagen_fondo_seccion_3 && (
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <Image
+                    src={getStrapiUrl(imagen_fondo_seccion_3)}
+                    alt=""
+                    width={1920}
+                    height={600}
+                    class="w-full h-full object-cover opacity-20"
+                />
+            </div>
+        )}
+        <div class="relative z-10 container mx-auto px-6 max-w-[1280px]">
+            <h2 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-3xl uppercase text-[var(--surface-brand-primary)] mb-8 tracking-wide">
+                {titulo_seccion_3}
+            </h2>
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                x-data={`{ count: ${items_iniciales_seccion_3} }`}
+            >
+                {remainingBlogs.map((blog: any, idx: number) => {
+                    const img = getBlogImage(blog);
+                    return (
+                        <article
+                            x-show={`${idx} < count`}
+                            x-transition.duration.300ms
+                            class="bg-white text-[var(--surface-brand-primary)] rounded-md overflow-hidden flex flex-col shadow-sm"
+                        >
+                            {img && (
+                                <div class="aspect-[16/10] overflow-hidden">
+                                    <Image
+                                        src={getStrapiUrl(blog.imagen_destacada)}
+                                        alt={blog.titulo}
+                                        width={480}
+                                        height={300}
+                                        class="w-full h-full object-cover"
+                                    />
+                                </div>
+                            )}
+                            <div class="p-5 flex flex-col flex-grow">
+                                {blog.categoria && (
+                                    <span class="inline-block self-start text-[11px] uppercase font-bold text-white bg-[var(--brand-interactive-base)] px-2 py-1 mb-3 tracking-wider" style={`color: var(--surface-brand-primary);`}>
+                                        {blog.categoria}
+                                    </span>
+                                )}
+                                <h3 class="font-[family-name:var(--font-principal)] font-bold text-lg md:text-xl leading-snug mb-2">
+                                    {blog.titulo}
+                                </h3>
+                                {blog.resumen && (
+                                    <p class="text-sm text-[var(--surface-brand-primary)]/80 leading-relaxed mb-4 line-clamp-3">
+                                        {blog.resumen}
+                                    </p>
+                                )}
+                                <a
+                                    href={blogHref(blog.slug)}
+                                    class="mt-auto text-sm font-bold uppercase text-[var(--brand-interactive-base)] hover:underline"
+                                >
+                                    Leer más
+                                </a>
+                            </div>
+                        </article>
+                    );
+                })}
+            </div>
+            <div class="flex justify-center mt-8" x-data={`{ count: ${items_iniciales_seccion_3}, total: ${remainingBlogs.length}, step: ${items_por_carga_seccion_3} }`}>
+                <button
+                    x-show={`count < total`}
+                    x-on:click={`count = Math.min(count + step, total)`}
+                    class="font-[family-name:var(--font-principal)] font-bold text-sm md:text-base uppercase px-10 py-3 bg-[var(--surface-brand-primary)] text-white hover:opacity-90 transition-opacity"
+                >
+                    Cargar más
+                </button>
+            </div>
+        </div>
+    </section>
+)}
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination } from "swiper/modules";
+    import "swiper/css";
+    import "swiper/css/navigation";
+    import "swiper/css/pagination";
+
+    function initBlogPopularSwipers() {
+        document.querySelectorAll(".blog-popular-swiper").forEach((el) => {
+            new Swiper(el as HTMLElement, {
+                modules: [Navigation, Pagination],
+                slidesPerView: 1,
+                spaceBetween: 16,
+                breakpoints: {
+                    640: { slidesPerView: 2, spaceBetween: 20 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
+                },
+                navigation: {
+                    prevEl: el.querySelector(".blog-popular-prev") as HTMLElement,
+                    nextEl: el.querySelector(".blog-popular-next") as HTMLElement,
+                },
+                pagination: {
+                    el: el.querySelector(".blog-popular-pagination") as HTMLElement,
+                    clickable: true,
+                },
+                loop: false,
+            });
+        });
+    }
+
+    initBlogPopularSwipers();
+    document.addEventListener("astro:page-load", initBlogPopularSwipers);
+</script>
