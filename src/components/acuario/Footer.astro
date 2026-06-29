@@ -31,6 +31,7 @@ const copyright = data?.copyright || "© Acuario Inbursa. Todos los derechos res
 const enlacesLegales = data?.enlaces_legales || [];
 
 const imagenFondo = getStrapiUrl(data?.imagen_fondo);
+const seccion5ColorFondo = data?.seccion_5_color_fondo;
 
 const separadorInferior = data?.separador_inferior;
 const separadorColorInicio = separadorInferior?.color_inicio || "var(--surface-brand-primary)";
@@ -196,7 +197,10 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     )}
 
     <!-- SECCIÓN 5 — Banda cyan inferior con imagen decorativa -->
-    <section class="w-full relative overflow-hidden py-12 md:py-16 bg-[var(--accent-highlight-primary)] text-[var(--surface-brand-primary)]">
+    <section
+        class="w-full relative overflow-hidden py-12 md:py-16 text-[var(--surface-brand-primary)]"
+        style={seccion5ColorFondo ? `background-color: ${seccion5ColorFondo};` : "background-color: var(--accent-highlight-primary);"}
+    >
         {imagenFondo && (
             <div class="absolute inset-0 z-0 pointer-events-none">
                 <Image src={imagenFondo} alt="" width={1920} height={600} class="w-full h-full object-cover opacity-60 mix-blend-multiply" />
