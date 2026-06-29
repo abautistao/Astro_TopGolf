@@ -70,7 +70,7 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
             <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 items-start">
 
                 <!-- Columna 1: Logos -->
-                <div class="md:col-span-2 flex flex-row md:flex-col items-center md:items-start justify-center md:justify-start gap-6 md:gap-4">
+                <div class="md:col-span-2 flex flex-row items-center md:justify-start justify-center gap-6 md:gap-8">
                     {logoPrincipal && (
                         <Image src={logoPrincipal} alt="Logo principal" width={200} height={120} class="h-12 md:h-16 w-auto object-contain" />
                     )}
@@ -139,7 +139,7 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
                     </h3>
                     <p class="text-white/90 text-sm mb-4 leading-snug">{newsletterDesc}</p>
                     <form class="flex flex-row w-full h-11" onsubmit="event.preventDefault();">
-                        <input type="email" placeholder="Email" class="w-full px-4 text-black outline-none font-[family-name:var(--font-secundaria)] text-sm" required />
+                        <input type="email" placeholder="Email" class="w-full px-4 bg-white text-black placeholder:text-gray-400 outline-none font-[family-name:var(--font-secundaria)] text-sm" required />
                         <button
                             type="submit"
                             class="bg-[var(--accent-highlight-primary)] text-[var(--surface-brand-primary)] font-bold px-5 uppercase hover:brightness-110 transition-all font-[family-name:var(--font-principal)] text-xs md:text-sm whitespace-nowrap"
