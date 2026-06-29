@@ -1,0 +1,249 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    subtitulo?: string;
+    descripcion?: any;
+    color_fondo?: string;
+    imagen_fondo?: any;
+    color_boton?: string;
+    texto_boton?: string;
+    url_post?: string;
+    texto_envia_correo?: string;
+    campos?: Array<{
+        id?: number;
+        tipo: "text" | "email" | "tel" | "textarea" | "select" | "radio";
+        label?: string;
+        placeholder?: string;
+        name: string;
+        required?: boolean;
+        opciones?: Array<{ value: string; label: string }> | string | null;
+        filas?: number;
+        ancho?: "full" | "half";
+    }>;
+}
+
+const {
+    titulo,
+    htmlTag = "h2",
+    subtitulo,
+    descripcion,
+    color_fondo,
+    imagen_fondo,
+    color_boton,
+    texto_boton = "ENVIAR",
+    url_post,
+    texto_envia_correo,
+    campos = [],
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
+
+const parseOpts = (raw: any): Array<{ value: string; label: string }> => {
+    let v = raw;
+    if (typeof v === "string") {
+        try { v = JSON.parse(v); } catch { v = []; }
+    }
+    if (!Array.isArray(v)) return [];
+    return v
+        .map((o: any) => {
+            if (typeof o === "string") return { value: o, label: o };
+            if (o && typeof o === "object" && "value" in o) {
+                return { value: String(o.value), label: String(o.label ?? o.value) };
+            }
+            return null;
+        })
+        .filter(Boolean) as Array<{ value: string; label: string }>;
+};
+
+const widthClass = (ancho?: "full" | "half") =>
+    ancho === "half" ? "basis-full md:basis-[calc(50%-0.5rem)]" : "basis-full";
+
+const baseInput =
+    "w-full px-4 py-3 rounded-md bg-transparent border border-white/40 placeholder:text-white/60 focus:outline-none focus:border-white focus:ring-1 focus:ring-white/60 transition-colors font-[family-name:var(--font-secundaria)] text-[16px] text-white";
+const baseLabel =
+    "block font-[family-name:var(--font-principal)] font-bold uppercase text-[14px] md:text-[16px] mb-2 tracking-wide";
+---
+
+<section
+    class="w-full py-12 md:py-20 relative overflow-hidden"
+    style={`background-color: ${color_fondo || "#005DA8"};`}
+>
+    {bgUrl && (
+        <>
+            <div
+                class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                style={`background-image: url(${bgUrl});`}
+                aria-hidden="true"
+            ></div>
+            <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
+        </>
+    )}
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10 text-white">
+        {titulo && (
+            <TitleTag class="font-[family-name:var(--font-principal)] text-center font-bold text-[24px] md:text-[32px] uppercase mb-4 leading-tight">
+                {titulo}
+            </TitleTag>
+        )}
+
+        {subtitulo && (
+            <p class="font-[family-name:var(--font-principal)] text-center font-medium text-[16px] md:text-[18px] mb-6 opacity-90">
+                {subtitulo}
+            </p>
+        )}
+
+        <form
+            class="flex flex-wrap gap-3 md:gap-4 mb-6"
+            data-form-c16
+            data-url-post={url_post || ""}
+        >
+            {campos.map((campo) => {
+                const w = widthClass(campo.ancho);
+                const inputId = `c16-${campo.id ?? campo.name}`;
+
+                if (campo.tipo === "textarea") {
+                    return (
+                        <div class={w}>
+                            {campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
+                            <textarea
+                                id={inputId}
+                                name={campo.name}
+                                placeholder={campo.placeholder || ""}
+                                required={campo.required}
+                                rows={campo.filas || 4}
+                                class={`${baseInput} resize-y`}
+                            ></textarea>
+                        </div>
+                    );
+                }
+
+                if (campo.tipo === "select") {
+                    const opts = parseOpts(campo.opciones);
+                    return (
+                        <div class={w}>
+                            {campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
+                            <select id={inputId} name={campo.name} required={campo.required} class={`${baseInput} cursor-pointer`}>
+                                {campo.placeholder && <option value="" disabled selected>{campo.placeholder}</option>}
+                                {opts.map((op) => (
+                                    <option value={op.value}>{op.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                    );
+                }
+
+                if (campo.tipo === "radio") {
+                    const opts = parseOpts(campo.opciones);
+                    return (
+                        <fieldset class={w}>
+                            {campo.label && <legend class={baseLabel}>{campo.label}</legend>}
+                            <div class="flex flex-col gap-2">
+                                {opts.map((op) => (
+                                    <label class="inline-flex items-center gap-2 font-[family-name:var(--font-secundaria)] text-[16px] cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name={campo.name}
+                                            value={op.value}
+                                            required={campo.required}
+                                            class="accent-white w-4 h-4"
+                                        />
+                                        <span>{op.label}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </fieldset>
+                    );
+                }
+
+                const htmlType = campo.tipo === "tel" ? "tel" : campo.tipo === "email" ? "email" : "text";
+                return (
+                    <div class={w}>
+                        {campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
+                        <input
+                            id={inputId}
+                            type={htmlType}
+                            name={campo.name}
+                            placeholder={campo.placeholder || ""}
+                            required={campo.required}
+                            class={baseInput}
+                        />
+                    </div>
+                );
+            })}
+
+            <button
+                type="submit"
+                class="basis-full font-[family-name:var(--font-principal)] font-bold text-[16px] md:text-[18px] uppercase py-3 md:py-4 rounded-md transition-opacity hover:opacity-90 disabled:opacity-60 text-[var(--surface-brand-primary)] mt-2"
+                style={`background-color: ${color_boton || "#FBF21A"};`}
+            >
+                {texto_boton}
+            </button>
+
+            <p class="basis-full text-center text-[14px] min-h-[1.25rem] mt-1" data-form-status aria-live="polite"></p>
+        </form>
+
+        {texto_envia_correo && (
+            <p
+                class="font-[family-name:var(--font-principal)] text-center font-medium text-[14px] md:text-[16px] uppercase tracking-wide [&_a]:underline [&_a]:font-bold"
+                set:html={texto_envia_correo}
+            />
+        )}
+
+        {descripcion && (
+            <div
+                class="mt-6 font-[family-name:var(--font-secundaria)] text-[14px] md:text-[16px] text-center opacity-90 [&>p]:mb-2 [&_strong]:font-bold"
+                set:html={stringifyRichText(descripcion)}
+            />
+        )}
+    </div>
+</section>
+
+<script>
+    type Payload = Record<string, FormDataEntryValue>;
+
+    function initC16Forms() {
+        document.querySelectorAll<HTMLFormElement>('form[data-form-c16]').forEach((form) => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const status = form.querySelector<HTMLElement>('[data-form-status]');
+                const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+                const url = (form.dataset.urlPost || '').trim();
+
+                if (status) status.textContent = '';
+
+                if (!url) {
+                    if (status) status.textContent = 'Falta configurar la URL de envío.';
+                    return;
+                }
+
+                const data = new FormData(form);
+                const payload: Payload = {};
+                for (const [k, v] of data.entries()) payload[k] = v;
+
+                submitBtn.disabled = true;
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    if (status) status.textContent = 'Enviado. Gracias por contactarnos.';
+                    form.reset();
+                } catch (err) {
+                    console.error('[c16] submit error', err);
+                    if (status) status.textContent = 'No se pudo enviar. Intenta de nuevo.';
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    }
+
+    initC16Forms();
+    document.addEventListener('astro:page-load', initC16Forms);
+</script>
