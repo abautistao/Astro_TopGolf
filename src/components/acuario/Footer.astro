@@ -43,19 +43,19 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     <!-- SECCIÓN 1 — Banner CTA superior (tarjetahabientes) -->
     {(ctaTitulo || ctaBotonTexto) && (
         <section
-            class="w-full py-6 md:py-8 text-center"
+            class="w-full py-5 md:py-6 text-center text-white"
             style={`background-color: ${ctaColorFondo};`}
         >
-            <div class="container mx-auto px-4 max-w-5xl flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+            <div class="container mx-auto px-4 max-w-5xl flex flex-col items-center justify-center gap-3 md:gap-4">
                 {ctaTitulo && (
-                    <h2 class="font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[22px] uppercase tracking-wide text-[var(--surface-brand-primary)]">
+                    <h2 class="font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[22px] uppercase tracking-wide leading-tight">
                         {ctaTitulo}
                     </h2>
                 )}
                 {ctaBotonTexto && (
                     <a
                         href={ctaBotonUrl}
-                        class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[16px] uppercase px-6 md:px-8 py-3 rounded transition-opacity hover:opacity-90 tracking-wide"
+                        class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[16px] uppercase px-8 md:px-10 py-3 transition-opacity hover:opacity-90 tracking-wide"
                     >
                         {ctaBotonTexto}
                     </a>
