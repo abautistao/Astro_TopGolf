@@ -33,9 +33,10 @@ interface Props {
     submitUrl?: string;
     submitButton?: Boton;
     id_form: string;
+    description: any;
 }
 
-const { subtitulo, titulo, fields, submitUrl, submitButton, id_form } = Astro.props;
+const { subtitulo, titulo, fields, submitUrl, submitButton, id_form, description } = Astro.props;
 const mockFields: FormField[] = [
     {
         id: 1,
@@ -199,12 +200,12 @@ const getOptions = (optionsStr?: string) => {
         <!-- Header -->
         {(subtitulo || titulo) && (
             <div class="text-center mb-12 lg:mb-16">
-                { subtitulo && (
-                    <h3
-                        class="text-[var(--accent-feedback-strong)]  text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
+                { description && (
+                    <div
+                        set:html={stringifyRichText(description)}
+                        class="prose text-[var(--accent-feedback-strong)]  text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
                     >
-                        {data.subtitulo}
-                    </h3>
+                    </div>
                 ) }
                 
                 {titulo && (
@@ -510,5 +511,10 @@ const getOptions = (optionsStr?: string) => {
         font-weight: 900;
         font-size: 0.8rem;
         line-height: 1;
+    }
+
+    .prose :global(a) {
+        color: var(--surface-brand-secondary);
+        text-decoration: underline;
     }
 </style>
