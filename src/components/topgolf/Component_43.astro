@@ -149,7 +149,10 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
                     class="font-(family-name:--font-shields-sans-regular) mb-6 leading-relaxed strapi-rich-text text-lg font-normal"
                     set:html={descriptionHtml}
                 />
-                <ButtonGroup botones={componentButtons} />
+
+                {Boton && (
+                    <ButtonGroup botones={componentButtons} />
+                )}
             </div>
         </div>
         
