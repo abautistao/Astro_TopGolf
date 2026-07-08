@@ -56,8 +56,8 @@ const defaultBotonSecundario: Boton = {
     tipo: "version_1" // Pink
 };
 
-const finalBotonPrimario = boton_primario ? { ...boton_primario, tipo: boton_primario.tipo || "version_3" } : defaultBotonPrimario;
-const finalBotonSecundario = boton_secundario ? { ...boton_secundario, tipo: boton_secundario.tipo || "version_1" } : defaultBotonSecundario;
+const finalBotonPrimario = boton_primario ? { ...boton_primario, tipo: boton_primario.tipo || "version_3" } : null;
+const finalBotonSecundario = boton_secundario ? { ...boton_secundario, tipo: boton_secundario.tipo || "version_1" } : null;
 
 const buttonsToRender: Boton[] = [];
 if (finalBotonPrimario) buttonsToRender.push(finalBotonPrimario);
@@ -89,7 +89,7 @@ if (finalBotonSecundario) buttonsToRender.push(finalBotonSecundario);
             <div class="w-full flex justify-center">
                 <Button 
                     botones={buttonsToRender} 
-                    clase="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center w-full sm:w-auto"
+                    clase="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center w-full sm:w-1/2"
                 />
             </div>
         )}

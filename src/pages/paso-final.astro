@@ -1,0 +1,109 @@
+---
+// ==========================================================================================
+// SECCIÓN 1: IMPORTACIÓN DE COMPONENTES
+// ==========================================================================================
+
+import Layout from "../layouts/Layout.astro"; // Importamos el Layout principal
+
+export async function getStaticPaths() {
+  // Aquí debes retornar los idiomas que soportas. 
+  // Si los traes de Strapi, haz el fetch aquí.
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'es' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEn = currentLang === 'en';
+
+const t = {
+    reservation_id_text: isEn ? "Reservation ID:" : "ID Reservación:",
+    status_payment_ok: isEn ? "Payment status: Approved" : "Status de pago: Aprobado",
+    status_payment_bad: isEn ? "Payment status: Rejected" : "Status de pago: Rechazado",
+    process_ok: isEn ? "Your payment was processed successfully" : "Tu pago se procesó correctamente",
+    process_bad: isEn ? "Your payment was not processed correctly" : "Tu pago no se procesó correctamente",
+    message_ok: isEn ? "We sent your tickets by email. If you don't see it in your inbox, it may be in your spam or junk mail folder." : "Enviamos tus boletos por correo electrónico. Si no está en la bandeja de entrada, es posible que se encuentre en la carpeta Spam o correo no deseado.",
+    message_bad: isEn ? "There was a problem processing your payment and the transaction was not completed successfully. We encourage you to check that your card or payment method information is correct, or try again with another available method." : "Parece que hubo un problema al procesar tu pago y la transacción no se realizó correctamente. Te invitamos a revisar que la información de tu tarjeta o método de pago sea correcta, o bien intentar nuevamente con otro método disponible.",
+};
+---
+
+<Layout>
+  <main class="mx-auto container-full">
+    <section class="font-sans pt-30" id="final-step-container">
+      <div class="p-6 sm:p-8 md:p-12 lg:p-16">
+        <span
+          id="status"
+          class={`font-(family-name:--font-blu-title) font-bold inline-block text-xs  px-3 py-1 rounded-sm uppercase tracking-wider`}
+        ></span>
+
+        <h1
+          id="process"
+          class="font-(family-name:--font-blu-title) text-3xl font-semibold text-[--neutral-background-strong] mt-4 sm:text-4xl"
+        ></h1>
+
+        <p
+          id="reservacion_id"
+          class="font-(family-name:---font-blu-body) text-xl font-bold text-[--neutral-background-strong] my-6"
+        ><span id="reservacion"></span></p>
+
+        <p
+          id="message"
+          class="font-(family-name:--font-blu-body) font-normal mt-4 text-base text-[--neutral-background-strong] leading-relaxed"
+        ></p>
+      </div>
+    </section>
+  </main>
+</Layout>
+<style>
+    #final-step-container {
+        background-color: #fff;
+        background-size: cover;
+        background-position: center;
+    }
+</style>
+<script define:vars={{ t }}>
+    console.log(t)
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  const reservacion_id = urlParams.get('reservacion_id');
+
+  const message = status === "-1" ? t.message_ok : t.message_bad
+  const messageStatus = status === "-1" ? t.status_payment_ok : t.status_payment_bad
+  const messageProcess = status === "-1" ? t.process_ok : t.process_bad
+  const messagePlace = status === "-1" ? "¡Tu lugar ya está reservado en el lugar más popular de Monterrey!" : " "
+  const statusClassBg = status === "-1" ? "bg-[#0C9D46]" : "bg-[#FFFF00]";
+  const statusClassTxt = status === "-1" ? "text-white" : "text-[--neutral-background-strong]";
+
+  const messageContainer = document.querySelector('#message')
+  const messageReservationContainer = document.querySelector('#reservacion')
+  const messageStatusContainer = document.querySelector('#status')
+  const messageProcessContainer = document.querySelector('#process')
+  const messagePlaceContainer = document.querySelector('#messagePlace')
+
+  if(messageContainer) {
+    messageContainer.textContent = message
+  }
+
+  if(messageStatusContainer) {
+    messageStatusContainer.textContent = messageStatus;
+    messageStatusContainer.classList.add(statusClassBg)
+    messageStatusContainer.classList.add(statusClassTxt)
+  }
+
+  if(messageProcessContainer) {
+    messageProcessContainer.textContent = messageProcess
+  }
+
+  if(messagePlaceContainer) {
+    messagePlaceContainer.textContent = messagePlace
+  }
+
+  if(messageReservationContainer) {
+    messageReservationContainer.textContent = reservacion_id
+  }
+
+  
+</script>

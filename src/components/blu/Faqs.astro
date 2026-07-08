@@ -1,0 +1,103 @@
+---
+// src/components/dolphinaris/Component_8_Dolphinaris.astro
+
+interface ItemFAQ {
+    id?: number;
+    pregunta: string;
+    respuesta: string;
+}
+
+interface Props {
+    titulo?: string;
+    items?: ItemFAQ[];
+}
+
+const {
+    titulo = "Frequently Asked Questions",
+    items = [
+        {
+            pregunta: "What should I bring for my dolphin swim?",
+            respuesta: "We recommend bringing a swimsuit, towel, change of clothes, and extra money for souvenirs or photos. For the safety of the dolphins, sunscreen, jewelry, and accessories are not allowed in the water.",
+        },
+        {
+            pregunta: "Can I take my own photos?",
+            respuesta: "Personal cameras and phones are not allowed in the water during the dolphin experience. However, our professional photographers will capture your magical moments, and photos and videos are available for purchase.",
+        },
+        {
+            pregunta: "Is it safe for pregnant women?",
+            respuesta: "For safety reasons, we do not recommend dolphin water activities for pregnant women. However, they are welcome to enjoy our facilities and watch the experiences from designated viewing areas.",
+        },
+        {
+            pregunta: "What happens if it rains?",
+            respuesta: "Our dolphin experiences take place rain or shine, as our facilities are designed to operate in all weather conditions. In the event of extreme weather, we will reschedule your experience at no additional cost.",
+        },
+    ],
+} = Astro.props;
+---
+
+<section class="w-full py-16! md:py-24! bg-[#ece8e5]">
+    <div class="max-w-4xl mx-auto px-4! sm:px-6! lg:px-8!">
+
+        <!-- ENCABEZADO -->
+        {titulo && (
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="font-montserrat! font-bold! text-[32px]! md:text-[40px]! text-(--surface-brand-primary) mb-4!">
+                    {titulo}
+                </h2>
+                <div class="w-24! h-0.5! bg-(--surface-brand-secondary)! mx-auto!"></div>
+            </div>
+        )}
+
+        <!-- ACCORDION DE FAQs -->
+        <div class="space-y-3" x-data="{ openIndex: 0 }">
+            {
+                Array.isArray(items) && items.map((item, index) => (
+                    <div
+                        class="bg-white border border-gray-200 shadow-sm overflow-hidden"
+                        x-data={`{ index: ${index} }`}
+                    >
+                        <!-- PREGUNTA (botón) -->
+                        <button
+                            type="button"
+                            class="w-full px-6! py-5! flex items-center justify-between text-left focus:outline-none group"
+                            x-on:click={`openIndex = openIndex === ${index} ? null : ${index}`}
+                            aria-expanded={index === 0 ? "true" : "false"}
+                        >
+                            <span class="font-montserrat! font-bold! text-[16px]! text-(--surface-brand-primary) pr-4! leading-snug">
+                                {item.pregunta}
+                            </span>
+                            <!-- Chevron SVG rotable -->
+                            <span
+                                class="text-(--surface-brand-secondary)] shrink-0! transition-transform duration-300"
+                                x-bind:class={`openIndex === ${index} ? 'rotate-180' : ''`}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <!-- RESPUESTA (colapsable) -->
+                        <div
+                            x-show={`openIndex === ${index}`}
+                            x-transition:enter="transition-all duration-300 ease-out"
+                            x-transition:enter-start="opacity-0 max-h-0"
+                            x-transition:enter-end="opacity-100 max-h-[500px]"
+                            x-transition:leave="transition-all duration-200 ease-in"
+                            x-transition:leave-start="opacity-100 max-h-[500px]"
+                            x-transition:leave-end="opacity-0 max-h-0"
+                            class="overflow-hidden"
+                            style={index === 0 ? "" : "display:none;"}
+                        >
+                            <div class="px-6! pb-5! pt-4! border-t border-gray-100">
+                                <p class="font-roboto! text-[15px]! font-normal! text-(--surface-brand-primary)/60 leading-relaxed">
+                                    {item.respuesta}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
