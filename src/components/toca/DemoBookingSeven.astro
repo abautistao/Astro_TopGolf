@@ -22,15 +22,18 @@
                 </div>
                 
                 {/* Price Legend */}
-                <div class="flex gap-8 items-center bg-[var(--surface-brand-primary)] border border-white/10 p-4 rounded-xl shadow-lg">
-                    <div class="flex flex-col">
-                        <span class="text-3xl font-extrabold text-[var(--brand-interactive-base)] font-[family-name:var(--font-principal)]">$199</span>
-                        <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">P/P • Lun - Jue</span>
-                    </div>
-                    <div class="h-8 w-px bg-white/20"></div>
-                    <div class="flex flex-col">
-                        <span class="text-3xl font-extrabold text-[var(--surface-brand-secondary)] font-[family-name:var(--font-principal)]">$299</span>
-                        <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">P/P • Vie - Dom</span>
+                <div class="bg-[var(--surface-brand-primary)] border border-white/10 p-4 rounded-xl shadow-lg">
+                    <p class="text-lg text-(--accent-feedback-strong)">Desde:</p>
+                    <div class="flex gap-8 items-center">
+                        <div class="flex flex-col">
+                            <span class="text-3xl font-extrabold text-[var(--brand-interactive-base)] font-[family-name:var(--font-principal)]">$250</span>
+                            <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">P/P • Lun - Jue</span>
+                        </div>
+                        <div class="h-8 w-px bg-white/20"></div>
+                        <div class="flex flex-col">
+                            <span class="text-3xl font-extrabold text-[var(--surface-brand-secondary)] font-[family-name:var(--font-principal)]">$300</span>
+                            <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">P/P • Vie - Dom</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -38,23 +41,23 @@
             {/* Tab Selector */}
             <div class="flex justify-center mt-4">
                 <div class="inline-flex bg-[var(--surface-brand-primary)] border border-white/10 p-1.5 rounded-full shadow-md">
-    <button 
-        class="tab-btn active relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000"
-        data-tab-value="lun-jue"
-    >
-        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
-        
-        <span class="relative z-10">Lunes - Jueves</span>
-    </button>
-    
-    <button 
-        class="tab-btn relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000 text-white/60 hover:text-white"
-        data-tab-value="vie-dom"
-    >
-        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
-        <span class="relative z-10">Viernes - Domingo</span>
-    </button>
-</div>
+                    <button 
+                        class="tab-btn active relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000"
+                        data-tab-value="lun-jue"
+                    >
+                        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
+                        
+                        <span class="relative z-10">Lunes - Jueves</span>
+                    </button>
+                    
+                    <button 
+                        class="tab-btn relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000 text-white/60 hover:text-white"
+                        data-tab-value="vie-dom"
+                    >
+                        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
+                        <span class="relative z-10">Viernes - Domingo</span>
+                    </button>
+                </div>
             </div>
 
             <div class="">
@@ -133,6 +136,28 @@
             <div class="flex">
                 <h2 class="text-lg text-left">Selecciona tu grupo para desbloquear tu experiencia en TOCA Social</h2>    
             </div> 
+
+            {/* Tab Selector */}
+            <div class="flex justify-center mt-4">
+                <div class="inline-flex bg-[var(--surface-brand-primary)] border border-white/10 p-1.5 rounded-full shadow-md">
+                    <button 
+                        class="tab-btn-type active relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000"
+                        data-tab-value="sin-juego"
+                    >
+                        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
+                        
+                        <span class="relative z-10">Acceso</span>
+                    </button>
+                    
+                    <button 
+                        class="tab-btn-type relative px-6 py-2 rounded-full font-[family-name:var(--font-principal)] text-sm font-bold uppercase tracking-wider transition-all duration-1000 text-white/60 hover:text-white"
+                        data-tab-value="juego"
+                    >
+                        <span class="absolute inset-0 rounded-full bg-[var(--brand-interactive-base)] opacity-0 transition-all pointer-events-none [.active_&]:animate-ping [.active_&]:opacity-75"></span>
+                        <span class="relative z-10">Acceso + juego </span>
+                    </button>
+                </div>
+            </div>
             {/* Cards Grid */}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
                 
@@ -145,12 +170,12 @@
                         <div>
                             <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">STARTER</h3>
                             <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
-                                ⏱️ 30 minutos de juego
+                                ⏱️ 45 minutos de juego
                             </span>
                         </div>
                         <div class="py-2 border-y border-white/10 flex justify-between items-center">
                             <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
-                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="299">$199</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="250" data-price-vie-dom="300">$250</span>
                         </div>
                         <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
                             Precio fijo independiente del número de jugadores.
@@ -165,21 +190,21 @@
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">1</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">1 persona</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$199</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$250</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="2" data-card="starter">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">2</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">2 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$398</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$500</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="3" data-card="starter">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">3</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">3 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$597</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$750</span>
                             </div>
                         </div>
                     </div>
@@ -201,12 +226,12 @@
                         <div>
                             <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">SOCIAL</h3>
                             <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
-                                ⏱️ 60 minutos de juego
+                                ⏱️ 1:15 hrs de juego
                             </span>
                         </div>
                         <div class="py-2 border-y border-white/10 flex justify-between items-center">
                             <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
-                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="299">$199</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="250" data-price-vie-dom="300">$250</span>
                         </div>
                         <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
                             El doble de tiempo, el mismo precio p/persona.
@@ -221,21 +246,21 @@
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">4</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">4 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$796</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$1000</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="5" data-card="social">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">5</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">5 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$995</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,250</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="6" data-card="social">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">6</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">6 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,194</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,500</span>
                             </div>
                         </div>
                     </div>
@@ -254,15 +279,15 @@
                         <div>
                             <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">SQUAD</h3>
                             <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
-                                ⏱️ 90 minutos de juego
+                                ⏱️ 2 hrs de juego
                             </span>
                         </div>
                         <div class="py-2 border-y border-white/10 flex justify-between items-center">
                             <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
-                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="299">$199</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="250" data-price-vie-dom="300">$250</span>
                         </div>
                         <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
-                            90 minutos completos para jugar de verdad.
+                            2 hrs completas para jugar de verdad.
                         </p>
                     </div>
 
@@ -274,21 +299,21 @@
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">7</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">7 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$1,393</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$1,750</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="8" data-card="squad">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">8</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">8 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,592</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,000</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="9" data-card="squad">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">9</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">9 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$1,791</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,250</span>
                             </div>
                         </div>
                     </div>
@@ -307,12 +332,12 @@
                         <div>
                             <h3 class="font-[family-name:var(--font-principal)] text-[28px] font-bold uppercase text-white leading-tight">PRO</h3>
                             <span class="inline-flex items-center gap-1.5 text-xs text-white/60 bg-black/30 px-2.5 py-1 rounded-full mt-2 font-[family-name:var(--font-secundaria)]">
-                                ⏱️ 120 minutos de juego
+                                ⏱️ 2:30 hrs de juego
                             </span>
                         </div>
                         <div class="py-2 border-y border-white/10 flex justify-between items-center">
                             <span class="text-xs uppercase tracking-wider text-white/50 font-[family-name:var(--font-secundaria)]">Precio p/persona:</span>
-                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="199" data-price-vie-dom="299">$199</span>
+                            <span class="text-xl font-bold font-[family-name:var(--font-principal)] text-[var(--brand-interactive-base)] card-price-label" data-price-lun-jue="250" data-price-vie-dom="300">$250</span>
                         </div>
                         <p class="font-[family-name:var(--font-secundaria)] text-xs text-white/60 leading-relaxed min-h-[36px]">
                             2 horas completas para grupos grandes y competitivos.
@@ -327,21 +352,21 @@
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]">10</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">10 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$1,990</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-[var(--brand-interactive-base)] row-total">$2,250</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="11" data-card="pro">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">11</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">11 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,189</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,750</span>
                             </div>
                             <div class="group-row flex items-center justify-between p-3 rounded-xl border border-white/10 bg-black/30 hover:border-[var(--brand-interactive-base)]/50 cursor-pointer transition-all duration-200" data-players="12" data-card="pro">
                                 <div class="flex items-center gap-3">
                                     <span class="player-badge w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs bg-black/40 text-white/60">12</span>
                                     <span class="font-[family-name:var(--font-secundaria)] text-sm font-medium">12 personas</span>
                                 </div>
-                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$2,388</span>
+                                <span class="font-[family-name:var(--font-principal)] text-sm font-bold text-white/80 row-total">$3,000</span>
                             </div>
                         </div>
                     </div>
@@ -358,7 +383,7 @@
                 <div class="flex items-center gap-3">
                     <span class="text-2xl">💡</span>
                     <p class="font-[family-name:var(--font-secundaria)] text-sm text-white/80 leading-relaxed text-center sm:text-left">
-                        El precio por persona <strong class="text-white font-bold">siempre es el mismo</strong> — $199 Lun-Jue / $299 Vie-Dom. Lo que cambia con el grupo es el tiempo total de juego: más jugadores, más minutos.
+                        El precio por persona <strong class="text-white font-bold">siempre es el mismo</strong> — $250 Lun-Jue / $300 Vie-Dom. Lo que cambia con el grupo es el tiempo total de juego: más jugadores, más minutos.
                     </p>
                 </div>
                 <span class="bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-full tracking-widest shrink-0 shadow-sm">
@@ -606,7 +631,7 @@
 
 {/* Styling for Active State classes & dynamics */}
 <style>
-    .tab-btn.active {
+    .tab-btn.active, .tab-btn-type.active {
         background-color: var(--brand-interactive-base);
         color: var(--surface-brand-primary);
     }
@@ -631,6 +656,9 @@
         const tabBtns = document.querySelectorAll('.tab-btn');
         let currentDayTab = 'lun-jue'; // Default state
 
+        const tabBtnsType = document.querySelectorAll('.tab-btn-type');
+        let currentTypeTab = 'sin-juego'; // Default state
+
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const tabValue = btn.getAttribute('data-tab-value');
@@ -648,7 +676,29 @@
                 currentDayTab = tabValue;
 
                 // Update prices
-                updateBookingPrices(currentDayTab);
+                updateBookingPrices(currentDayTab, currentTypeTab);
+            });
+        });
+
+        tabBtnsType.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabValue = btn.getAttribute('data-tab-value');
+                console.log(tabValue)
+                if (!tabValue || tabValue === currentTypeTab) return;
+
+                // Toggle active class on tabs
+                tabBtnsType.forEach(b => {
+                    b.classList.remove('active');
+                    b.classList.remove('text-[var(--surface-brand-primary)]');
+                    b.classList.add('text-white/60');
+                });
+                btn.classList.add('active');
+                btn.classList.remove('text-white/60');
+
+                currentTypeTab = tabValue;
+
+                // Update prices
+                updateBookingPrices(currentDayTab, currentTypeTab);
             });
         });
 
@@ -722,8 +772,23 @@
         });
 
         // --- Recalculate Prices Function ---
-        function updateBookingPrices(dayTab: string) {
-            const basePrice = dayTab === 'lun-jue' ? 199 : 299;
+        function updateBookingPrices(dayTab: string, type: string) {
+            let basePrice: string;
+
+            if(dayTab == 'lun-jue') {
+                if(type === 'sin-juego') {
+                    basePrice = '250';
+                }else {
+                    basePrice = '500';
+                }
+            } else if(dayTab == 'vie-dom') {
+                if(type === 'sin-juego') {
+                    basePrice = '300';
+                }else {
+                    basePrice = '600';
+                }
+            }
+            
 
             // 1. Update Card level price labels
             const cardPriceLabels = document.querySelectorAll('.card-price-label');
