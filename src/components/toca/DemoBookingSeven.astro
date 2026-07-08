@@ -23,7 +23,7 @@
                 
                 {/* Price Legend */}
                 <div class="bg-[var(--surface-brand-primary)] border border-white/10 p-4 rounded-xl shadow-lg">
-                    <p class="text-lg text-(--accent-feedback-strong)">Desde:</p>
+                    <p class="text-lg text-(--accent-feedback-strong)">Acceso desde:</p>
                     <div class="flex gap-8 items-center">
                         <div class="flex flex-col">
                             <span class="text-3xl font-extrabold text-[var(--brand-interactive-base)] font-[family-name:var(--font-principal)]">$250</span>
@@ -1029,6 +1029,7 @@
             const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6;
             const targetTabValue = isWeekend ? 'vie-dom' : 'lun-jue';
+            const targetTabTypeValue = document.querySelector('.tab-btn-type.active')?.getAttribute('data-tab-value');
             
             if (currentDayTab !== targetTabValue) {
                 currentDayTab = targetTabValue;
@@ -1045,7 +1046,8 @@
                     }
                 });
                 
-                updateBookingPrices(currentDayTab);
+                if(targetTabTypeValue)
+                    updateBookingPrices(currentDayTab, targetTabTypeValue);
             }
         }
 
