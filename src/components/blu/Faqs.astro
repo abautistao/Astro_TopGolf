@@ -1,10 +1,12 @@
 ---
 // src/components/dolphinaris/Component_8_Dolphinaris.astro
-
+import { string } from 'astro:schema';
+import { stringifyRichText } from '../../lib/strapi';
 interface ItemFAQ {
     id?: number;
     pregunta: string;
     respuesta: string;
+    content: any;
 }
 
 interface Props {
@@ -18,18 +20,22 @@ const {
         {
             pregunta: "What should I bring for my dolphin swim?",
             respuesta: "We recommend bringing a swimsuit, towel, change of clothes, and extra money for souvenirs or photos. For the safety of the dolphins, sunscreen, jewelry, and accessories are not allowed in the water.",
+            content: "We recommend bringing a swimsuit, towel, change of clothes, and extra money for souvenirs or photos. For the safety of the dolphins, sunscreen, jewelry, and accessories are not allowed in the water.",
         },
         {
             pregunta: "Can I take my own photos?",
             respuesta: "Personal cameras and phones are not allowed in the water during the dolphin experience. However, our professional photographers will capture your magical moments, and photos and videos are available for purchase.",
+            content: "Personal cameras and phones are not allowed in the water during the dolphin experience. However, our professional photographers will capture your magical moments, and photos and videos are available for purchase.",
         },
         {
             pregunta: "Is it safe for pregnant women?",
             respuesta: "For safety reasons, we do not recommend dolphin water activities for pregnant women. However, they are welcome to enjoy our facilities and watch the experiences from designated viewing areas.",
+            content: "For safety reasons, we do not recommend dolphin water activities for pregnant women. However, they are welcome to enjoy our facilities and watch the experiences from designated viewing areas.",
         },
         {
             pregunta: "What happens if it rains?",
             respuesta: "Our dolphin experiences take place rain or shine, as our facilities are designed to operate in all weather conditions. In the event of extreme weather, we will reschedule your experience at no additional cost.",
+            content: "Our dolphin experiences take place rain or shine, as our facilities are designed to operate in all weather conditions. In the event of extreme weather, we will reschedule your experience at no additional cost.",
         },
     ],
 } = Astro.props;
@@ -89,10 +95,7 @@ const {
                             class="overflow-hidden"
                             style={index === 0 ? "" : "display:none;"}
                         >
-                            <div class="px-6! pb-5! pt-4! border-t border-gray-100">
-                                <p class="font-roboto! text-[15px]! font-normal! text-(--surface-brand-primary)/60 leading-relaxed">
-                                    {item.respuesta}
-                                </p>
+                            <div set:html={stringifyRichText(item.content)} class="px-6! pb-5! pt-4! border-t border-gray-100 font-roboto! text-[15px]! font-normal! text-(--surface-brand-primary)/60 leading-relaxed">
                             </div>
                         </div>
                     </div>
