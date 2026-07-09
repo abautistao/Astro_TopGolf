@@ -1,0 +1,56 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getAllExperiencias, getExperienciaBySlug } from "../../../lib/strapi.js";
+import RenderBlocks from "../../../components/RenderBlocks.astro";
+
+export async function getStaticPaths() {
+  const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+  const pages = await getAllExperiencias(defaultLocale);
+
+  if (!pages || !Array.isArray(pages)) return [];
+
+  const langs = (await import.meta.env.PUBLIC_DEFAULT_LOCALE) ? [defaultLocale] : ["es", "en"];
+
+  const paths: any[] = [];
+  for (const page of pages) {
+    if (!page.slug) continue;
+    for (const lang of langs) {
+      if (lang === defaultLocale) continue;
+      paths.push({ params: { lang, slug: page.slug } });
+    }
+  }
+  return paths;
+}
+
+const { lang, slug } = Astro.params;
+const locale = (lang as string) || (import.meta.env.PUBLIC_DEFAULT_LOCALE || "en");
+const pagina = await getExperienciaBySlug(slug as string, locale);
+
+if (!pagina) {
+  return new Response(null, {
+    status: 404,
+    statusText: "No Encontrado",
+  });
+}
+
+const { titulo, ContenidoPagina, SEO, localizations } = pagina;
+
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+  const attributes = loc.attributes || loc;
+  const localeCode = attributes.locale;
+  const locSlug = attributes.slug;
+
+  if (localeCode && locSlug) {
+    alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/experiencias/${locSlug}` : `/${localeCode}/experiencias/${locSlug}`;
+  }
+});
+---
+
+<Layout seo={SEO} alternateLinks={alternateLinks}>
+  <main class="mx-auto container-full">
+    <RenderBlocks blocks={ContenidoPagina} />
+  </main>
+</Layout>

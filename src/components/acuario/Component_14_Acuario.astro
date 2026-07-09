@@ -8,6 +8,7 @@ export interface Props {
     htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
     descripcion?: any;
     media?: any;
+    galeria?: { data: any[] } | any[];
     color_fondo?: string;
     color_texto?: string;
     imagen_fondo?: any;
@@ -20,6 +21,7 @@ const {
     htmlTag = "h2",
     descripcion,
     media,
+    galeria,
     color_fondo,
     color_texto,
     imagen_fondo,
@@ -34,17 +36,21 @@ const hasMedia = media?.data || media;
 const mediaUrl = hasMedia ? getStrapiUrl(media) : null;
 const isVideo = hasMedia && (media?.data?.attributes?.mime?.startsWith('video/') || media?.mime?.startsWith('video/'));
 
+const galleryFiles = (galeria?.data || galeria || []).filter(Boolean);
+const hasGallery = galleryFiles.length > 0;
+const mediaMode: "single" | "gallery" | "none" = hasGallery ? "gallery" : (hasMedia ? "single" : "none");
+
 // Determinar las clases de flexbox basado en la disposición
-let containerClasses = "flex flex-col gap-10 lg:gap-16 items-center ";
+let containerClasses = "flex flex-col items-center ";
 let textContainerClasses = "w-full ";
 let mediaContainerClasses = "w-full lg:w-1/2 relative ";
 
 if (disposicion === "texto_izquierda") {
-    containerClasses += "lg:flex-row";
-    textContainerClasses += "lg:w-1/2";
+    containerClasses += "lg:flex-row lg:gap-10";
+    textContainerClasses += "lg:w-1/2 lg:pr-8";
 } else if (disposicion === "texto_derecha") {
-    containerClasses += "lg:flex-row-reverse";
-    textContainerClasses += "lg:w-1/2";
+    containerClasses += "lg:flex-row-reverse lg:gap-10";
+    textContainerClasses += "lg:w-1/2 lg:pl-8";
 } else {
     // solo_texto_centrado
     containerClasses = "flex flex-col items-center justify-center";
@@ -53,8 +59,8 @@ if (disposicion === "texto_izquierda") {
 }
 ---
 
-<section 
-    class="w-full py-16 md:py-24 relative overflow-hidden" 
+<section
+    class="w-full py-12 md:py-20 relative overflow-hidden"
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -62,7 +68,7 @@ if (disposicion === "texto_izquierda") {
         backgroundPosition: "center",
     }}
 >
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-[1440px]">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-7xl">
         <div class={containerClasses}>
             
             {/* Columna de Texto */}
@@ -93,29 +99,100 @@ if (disposicion === "texto_izquierda") {
             </div>
 
             {/* Columna de Media */}
-            {hasMedia && disposicion !== "solo_texto_centrado" && (
+            {mediaMode !== "none" && disposicion !== "solo_texto_centrado" && (
                 <div class={mediaContainerClasses}>
-                    <div class="w-full h-auto min-h-[300px] md:min-h-[450px] rounded-[24px] overflow-hidden shadow-2xl relative">
-                        {isVideo ? (
-                            <video 
-                                src={mediaUrl} 
-                                class="absolute inset-0 w-full h-full object-cover" 
-                                autoplay 
-                                loop 
-                                muted 
-                                playsinline
-                            ></video>
-                        ) : (
-                            <img 
-                                src={mediaUrl} 
-                                alt={titulo || "Media Acuario"} 
-                                class="absolute inset-0 w-full h-full object-cover"
-                            />
-                        )}
-                    </div>
+                    {mediaMode === "gallery" ? (
+                        <div class="acuario-14-swiper w-full h-[300px] md:h-[450px] rounded-[24px] overflow-hidden shadow-2xl relative">
+                            <div class="swiper-wrapper h-full">
+                                {galleryFiles.map((item: any) => {
+                                    const url = getStrapiUrl(item);
+                                    const isGalleryVideo = item?.attributes?.mime?.startsWith('video/') || item?.mime?.startsWith('video/');
+                                    return (
+                                        <div class="swiper-slide w-full h-full relative">
+                                            {isGalleryVideo ? (
+                                                <video
+                                                    src={url}
+                                                    class="absolute inset-0 w-full h-full object-cover"
+                                                    autoplay
+                                                    loop
+                                                    muted
+                                                    playsinline
+                                                ></video>
+                                            ) : (
+                                                <img
+                                                    src={url}
+                                                    alt={titulo || "Galería"}
+                                                    class="absolute inset-0 w-full h-full object-cover"
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            {galleryFiles.length > 1 && (
+                                <div class="swiper-pagination"></div>
+                            )}
+                        </div>
+                    ) : (
+                        <div class="w-full h-auto min-h-[300px] md:min-h-[450px] rounded-[24px] overflow-hidden shadow-2xl relative">
+                            {isVideo ? (
+                                <video
+                                    src={mediaUrl}
+                                    class="absolute inset-0 w-full h-full object-cover"
+                                    autoplay
+                                    loop
+                                    muted
+                                    playsinline
+                                ></video>
+                            ) : (
+                                <img
+                                    src={mediaUrl}
+                                    alt={titulo || "Media Acuario"}
+                                    class="absolute inset-0 w-full h-full object-cover"
+                                />
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
             
-        </div>
-    </div>
-</section>
+<style>
+    :global(.acuario-14-swiper .swiper-pagination-bullet) {
+        background: white;
+        opacity: 0.6;
+        width: 10px;
+        height: 10px;
+        transition: all 0.3s ease;
+    }
+    :global(.acuario-14-swiper .swiper-pagination-bullet-active) {
+        background: var(--brand-interactive-base);
+        opacity: 1;
+        width: 24px;
+        border-radius: 5px;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    import 'swiper/css/effect-fade';
+
+    function initC14Swiper() {
+        const sliders = document.querySelectorAll('.acuario-14-swiper');
+        sliders.forEach((sliderElement) => {
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Pagination, Autoplay, EffectFade],
+                slidesPerView: 1,
+                effect: 'fade',
+                fadeEffect: { crossFade: true },
+                loop: true,
+                autoplay: { delay: 4500, disableOnInteraction: false },
+                pagination: { el: '.swiper-pagination', clickable: true },
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initC14Swiper);
+</script>
