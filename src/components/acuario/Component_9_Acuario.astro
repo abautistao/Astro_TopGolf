@@ -12,6 +12,7 @@ export interface Props {
     titulo_lista?: string;
     elementos_lista?: any[];
     galeria?: { data: any[] } | any[];
+    youtube_url?: string;
 }
 
 const {
@@ -25,12 +26,30 @@ const {
     titulo_lista,
     elementos_lista = [],
     galeria,
+    youtube_url,
 } = Astro.props;
 
 const TitleTag = htmlTag;
 
+const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const patterns = [
+        /youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+        /youtu\.be\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/,
+    ];
+    for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return m[1];
+    }
+    return null;
+};
+
 // Procesar galería (soporta Strapi v4/v5 format)
 const mediaFiles = galeria?.data || galeria || [];
+const youtubeId = youtube_url ? getYoutubeId(youtube_url) : null;
+const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
 ---
 
 <section 
@@ -99,9 +118,22 @@ const mediaFiles = galeria?.data || galeria || [];
 
             {/* Columna Derecha: Carrusel Swiper */}
             <div class="w-full h-full relative flex items-center justify-center mt-10 lg:mt-0">
-                {mediaFiles.length > 0 && (
+                {slideCount > 0 && (
                     <div class="acuario-galeria-swiper w-full h-[350px] md:h-[450px] lg:h-[500px] rounded-[24px] overflow-hidden shadow-2xl relative">
                         <div class="swiper-wrapper h-full">
+                            {youtubeId && (
+                                <div class="swiper-slide w-full h-full relative bg-black">
+                                    <iframe
+                                        src={`https://www.youtube.com/embed/${youtubeId}`}
+                                        title={titulo || "YouTube video"}
+                                        class="w-full h-full"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen
+                                    />
+                                </div>
+                            )}
+
                             {mediaFiles.map((mediaFile: any) => {
                                 const url = getStrapiUrl(mediaFile);
                                 const isVideo = mediaFile?.attributes?.mime?.startsWith('video/') || mediaFile?.mime?.startsWith('video/');
@@ -129,7 +161,7 @@ const mediaFiles = galeria?.data || galeria || [];
                             })}
                         </div>
                         
-                        {mediaFiles.length > 1 && (
+                        {slideCount > 1 && (
                             <div class="swiper-pagination"></div>
                         )}
                     </div>
