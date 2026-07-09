@@ -9,6 +9,7 @@ export interface Props {
     descripcion?: any;
     media?: any;
     color_fondo?: string;
+    color_texto?: string;
     imagen_fondo?: any;
 }
 
@@ -20,11 +21,13 @@ const {
     descripcion,
     media,
     color_fondo,
+    color_texto,
     imagen_fondo,
 } = Astro.props;
 
 const TitleTag = htmlTag;
 const finalBgColor = color_fondo || "var(--neutral-background-subtle)";
+const finalTextColor = color_texto || "var(--surface-brand-primary)";
 const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
 
 const hasMedia = media?.data || media;
@@ -65,18 +68,25 @@ if (disposicion === "texto_izquierda") {
             {/* Columna de Texto */}
             <div class={textContainerClasses}>
                 {titulo && (
-                    <TitleTag class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-[var(--surface-brand-primary)] mb-2 leading-tight ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}>
+                    <TitleTag
+                        class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase mb-2 leading-tight ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
+                        style={`color: ${finalTextColor};`}
+                    >
                         {titulo}
                     </TitleTag>
                 )}
                 {subtitulo && (
-                    <p class={`font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)] mb-6 ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}>
+                    <p
+                        class={`font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase mb-6 ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
+                        style={`color: ${finalTextColor}; opacity: 0.85;`}
+                    >
                         {subtitulo}
                     </p>
                 )}
                 {descripcion && (
-                    <div 
-                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] leading-relaxed [&>p]:mb-4"
+                    <div
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] leading-relaxed [&>p]:mb-4"
+                        style={`color: ${finalTextColor};`}
                         set:html={stringifyRichText(descripcion)}
                     />
                 )}

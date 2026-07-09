@@ -1,0 +1,81 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+}
+
+export interface TarjetaHover {
+    imagen?: StrapiMedia;
+    titulo?: string;
+    descripcion?: string;
+    boton?: {
+        texto?: string;
+        url?: string;
+    };
+}
+
+export interface Props {
+    color_fondo?: string;
+    tarjeta_1?: TarjetaHover;
+    tarjeta_2?: TarjetaHover;
+}
+
+const {
+    color_fondo,
+    tarjeta_1,
+    tarjeta_2,
+} = Astro.props;
+
+const tarjetas: TarjetaHover[] = [tarjeta_1, tarjeta_2].filter(
+    (t): t is TarjetaHover => Boolean(t && t.imagen)
+);
+---
+
+<section
+    class="w-full py-12 md:py-20"
+    style={{ backgroundColor: color_fondo || "var(--surface-brand-primary)" }}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {tarjetas.map((tarjeta) => {
+                const imgUrl = getStrapiUrl(tarjeta.imagen);
+                const btn = Array.isArray(tarjeta.boton) ? tarjeta.boton[0] : tarjeta.boton;
+                return (
+                    <div class="acuario-hover-card group relative w-full aspect-[4/3] md:aspect-[5/4] rounded-[16px] overflow-hidden shadow-xl">
+                        <img
+                            src={imgUrl}
+                            alt={tarjeta.imagen?.alternativeText || tarjeta.titulo || "Tarjeta"}
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                        />
+                        <div class="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/65"></div>
+
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {tarjeta.titulo && (
+                                <h3 class="font-[family-name:var(--font-principal)] text-white text-[24px] md:text-[28px] font-bold mb-3 uppercase">
+                                    {tarjeta.titulo}
+                                </h3>
+                            )}
+                            {tarjeta.descripcion && (
+                                <p class="font-[family-name:var(--font-secundaria)] text-white/95 text-[15px] md:text-[16px] leading-relaxed max-w-md mb-6">
+                                    {tarjeta.descripcion}
+                                </p>
+                            )}
+                            {btn && btn.texto && btn.url && (
+                                <a
+                                    href={btn.url}
+                                    class="inline-flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[15px] uppercase tracking-wide px-7 py-3 rounded-[30px] transition-all bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:opacity-90"
+                                >
+                                    {btn.texto}
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    </div>
+</section>
