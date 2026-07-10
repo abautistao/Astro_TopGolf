@@ -2,7 +2,7 @@
 import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
 
 export interface Props {
-    disposicion?: "texto_izquierda" | "texto_derecha" | "solo_texto_centrado";
+    disposicion?: "texto_izquierda" | "texto_derecha" | "solo_texto_centrado" | "solo_texto";
     titulo?: string;
     subtitulo?: string;
     htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
@@ -51,11 +51,15 @@ if (disposicion === "texto_izquierda") {
 } else if (disposicion === "texto_derecha") {
     containerClasses += "lg:flex-row-reverse lg:gap-10";
     textContainerClasses += "lg:w-1/2 lg:pl-8";
-} else {
-    // solo_texto_centrado
+} else if (disposicion === "solo_texto_centrado") {
     containerClasses = "flex flex-col items-center justify-center";
     textContainerClasses = "w-full max-w-4xl text-center mx-auto";
-    mediaContainerClasses = "hidden"; // No se muestra media
+    mediaContainerClasses = "hidden";
+} else {
+    // solo_texto
+    containerClasses = "flex flex-col items-start";
+    textContainerClasses = "w-full max-w-4xl";
+    mediaContainerClasses = "hidden";
 }
 ---
 
@@ -91,7 +95,7 @@ if (disposicion === "texto_izquierda") {
                 )}
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] leading-relaxed [&>p]:mb-4"
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] leading-relaxed [&>p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_li]:mb-1"
                         style={`color: ${finalTextColor};`}
                         set:html={stringifyRichText(descripcion)}
                     />

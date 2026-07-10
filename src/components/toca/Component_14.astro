@@ -18,7 +18,13 @@ const fallbackData = [
     {
         label: "BOX BOOKING",
         faqs: [
-            { pregunta: "How long will my game be?", respuesta: "Your game will last approximately 60 minutes." },
+            { pregunta: "How long will my game be?", respuesta: [
+                { type: 'paragraph', children: [{ type: 'text', text: 'A typical session lasts:' }] },
+                { type: 'list', format: 'unordered', children: [
+                    { type: 'list-item', children: [{ type: 'text', text: '60 minutes of play' }] },
+                    { type: 'list-item', children: [{ type: 'text', text: '15 minutes of setup' }] }
+                ]}
+            ] },
             { pregunta: "How do I make a booking?", respuesta: "You can book online or call our reservation team." },
             { pregunta: "Is the price per hour?", respuesta: "Yes, the price is calculated per hour per box." },
             { pregunta: "What are the prices to play?", respuesta: "Prices vary depending on the day and time." },
@@ -114,8 +120,6 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
                                 </button>
 
                                 <div
-                                    x-show="expanded"
-                                    x-collapse
                                     class="pb-6 text-[var(--accent-feedback-strong)] text-base lg:text-lg opacity-90 font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
                                 >
                                     {faq.respuesta ? <Fragment set:html={stringifyRichText(faq.respuesta)} /> : <p>{faq.respuesta}</p>}
