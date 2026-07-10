@@ -73,9 +73,11 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
                 </h2>
                 <div class="font-(family-name:--font-shields-sans-regular) mt-5 font-normal text-lg text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
 
-                <div class="!mt-8">
-                    <ButtonGroup botones={componentButtons} clase="flex flex-col items-start"/>
-                </div>
+                {Boton?.length && (
+                    <div class="mt-8!">
+                        <ButtonGroup botones={componentButtons} clase="flex flex-col items-start"/>
+                    </div>
+                )}
             </div>
 
             <Image
