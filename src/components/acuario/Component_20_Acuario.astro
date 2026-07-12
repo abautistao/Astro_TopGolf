@@ -1,0 +1,82 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText?: string | null;
+    name?: string;
+    mime?: string;
+    ext?: string;
+}
+
+export interface Props {
+    texto?: string;
+    archivo?: StrapiMedia | null;
+    color_fondo?: string;
+    color_boton?: string;
+    color_texto?: string;
+    icono_descarga?: boolean;
+}
+
+const {
+    texto = "DESCARGA AQUÍ",
+    archivo,
+    color_fondo,
+    color_boton,
+    color_texto,
+    icono_descarga = true,
+} = Astro.props;
+
+const fileUrl = archivo ? getStrapiUrl(archivo) : null;
+const downloadName =
+    archivo?.name ||
+    (archivo?.url ? archivo.url.split("/").pop() : undefined) ||
+    undefined;
+
+const finalSectionBg = color_fondo || "var(--neutral-background-subtle)";
+const finalBtnBg = color_boton || "var(--brand-interactive-base)";
+const finalText = color_texto || "var(--surface-brand-primary)";
+---
+
+<section
+    class="w-full py-10 md:py-16"
+    style={`background-color: ${finalSectionBg};`}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+        {fileUrl ? (
+            <a
+                href={fileUrl}
+                download={downloadName}
+                class="inline-flex items-center gap-4 px-8 md:px-10 py-4 md:py-5 rounded-2xl transition-transform hover:scale-[1.02] active:scale-[0.99] shadow-md font-[family-name:var(--font-principal)] font-bold uppercase text-[16px] md:text-[20px] tracking-wide"
+                style={`background-color: ${finalBtnBg}; color: ${finalText};`}
+            >
+                {icono_descarga && (
+                    <span
+                        class="inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border-2 shrink-0"
+                        style={`border-color: ${finalText}; color: ${finalText};`}
+                        aria-hidden="true"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="w-4 h-4 md:w-5 md:h-5"
+                        >
+                            <path d="M12 4v12" />
+                            <path d="m6 12 6 6 6-6" />
+                            <path d="M5 20h14" />
+                        </svg>
+                    </span>
+                )}
+                <span>{texto}</span>
+            </a>
+        ) : (
+            <p class="text-center text-sm opacity-70">Falta subir el archivo a descargar.</p>
+        )}
+    </div>
+</section>
