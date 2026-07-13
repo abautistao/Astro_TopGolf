@@ -1,0 +1,50 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllPromociones, getPromocionBySlug } from "../../lib/strapi.js";
+import RenderBlocks from "../../components/RenderBlocks.astro";
+
+export async function getStaticPaths() {
+    const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+    const pages = await getAllPromociones(defaultLocale);
+
+    if (!pages || !Array.isArray(pages)) return [];
+
+    return pages
+        .filter((page: any) => (page.locale || "en") === defaultLocale)
+        .map((page: any) => ({
+            params: { slug: page.slug },
+        }));
+}
+
+const { slug } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const pagina = await getPromocionBySlug(slug, defaultLocale);
+
+if (!pagina) {
+    return new Response(null, {
+        status: 404,
+        statusText: "No Encontrado",
+    });
+}
+
+const { titulo, ContenidoPagina, SEO, localizations } = pagina;
+
+const alternateLinks: any = {};
+const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const locs = Array.isArray(localizations) ? localizations : (localizations?.data || []);
+locs.forEach((loc: any) => {
+    const attributes = loc.attributes || loc;
+    const localeCode = attributes.locale;
+    const locSlug = attributes.slug;
+
+    if (localeCode && locSlug) {
+        alternateLinks[localeCode] = localeCode === defaultLocaleStr ? `/promociones/${locSlug}` : `/${localeCode}/promociones/${locSlug}`;
+    }
+});
+---
+
+<Layout seo={SEO} alternateLinks={alternateLinks}>
+    <main class="mx-auto container-full">
+        <RenderBlocks blocks={ContenidoPagina} />
+    </main>
+</Layout>

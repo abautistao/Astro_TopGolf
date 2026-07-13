@@ -129,8 +129,44 @@ export async function getBlogsForListing(locale = 'es') {
 }
 
 export async function getPromocionBySlug(slug, locale = 'en') {
-  const pages = await fetchAPI(`/promociones?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
-  return pages?.[0];
+  const query = `filters[slug][$eq]=${slug}&locale=${locale}&populate[ContenidoPagina][populate]=*&pagination[pageSize]=100`;
+  const pagesResponse = await fetchAPI(`/promociones?${query}`);
+  const page = pagesResponse?.[0];
+
+  if (!page || !page.ContenidoPagina) return page;
+
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-8-acuario][populate][tarjetas][populate][imagen_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-8-acuario][populate][tarjetas][populate][imagen_logo][populate]=*&populate[ContenidoPagina][on][secciones.componente-8-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][elementos_lista][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-10-acuario][populate][acordeones][populate]=*&populate[ContenidoPagina][on][secciones.componente-11-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-21-acuario][populate][tarjetas][populate][imagen_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-21-acuario][populate][tarjetas][populate][imagen_logo][populate]=*&populate[ContenidoPagina][on][secciones.componente-21-acuario][populate][tarjetas][populate][boton][populate]=*`;
+  const deepDataResponse = await fetchAPI(`/promociones?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
+  const deepPage = deepDataResponse?.[0];
+
+  if (deepPage && deepPage.ContenidoPagina) {
+    page.ContenidoPagina = page.ContenidoPagina.map((component, index) => {
+      const deepComponent = deepPage.ContenidoPagina[index];
+      if (!deepComponent || deepComponent.__component !== component.__component) return component;
+      if (component.__component === 'secciones.componente-1-acuario') return { ...component, slides: deepComponent.slides };
+      if (component.__component === 'secciones.componente-3-acuario') return { ...component, slides: deepComponent.slides, imagen_decorativa: deepComponent.imagen_decorativa, boton: deepComponent.boton };
+      if (component.__component === 'secciones.componente-4-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo, icono_decorativo_hover: deepComponent.icono_decorativo_hover };
+      if (component.__component === 'secciones.componente-5-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo };
+      if (component.__component === 'secciones.componente-8-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
+      if (component.__component === 'secciones.componente-9-acuario') return { ...component, elementos_lista: deepComponent.elementos_lista, galeria: deepComponent.galeria };
+      if (component.__component === 'secciones.componente-10-acuario') return { ...component, acordeones: deepComponent.acordeones };
+      if (component.__component === 'secciones.componente-11-acuario') return { ...component, galeria: deepComponent.galeria };
+      if (component.__component === 'secciones.componente-12-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
+      if (component.__component === 'secciones.componente-13-acuario') return { ...component, galeria: deepComponent.galeria };
+      if (component.__component === 'secciones.componente-15-acuario') return { ...component, bloques_contenido: deepComponent.bloques_contenido };
+      if (component.__component === 'secciones.componente-19-acuario') {
+        const deepCards = deepComponent.cards;
+        if (Array.isArray(deepCards) && deepCards.length > 0) {
+          return { ...component, cards: deepCards };
+        }
+        return component;
+      }
+      if (component.__component === 'secciones.componente-21-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
+      return component;
+    });
+  }
+
+  return page;
 }
 
 export async function getAllPromociones(locale = 'en') {

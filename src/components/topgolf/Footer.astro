@@ -15,7 +15,7 @@ import type { Boton } from "./elements/Button.astro";
 // Iconos de redes sociales (Esta parte ya estaba correcta)
 
 const { data, locale = "en" } = Astro.props;
-const footerData = data || (await getFooterData());
+const footerData = data || (await getFooterData()) || {};
 
 const titulo_1 = footerData?.columna_1 || "Lorem Ipsum";
 const titulo_2 = footerData?.columna_2 || "Lorem Ipsum ";

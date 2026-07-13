@@ -19,7 +19,7 @@ interface Promo {
 import MobileLocationBar from "./elements/MobileLocationBar.astro";
 
 const { data, locale = "en" } = Astro.props;
-const headerData = data || (await getHeaderData());
+const headerData = data || (await getHeaderData()) || {};
 
 const FALLBACK_IMAGE = "https://placehold.co/600x400?text=No+Image";
 const FALLBACK_LOGO = "https://placehold.co/100x50?text=Logo";
