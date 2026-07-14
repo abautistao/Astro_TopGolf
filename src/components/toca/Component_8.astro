@@ -39,12 +39,12 @@ const versionFinal = (tipo === 'version_2') ? 'version_2' : 'version_1';
 
 // LOGICA DE POSICION:
 const svgPositionClass = versionFinal === 'version_2'
-    ? '-left-12 -top-12'   // Posición para Version 2 (Izq)
-    : '-right-12 -top-12'; // Posición para Version 1 (Der)
+    ? '-left-0! -top-12! lg:-left-12!'   // Posición para Version 2 (Izq)
+    : '-right-0! -top-12! lg:-right-12!'; // Posición para Version 1 (Der)
 
 ---
 
-<div class="trigger-anim-8 w-full">
+<div class="trigger-anim-8 w-full!">
     <div class="anim-fade">
         <SplitSection
             titulo={titulo}
@@ -56,7 +56,7 @@ const svgPositionClass = versionFinal === 'version_2'
         >
             {/* CONDICIONAL: Solo muestra el SVG si animacion es true */}
             {animacion && (
-                <div slot="image-overlay" class={`absolute z-0 pointer-events-none ${svgPositionClass}`}>
+                <div slot="image-overlay" class={`absolute! z-0 !pointer-events-none ${svgPositionClass}`}>
                     <div class="svg-decoration">
                         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                             <path id="textCirclePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" fill="none"/>

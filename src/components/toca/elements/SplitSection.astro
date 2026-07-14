@@ -29,37 +29,37 @@ const finalImgAlt = imgAlt || "Imagen por defecto";
 const configs = {
     version_1: {
         // (Rosa - Imagen Derecha)
-        bg:         'bg-[var(--surface-brand-secondary)]',
-        textTitle:  'text-[var(--surface-brand-primary)]',
-        textContent:'text-[var(--surface-brand-primary)]',
-        direction:  'md:flex-row',
-        textPadding:'md:pl-16 md:pr-8',
+        bg:         'bg-[var(--surface-brand-secondary)]!',
+        textTitle:  'text-[var(--surface-brand-primary)]!',
+        textContent:'text-[var(--surface-brand-primary)]!',
+        direction:  'md:flex-row!',
+        textPadding:'md:pl-16! md:pr-8!',
         showDecoration: true, // Esta propiedad ya no se usa, pero se puede dejar
         // Si la imagen está a la derecha, queremos margen a la derecha (20px)
-        imageMargin: 'md:mr-[20px]'
+        imageMargin: 'md:mr-[20px]!'
     },
     version_2: {
         // (Azul - Imagen Izquierda)
-        bg:         'bg-[var(--surface-brand-primary)]',
-        textTitle:  'text-[var(--accent-feedback-strong)]',
-        textContent:'text-[var(--accent-feedback-strong)]',
-        direction:  'md:flex-row-reverse',
-        textPadding:'md:pr-16 md:pl-8',
+        bg:         'bg-[var(--surface-brand-primary)]!',
+        textTitle:  'text-[var(--accent-feedback-strong)]!',
+        textContent:'text-[var(--accent-feedback-strong)]!',
+        direction:  'md:flex-row-reverse!',
+        textPadding:'md:pr-16! md:pl-8!',
         showDecoration: false,
         // Si la imagen está a la izquierda, queremos margen a la izquierda (20px)
-        imageMargin: 'md:ml-[20px]'
+        imageMargin: 'md:ml-[20px]!'
     }
 };
 
 const currentStyle = configs[tipo] || configs.version_1;
 ---
 
-<section class={`flex flex-col w-full min-h-[450px] md:min-h-[550px] overflow-visible ${currentStyle.direction} ${currentStyle.bg}`}>
+<section class={`flex! flex-col! w-full! min-h-[450px]! md:min-h-[550px]! overflow-visible ${currentStyle.direction} ${currentStyle.bg}`}>
 
   {/* LADO DE TEXTO */}
-    <div class={`w-full md:w-1/2 flex flex-col justify-center md:justify-start items-start pt-10 pb-0 md:pt-20 md:pb-10 px-6 z-10 ${currentStyle.textPadding}`}>
+    <div class={`w-full! md:w-1/2! flex! flex-col! justify-center md:justify-start items-start pt-10! pb-0! md:pt-20! md:pb-10! px-6! z-10 ${currentStyle.textPadding}`}>
 
-        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium uppercase text-xl md:text-4xl lg:leading-11 mb-5 tracking-wide`}>
+        <h2 class={`${currentStyle.textTitle} font-(family-name:--font-titling-gothic-fb-extended-bold) font-medium! uppercase! text-xl! md:text-4xl! lg:leading-11 mb-5! tracking-wide`}>
             {titulo}
         </h2>
 
@@ -70,15 +70,15 @@ const currentStyle = configs[tipo] || configs.version_1;
         {botonData && (
             <Button
                 botones={botonData}
-                clase="flex items-center"
+                clase="flex! items-center"
             />
         )}
     </div>
 
   {/* LADO DE IMAGEN */}
-    <div class={`w-full md:w-1/2 flex justify-center items-center md:items-start px-6 pb-6 pt-4 md:pt-20 relative ${currentStyle.imageMargin}`}>
+    <div class={`w-full! md:w-1/2! flex! justify-center items-center md:items-start px-6! pb-6! pt-4! md:pt-20! relative ${currentStyle.imageMargin}`}>
 
-        <div class="relative w-full max-w-2xl">
+        <div class="relative! w-full! max-w-2xl!">
 
             {/* 1. SLOT PARA EL SVG (ARE YOU GAME?) */}
             <slot name="image-overlay" />
@@ -99,7 +99,7 @@ const currentStyle = configs[tipo] || configs.version_1;
 <style>
     .strapi-rich-text :global(p) { margin-bottom: 0; }
     .strapi-rich-text :global(strong) {
-        color: var(--accent-feedback-strong) !important; font-weight: bold;
+        color: var(--accent-feedback-strong) !important; font-weight: bold !important;
     }
     .strapi-rich-text :global(u) {
         text-decoration-thickness: 2px; text-underline-offset: 3px;
@@ -111,8 +111,8 @@ const currentStyle = configs[tipo] || configs.version_1;
 
     .strapi-rich-text :global(h3) {
         font-family: var(--font-sharp-sans-medium);
-        font-size: 1.3rem;
-        font-weight: bold;
+        font-size: 1.3rem !important;
+        font-weight: bold !important;
         
     }
 </style>
