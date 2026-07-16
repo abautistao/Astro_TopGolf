@@ -64,7 +64,7 @@ const text_color = color_text ?? '#eae7e2';
                 </h2>
             )}
             {descripcion && (
-                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed" set:html={stringifyRichText(descripcion)}></div>
+                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed description" set:html={stringifyRichText(descripcion)}></div>
             )}
         </div>
 
@@ -176,7 +176,7 @@ const text_color = color_text ?? '#eae7e2';
         background-color: var(--bg);
     }
 
-    #section_21 h2, #section_21 div, #prevBtn, #nextBtn{
+    #section_21 h2, #section_21 div.description, #prevBtn, #nextBtn{
         color: var(--text_color) !important;
     }
 </style>
