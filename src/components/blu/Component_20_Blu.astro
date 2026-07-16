@@ -1,0 +1,172 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+interface PromoCard {
+    id: number;
+    titulo: string;
+    descripcion?: string;
+    etiqueta?: string;
+    imagen?: any;
+    overlay?: string;
+    textoBoton?: string;
+    urlBoton?: string;
+}
+
+interface Props {
+    titulo?: string;
+    promos?: PromoCard[];
+    descripcion?: string;
+}
+
+// Mapa de estilos por colorOverlay
+const overlayStyles: Record<string, { overlay: string; hoverOverlay: string; tagBg: string; tagText: string }> = {
+    "azul-marino": {
+        overlay: "bg-[#002A4E]/80",
+        hoverOverlay: "group-hover:bg-[#002A4E]/70",
+        tagBg: "bg-[#1E8CA6]",
+        tagText: "text-white",
+    },
+    "cyan": {
+        overlay: "bg-[#1E8CA6]/80",
+        hoverOverlay: "group-hover:bg-[#1E8CA6]/70",
+        tagBg: "bg-[#b88e35]",
+        tagText: "text-[var(--surface-brand-primary)]",
+    },
+    "dorado": {
+        overlay: "bg-[#b88e35]/80",
+        hoverOverlay: "group-hover:bg-[#b88e35]/70",
+        tagBg: "bg-[#002A4E]",
+        tagText: "text-white",
+    },
+};
+
+const {
+    titulo = "Deals & Promotions",
+    promos = [
+        {
+            id: 1,
+            titulo: "Royal Caribbean — 50% Exclusive Discount",
+            descripcion: "Exclusive offer for Royal Caribbean passengers: 50% off any aquatic experience at Dolphinaris Cozumel. Only applies with Royal Caribbean cruise itinerary proof. Valid all year.",
+            etiqueta: "LIMITED OFFER",
+            imagen: "https://placehold.co/800x600/002A4E/ffffff?text=Royal+Caribbean",
+            overlay: "azul-marino",
+            textoBoton: "BOOK NOW",
+            urlBoton: "#",
+        },
+        {
+            id: 2,
+            titulo: "National Promo",
+            descripcion: "Mexican residents with INE get 30% off selected experiences. Seasonal restrictions apply.",
+            etiqueta: "LIMITED OFFER",
+            imagen: "https://placehold.co/800x600/1E8CA6/ffffff?text=National+Promo",
+            overlay: "cyan",
+            textoBoton: "BOOK NOW",
+            urlBoton: "#",
+        },
+        {
+            id: 3,
+            titulo: "Early Bird Special",
+            descripcion: "Book 30 days in advance and get an additional 20% off on all dolphin swim packages.",
+            etiqueta: "LIMITED OFFER",
+            imagen: "https://placehold.co/800x600/b88e35/ffffff?text=Early+Bird",
+            overlay: "dorado",
+            textoBoton: "BOOK NOW",
+            urlBoton: "#",
+        },
+    ],
+    descripcion
+} = Astro.props;
+---
+
+<section class="w-full py-16 md:py-20 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+
+        <!-- HEADER DE SECCIÓN -->
+        {titulo && (
+            <div class="mb-12">
+                <h2 class="font-montserrat font-bold text-[32px] md:text-[40px] text-[var(--surface-brand-primary)] mb-4 leading-tight text-center">
+                    {titulo}
+                </h2>
+                <div class="w-24 h-0.5 bg-[var(--surface-brand-secondary)] mb-5 mx-auto"></div>
+
+                <!-- RICH TEXT -->
+                {descripcion && (
+                    <div class="rich-text-dolphinaris font-roboto text-[16px] text-center font-normal leading-relaxed text-[var(--surface-brand-primary)]/70 max-w-2xl mx-auto">
+                        <Fragment set:html={stringifyRichText(descripcion)} />
+                    </div>
+                )}
+            </div>
+        )}
+
+        <!-- GRID DE CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {
+                Array.isArray(promos) && promos.map((promo) => {
+                    const overlay = overlayStyles[promo.overlay ?? "azul-marino"];
+                    const imgSrc = getStrapiUrl(promo.imagen) || promo.imagen;
+
+                    return (
+                        <div class="relative overflow-hidden group rounded-xl shadow-lg h-[450px] flex flex-col promo-card">
+                            
+                            <!-- OVERLAY DE COLOR -->
+                            <div
+                                class={`absolute inset-0 z-10 transition-colors duration-300 ${overlay.overlay} ${overlay.hoverOverlay}`}
+                            ></div>
+
+                            <!-- IMAGEN DE FONDO -->
+                            <div
+                                class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                style={`background-image: url('${imgSrc}')`}
+                            ></div>
+
+                            <!-- CONTENIDO -->
+                            <div class="relative z-20 p-8 flex flex-col h-full justify-between">
+                                <div>
+                                    <!-- ETIQUETA -->
+                                    {promo.etiqueta && (
+                                        <div
+                                            class={`inline-block text-[11px] font-bold px-3 py-1 mb-5 uppercase tracking-widest rounded-sm shadow-sm ${overlay.tagBg} ${overlay.tagText}`}
+                                        >
+                                            {promo.etiqueta}
+                                        </div>
+                                    )}
+
+                                    <!-- TÍTULO -->
+                                    <h3 class="font-montserrat font-bold text-[22px] md:text-[24px] text-white mb-4 uppercase leading-tight">
+                                        {promo.titulo}
+                                    </h3>
+
+                                    <!-- DESCRIPCIÓN -->
+                                    {promo.descripcion && (
+                                        <p class="text-white/90 text-[15px] font-roboto leading-relaxed">
+                                            {promo.descripcion}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <!-- BOTÓN -->
+                                {promo.urlBoton && (
+                                    <a
+                                        href={promo.urlBoton}
+                                        class="mt-6 w-full py-3 border-2 border-white text-white font-montserrat font-bold tracking-widest text-[14px] uppercase text-center block transition-all duration-300 hover:bg-white hover:text-[var(--surface-brand-primary)]"
+                                    >
+                                        {promo.textoBoton || "BOOK NOW"}
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .promo-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .promo-card:hover {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+</style>

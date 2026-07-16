@@ -18,6 +18,7 @@ export interface Props extends HTMLAttributes<'div'> {
     pax_max?: number | null;
     reservacion_fecha?: string | null; // Se usa string para fechas para simplificar el paso
     vendedor_id?: string | null;
+    background: string
 }
 
 const defaults = {
@@ -48,6 +49,7 @@ const { lang } = Astro.params;
 const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
+const { background } = Astro.props
 
 for (const [key, value] of Object.entries(rawParams)) {
     // Esto es EXÁCTAMENTE tu: if($valor) { ... }
@@ -57,7 +59,7 @@ for (const [key, value] of Object.entries(rawParams)) {
 }
 ---
 
-<div id="booking-container" class="font-(family-name:--font-shields-sans-bold)">
+<div id="booking-container" class="font-(family-name:--font-shields-sans-bold) py-6">
     <!-- El contenido se generará dinámicamente por el script -->
     <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
     <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
@@ -273,10 +275,11 @@ for (const [key, value] of Object.entries(rawParams)) {
 	});
 </script>
 </div>
-<style>
+<style define:vars={{background}}>
     #booking-container {
-        background-image: url('https://cms.bluoceanclub.com/uploads/Booking_ce5a0fd70b.jpg');
+        background: var(--background);
         background-size: cover;
         background-position: center;
+        padding-left: 30px;
     }
 </style>
