@@ -64,7 +64,7 @@ const text_color = color_text ?? '#eae7e2';
                 </h2>
             )}
             {descripcion && (
-                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed" set:html={stringifyRichText(descripcion)}></div>
+                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed description" set:html={stringifyRichText(descripcion)}></div>
             )}
         </div>
 
@@ -83,7 +83,7 @@ const text_color = color_text ?? '#eae7e2';
                     return (
                         <Tag
                             href={isLink ? item.urlPagina : undefined}
-                            class={`basis-1/4 min-w-full md:min-w-[calc(25%-18px)] h-full snap-start group ${isLink ? "cursor-pointer" : ""}`}
+                            class={`basis-1/3 min-w-full md:min-w-[calc(33%-18px)] h-full snap-start group ${isLink ? "cursor-pointer" : ""}`}
                         >
                             <!-- IMAGEN CON OVERLAY CYAN -->
                             <div class="overflow-hidden mb-5 relative bg-(--accent-highlight-primary)">
@@ -176,7 +176,7 @@ const text_color = color_text ?? '#eae7e2';
         background-color: var(--bg);
     }
 
-    #section_21 h2, #section_21 div, #prevBtn, #nextBtn{
+    #section_21 h2, #section_21 div.description, #prevBtn, #nextBtn{
         color: var(--text_color) !important;
     }
 </style>

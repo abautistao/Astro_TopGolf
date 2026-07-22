@@ -68,7 +68,7 @@ const text_color = color_text ?? '#eae7e2';
                 </h2>
             )}
             {descripcion && (
-                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed" set:html={stringifyRichText(descripcion)}></div>
+                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed description" set:html={stringifyRichText(descripcion)}></div>
             )}
         </div>
         <!-- CARD DE TESTIMONIOS (derecha, solapada) -->
@@ -160,7 +160,7 @@ const text_color = color_text ?? '#eae7e2';
                 
                 <a
                     href={boton.url}
-                    class="block mt-6 px-12 lg:px-0 py-3 w-full lg:w-1/4 border-2 border-white text-white font-montserrat font-bold tracking-widest text-[14px] uppercase text-center transition-all duration-300 hover:bg-white hover:text-(--surface-brand-primary)"
+                    class="block mt-6 px-12 lg:px-0 py-3 w-full lg:w-1/4 border-2 border-white font-montserrat font-bold tracking-widest text-[14px] uppercase text-center transition-all duration-300 hover:bg-white hover:text-(--surface-brand-primary) bg-white text-(--surface-brand-primary) hover:cursor-pointer"
                 >
                     {boton.texto || "Ver Reviews"}
                 </a>
@@ -174,7 +174,7 @@ const text_color = color_text ?? '#eae7e2';
         background-color: var(--bg);
     }
 
-    #section_22 h2, #section_21 div, #prevBtn, #nextBtn{
+    #section_22 h2, #section_22 div.description , #prevBtn, #nextBtn{
         color: var(--text_color) !important;
     }
 </style>

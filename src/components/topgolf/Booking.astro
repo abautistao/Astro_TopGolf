@@ -128,6 +128,14 @@ for (const [key, value] of Object.entries(rawParams)) {
             checkoutItems.push(itemGA4service)
             window.dataLayer = window.dataLayer || [];
             
+            console.log({
+                'event': 'add_to_cart',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': [itemGA4service],
+                    'value': $totalPax * parseFloat($price.split('$')[1]),
+                }
+            });
 
             window.dataLayer.push({
                 'event': 'add_to_cart',
@@ -191,6 +199,15 @@ for (const [key, value] of Object.entries(rawParams)) {
                 
                 window.dataLayer = window.dataLayer || [];
 
+                console.log({
+                    'event': 'add_to_cart',
+                    'ecommerce': {
+                        'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                        'items': $cartAddonsGA4,
+                        'value': totalCartValue
+                    }
+                });
+
                 window.dataLayer.push({
                     'event': 'add_to_cart',
                     'ecommerce': {
@@ -225,6 +242,15 @@ for (const [key, value] of Object.entries(rawParams)) {
             
             
             window.dataLayer = window.dataLayer || [];
+
+            console.log({
+                'event': 'begin_checkout',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': checkoutItems,
+                    'value': totalCheckoutValue
+                }
+            });
 
             window.dataLayer.push({
                 'event': 'begin_checkout',

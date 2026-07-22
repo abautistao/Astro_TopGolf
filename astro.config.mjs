@@ -57,7 +57,7 @@ const config = {
     }),
     partytown({
       config: {
-        forward: ["dataLayer.push"],
+        forward: [],
         // ESTO ES LO QUE FALTA:
         resolveUrl: function (url, location, type) {
           if (type === 'script' && url.hostname === 'connect.facebook.net') {
