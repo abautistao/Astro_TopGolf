@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
+import { getSevenRoomsToken } from '../../lib/sevenrooms';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
     try {
         const body = await request.json();
         const {
@@ -26,7 +27,7 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        const SEVENROOMS_TOKEN = import.meta.env.PUBLIC_SEVENROOMS_TOKEN;
+        const SEVENROOMS_TOKEN = await getSevenRoomsToken(locals.runtime?.env);
         const url = `https://api.sevenrooms.com/2_4/venues/${venue_id}/book`;
 
         // The SevenRooms API expects application/x-www-form-urlencoded

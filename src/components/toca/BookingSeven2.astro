@@ -1,9 +1,13 @@
 ---
 // src/components/toca/BookingSeven2.astro
-const token = import.meta.env.PUBLIC_SEVENROOMS_TOKEN;
+import { getSevenRoomsToken } from "../../lib/sevenrooms";
+
 let venues = [];
 let apiError = null;
 try {
+    const env = (Astro.locals as any)?.runtime?.env;
+    const token = await getSevenRoomsToken(env);
+
     console.log("\n--- [DEBUG SERVER-SIDE] GET /venues Request starting ---");
     const res = await fetch("https://api.sevenrooms.com/2_4/venues", {
         headers: {
@@ -44,15 +48,14 @@ try {
         apiError = json.msg || "Unknown error from API";
         console.error("SevenRooms API Error:", json);
     }
-} catch (e) {
+} catch (e: any) {
     console.error("Error fetching venues", e);
-    apiError = e.message;
+    apiError = e?.message || "Unknown error";
 }
 ---
 
 <section
     id="b7-main-section"
-    data-token={token}
     class="min-h-screen bg-[var(--surface-brand-primary)] text-white w-full font-[family-name:var(--font-sharp-sans-medium)]"
 >
     {/* TOP STEPPER */}
@@ -1724,12 +1727,7 @@ try {
                                 '<div class="p-8 text-center text-gray-500 font-bold w-full"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Buscando horarios...</div>';
                             updateTimeSlotsScrollIndicator();
 
-                            // Fetch from SevenRooms
-                            const mainSec =
-                                document.getElementById("b7-main-section");
-                            const srToken = mainSec
-                                ? mainSec.dataset.token
-                                : "";
+                            // Fetch from SevenRooms via local proxy
                             const locationSelect = document.getElementById(
                                 "location-select",
                             ) as HTMLSelectElement;
@@ -1780,15 +1778,11 @@ try {
                                 startTime = `${hours}:${minutes}`;
                             }
 
-                            const url = `https://api.sevenrooms.com/2_4/venues/${venueId}/availability?date=${dateStr}&start_time=${startTime}&end_time=23:59&party_size=${totalPlayers}`;
+                            const url = `/api/sevenrooms/venues/${venueId}/availability?date=${dateStr}&start_time=${startTime}&end_time=23:59&party_size=${totalPlayers}`;
                             console.log(
                                 "\n--- [DEBUG CLIENT-SIDE] GET /venues/{venue_id}/availability Request starting ---",
                             );
                             console.log("URL:", url);
-                            console.log(
-                                "Authorization Token:",
-                                srToken.substring(0, 10) + "...",
-                            );
 
                             // Fetch and log Venue Group Availability if venue_group_id is available
                             if (locationSelect) {
@@ -1801,14 +1795,12 @@ try {
                                         "data-venue-group-id",
                                     );
                                 if (venueGroupId) {
-                                    const groupUrl = `https://api.sevenrooms.com/2_4/venue_groups/${venueGroupId}/availability?date=${dateStr}&start_time=${startTime}&end_time=23:59&party_size=${totalPlayers}`;
+                                    const groupUrl = `/api/sevenrooms/venue-groups/${venueGroupId}/availability?date=${dateStr}&start_time=${startTime}&end_time=23:59&party_size=${totalPlayers}`;
                                     console.log(
                                         "--- [DEBUG CLIENT-SIDE] GET /venue_groups/{venue_group_id}/availability Request starting ---",
                                     );
                                     console.log("Group URL:", groupUrl);
-                                    fetch(groupUrl, {
-                                        headers: { Authorization: srToken },
-                                    })
+                                    fetch(groupUrl)
                                         .then((gRes) => {
                                             console.log(
                                                 `--- [DEBUG CLIENT-SIDE] GET /venue_groups/{venue_group_id}/availability Response Status: ${gRes.status} ---`,
@@ -1830,9 +1822,7 @@ try {
                                 }
                             }
 
-                            fetch(url, {
-                                headers: { Authorization: srToken },
-                            })
+                            fetch(url)
                                 .then((res) => {
                                     console.log(
                                         `--- [DEBUG CLIENT-SIDE] GET /venues/{venue_id}/availability Response Status: ${res.status} ---`,
@@ -2080,16 +2070,11 @@ try {
 
             try {
                 let allUpgrades = [];
-                const mainSec = document.getElementById("b7-main-section");
-                const srToken = mainSec ? mainSec.dataset.token : "";
 
-                // Fetch each category
+                // Fetch each category via local proxy
                 for (const catId of upsellCategories) {
                     const res = await fetch(
-                        `https://api.sevenrooms.com/2_4/upgrade_categories/${catId}/upgrades`,
-                        {
-                            headers: { Authorization: srToken },
-                        },
+                        `/api/sevenrooms/upgrade-categories/${catId}/upgrades`,
                     );
                     const json = await res.json();
                     if (json.data && json.data.upgrades) {
