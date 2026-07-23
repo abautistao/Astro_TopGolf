@@ -71,7 +71,7 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
         {/* Título Principal */}
         {titulo && (
             <div class="text-center mb-10 md:mb-16">
-                <TitleTag class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase ${isFAQ ? 'text-white' : 'text-[var(--surface-brand-primary)]'}`}>
+                <TitleTag class={`font-[family-name:var(--font-principal)] text-[24px] md:text-[40px] font-black uppercase ${isFAQ ? 'text-white' : 'text-[var(--surface-brand-primary)]'}`}>
                     {titulo}
                 </TitleTag>
             </div>
@@ -112,10 +112,29 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
 </section>
 
 <script>
-    function initAccordions() {
-        const accordionHeaders = document.querySelectorAll('.accordion-header');
-        
-        accordionHeaders.forEach(header => {
+function initAccordions() {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    // Abrir el primer acordeón por defecto
+    if (accordionHeaders.length > 0) {
+        const firstHeader = accordionHeaders[0];
+        const firstItem = firstHeader.closest('.accordion-item');
+        const firstBody = firstItem?.querySelector('.accordion-body');
+        const firstIcon = firstItem?.querySelector('.accordion-icon');
+
+        firstHeader.setAttribute('aria-expanded', 'true');
+        if (firstBody) firstBody.style.maxHeight = firstBody.scrollHeight + 'px';
+        if (firstIcon) {
+            if (firstIcon.querySelector('.fa-circle-plus')) {
+                firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-circle-plus', 'fa-circle-minus');
+            } else if (firstIcon.querySelector('.fa-plus')) {
+                firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-plus', 'fa-minus');
+            }
+            firstIcon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    accordionHeaders.forEach(header => {
             // Remove previous event listeners to avoid duplicates if re-init occurs
             const newHeader = header.cloneNode(true);
             header.parentNode?.replaceChild(newHeader, header);

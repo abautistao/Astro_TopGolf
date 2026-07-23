@@ -57,7 +57,7 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
     style={{ backgroundColor: color_fondo || "#E8F6FD" }}
 >
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             
             {/* Columna Izquierda: Información */}
             <div class="flex flex-col items-start w-full pr-0 lg:pr-8">
@@ -74,22 +74,22 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
                 
                 {/* Subtítulo */}
                 {subtitulo && (
-                    <span class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[16px] md:text-[20px] font-bold uppercase tracking-wide mb-2">
+                    <span class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-2 w-full text-center lg:text-left">
                         {subtitulo}
                     </span>
                 )}
                 
                 {/* Título Principal (Precio) */}
                 {titulo && (
-                    <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[40px] md:text-[56px] font-bold leading-tight mb-6 uppercase">
+                    <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-6 uppercase w-full text-center lg:text-left">
                         {titulo}
                     </TitleTag>
                 )}
                 
                 {/* Descripción (Rich Text / Blocks) */}
                 {descripcion && (
-                    <div 
-                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] font-normal leading-relaxed mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                    <div
+                        class="font-[family-name:var(--font-secundaria)] text-[17px] md:text-[22px] text-[var(--surface-brand-primary)] font-normal leading-relaxed mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
                         set:html={stringifyRichText(descripcion)}
                     />
                 )}
@@ -119,7 +119,7 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
             {/* Columna Derecha: Carrusel Swiper */}
             <div class="w-full h-full relative flex items-center justify-center mt-10 lg:mt-0">
                 {slideCount > 0 && (
-                    <div class="acuario-galeria-swiper w-full h-[350px] md:h-[450px] lg:h-[500px] rounded-[24px] overflow-hidden shadow-2xl relative">
+                    <div class="acuario-galeria-swiper w-full aspect-video rounded-[24px] overflow-hidden shadow-2xl relative">
                         <div class="swiper-wrapper h-full">
                             {youtubeId && (
                                 <div class="swiper-slide w-full h-full relative bg-black">
