@@ -38,27 +38,27 @@ if (ctaButtonRaw) {
 
 <header class="w-full relative z-50">
     <!-- Desktop Top Bar -->
-    <div class="hidden md:flex w-full h-[40px]">
+    <div class="hidden md:flex w-full min-h-[60px] font-bold">
         <!-- Social Icons -->
-        <div class="bg-[var(--accent-highlight-primary)] flex items-center justify-center px-8 min-w-[200px]">
+            <div class="bg-[var(--accent-highlight-primary)] flex items-center justify-start px-8 min-w-[420px]">
             <div class="flex items-center gap-5 text-white">
                 {social.map((item: any) => (
                     <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
-                        <i class={`${item.icono_clase} text-sm`}></i>
+                            <i class={`${item.icono_clase} text-[17px]`}></i>
                     </a>
                 ))}
             </div>
         </div>
         <!-- Horario / Text -->
-        <div class="flex-grow bg-[var(--accent-highlight-secondary)] flex items-center justify-center">
+        <div class="flex-grow bg-[var(--surface-brand-secondary)] flex items-center justify-center">
             <div class="text-white text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
                 {textoHorario}
             </div>
         </div>
         <!-- Right Yellow Button Section -->
         {buttons.length > 0 && (
-            <div class="bg-[var(--brand-interactive-base)] flex items-center justify-center px-12 h-full cursor-pointer hover:brightness-110 transition-all min-w-[250px]">
-                <a href={buttons[0].url} class="text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-sm md:text-[16px] tracking-wide uppercase">
+            <div class="bg-[var(--brand-interactive-base)] flex items-center justify-center px-12 self-stretch cursor-pointer hover:brightness-110 transition-all min-w-[250px]">
+                <a href={buttons[0].url} class="cta-bounce inline-block text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-extrabold text-[20px] tracking-wide uppercase">
                     {buttons[0].texto}
                 </a>
             </div>
@@ -66,8 +66,8 @@ if (ctaButtonRaw) {
     </div>
 
     <!-- Main Navigation Bar -->
-    <div class="bg-[var(--surface-brand-primary)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)]">
-        <div class="max-w-[1440px] mx-auto px-4 md:px-8 h-20 md:h-[80px] flex items-center justify-between">
+    <div class="bg-[var(--neutral-background-strong)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)]">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8 h-24 md:h-[100px] flex items-center justify-between">
             <!-- Logo -->
             <a href="/" class="shrink-0 h-full py-2">
                 <!-- Desktop Logo -->
@@ -114,7 +114,7 @@ if (ctaButtonRaw) {
                                         <li>
                                             <a
                                                 href={getLocalizedUrl(sublink.url, locale)}
-                                                class="block px-8 py-4 text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[15px] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--brand-interactive-base)] transition-colors"
+                                                class="block px-8 py-4 text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[15px] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)] transition-colors"
                                             >
                                                 {sublink.texto}
                                             </a>
@@ -142,7 +142,7 @@ if (ctaButtonRaw) {
 </header>
 
 <!-- Mobile Overlay Menu -->
-<div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[84px] bg-white z-40 overflow-y-auto flex-col pb-20 border-t-4 border-[var(--brand-interactive-base)]">
+<div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[100px] bg-white z-40 overflow-y-auto flex-col pb-20 border-t-4 border-[var(--brand-interactive-base)]">
     <nav class="flex flex-col">
         {links.map((link: any, index: number) => (
             <div class="mobile-menu-group border-b border-gray-200">
@@ -159,7 +159,7 @@ if (ctaButtonRaw) {
                 {link.sublinks && link.sublinks.length > 0 && (
                     <div id={`submenu-${index}`} class="hidden flex-col bg-white">
                         {link.sublinks.map((sublink: any) => (
-                            <a href={getLocalizedUrl(sublink.url, locale)} class="block px-8 py-3.5 text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[15px] hover:bg-[var(--surface-brand-primary)] hover:text-[var(--brand-interactive-base)] transition-colors border-t border-gray-100">
+                            <a href={getLocalizedUrl(sublink.url, locale)}                                 class="block px-8 py-3.5 text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[15px] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)] transition-colors border-t border-gray-100">
                                 {sublink.texto}
                             </a>
                         ))}
@@ -232,3 +232,24 @@ if (ctaButtonRaw) {
         });
     });
 </script>
+
+<style>
+    @keyframes cta-bounce-grow {
+        0%,
+        100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.08);
+        }
+    }
+    .cta-bounce {
+        animation: cta-bounce-grow 1.2s ease-in-out infinite;
+        transform-origin: center;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .cta-bounce {
+            animation: none;
+        }
+    }
+</style>
