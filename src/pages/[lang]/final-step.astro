@@ -64,7 +64,7 @@ const t = {
         background-position: center;
     }
 </style>
-<script define:vars={{ t }}>
+<script is:inline define:vars={{ t }}>
     console.log(t)
   const urlParams = new URLSearchParams(window.location.search);
   const status = urlParams.get('status');
@@ -108,7 +108,7 @@ const t = {
   
 </script>
 
-<script>
+<script is:inline>
     // Función para obtener el valor de un parámetro de la URL
     function getParameterByName(name) {
       name = name.replace(/[\[\]]/g, "\\$&");
@@ -159,6 +159,7 @@ const t = {
             }
           };
 
+          console.log(eventData);
           // Empujar los datos a la capa de datos
           window.dataLayer = window.dataLayer || [];
           window.dataLayer.push(eventData);

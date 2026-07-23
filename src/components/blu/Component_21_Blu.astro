@@ -1,0 +1,182 @@
+---
+// src/components/dolphinaris/Component_6_Dolphinaris.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+interface ItemReconocimiento {
+    id: number;
+    titulo: string;
+    descripcion?: string;
+    imagen?: any;
+    urlPagina?: string;
+}
+
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+    items?: ItemReconocimiento[];
+    background: string
+    color_text: string
+}
+
+const {
+    titulo = "WE ARE PROUD",
+    descripcion = "At Dolphinaris Mexico, we are proud to be much more than just a Dolphin Habitat. In addition to being home to a large marine family, we are also dedicated to the research and conservation of marine mammals. Every day, we strive to raise awareness among each and every visitor who takes part in our Swim with Dolphins experiences, which is why we take great pride in our recognitions.",
+    items = [
+        {
+            id: 1,
+            titulo: "AHC",
+            descripcion: "One of the only global animal protection organizations that works to help all animals, with a track record of achievements...",
+            imagen: "https://placehold.co/800x480/4BA3B5/ffffff?text=AHC",
+            urlPagina: "#",
+        },
+        {
+            id: 2,
+            titulo: "EAAM",
+            descripcion: "Proudly, Dolphinaris and its Cancún location received certification from the European Association for Aquatic Mammals (EAAM)...",
+            imagen: "https://placehold.co/800x480/4BA3B5/ffffff?text=EAAM",
+            urlPagina: "#",
+        },
+        {
+            id: 3,
+            titulo: "AMHMAR",
+            descripcion: "Dolphinaris is one of the organizations represented by AMHMAR, which has extensive experience in the care of marine mammals...",
+            imagen: "https://placehold.co/800x480/4BA3B5/ffffff?text=AMHMAR",
+            urlPagina: "#",
+        },
+    ],
+    background,
+    color_text
+} = Astro.props;
+
+const bg = background ?? '#012b49';
+const text_color = color_text ?? '#eae7e2';
+---
+
+<section id="section_21" class="w-full py-16 md:py-24 bg-(--surface-brand-primary) overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10">
+
+        <!-- ENCABEZADO CENTRADO -->
+        <div class="text-center mb-14 max-w-4xl mx-auto">
+            {titulo && (
+                <h2 class="font-montserrat font-bold text-[28px] md:text-[36px] uppercase tracking-[0.2em] text-(--surface-brand-secondary) mb-6">
+                    {titulo}
+                </h2>
+            )}
+            {descripcion && (
+                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed description" set:html={stringifyRichText(descripcion)}></div>
+            )}
+        </div>
+
+        
+        <div
+            id="sliderContainer" 
+            class="anim-element flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 max-w-400 mx-auto scrollbar-hide"
+            style="--anim-delay: 0.2s;"
+        >
+            {
+                Array.isArray(items) && items.map((item, index) => {
+                    const imgSrc = getStrapiUrl(item.imagen) || item.imagen;
+                    const isLink = item.urlPagina && item.urlPagina !== "#";
+                    const Tag = isLink ? "a" : "div";
+
+                    return (
+                        <Tag
+                            href={isLink ? item.urlPagina : undefined}
+                            class={`basis-1/3 min-w-full md:min-w-[calc(33%-18px)] h-full snap-start group ${isLink ? "cursor-pointer" : ""}`}
+                        >
+                            <!-- IMAGEN CON OVERLAY CYAN -->
+                            <div class="overflow-hidden mb-5 relative bg-(--accent-highlight-primary)">
+                                {imgSrc && (
+                                    <Image
+                                        src={imgSrc}
+                                        alt={`imagen ${index}`}
+                                        width={800}
+                                        height={480}
+                                        class="w-full h-full transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                )}
+                            </div>
+
+                            <!-- TÍTULO -->
+                            {item.titulo && (
+                                <h3 class="font-montserrat font-bold text-[20px] text-(--surface-brand-secondary) mb-3 uppercase tracking-wide group-hover:text-[var(--accent-highlight-primary)] transition-colors duration-300">
+                                    {item.titulo}
+                                </h3>
+                            )}
+
+                            <!-- DESCRIPCIÓN -->
+                            {item.descripcion && (
+                                <div class="font-roboto text-[15px] font-normal text-white/70 leading-relaxed" set:html={stringifyRichText(item.descripcion)}></div>
+                            )}
+                        </Tag>
+                    );
+                })
+            }
+        </div>
+
+        <div class="flex justify-center gap-4 mb-1 z-10 relative">
+            <button id="prevBtn" class="text-(--brand-interactive-base) hover:opacity-75 transition-colors focus:outline-none p-1 cursor-pointer">
+                <i class="fa-solid fa-angle-left text-4xl leading-none"></i>
+            </button>
+    
+            <button id="nextBtn" class="text-(--brand-interactive-base) hover:opacity-75 transition-colors focus:outline-none p-1 cursor-pointer">
+                <i class="fa-solid fa-angle-right text-4xl leading-none"></i>
+            </button>
+        </div> 
+
+    </div>
+</section>
+<script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+        initSlider();
+        initObserver();
+    });
+
+    function initSlider() {
+        const container = document.getElementById('sliderContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (container && prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const scrollAmount = container.clientWidth;
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            prevBtn.addEventListener('click', () => {
+                const scrollAmount = container.clientWidth;
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+        }
+    }
+
+    function initObserver() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const targets = document.querySelectorAll('.trigger-anim-events');
+        targets.forEach(target => observer.observe(target));
+    }
+</script>
+<style define:vars={{ bg, text_color }}>
+    #section_21 {
+        background-color: var(--bg);
+    }
+
+    #section_21 h2, #section_21 div.description, #prevBtn, #nextBtn{
+        color: var(--text_color) !important;
+    }
+</style>

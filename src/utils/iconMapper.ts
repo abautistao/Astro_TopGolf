@@ -15,6 +15,7 @@ export const lottieMap: Record<string, string> = {
     "corporate": "/lottie/Corporate.json",
     "birthday": "/lottie/birthday.json",
     "animation": "/lottie/Animation-1755619336176.lottie",
+    "comida": "/lottie/comida.json",
 };
 
 

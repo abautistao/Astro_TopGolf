@@ -1,0 +1,180 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import type { Boton } from "./elements/Button.astro";
+import Button from "./elements/Button.astro";
+
+interface Testimonio {
+    id: number;
+    cita: string;
+    nombre: string;
+    fecha: string;
+    avatar: any;
+}
+
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+    background?: string;
+    color_text?: string;
+    testimonios?: Testimonio[];
+    boton?: Boton;
+}
+
+const {
+    titulo,
+    descripcion,
+    background,
+    color_text,
+    boton,
+    testimonios = [
+        {
+            id: 1,
+            cita: "Una experiencia única e inolvidable. Nadar con delfines en Cozumel fue el momento más mágico de nuestras vacaciones. El equipo es increíble.",
+            nombre: "Alondra Campos",
+            fecha: "Hace 3 meses",
+            avatar: "https://placehold.co/100x100/002A4E/ffffff?text=AC",
+        },
+        {
+            id: 2,
+            cita: "El servicio es impecable y la atención al cliente es excepcional. Definitivamente regresaré con toda mi familia. ¡100% recomendado!",
+            nombre: "Carlos Rivera",
+            fecha: "Hace 1 mes",
+            avatar: "https://placehold.co/100x100/1E8CA6/ffffff?text=CR",
+        },
+        {
+            id: 3,
+            cita: "Los delfines son hermosos y los entrenadores muy profesionales. Una experiencia que vale cada peso. ¡No se la pierdan!",
+            nombre: "Sofía Martínez",
+            fecha: "Hace 2 semanas",
+            avatar: "https://placehold.co/100x100/4BA3B5/ffffff?text=SM",
+        },
+    ],
+} = Astro.props;
+
+const bg = background ?? '#012b49';
+const text_color = color_text ?? '#eae7e2';
+---
+
+<section id="section_22" class="relative w-full overflow-hidden py-12 md:py-24">
+
+    <!-- Overlay semitransparente sobre el fondo -->
+    <div class="max-w-360 mx-auto px-4 md:px-6 relative z-10 flex flex-col md:block items-center">
+         <!-- ENCABEZADO CENTRADO -->
+        <div class="text-center mb-14 max-w-4xl mx-auto">
+            {titulo && (
+                <h2 class="font-montserrat font-bold text-[28px] md:text-[36px] uppercase tracking-[0.2em] text-(--surface-brand-secondary) mb-6">
+                    {titulo}
+                </h2>
+            )}
+            {descripcion && (
+                <div class="font-roboto text-[16px] font-normal text-white/80 leading-relaxed description" set:html={stringifyRichText(descripcion)}></div>
+            )}
+        </div>
+        <!-- CARD DE TESTIMONIOS (derecha, solapada) -->
+        <div class="w-full grid grid-cols-1 lg:grid-cols-3 gap-8 relative md:mt-0 px-2 md:px-0 mb-10">
+            
+            {testimonios.map(testimonio =>(
+<div
+                id="testimonial-carousel-dolph"
+                class="w-full overflow-hidden relative rounded-4xl shadow-2xl bg-white border border-white/30 p-5"
+            >
+                <!-- Comillas decorativas y citas -->
+                <div class="rounded-3xl p-1 relative flex items-center">
+                    <div class="w-full h-full overflow-hidden flex items-center">
+                        <div
+                            class="flex transition-transform duration-500 ease-out w-full"
+                            id="carousel-track-dolph"
+                        >
+                            <div class="w-full flex flex-col items-start justify-center px-4 py-3">
+                                <div class="w-full flex justify-between items-center">
+
+                                    <!-- Quote Open -->
+                                    <div class="mb-3 text-[#75C5DB]">
+                                        <i class="fa-sharp-duotone fa-solid fa-quote-left text-3xl md:text-4xl" />
+                                    </div>
+                                    <div class="flex">
+                                        <i class="fa-solid fa-star" style="color: #E8B84B"></i>
+                                        <i class="fa-solid fa-star" style="color: #E8B84B;"></i>
+                                        <i class="fa-solid fa-star" style="color: #E8B84B;"></i>
+                                        <i class="fa-solid fa-star" style="color: #E8B84B;"></i>
+                                        <i class="fa-solid fa-star" style="color: #E8B84B;"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Cita -->
+                                <p class="text-sm md:text-base text-(--surface-brand-primary) font-roboto font-normal leading-relaxed italic mb-4">
+                                    "{testimonio.cita}"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avatar, Nombre, Fecha + Dots -->
+                <div class="bg-white pt-4 flex flex-col items-center border-t border-[#e2e2e2]">
+                    <!-- Track de usuarios sincronizado -->
+                    <div class="relative w-full overflow-hidden">
+                        <div class="w-full h-full overflow-hidden">
+                            <div
+                                id="user-info-track-dolph"
+                                class="flex transition-transform duration-500 ease-out w-full"
+                            >
+                                
+                                <div class="w-full shrink-0 flex items-center justify-start text-left gap-3">
+                                    <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200 shrink-0 ring-2 ring-(--surface-brand-secondary)">
+                                        <Image
+                                            src={
+                                                getStrapiUrl(testimonio.avatar) ||
+                                                (typeof testimonio.avatar === 'string' ? testimonio.avatar : null) ||
+                                                "https://placehold.co/100x100/1E8CA6/ffffff?text=?"
+                                            }
+                                            alt={testimonio.nombre}
+                                            width={48}
+                                            height={48}
+                                            loading="lazy"
+                                            class="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="text-[16px] font-montserrat font-bold text-(--surface-brand-primary)">
+                                            {testimonio.nombre}
+                                        </h4>
+                                        <span class="text-xs text-(--surface-brand-primary)/60 font-roboto">
+                                            {testimonio.fecha}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ))}
+            
+        </div>
+
+        <div class="flex justify-center text-center">
+            {boton && (
+                <!-- BOTÓN -->
+                
+                <a
+                    href={boton.url}
+                    class="block mt-6 px-12 lg:px-0 py-3 w-full lg:w-1/4 border-2 border-white font-montserrat font-bold tracking-widest text-[14px] uppercase text-center transition-all duration-300 hover:bg-white hover:text-(--surface-brand-primary) bg-white text-(--surface-brand-primary) hover:cursor-pointer"
+                >
+                    {boton.texto || "Ver Reviews"}
+                </a>
+                
+            )}
+        </div>
+    </div>
+</section>
+<style define:vars={{ bg, text_color }}>
+    #section_22 {
+        background-color: var(--bg);
+    }
+
+    #section_22 h2, #section_22 div.description , #prevBtn, #nextBtn{
+        color: var(--text_color) !important;
+    }
+</style>

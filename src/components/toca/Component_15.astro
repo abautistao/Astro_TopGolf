@@ -23,26 +23,26 @@ const boton_data: Boton[] = Boton
 const descripcionHtml = stringifyRichText(descripcion);
 ---
 
-<section class="trigger-anim-menu w-full bg-[var(--surface-brand-primary)] py-12 lg:py-15 px-4">
+<section class="trigger-anim-menu w-full bg-(--surface-brand-primary) py-12! lg:py-15! px-4!">
 
-    <div class="anim-fade max-w-4xl mx-auto flex flex-col items-center text-center">
+    <div class="anim-fade max-w-4xl! mx-auto! flex! flex-col! items-center text-center!">
         <h2
-            class="text-[var(--accent-feedback-strong)] text-4xl lg:text-3xl font-bold uppercase mb-6 font-(family-name:--font-titling-gothic-fb-extended-bold) leading-none tracking-wide"
+            class="text-(--accent-feedback-strong)! text-4xl! lg:text-3xl! font-bold! uppercase! mb-6! font-(family-name:--font-titling-gothic-fb-extended-bold)! leading-none tracking-wide"
         >
             {titulo}
         </h2>
 
         <div
-            class="text-[var(--accent-feedback-strong)] text-base lg:text-xl font-(family-name:--font-sharp-sans-medium) leading-relaxed max-w-3xl mb-10 opacity-90 strapi-rich-text"
+            class="text-(--accent-feedback-strong) text-base! lg:text-xl! font-(family-name:--font-sharp-sans-medium)! leading-relaxed max-w-3xl mb-10 opacity-90 strapi-rich-text"
         >
             <Fragment set:html={descripcionHtml} />
         </div>
 
         {boton_data.length && (
-            <div class="w-full flex justify-center">
+            <div class="w-full! flex! justify-center">
                 <Button
                     botones={boton_data}
-                    clase="inline-block  text-black font-bold uppercase py-4 px-10 text-lg lg:text-2xl hover:scale-105 transition-transform font-(family-name:--font-titling-gothic-fb-extended-bold) tracking-wider w-full md:w-auto"
+                    clase="inline-block!  text-black! font-bold! uppercase! py-4! px-10! text-lg! lg:text-2xl! hover:scale-105 transition-transform font-(family-name:--font-titling-gothic-fb-extended-bold)! tracking-wider w-full! md:w-auto!"
                 />
             </div>
         )}
@@ -77,7 +77,7 @@ const descripcionHtml = stringifyRichText(descripcion);
 <style>
     /* Ensure rich text links inherit color or have specific style if needed */
     .strapi-rich-text a {
-        color: var(--brand-interactive-base);
+        color: var(--brand-interactive-base) !important;
         text-decoration: underline;
     }
 

@@ -137,7 +137,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                         <div class="hidden md:flex items-center h-full static">
                             <button
                                 type="button"
-                                class="menu-trigger flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter h-full px-2 focus:outline-none"
+                                class="menu-trigger flex items-center gap-1 font-bold uppercase text-(--surface-brand-primary) text-xs tracking-tighter h-full px-2 focus:outline-none"
                                 data-target={`multi-dropdown-${idx}`}
                             >
                                 {section.titulo_seccion}{" "}
@@ -216,8 +216,8 @@ const promos: Promo[] = headerData?.Slider_promos || [];
 
             {/* DERECHA: Nav Principal + Botones */}
             <div class="flex items-center gap-3 md:gap-8 h-full">
-                <nav class="hidden lg:flex h-full items-center">
-                    <ul class="flex items-center gap-8 h-full">
+                <nav class="hidden! lg:flex! h-full items-center">
+                    <ul class="flex items-center gap-8 h-full mb-0!">
                         {
                             links.map((link: any, index: number) => (
                                 <li class="h-full flex items-center static">
@@ -225,7 +225,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                                         <>
                                             <button
                                                 type="button"
-                                                class="menu-trigger h-full flex items-center gap-1 font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter focus:outline-none"
+                                                class="menu-trigger h-full flex items-center gap-1 font-bold uppercase! text-(--surface-brand-primary) text-xs! tracking-tighter focus:outline-none"
                                                 data-target={`menu-${index}`}
                                             >
                                                 {link.texto}{" "}
@@ -244,7 +244,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                                                                         subItem.url,
                                                                         locale,
                                                                     )}
-                                                                    class="group flex flex-col items-center gap-4 text-center w-32"
+                                                                    class="group flex flex-col items-center gap-4 text-center w-32 hover:no-underline!"
                                                                 >
                                                                     <div class="h-24 flex items-center justify-center relative">
                                                                         {subItem.imageUrl ? (
@@ -272,7 +272,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                                                                         )}
                                                                     </div>
                                                                     <div class="flex flex-col">
-                                                                        <span class="font-bold uppercase text-[var(--brand-interactive-base)] text-xs tracking-wide">
+                                                                        <span class="font-bold uppercase text-(--brand-interactive-base)! text-xs tracking-wide hover:no-underline!">
                                                                             {
                                                                                 subItem.label
                                                                             }
@@ -291,7 +291,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                                                 link.url,
                                                 locale,
                                             )}
-                                            class="font-bold uppercase text-[var(--surface-brand-primary)] text-xs tracking-tighter "
+                                            class="font-bold uppercase text-(--surface-brand-primary)! text-xs tracking-tighter hover:no-underline!"
                                         >
                                             {link.texto}
                                         </a>
@@ -329,7 +329,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
     {/* MENU MOBILE (Contenido desplegable) */}
     <div
         id="mobile-menu"
-        class="hidden fixed top-[65px] left-0 w-full h-[calc(100vh-65px)] bg-[var(--surface-brand-primary)] z-40 overflow-y-auto transition-all"
+        class="hidden fixed top-[130px] left-0 w-full h-[calc(100vh-65px)] bg-(--surface-brand-primary) z-40 overflow-y-auto transition-all"
     >
         <div class="flex flex-col w-full pb-20">
             {/* Iteración dinámica sobre links_multiples (Mobile) */}
@@ -367,7 +367,7 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                                                                     item.url,
                                                                     locale,
                                                                 )}
-                                                                class="text-[var(--brand-interactive-base)] text-sm lg:text-sm font-medium"
+                                                                class="text-(--brand-interactive-base)! text-sm! lg:text-sm! font-medium!"
                                                             >
                                                                 {item.titulo ||
                                                                     item.texto}
@@ -437,9 +437,9 @@ const promos: Promo[] = headerData?.Slider_promos || [];
                         ) : (
                             <a
                                 href={getLocalizedUrl(link.url, locale)}
-                                class="w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)] "
+                                class="w-full py-6 flex items-center justify-center gap-2 text-(--brand-interactive-base)! "
                             >
-                                <span class="text-xs font-bold uppercase tracking-wide">
+                                <span class="text-xs! font-bold! uppercase! tracking-wide">
                                     {link.texto}
                                 </span>
                             </a>

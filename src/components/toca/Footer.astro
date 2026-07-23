@@ -96,7 +96,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 
                 <div class="flex items-center gap-3 mt-4">
                     {socials.map((social: any) => (
-                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
+                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-(--surface-brand-primary)! hover:scale-110 transition-transform hover:no-underline! block">
                             {social.iconImage?.data ? (
                                 <img src={getStrapiUrl(social.iconImage.data.attributes.url)} alt={social.name} class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current" />
                             ) : (
@@ -117,7 +117,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                 <ul class="flex flex-col w-full space-y-3">
                     {middleColumnItems.map((item: any) => (
                         <li>
-                            <a href={item.url} class="group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200">
+                            <a href={item.url} class="text-(--surface-brand-primary)! group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200 hover:no-underline!" >
                                 <div class="flex flex-col text-left">
                                     <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base ">
                                         {item.name}
@@ -159,7 +159,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 
                 <div class="font-(family-name:--font-sharp-sans-bold) flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-auto">
                     {extraIconLinks.map((link: any) => (
-                        <a href={link.url} class="text-base flex items-center gap-2 group">
+                        <a href={link.url} class="text-(--surface-brand-primary)! text-base flex items-center gap-2 group hover:no-underline!">
                             <span class="text-base text-[var(--surface-brand-primary)] flex items-center" set:html={link.iconHtml}></span>
                             <span class="font-bold text-base  underline decoration-solid decoration-black">
                                 {link.text}
@@ -176,7 +176,7 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 
             <div class="flex lg:hidden items-center gap-6">
                 {socials.map((social: any) => (
-                    <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-[var(--surface-brand-primary)] hover:scale-110 transition-transform block">
+                    <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-(--surface-brand-primary)! hover:scale-110 transition-transform block">
                         {social.iconImage?.data ? (
                             <img src={getStrapiUrl(social.iconImage.data.attributes.url)} alt={social.name} class="w-6 h-6 object-contain fill-current" />
                         ) : (
@@ -189,19 +189,19 @@ const allLinksMobile = [...linksLeft, ...linksRight];
             <div class="hidden lg:flex w-full flex-row justify-between items-center h-full">
                 <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3">
                     {linksLeft.map((link: any) => (
-                        <a href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
+                        <a class="text-(--surface-brand-primary)!" href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
                     ))}
                 </div>
                 <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-end gap-6 underline decoration-1 underline-offset-3">
                     {linksRight.map((link: any) => (
-                        <a href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
+                        <a class="text-(--surface-brand-primary)!" href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
                     ))}
                 </div>
             </div>
 
             <div class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-3 px-2">
                 {allLinksMobile.map((link: any) => (
-                    <a href={getLocalizedUrl(link.URL, locale)} class="whitespace-nowrap text-xs">
+                    <a href={getLocalizedUrl(link.URL, locale)} class="text-(--surface-brand-primary)! whitespace-nowrap text-xs">
                         {link.Texto}
                     </a>
                 ))}
