@@ -49,14 +49,14 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
         >
             <div class="container mx-auto px-4 max-w-5xl flex flex-col items-center justify-center gap-3 md:gap-4">
                 {ctaTitulo && (
-                    <h2 class="font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[22px] uppercase tracking-wide leading-tight">
+                    <h2 class="font-[family-name:var(--font-principal)] font-bold md:font-black text-[18px] md:text-[32px] uppercase tracking-wide leading-tight">
                         {ctaTitulo}
                     </h2>
                 )}
                 {ctaBotonTexto && (
                     <a
                         href={ctaBotonUrl}
-                        class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[16px] uppercase px-8 md:px-10 py-3 transition-opacity hover:opacity-90 tracking-wide"
+                        class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[20px] uppercase px-8 md:px-10 py-3 rounded-full shadow-[0_4px_10px_0_rgba(0,0,0,0.5)] transition-opacity hover:opacity-90 tracking-wide"
                     >
                         {ctaBotonTexto}
                     </a>
@@ -66,7 +66,7 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     )}
 
     <!-- SECCIÓN 2 — Logos + columnas de enlaces + contacto + Newsletter -->
-    <section class="w-full py-10 md:py-14 bg-[var(--surface-brand-primary)] text-white">
+    <section class="w-full py-10 md:py-14 bg-[var(--neutral-background-strong)] text-white">
         <div class="container mx-auto px-6 max-w-[1280px]">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 items-center">
 

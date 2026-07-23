@@ -100,8 +100,10 @@ const getHeadingTag = (nivel?: string) => {
                                         </picture>
                                     </>
                                 )}
-                                <!-- Overlay oscuro para que el texto resalte -->
-                                <div class="absolute inset-0 bg-black/40 z-10"></div>
+                                {(slide.texto_principal || slide.subtitulo) && (
+                                    <!-- Overlay oscuro para que el texto resalte -->
+                                    <div class="absolute inset-0 bg-black/40 z-10"></div>
+                                )}
                             </div>
 
                             <!-- Text Content (Optional) -->
