@@ -60,13 +60,14 @@ const getHeadingTag = (nivel?: string) => {
 };
 ---
 
-<section class="relative z-10 w-screen left-1/2 -ml-[50vw] h-[600px] md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
+<section class="relative z-10 w-screen left-1/2 -ml-[50vw] aspect-video md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
     {finalSlides && finalSlides.length > 0 ? (
         <div class="swiper acuario-banner-swiper w-full h-full absolute inset-0">
             <div class="swiper-wrapper h-full">
                 {finalSlides.map((slide) => {
                     const bgUrl = getStrapiUrl(slide.fondo);
                     const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
+                    const hasMobileImage = !!slide.fondo_mobile;
                     const altText = slide.fondo?.alternativeText || "Acuario Inbursa";
                     const isBgVideo = isVideo(bgUrl);
                     
@@ -87,18 +88,16 @@ const getHeadingTag = (nivel?: string) => {
                                     />
                                 ) : (
                                     <>
-                                        <!-- Mobile Image -->
-                                        <img
-                                            src={bgMobileUrl}
-                                            alt={altText}
-                                            class="md:hidden absolute inset-0 w-full h-full object-cover"
-                                        />
-                                        <!-- Desktop Image -->
-                                        <img
-                                            src={bgUrl}
-                                            alt={altText}
-                                            class="hidden md:block absolute inset-0 w-full h-full object-cover"
-                                        />
+                                        <picture class="absolute inset-0 w-full h-full block">
+                                            {hasMobileImage && (
+                                                <source media="(max-width: 767px)" srcset={bgMobileUrl} />
+                                            )}
+                                            <img
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="absolute inset-0 w-full h-full object-cover"
+                                            />
+                                        </picture>
                                     </>
                                 )}
                                 <!-- Overlay oscuro para que el texto resalte -->

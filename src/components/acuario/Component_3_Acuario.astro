@@ -73,13 +73,13 @@ const HeadingTag = etiqueta_titulo;
         <div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-10">
             
             {subtitulo && (
-                <span class="w-full text-center font-[family-name:var(--font-secundaria)] text-[var(--accent-highlight-primary)] text-[16px] md:text-[20px] font-medium tracking-[0.05em] uppercase mb-1">
+                <span class="w-full text-center font-[family-name:var(--font-secundaria)] text-[var(--accent-highlight-primary)] text-[16px] md:text-[24px] font-medium md:font-bold tracking-[0.05em] uppercase md:leading-[25px] mb-1">
                     {subtitulo}
                 </span>
             )}
 
             {titulo && (
-                <HeadingTag class="w-full text-center font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] text-[32px] md:text-[48px] font-bold uppercase leading-tight mb-4">
+                <HeadingTag class="w-full text-center font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] text-[32px] md:text-[54px] font-bold md:font-black uppercase leading-tight md:leading-[1.2] mb-4">
                     {titulo}
                 </HeadingTag>
             )}
@@ -95,8 +95,8 @@ const HeadingTag = etiqueta_titulo;
             )}
 
             {descripcion && (
-                <div 
-                    class="w-full text-justify md:text-justify font-[family-name:var(--font-secundaria)] text-[var(--neutral-text-inverted)] text-[16px] md:text-[18px] font-normal leading-relaxed mb-8 [&>p>strong]:font-bold [&>p>strong]:text-[var(--neutral-text-inverted)] [&>p]:mb-4 last:[&>p]:mb-0"
+                <div
+                    class="w-full text-center md:text-justify font-[family-name:var(--font-secundaria)] text-[var(--neutral-text-inverted)] text-[16px] font-normal leading-[1.4] mb-8 [&>p>strong]:font-bold [&>p>strong]:text-[var(--neutral-text-inverted)] [&>p]:mb-4 last:[&>p]:mb-0"
                     set:html={renderHtml(descripcion)}
                 />
             )}

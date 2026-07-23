@@ -5,7 +5,7 @@ const { texto_resaltado, texto_secundario, boton } = Astro.props;
 const btn = Array.isArray(boton) ? boton[0] : boton;
 ---
 
-<section class="w-full bg-[var(--accent-highlight-primary)] py-6 px-4 md:py-4 border-b border-[var(--accent-highlight-primary)] overflow-hidden">
+<section class="w-full bg-[var(--accent-highlight-primary)] max-md:hover:bg-[var(--brand-interactive-base)] max-md:active:bg-[var(--brand-interactive-base)] transition-colors py-3 px-4 border-b border-[var(--accent-highlight-primary)] max-md:hover:border-[var(--brand-interactive-base)] max-md:active:border-[var(--brand-interactive-base)] overflow-hidden">
     <div class="w-full max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 px-2 md:px-10">
         
         <!-- Text Container -->
@@ -26,10 +26,10 @@ const btn = Array.isArray(boton) ? boton[0] : boton;
 
         <!-- Button Container -->
         {btn && btn.texto && btn.url && (
-            <div class="mt-2 md:mt-0 flex-shrink-0">
+            <div class="hidden md:block mt-2 md:mt-0 flex-shrink-0">
                 <a 
                     href={btn.url} 
-                    class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[16px] md:text-[18px] py-3 px-8 md:py-4 md:px-10 rounded-md uppercase hover:brightness-110 transition-all shadow-md text-center"
+                    class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-black text-[15px] py-2 px-8 md:px-10 rounded-md uppercase hover:brightness-110 transition-all shadow-md text-center"
                 >
                     {btn.texto}
                 </a>
