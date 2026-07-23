@@ -52,12 +52,12 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
     <div class="max-w-[1440px] mx-auto px-6 relative z-10">
         <div class="text-center mb-12 md:mb-16">
             {titulo && (
-                <TitleTag class="font-[family-name:var(--font-principal)] text-[#003F7F] text-[32px] md:text-[48px] font-bold uppercase leading-tight">
+                <TitleTag class="font-[family-name:var(--font-principal)] text-[#003F7F] text-[32px] font-black uppercase leading-tight">
                     {titulo}
                 </TitleTag>
             )}
             {subtitulo && (
-                <SubtitleTag class="font-[family-name:var(--font-secundaria)] text-[#005DA8] text-[18px] md:text-[22px] font-medium uppercase mt-2 block tracking-wider">
+                <SubtitleTag class="font-[family-name:var(--font-secundaria)] text-[#005DA8] text-[26px] font-medium uppercase mt-2 block tracking-wider">
                     {subtitulo}
                 </SubtitleTag>
             )}
@@ -90,8 +90,8 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                 />
                                 <div class="absolute inset-0 bg-gradient-to-t from-[#002A4E] via-transparent to-transparent opacity-60"></div>
                             </div>                            {/* Contenido */}
-                            <div class="p-6 md:p-8 flex flex-col flex-grow items-center text-center text-white">
-                                <h3 class="font-[family-name:var(--font-principal)] text-[22px] md:text-[26px] font-bold uppercase mb-8 leading-tight min-h-[3rem] flex items-center justify-center">
+                            <div class="pt-2 pb-6 px-6 md:pt-2 md:pb-8 md:px-8 flex flex-col flex-grow items-center text-center text-white">
+                                <h3 class="font-[family-name:var(--font-principal)] text-[20px] font-black uppercase mb-3 leading-tight min-h-[2rem] flex items-center justify-center">
                                     {item.titulo}
                                 </h3>
 
@@ -104,7 +104,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                     {item.label_precio_regular || 'Precio Regular'}
                                                 </span>
                                                 <div class="flex items-center justify-center relative">
-                                                    <span class="text-[20px] md:text-[24px] font-bold opacity-100">
+                                                    <span class="text-[28px] md:text-[34px] font-normal opacity-100">
                                                         {item.precio_regular?.split(' ')[0]}
                                                     </span>
                                                     <span class="text-[10px] font-bold uppercase ml-0.5 mt-1">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
@@ -117,7 +117,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                     {item.label_precio_en_linea || 'Precio en Línea'}
                                                 </span>
                                                 <div class="flex items-baseline justify-center">
-                                                    <span class="text-[28px] md:text-[34px] font-bold">
+                                                    <span class="text-[28px] md:text-[34px] font-black">
                                                         {item.precio_en_linea?.split(' ')[0]}
                                                     </span>
                                                     <span class="text-[12px] font-bold uppercase ml-1">{item.precio_en_linea?.split(' ')[1] || 'MXN'}</span>
@@ -133,7 +133,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                         {item.label_precio_regular || 'Precio Regular'}
                                                     </span>
                                                     <div class="flex items-center justify-center relative">
-                                                        <span class="text-[28px] md:text-[34px] font-bold">
+                                                        <span class="text-[28px] md:text-[34px] font-normal">
                                                             {item.precio_regular?.split(' ')[0]}
                                                         </span>
                                                         <span class="text-[12px] font-bold uppercase ml-1">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
@@ -147,7 +147,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                         {item.label_precio_en_linea || 'Precio en Línea'}
                                                     </span>
                                                     <div class="flex items-baseline justify-center">
-                                                        <span class="text-[28px] md:text-[34px] font-bold">
+                                                        <span class="text-[28px] md:text-[34px] font-black">
                                                             {item.precio_en_linea?.split(' ')[0]}
                                                         </span>
                                                         <span class="text-[12px] font-bold uppercase ml-1">{item.precio_en_linea?.split(' ')[1] || 'MXN'}</span>
@@ -159,9 +159,9 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                 </div>
 
                                 {item.boton && (
-                                    <a 
-                                        href={item.boton.url} 
-                                        class="w-full py-3 md:py-4 bg-[#F5EC23] text-[#002A4E] font-[family-name:var(--font-principal)] font-black text-[20px] md:text-[24px] rounded-2xl uppercase hover:scale-105 transition-all shadow-lg mb-4"
+                                    <a
+                                        href={item.boton.url}
+                                        class="w-full py-1.5 md:py-2.5 bg-[#F5EC23] text-[#002A4E] font-[family-name:var(--font-principal)] font-black text-[20px] md:text-[24px] rounded-2xl uppercase hover:scale-105 transition-all shadow-lg mb-4"
                                     >
                                         {item.boton.texto || 'COMPRA AQUÍ'}
                                     </a>
