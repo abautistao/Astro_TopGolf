@@ -1,6 +1,6 @@
 ---
 // src/components/Component_28.astro
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 // 1. Definimos las interfaces para las props de Strapi
 export interface Props {
@@ -10,10 +10,12 @@ export interface Props {
   descripcion: string
   color_texto_titulo: string
   color_fondo_titulo: string
+  nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo, terminos, subtitulo, descripcion, color_texto_titulo, color_fondo_titulo } = Astro.props;
+const { titulo, terminos, subtitulo, descripcion, color_texto_titulo, color_fondo_titulo, nivel_heading_titulo, nivel_heading_subtitulo } = Astro.props;
 
 const placeholderData: Props = {
   titulo: "Términos y condiciones",
@@ -118,14 +120,17 @@ const tituloToRender = titulo || placeholderData.titulo;
 const subtituloToRender = subtitulo || placeholderData.subtitulo;
 const descripcionToRender = stringifyRichText(descripcion || placeholderData.descripcion);
 const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const HeadingTagSubtitulo = getHeadingTag(nivel_heading_subtitulo);
 ---
 
-<section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
+<section class="w-full bg-(--neutral-background-subtle) py-12 sm:py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         { titulo && (
-          <h2 id="title-component28" class="mb-4 max-w-[76%] md:max-w-[55%] !mx-auto font-(family-name:--font-shields-sans-semibold-condensed) text-center text-2xl lg:text-5xl font-bold text-[var(--neutral-background-strong)] py-2">
+          <HeadingTagTitulo id="title-component28" class="mb-4 max-w-[76%] md:max-w-[55%] !mx-auto font-(family-name:--font-shields-sans-semibold-condensed) text-center text-2xl lg:text-5xl font-bold text-[var(--neutral-background-strong)] py-2">
               {tituloToRender}
-          </h2>
+          </HeadingTagTitulo>
         )}
 
         {descripcion && (
@@ -133,9 +138,9 @@ const terminosHtml = stringifyRichText(terminos || placeholderData.terminos);
         )}
 
         {subtitulo && (
-          <h3 class="font-(family-name:--font-shields-sans-black) text-center text-xl lg:text-3xl font-bold text-[var(--neutral-background-strong)]">
+          <HeadingTagSubtitulo class="font-(family-name:--font-shields-sans-black) text-center text-xl lg:text-3xl font-bold text-[var(--neutral-background-strong)]">
               {subtituloToRender}
-          </h3>
+          </HeadingTagSubtitulo>
         )}
         <div class="font-(family-name:--font-shields-sans-regular) mt-8 text-[var(--neutral-background-strong)] prose max-w-none text-base md:text-lg strapi-rich-text" set:html={terminosHtml}></div>
     </div>

@@ -1,7 +1,7 @@
 ---
 // src/components/Component_19.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 const FALLBACK_IMAGE_URL =
     "https://placehold.co/800x600/4a5568/ffffff?text=Imagen+no+disponible";
@@ -19,6 +19,7 @@ export interface Props {
     imagen_superior: StrapiMedia | null;
     imagen_inferior_izquierda: StrapiMedia | null;
     imagen_inferior_derecha: StrapiMedia | null;
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -28,6 +29,7 @@ const {
     imagen_superior,
     imagen_inferior_izquierda,
     imagen_inferior_derecha,
+    nivel_heading
 } = Astro.props;
 
 const placeholderData: Props = {
@@ -69,9 +71,11 @@ const imgInfDerUrl = (imagen_inferior_derecha
     : null) || FALLBACK_IMAGE_URL;
 const imgInfDerAlt =
     imagen_inferior_derecha?.alternativeText || "Imagen inferior derecha";
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
-<section class="bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+<section class="bg-(--neutral-text-inverted) py-12 sm:py-16">
     <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-15">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* --- BLOQUE DE IMÁGENES (A LA IZQUIERDA EN ESCRITORIO) --- */}
@@ -146,11 +150,11 @@ const imgInfDerAlt =
             </div>
 
             <div class="flex flex-col gap-6 order-2 md:order-2">
-                <p
+                <HeadingTag
                     class="leading-none mb-0 uppercase font-semibold text-[var(--surface-brand-primary)] tracking-wide text-3xl md:text-5xl font-(family-name:--font-shields-sans-condensed)"
                 >
                     {preTituloToRender}
-                </p>
+                </HeadingTag>
                 <div
                     class="font-(family-name:--font-shields-sans-regular) prose prose-lg text-base text-[var(--neutral-background-strong)] strapi-rich-text font-normal"
                     set:html={contentHtml}

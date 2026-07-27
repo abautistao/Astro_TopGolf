@@ -1,6 +1,6 @@
 ---
 // src/components/Component_18.astro
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 
@@ -10,10 +10,12 @@ export interface Props {
     titulo: string;
     contenido: any; // Rich Text
     botones: Boton[];
+    nivel_heading_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { tag, titulo, contenido, botones } = Astro.props;
+const { tag, titulo, contenido, botones, nivel_heading_tag, nivel_heading_titulo } = Astro.props;
 
 const placeholderData: Props = {
     tag: "TOPGOLF MONTERREY",
@@ -55,26 +57,29 @@ const tituloToRender = titulo || placeholderData.titulo;
 const contentHtml = stringifyRichText(contenido || placeholderData.contenido);
 const botonesToRender =
     botones && botones.length > 0 ? botones : placeholderData.botones;
+
+const HeadingTag = getHeadingTag(nivel_heading_tag);
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
 ---
 
-<section class="w-full bg-[var(--neutral-background-subtle)] py-12 sm:py-16">
+<section class="w-full bg-(--neutral-background-subtle) py-12 sm:py-16">
     <div
         class="container mx-auto flex flex-col items-center gap-6 px-4 text-center"
     >
-        <p
-            class="font-(family-name:--font-shields-sans-bold) text-md font-bold uppercase text-[var(--brand-interactive-base)]"
+        <HeadingTag
+            class="font-(family-name:--font-shields-sans-bold) text-md font-bold uppercase text-(--brand-interactive-base)"
         >
             {tagToRender}
-        </p>
+        </HeadingTag>
 
-        <h2
-            class="font-(family-name:--font-shields-sans-condensed) text-3xl font-semibold uppercase text-[var(--neutral-background-strong)] sm:text-5xl md:text-5xl"
+        <HeadingTagTitulo
+            class="font-(family-name:--font-shields-sans-condensed) text-3xl font-semibold uppercase text-(--neutral-background-strong) sm:text-5xl md:text-5xl"
         >
             {tituloToRender}
-        </h2>
+        </HeadingTagTitulo>
 
         <div
-            class="font-(family-name:--font-shields-sans-regular) max-w-3xl text-base text-[var(--neutral-background-strong)] sm:text-lg prose strapi-rich-text"
+            class="font-(family-name:--font-shields-sans-regular) max-w-3xl text-base text-(--neutral-background-strong) sm:text-lg prose strapi-rich-text"
             set:html={contentHtml}
         />
 

@@ -1,6 +1,6 @@
 ---
 // src/components/Component_9.astro
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 // NOTA: Este script inicializa Alpine.js. Si ya está inicializado en tu layout principal (ej. Layout.astro), puedes eliminar este bloque.
 // Si no estás seguro, déjalo. No causará problemas.
@@ -11,6 +11,7 @@ export interface FaqItem {
   id: number;
   pregunta: string;
   respuesta: any; // Rich Text
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface Props {
@@ -18,6 +19,7 @@ export interface Props {
   titulo_resaltado: string;
   preguntas: FaqItem[];
   nota_aclaratoria: any; // Rich Text
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -26,6 +28,7 @@ const {
   titulo_resaltado,
   preguntas = [],
   nota_aclaratoria,
+  nivel_heading
 } = Astro.props;
 
 const placeholderFaqItems: FaqItem[] = [
@@ -47,6 +50,7 @@ const placeholderDisclaimerHtml = `<p><strong>NOTA:</strong> En esta cocina se a
 
 // Función para procesar la respuesta de cada item del acordeón
 const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 <script>
     import Alpine from 'alpinejs';
@@ -55,21 +59,23 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
 </script>
 <section class="w-full bg-[var(--neutral-text-inverted)] !py-4 sm:!py-4">
   <div class="container mx-auto !px-4">
-    <h2 class="text-center text-4xl uppercase mb-10">
+    <HeadingTag class="text-center text-4xl uppercase mb-10">
       <div class="inline-block relative font-semibold text-[32px] md:text-5xl leading-none">
         <span class="font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-semibold-condensed)">{titulo_normal || "PREGUNTAS"}</span>
         <span class="font-normal text-[var(--brand-interactive-base)] font-(family-name:--font-shields-sans-semibold-condensed)">{titulo_resaltado || "FRECUENTES"}</span>
         <hr class="w-[10%] border-[var(--brand-interactive-base)] border-t-3 mx-auto" />
     </div>
-    </h2>
+    </HeadingTag>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Columna 1 -->
       <div class="space-y-4">
-        {column1Items.map((item) => (
+        {column1Items.map((item) => {
+          const HeadingTag = getHeadingTag(item.nivel_heading);
+          return (
           <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
             <div @click="open = !open" class="flex items-center justify-between !p-4 cursor-pointer">
-              <h3 class="text-sm md:text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold) mb-0">{item.pregunta}</h3>
+              <HeadingTag class="text-sm md:text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold) mb-0">{item.pregunta}</HeadingTag>
               <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
                 <i
                   class="text-xs fa-solid fa-plus text-white transition-transform duration-300"
@@ -81,7 +87,8 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
               <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-[var(--neutral-background-strong)] max-w-none" set:html={getAnswerHtml(item)} />
             </div>
           </div>
-        ))}
+        )
+        })}
       </div>
 
       <!-- Columna 2 -->
@@ -89,7 +96,7 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
         {column2Items.map((item) => (
           <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-md border border-[var(--brand-interactive-base)] rounded-sm overflow-hidden">
             <div @click="open = !open" class="flex items-center justify-between !p-4 cursor-pointer">
-              <h3 class="text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold) mb-0">{item.pregunta}</h3>
+              <HeadingTag class="text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold) mb-0">{item.pregunta}</HeadingTag>
 
               <div class="bg-[var(--brand-interactive-base)] rounded-sm w-5 h-5 flex items-center justify-center shrink-0">
                 <i

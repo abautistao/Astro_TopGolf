@@ -1,7 +1,7 @@
 ---
 // src/components/Component_16.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 const FALLBACK_IMAGE_URL =
@@ -25,6 +25,8 @@ export interface Package {
     texto_boton: string;
     url_boton: string;
     Boton: Boton[];
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface Props {
@@ -92,6 +94,9 @@ const packagesToRender =
                             tipo: "version_3",
                         },
                     ];
+                    
+                    const HeadingTagTitulo = getHeadingTag(pkg.nivel_heading_titulo);
+                    const HeadingTagSubtitulo = getHeadingTag(pkg.nivel_heading_subtitulo);
 
                     return (
                         <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
@@ -109,12 +114,12 @@ const packagesToRender =
                                 </div>
                             </div>
                             <div class="p-8 flex flex-col flex-grow">
-                                <h2 class="text-4xl font-semibold text-[var(--surface-brand-primary)] uppercase font-(family-name:--font-shields-sans-semibold-condensed) whitespace-nowrap leading-none mb-0">
+                                <HeadingTagTitulo class="text-4xl font-semibold text-[var(--surface-brand-primary)] uppercase font-(family-name:--font-shields-sans-semibold-condensed) whitespace-nowrap leading-none mb-0">
                                     {pkg.titulo}
-                                </h2>
-                                <p class="text-base font-normal text-[var(--surface-brand-primary)] uppercase tracking-wider mt-0 font-(family-name:--font-shields-sans-regular)">
+                                </HeadingTagTitulo>
+                                <HeadingTagSubtitulo class="text-base font-normal text-[var(--surface-brand-primary)] uppercase tracking-wider mt-0 font-(family-name:--font-shields-sans-regular)">
                                     {pkg.subtitulo}
-                                </p>
+                                </HeadingTagSubtitulo>
                                 <div
                                     class="text-[var(--neutral-background-strong)] mt-6 text-sm space-y-3 flex-grow prose max-w-none font-normal font-(family-name:--font-shields-sans-regular)"
                                     set:html={contentHtml}

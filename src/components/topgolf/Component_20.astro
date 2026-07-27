@@ -5,7 +5,7 @@ import { Image } from "astro:assets";
 import { getStrapiUrl } from '../../lib/strapi.js';
 import dotsPattern from '../../assets/Artwork_bg.png';
 import dotsPatternSquare from '../../assets/Artwork_square.png';
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 const FALLBACK_IMAGE_URL =
   "https://placehold.co/1024x1280/4a5568/ffffff?text=Imagen+no+disponible";
@@ -15,6 +15,7 @@ export interface Feature {
   id: number;
   titulo: string;
   descripcion: any;
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface StrapiMedia {
@@ -29,6 +30,8 @@ export interface Props {
   titulo_principal: string;
   texto_introduccion: any;
   caracteristicas: Feature[];
+  nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -38,6 +41,8 @@ const {
   titulo_principal,
   texto_introduccion,
   caracteristicas,
+  nivel_heading_titulo,
+  nivel_heading_subtitulo
 } = Astro.props;
 
 const placeholderData: Props = {
@@ -77,6 +82,9 @@ const imageUrl = (imagen_principal
   : null) || FALLBACK_IMAGE_URL;
 const imageAlt =
   imagen_principal?.alternativeText || "Imagen principal de la sección";
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const HeadingTagSubtitulo = getHeadingTag(nivel_heading_subtitulo);
 ---
 
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
@@ -117,32 +125,36 @@ const imageAlt =
       <div
         class="z-10 p-5 lg:p-0 xl:p-0 font-(family-name:--font-shields-sans-regular)"
       >
-        <h2 class="text-xl md:text-[28px] tracking-wider uppercase">
+        <HeadingTagTitulo class="text-xl md:text-[28px] tracking-wider uppercase">
           {dataToRender.titulo_seccion}
-        </h2>
-        <h1
+        </HeadingTagTitulo>
+        <HeadingTagSubtitulo
           class="text-5xl md:text-7xl font-semibold uppercase my-2 font-(family-name:--font-shields-sans-condensed)"
         >
           {dataToRender.titulo_principal}
-        </h1>
+        </HeadingTagSubtitulo>
         <div
           class="mt-6 text-base max-w-2xl strapi-rich-text"
           set:html={dataToRender.contentHtml}
         />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mt-12">
           {
-            dataToRender.caracteristicas.map((feature) => (
+            dataToRender.caracteristicas.map((feature) => {
+              const HeadingTag = getHeadingTag(feature.nivel_heading);
+
+              return (
               <div>
-                <h3 class="flex items-center mb-2 text-[var(--accent-highlight-secondary)]">
+                <HeadingTag class="flex items-center mb-2 text-[var(--accent-highlight-secondary)]">
                   <i class="fas fa-circle-check text-[var(--accent-feedback-strong)] mr-3 flex-shrink-0" />
                   {feature.titulo}
-                </h3>
+                </HeadingTag>
                 <div
                   class="text-sm opacity-90 strapi-rich-text"
                   set:html={stringifyRichText(feature.descripcion)}
                 />
               </div>
-            ))
+            )
+            })
           }
         </div>
       </div>
