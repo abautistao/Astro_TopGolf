@@ -1,7 +1,7 @@
 ---
 // src/components/Component_24.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import dotsPatternMobile from '../../assets/Artwork_1.png';
 import ArtworkSquare12 from '../../assets/Artwork_square_12_dot.png';
 import ButtonGroup from './elements/Button.astro';
@@ -22,10 +22,12 @@ export interface Props {
     texto_boton: string;
     url_boton: string;
     Boton: Boton[];
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { imagen_principal, titulo, descripcion, texto_boton, url_boton, Boton } = Astro.props;
+const { imagen_principal, titulo, descripcion, texto_boton, url_boton, Boton, nivel_heading } = Astro.props;
 
 const placeholderData: Props = {
     titulo: "¡JUGAR GOLF NUNCA SERÁ IGUAL!",
@@ -56,6 +58,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         tipo: "version_1" // Usamos version_1 como el estilo de botón principal
     }
 ];
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section class="relative overflow-hidden py-12 sm:py-16">
@@ -70,9 +74,9 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
             </div>
             <div class="relative w-[90%] mx-auto -mt-[20px] lg:w-[calc(1/2*80%)] lg:mx-0 lg:mt-0 z-10">
                 <div class="relative z-10 text-center bg-[var(--surface-brand-primary)] p-8 md:p-9 text-[var(--neutral-text-inverted)]  shadow-2xl lg:text-left">
-                    <h2 class="text-xl lg:text-[40px] whitespace-nowrap lg:whitespace-normal font-semibold tracking-[0] leading-none uppercase font-(family-name:--font-shields-sans-semibold-condensed)">
+                    <HeadingTag class="text-xl lg:text-[40px] whitespace-nowrap lg:whitespace-normal font-semibold tracking-[0] leading-none uppercase font-(family-name:--font-shields-sans-semibold-condensed)">
                         {dataToRender.titulo}
-                    </h2>
+                    </HeadingTag>
                     <div class="font-(family-name:--font-shields-sans-regular) mb-6 mt-6 text-[13px] md:text-base text-[var(--neutral-text-inverted)] prose" set:html={dataToRender.descripcion} />
                     <div class="mt-5 w-full flex justify-start">
                         <div class="w-full transform hover:scale-105 transition-transform duration-300 ease-in-out origin-left">

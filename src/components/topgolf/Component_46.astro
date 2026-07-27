@@ -1,7 +1,7 @@
 ---
 // src/components/Component_46.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 export interface GaleriaItem {
@@ -19,10 +19,11 @@ export interface Props {
     imagenes: GaleriaItem[];
     texto_boton_cargar_mas: string;
     texto_boton_regresar: string;
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo_seccion, descripcion_seccion, imagenes } = Astro.props;
+const { titulo_seccion, descripcion_seccion, imagenes, nivel_heading } = Astro.props;
 
 const placeholderData: Props = {
     titulo_seccion: "GALERÍA",
@@ -41,16 +42,17 @@ const dataToRender = {
     imagenes: imagenes && imagenes.length > 0 ? imagenes : placeholderData.imagenes,
 };
 const placeholderImage = "https://placehold.co/600x400?text=No+Image";
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
+<section class="w-full bg-(--neutral-text-inverted) py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-(family-name:--font-shields-sans-regular)">
         <div class="text-center">
-            <h2 class="font-(family-name:--font-shields-sans-semibold-condensed) text-[28px] sm:text-[38px] font-semibold text-[var(--neutral-background-strong)] leading-none
+            <HeadingTag class="font-(family-name:--font-shields-sans-semibold-condensed) text-[28px] sm:text-[38px] font-semibold text-(--neutral-background-strong) leading-none
                 tracking-[0]">
                 {dataToRender.titulo_seccion}
-            </h2>
-            <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-[var(--neutral-background-strong)] prose" set:html={dataToRender.descripcion_seccion}></div>
+            </HeadingTag>
+            <div class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-(--neutral-background-strong) prose" set:html={dataToRender.descripcion_seccion}></div>
         </div>
 
         <div id="gallery-grid" class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-3">
@@ -66,7 +68,7 @@ const placeholderImage = "https://placehold.co/600x400?text=No+Image";
                             <!-- BOTÓN DE PLAY -->
                             <button
                                 id="play-btn"
-                                class="absolute inset-0 !m-auto bg-white text-purple-600 rounded-full w-12 h-12 flex items-center justify-center shadow-2xl hover:cursor-pointer"
+                                class="absolute inset-0 m-auto! bg-white text-purple-600 rounded-full w-12 h-12 flex items-center justify-center shadow-2xl hover:cursor-pointer"
                             >
                                 <svg
                                     class="w-8 h-8"
