@@ -2,19 +2,23 @@
 // src/components/Component_4.astro
 import ButtonGroup from './elements/Button.astro';
 import type { Boton } from './elements/Button.astro';
+import { getHeadingTag } from '../../lib/strapi.js';
 
 // 1. Define la interfaz de las props que el componente recibirá desde Strapi
 export interface Props {
     titulo: string;
     subtitulo: string;
     Boton: Boton[];
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibe las props desde Astro
 const {
     titulo,
     subtitulo,
-    Boton
+    Boton,
+    nivel_heading
+    
 } = Astro.props;
 
 const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
@@ -25,6 +29,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         tipo: "version_3"
     }
 ];
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section class="bg-[var(--neutral-text-inverted)] py-13">
@@ -33,9 +39,9 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 
             <div class="flex flex-col items-center gap-4 md:flex-row md:gap-x-8">
                 <div class="inline-block bg-[var(--accent-feedback-strong)] transform -rotate-3 shadow-md shrink-0">
-                    <h2 class="text-3xl md:text-5xl font-semibold text-[var(--surface-brand-primary)] py-3 px-8 uppercase tracking-tighter font-(family-name:--font-shields-sans-semibold-condensed)">
+                    <HeadingTag class="text-3xl md:text-5xl font-semibold text-[var(--surface-brand-primary)] py-3 px-8 uppercase tracking-tighter font-(family-name:--font-shields-sans-semibold-condensed)">
                         {titulo || "¿Listo para jugar?"}
-                    </h2>
+                    </HeadingTag>
                 </div>
 
                 <p class="text-xl text-center md:text-left text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-regular)">

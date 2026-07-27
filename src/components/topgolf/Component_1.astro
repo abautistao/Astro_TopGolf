@@ -1,7 +1,7 @@
 ---
 // src/components/Component_1.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText , getHeadingTag} from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 import BookingBox from "./elements/BookingBox.astro";
@@ -19,6 +19,7 @@ export interface Props {
     Boton: Boton[]; // Puede ser un string o un arreglo de Strapi
     url_submit_booking: string;
     showBookingBox: boolean
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 const {
@@ -31,7 +32,8 @@ const {
     Boton,
     texto_ayuda,
     showBookingBox,
-    url_submit_booking
+    url_submit_booking,
+    nivel_heading
 } = Astro.props;
 
 const heroBackgroundUrl = getStrapiUrl(imagen_fondo);
@@ -65,6 +67,7 @@ const isVideo = (url: string | undefined | null) => {
 };
 
 const showVideo = isVideo(heroBackgroundUrl);
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section class="relative w-full min-h-[550px] md:min-h-[650px]">
@@ -77,7 +80,6 @@ const showVideo = isVideo(heroBackgroundUrl);
                 muted
                 playsinline
                 preload="auto"
-                fetchpriority="high"
                 class="absolute inset-0 w-full h-full object-cover"
             />
         ) : (
@@ -103,11 +105,11 @@ const showVideo = isVideo(heroBackgroundUrl);
             class="transform w-50 md:w-80 z-20"
             inferSize={true}
         />
-        <h1
+        <HeadingTag
             class="leading-none font-(family-name:--font-shields-sans-semibold-condensed) mt-2 md:-mt-10 tracking-normal uppercase text-shadow-md text-[var(--neutral-text-inverted)] font-semibold text-7xl text-center max-w-xs lg:text-left lg:max-w-none lg:text-[155px]"
         >
             {titulo || "Título de Ejemplo"}
-        </h1>
+        </HeadingTag>
     </div>
 
     <!-- Franja blanca dentro del section -->

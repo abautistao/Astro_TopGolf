@@ -1,7 +1,7 @@
 ---
 // src/components/Component_2.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl } from '../../lib/strapi.js';
+import { getStrapiUrl, getHeadingTag } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 
@@ -13,11 +13,13 @@ export interface Card {
   alt_imagen: string;
   imagen: any;
   Boton: Boton[]; // La tarjeta ahora espera recibir el componente Boton desde Strapi.
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface Props {
   identificador: string;
   tarjetas: Card[];
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 const { identificador, tarjetas } = Astro.props;
@@ -64,6 +66,7 @@ const cardsToRender =
               { id: card.id, texto: "Ver Más", url: "#", tipo: "version_1" },
             ];
 
+            const HeadingTag = getHeadingTag(card.nivel_heading);
             return (
               <div class="carousel-card relative flex-shrink-0 w-80 md:w-96 h-[450px] rounded-lg overflow-hidden group text-white">
                 <Image
@@ -77,12 +80,12 @@ const cardsToRender =
                   class="relative z-10 flex flex-col justify-end h-full p-6"
                   style="font-family: var(--font-shields-sans-semibold); "
                 >
-                  <h2
+                  <HeadingTag
                     class="text-3xl font-bold  text-[var(--accent-highlight-primary)]"
                     style="font-family: var(--font-shields-sans-bold); "
                   >
                     {card.titulo}
-                  </h2>
+                  </HeadingTag>
                   <p class="mt-2 text-base font-normal text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-regular)">
                     {card.descripcion}
                   </p>

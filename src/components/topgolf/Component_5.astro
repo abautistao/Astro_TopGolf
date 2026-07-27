@@ -3,7 +3,7 @@
 
 // 1. Importa utilidades y las imágenes decorativas estáticas
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import dotsPattern from '../../assets/Artwork.png';
 import dotsPatternMobile from '../../assets/Artwork_1.png';
 import ButtonGroup from './elements/Button.astro';
@@ -17,6 +17,7 @@ export interface Props {
     titulo_linea_2_resaltada: string;
     descripcion: any;
     Boton: Boton[];
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 3. Recibe las props
@@ -26,7 +27,8 @@ const {
     titulo_linea_1,
     titulo_linea_2_resaltada,
     descripcion,
-    Boton
+    Boton,
+    nivel_heading
 } = Astro.props;
 
 // 4. Procesa los datos de Strapi
@@ -44,6 +46,8 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
         tipo: "version_1"
     }
 ];
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section class="relative overflow-x-hidden !py-16 sm:!py-24">
@@ -67,10 +71,10 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
 
         <div class="relative w-[90%] -mt-[49px] lg:w-3/5 lg:!mx-0 lg:!mt-0 lg:!-mr-[55px]">
             <div class="relative z-10 bg-[var(--surface-brand-primary)] !p-8 md:!p-12 text-[var(--neutral-text-inverted)]  rounded-lg shadow-2xl lg:text-left">
-                <h2 class="text-[29px] lg:text-[54px] font-semibold tracking-normal uppercase leading-none font-(family-name:--font-shields-sans-semibold-condensed) whitespace-normal mb-0">
+                <HeadingTag class="text-[29px] lg:text-[54px] font-semibold tracking-normal uppercase leading-none font-(family-name:--font-shields-sans-semibold-condensed) whitespace-normal mb-0">
                     {titulo_linea_1 || "Haz tu evento"}
                     <span class="inline lg:block text-[var(--accent-highlight-secondary)]"> {titulo_linea_2_resaltada || "Memorable"}</span>
-                </h2>
+                </HeadingTag>
                 <div class="font-(family-name:--font-shields-sans-regular) mt-5 font-normal text-lg text-[var(--neutral-text-inverted)]" set:html={descriptionHtml || "<p>En días soleados, de lluvia; de día o de noche, haz que tu próxima fiesta o evento grupal sea más animado en Topgolf.</p>"} />
 
                 {Boton?.length && (
