@@ -1,6 +1,6 @@
 ---
 // src/components/Component_30.astro
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import CalloutSection from './elements/CalloutSection.astro';
 import type { Boton } from './elements/Button.astro';
 
@@ -9,10 +9,11 @@ export interface Props {
     titulo: string;
     contenido: any; // Rich Text
     Boton: Boton[];
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
-const { titulo, contenido, Boton } = Astro.props;
+const { titulo, contenido, Boton, nivel_heading } = Astro.props;
 
 const placeholderData: Props = {
     titulo: "¿QUIERES JUGAR TODO EL DÍA, TODOS LOS DÍAS SIN PREOCUPARTE POR LAS HORAS DE JUEGO?",
@@ -40,4 +41,5 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Bo
     titulo={dataToRender.titulo}
     contenido={dataToRender.contenido}
     botones={componentButtons}
+    nivel_heading={nivel_heading}
 />

@@ -1,7 +1,7 @@
 ---
 // src/components/Component_15.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import defaultDotsPattern from '../../assets/Artwork_bg.png';
 import defaultDotsPatternMobile from '../../assets/Artwork_1.png';
 import ButtonGroup from "./elements/Button.astro";
@@ -22,6 +22,8 @@ export interface Props {
     alt_imagen_decorativa_mobile?: string;
     Boton: Boton[];
     imagen_mobile?: any;
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    nivel_heading_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -39,7 +41,9 @@ const {
     imagen_decorativa_mobile,
     alt_imagen_decorativa_mobile,
     Boton,
-    imagen_mobile
+    imagen_mobile,
+    nivel_heading_titulo,
+    nivel_heading_tag
 } = Astro.props;
 
 const placeholder = {
@@ -98,6 +102,9 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
         tipo: "version_1", // Usamos version_1 como el estilo de botón principal
     },
 ];
+
+const HeadingTag = getHeadingTag(nivel_heading_tag);
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
 ---
 
 <section
@@ -128,12 +135,12 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
             class="font-(family-name:--font-shields-sans-regular) relative  sm:-top-20 -mt-10 sm:-mt-20 z-20 !mx-4 md:!mx-[150px] min-h-[180px] bg-[var(--surface-brand-primary)] !px-6 !py-8 md:!p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-left text-white"
         >
             <div class="w-full md:w-5/12 flex-shrink-0">
-                <span
+                <HeadingTag
                     class="bg-[var(--accent-highlight-secondary)] text-[var(--surface-brand-primary)] font-bold text-xs !px-3 !py-1 mb-4 inline-block font-(family-name:--font-shields-sans-bold)"
                 >
                     {etiqueta || placeholder.etiqueta}
-                </span>
-                <h1
+                </HeadingTag>
+                <HeadingTagTitulo
                     class="text-[40px] lg:text-[75px] font-semibold uppercase leading-none font-(family-name:--font-shields-sans-condensed) tracking-[0.01em]"
                 >
                     {titulo || placeholder.titulo}
@@ -141,7 +148,7 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
                         class="font-(family-name:--font-shields-sans-bold) text-[var(--accent-highlight-secondary)]"
                         >{subtitulo || placeholder.subtitulo}</span
                     >
-                </h1>
+                </HeadingTagTitulo>
             </div>
 
             <div class="w-full md:w-7/12">

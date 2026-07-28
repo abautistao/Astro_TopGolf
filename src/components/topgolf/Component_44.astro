@@ -1,7 +1,7 @@
 ---
 // src/components/Component_44.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 console.log(Astro.props);
 interface Props {
     titulo_principal?: string;
@@ -11,6 +11,7 @@ interface Props {
     promo_texto?: string;
     video_thumbnail?: any;
     video_url?: string;
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 const {
@@ -21,7 +22,9 @@ const {
     promo_texto,
     video_thumbnail,
     video_url,
+    nivel_heading
 } = Astro.props;
+
 const video_thumbnail_url = getStrapiUrl(video_thumbnail);
 const descriptionHtml = stringifyRichText(descripcion);
 const promo_textoHtml = stringifyRichText(promo_texto);
@@ -46,6 +49,8 @@ const data = {
     video_url:
         video_url || "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // Example video
 };
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <div class="relative w-[90%] mx-auto !my-12 !px-4 md:!px-8">
@@ -72,14 +77,14 @@ const data = {
             <div
                 class="uppercase leading-none text-[var(--neutral-background-strong)]"
             >
-                <h2
+                <HeadingTag
                     class="text-4xl lg:text-5xl font-(family-name:--font-shields-sans-regular)"
                 >
                     {data.titulo_principal}
                     <span class="font-(family-name:--font-shields-sans-bold)"
                         >{data.precio}</span
                     >
-                </h2>
+                </HeadingTag>
             </div>
 
             <!-- Descripción -->

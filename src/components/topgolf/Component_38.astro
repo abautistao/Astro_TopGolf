@@ -1,7 +1,7 @@
 ---
 // src/components/Component_7.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 import ButtonGroup from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 // 1. Definimos la interfaz de las props que el componente recibirá desde Strapi.
@@ -12,6 +12,8 @@ export interface Props {
   cta_titulo: any;
   Boton: Boton[];
   imagen_fondo: any; // Media de Strapi
+  nivel_heading_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props de Strapi a través de Astro.props
@@ -22,6 +24,8 @@ const {
   cta_titulo,
   Boton,
   imagen_fondo,
+  nivel_heading_tag,
+  nivel_heading_titulo
 } = Astro.props;
 
 // 3. Procesamos la URL de la imagen, el texto enriquecido y los alternativos
@@ -43,6 +47,9 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
     tipo: "version_1",
   },
 ];
+
+const HeadingTag = getHeadingTag(nivel_heading_tag);
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
 ---
 
 <section
@@ -60,17 +67,17 @@ const componentButtons: Boton[] = (Boton && !Array.isArray(Boton)
       class="grid grid-cols-1 items-center gap-y-12 lg:grid-cols-2 lg:gap-x-16"
     >
       <div class="text-left">
-        <h3
+        <HeadingTag
           class="font-(family-name:--font-shields-sans-bold) !mt-5 lg:!mt-0 !py-1 !px-2 text-sm font-bold uppercase tracking-wider text-[var(--accent-highlight-secondary)] bg-[var(--surface-brand-primary)] mb-0 inline-block"
         >
           {titulo_pequeno || "Título Pequeño"}
-        </h3>
+        </HeadingTag>
 
-        <h2
+        <HeadingTagTitulo
           class="font-(family-name:--font-shields-sans-black) !mt-4 text-[44px] font-extrabold text-[var(--neutral-text-inverted)] sm:text-5xl lg:text-[83px] mb-0"
         >
           {titulo_principal || "Título Principal de la Sección"}
-        </h2>
+        </HeadingTagTitulo>
 
         <div
           class="font-(family-name:--font-shields-sans-regular) mt-6 text-xl text-[var(--neutral-text-inverted)] prose prose-invert"

@@ -1,7 +1,7 @@
 ---
 // src/components/Component_45.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 interface Props {
     titulo_principal?: string;
@@ -9,6 +9,8 @@ interface Props {
     descripcion?: any;
     texto_resaltado?: string;
     imagen?: any;
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 const {
@@ -17,6 +19,8 @@ const {
     descripcion,
     texto_resaltado,
     imagen,
+    nivel_heading_titulo,
+    nivel_heading_subtitulo
 } = Astro.props;
 
 const imagen_url = getStrapiUrl(imagen);
@@ -34,6 +38,9 @@ const data = {
         imagen_url ||
         "https://placehold.co/1280x720/2d3748/ffffff?text=Imagen+Fondo",
 };
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const HeadingTagSubtitulo = getHeadingTag(nivel_heading_subtitulo);
 ---
 
 <div class="w-full bg-[#0000EE] overflow-hidden relative font-sans text-white">
@@ -73,18 +80,18 @@ const data = {
             class="w-full md:w-2/5 p-8 md:p-12 text-left flex flex-col justify-center"
         >
             <!-- Título Secundario -->
-            <h3
+            <HeadingTagSubtitulo
                 class="text-5xl md:text-6xl lg:text-7xl font-medium tracking-wider uppercase mb-1 font-(family-name:--font-shields-sans-regular)"
             >
                 {data.titulo_secundario}
-            </h3>
+            </HeadingTagSubtitulo>
 
             <!-- Título Principal -->
-            <h2
+            <HeadingTagTitulo
                 class="text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-none mb-6 font-(family-name:--font-shields-sans-black)"
             >
                 {data.titulo_principal}
-            </h2>
+            </HeadingTagTitulo>
 
             <!-- Párrafo Descriptivo -->
             <div

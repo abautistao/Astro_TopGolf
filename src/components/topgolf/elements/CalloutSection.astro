@@ -5,6 +5,7 @@ import ButtonGroup from './Button.astro';
 import type { Boton } from './Button.astro';
 import dotsPattern from '../../../assets/Artwork_bg.png';
 import dotsPatternMobile from '../../../assets/Artwork_1.png';
+import { getHeadingTag } from '../../../lib/strapi.js';
 
 
 export interface Props {
@@ -12,9 +13,10 @@ export interface Props {
     contenido: string;
     botones: Boton[];
     version: 'version_1' | 'version_2' | 'version_3';
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
-const { titulo, contenido, botones, version } = Astro.props;
+const { titulo, contenido, botones, version, nivel_heading } = Astro.props;
 
 // --- 1. Definición de Estilos por Versión ---
 let backgroundClass = '';
@@ -51,6 +53,7 @@ switch (version) {
 }
 
 const isColorBackground = activeDecoration; // El patrón de puntos solo se usa con fondos de color (version_2)
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section class:list={['relative', isColorBackground ? 'py-20 sm:py-28' : 'py-16 sm:py-12', backgroundClass]}>
@@ -60,9 +63,9 @@ const isColorBackground = activeDecoration; // El patrón de puntos solo se usa 
     ]}>
         <div class:list={['mx-auto flex flex-col items-center', isColorBackground ? 'max-w-2xl text-center' : 'text-center']}>
 
-            <h2 class:list={['font-(family-name:--font-shields-sans-condensed) text-[28px] font-bold sm:text-[38px]', titleClass, isColorBackground ? 'uppercase tracking-tight sm:text-4xl' : '']}>
+            <HeadingTag class:list={['font-(family-name:--font-shields-sans-condensed) text-[28px] font-bold sm:text-[38px]', titleClass, isColorBackground ? 'uppercase tracking-tight sm:text-4xl' : '']}>
                 {titulo}
-            </h2>
+            </HeadingTag>
 
             <!-- Usamos un div genérico para el contenido -->
             <div class:list={['font-(family-name:--font-shields-sans-regular) mt-6 text-lg prose max-w-none', contentClass, isColorBackground ? 'text-md leading-8' : '']}>
