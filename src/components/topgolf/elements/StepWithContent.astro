@@ -4,6 +4,7 @@ import {
   getStrapiUrl,
   stringifyRichText,
   formatUrl,
+  getHeadingTag
 } from '../../../lib/strapi.js';
 import { Image } from "astro:assets";
 import ButtonGroup from "./Button.astro";
@@ -36,6 +37,7 @@ export interface Props {
   aviso_texto?: string;
   aviso_texto_link?: string;
   aviso_url_link?: string;
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // --- Inicialización de Props con Placeholders / Valores por Defecto ---
@@ -59,6 +61,7 @@ const {
   aviso_texto = "Aviso de información",
   aviso_texto_link = "VER MÁS",
   aviso_url_link = "#",
+  nivel_heading
 } = Astro.props;
 
 // --- Procesamiento de Contenido y Placeholders ---
@@ -106,6 +109,8 @@ const stepLabelPositionClasses = isLeftOrientation
   : "lg:top-1/11 lg:right-4/8";
 
 // --- HTML de la Sección ---
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section
@@ -175,11 +180,11 @@ const stepLabelPositionClasses = isLeftOrientation
         <div
           class="font-(family-name:--font-shields-sans-semibold-condensed) bg-[var(--surface-brand-primary)] text-[var(--neutral-text-inverted)] p-4 relative top-4 mb-2 z-10 text-center lg:mt-0 mt-2"
         >
-          <h2
+          <HeadingTag
             class="text-3xl font-semibold tracking-tight text-[var(--accent-highlight-primary)]"
           >
             {titulo}
-          </h2>
+          </HeadingTag>
         </div>
 
         <div

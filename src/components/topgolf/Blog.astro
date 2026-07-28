@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText, formatUrl } from "../../lib/strapi.js";
+import { getStrapiUrl, stringifyRichText, formatUrl, getHeadingTag } from "../../lib/strapi.js";
 
 interface StrapiMedia {
     id: number;
@@ -23,10 +23,12 @@ interface Props {
     background?: string;
     filas?: number; // New prop for number of rows
     description: any
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    nivel_heading_blogs?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 
-const {titulo, blogs, background, description} = Astro.props
+const {titulo, blogs, background, description, nivel_heading, nivel_heading_blogs } = Astro.props
 
 const backgroundSection = background ? background : '#FFFFFF';
 const FALLBACK_IMAGE_URL =
@@ -53,14 +55,18 @@ if(blogs) {
         }
     }));
 }
+
+
+const HeadingTag = getHeadingTag(nivel_heading);
+const HeadingTagBlogs = getHeadingTag(nivel_heading_blogs);
 ---
 <section id="blog-section" class="w-full py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-(family-name:--font-shields-sans-regular)">
         <div class="text-center mb-12">
-            <h1 class="font-(family-name:--font-shields-sans-semibold-condensed) text-[32px] sm:text-[42px] font-semibold text-(--neutral-background-strong) leading-none
+            <HeadingTag class="font-(family-name:--font-shields-sans-semibold-condensed) text-[32px] sm:text-[42px] font-semibold text-(--neutral-background-strong) leading-none
                 tracking-[0]">
                 {titulo}
-            </h1>
+            </HeadingTag>
 
             {description && (
                 <div set:html={stringifyRichText(description)} class="font-(family-name:--font-shields-sans-regular) mt-4 mx-auto text-base text-(--neutral-background-strong) prose"></div>
@@ -108,9 +114,9 @@ if(blogs) {
 
                             <div class="font-(family-name:--font-shields-sans-regular) p-6 pt-0 grow flex justify-between items-start tracking-[0px]">
                                 <div class="flex-1 pr-4">
-                                    <h3 class="text-[22px] md:text-[26px] leading-tight text-(--brand-interactive-base)">
+                                    <HeadingTagBlogs class="text-[22px] md:text-[26px] leading-tight text-(--brand-interactive-base)">
                                         {post.titulo}
-                                    </h3>
+                                    </HeadingTagBlogs>
                                     <p
                                         class="mt-3 text-base text-(--neutral-background-strong)"
                                     >{post.extract}</p>

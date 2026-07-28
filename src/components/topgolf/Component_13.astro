@@ -24,6 +24,7 @@ export interface Props
     aviso_texto_link: string;
     aviso_url_link: string;
     Boton: Boton[];
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos todas las props
@@ -37,7 +38,8 @@ const {
     aviso_texto,
     aviso_texto_link,
     aviso_url_link,
-    Boton
+    Boton,
+    nivel_heading
 } = Astro.props;
 
 // 3. Pasamos las props al componente reutilizable, forzando la orientación y el tipo de contenido.
@@ -56,4 +58,5 @@ const {
     aviso_texto_link={aviso_texto_link}
     aviso_url_link={aviso_url_link}
     Boton={Boton}
+    nivel_heading={nivel_heading}
 />

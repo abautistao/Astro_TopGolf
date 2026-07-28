@@ -1,6 +1,6 @@
 ---
 // src/components/Component_12.astro
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 // 1. Definimos las interfaces para las props de Strapi
 export interface InfoCard {
@@ -8,6 +8,7 @@ export interface InfoCard {
   titulo: string;
   contenido: any; // Rich Text
   simbolo_fondo: string;
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface Props {
@@ -46,6 +47,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCa
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {cardsToRender.map((card) => {
         const contentHtml = stringifyRichText(card.contenido);
+        const HeadingTagTitulo = getHeadingTag(card.nivel_heading);
         return (
           <div class="relative rounded-lg bg-[var(--neutral-background-subtle)] px-6 py-8 text-[var(--neutral-background-strong)] shadow-md sm:py-10 overflow-hidden">
 
@@ -53,7 +55,7 @@ const cardsToRender = tarjetas && tarjetas.length > 0 ? tarjetas : placeholderCa
               {card.simbolo_fondo || '?'}
             </span>
 
-            <h3 class="relative mb-3 text-base font-bold font-(family-name:--font-tee-line-bold-italic)">{card.titulo}</h3>
+            <HeadingTagTitulo class="relative mb-3 text-base font-bold font-(family-name:--font-tee-line-bold-italic)">{card.titulo}</HeadingTagTitulo>
             <div class="font-(family-name:--font-shields-sans-regular) relative text-xs sm:text-base prose max-w-none strapi-rich-text" set:html={contentHtml} />
           </div>
         );

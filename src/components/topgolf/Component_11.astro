@@ -19,6 +19,7 @@ export interface Props extends Omit<StepWithContentProps, 'orientacion' | 'tipo_
   texto_boton: string;
   url_boton: string;
   Boton: Boton[];
+  nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos todas las props
@@ -32,6 +33,7 @@ const {
   texto_boton,
   url_boton,
   Boton,
+  nivel_heading
 } = Astro.props;
 
 // 3. Pasamos las props al componente reutilizable, forzando la orientación y el tipo de contenido.
@@ -49,4 +51,5 @@ const {
   texto_boton={texto_boton}
   url_boton={url_boton}
   Boton={Boton}
+  nivel_heading={nivel_heading}
 />

@@ -1,7 +1,7 @@
 ---
 // src/components/Component_14.astro
 import { Image } from "astro:assets";
-import { getStrapiUrl, stringifyRichText, formatUrl } from '../../lib/strapi.js';
+import { getStrapiUrl, stringifyRichText, formatUrl, getHeadingTag } from '../../lib/strapi.js';
 
 // 1. Definimos la interfaz para las props con la estructura aplanada
 export interface Props {
@@ -13,6 +13,8 @@ export interface Props {
     titulo_derecha?: string;
     descripcion_derecha?: any; // Rich Text
     icono_derecha?: string; // Font Awesome icon classes
+    nivel_heading_izquierda?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    nivel_heading_derecha?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // 2. Recibimos las props de Strapi, con valores por defecto
@@ -24,7 +26,9 @@ const {
     imagen_izquierda = null,
     titulo_derecha = 'CÓDIGO DE CONDUCTA',
     descripcion_derecha = 'Nos comprometemos a brindar una experiencia excelente en un ambiente acogedor e inclusivo para que podamos divertirnos juntos. Por lo tanto, para todas las partes involucradas (y nos referimos a las partes), les rogamos que sigan nuestro [código de conducta](#).',
-    icono_derecha = 'fa-solid fa-shield-halved' // Default icon
+    icono_derecha = 'fa-solid fa-shield-halved', // Default icon
+    nivel_heading_izquierda,
+    nivel_heading_derecha
 } = Astro.props;
 
 // 3. Procesamos los datos para el renderizado
@@ -33,6 +37,9 @@ const placeholderImageUrl = `https://placehold.co/150x150/e0e0e0/333?text=Imagen
 
 const rightCardDescriptionHtml = stringifyRichText(descripcion_derecha);
 const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
+
+const HeadingTagIzquierda = getHeadingTag(nivel_heading_izquierda);
+const HeadingTagDerecha = getHeadingTag(nivel_heading_derecha);
 
 ---
 <section class="w-full bg-[var(--neutral-text-inverted)] py-12 sm:py-16">
@@ -49,7 +56,7 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
                     />
                 </div>
                 <div class="flex flex-col">
-                    <h2 class="text-sm md:text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold)">{titulo_izquierda}</h2>
+                    <HeadingTagIzquierda class="text-sm md:text-base font-bold text-[var(--neutral-background-strong)] font-(family-name:--font-shields-sans-bold)">{titulo_izquierda}</HeadingTagIzquierda>
                     <div class="text-xs md:text-base font-(family-name:--font-shields-sans-regular) mt-2 text-[var(--neutral-background-strong)]" set:html={leftCardDescriptionHtml}></div>
 
                     <a href={formatUrl(url_link_izquierda)}
@@ -66,7 +73,7 @@ const leftCardDescriptionHtml = stringifyRichText(descripcion_izquierda);
             <div class="flex h-10 w-10 items-center justify-center rounded-full text-[var(--neutral-text-inverted)] text-2xl" set:html={icono_derecha} >
             </div>
             <div class="flex h-full flex-col items-center justify-center text-center">
-                <h2 class="text-lg font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-bold)">{titulo_derecha}</h2>
+                <HeadingTagDerecha class="text-lg font-bold text-[var(--neutral-text-inverted)] font-(family-name:--font-shields-sans-bold)">{titulo_derecha}</HeadingTagDerecha>
                 <div class="text-sm font-(family-name:--font-shields-sans-regular) mt-4 text-[var(--neutral-text-inverted)] mx-6 strapi-rich-text" set:html={rightCardDescriptionHtml} />
             </div>
         </div>

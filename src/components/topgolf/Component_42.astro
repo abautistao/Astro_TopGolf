@@ -5,6 +5,7 @@
 // UPDATED PROPS & INTERFACES
 // ----------------------------------------
 import type { Boton } from "./elements/Button.astro";
+import { getHeadingTag } from '../../lib/strapi.js';
 
 interface FormField {
     id: number;
@@ -30,9 +31,10 @@ interface Props {
     fields?: FormField[];
     submitUrl?: string;
     submitButton?: Boton;
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
-const { title, description, fields, submitUrl, submitButton } = Astro.props;
+const { title, description, fields, submitUrl, submitButton, nivel_heading } = Astro.props;
 
 // Mock Data for development/fallback
 const mockFields: FormField[] = [
@@ -112,12 +114,14 @@ const getOptions = (optionsStr?: string) => {
     if (!optionsStr) return [];
     return optionsStr.split(",").map((o) => o.trim());
 };
+
+const HeadingTag = getHeadingTag(nivel_heading);
 ---
 
 <section id="formulario" class="w-full max-w-4xl mx-auto p-6 bg-white font-sans">
-    <h2 class="text-2xl font-bold uppercase mb-8 text-black tracking-tight">
+    <HeadingTag class="text-2xl font-bold uppercase mb-8 text-black tracking-tight">
         {data.title}
-    </h2>
+    </HeadingTag>
 
     <form class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6" id="events-form">
         {
@@ -126,9 +130,9 @@ const getOptions = (optionsStr?: string) => {
                 if (field.inputType === "section_title") {
                     return (
                         <div class="col-span-1 md:col-span-2 mt-8 mb-4">
-                            <h2 class="text-2xl font-bold uppercase mb-2 text-black tracking-tight border-b pb-2 border-gray-200">
+                            <h3 class="text-2xl font-bold uppercase mb-2 text-black tracking-tight border-b pb-2 border-gray-200">
                                 {field.label}
-                            </h2>
+                            </h3>
                         </div>
                     );
                 }

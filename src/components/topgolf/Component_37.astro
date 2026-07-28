@@ -1,12 +1,13 @@
 ---
 // src/components/Component_37.astro
-import { stringifyRichText } from '../../lib/strapi.js';
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
 
 // INTERFACES
 export interface FaqItem {
     id: number;
     pregunta: string;
     respuesta: any; // Rich Text
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 // Nueva interfaz para soportar N secciones
@@ -14,6 +15,7 @@ export interface FaqSection {
     id: number;
     titulo_seccion: string;
     faq_items: FaqItem[];
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface Props {
@@ -44,55 +46,70 @@ const getAnswerHtml = (item: FaqItem) => stringifyRichText(item.respuesta);
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
 
             <div class="flex flex-col gap-10">
-                {leftColumnSections.map((seccion) => (
-                    <div class="w-full">
-                        <h3 class="font-bold text-xl mb-5 text-[var(--neutral-background-strong)] uppercase tracking-wide" style="font-family: var(--font-shields-sans-bold);">
-                            {seccion.titulo_seccion}
-                        </h3>
+                {leftColumnSections.map((seccion) => {
+                    const HeadingTag = getHeadingTag(seccion.nivel_heading);
 
-                        <div class="space-y-3">
-                            {seccion.faq_items.map((item) => (
-                                <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-sm border border-[var(--surface-brand-primary)] rounded-md overflow-hidden">
-                                    <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-                                        <h4 class="text-sm md:text-base text-[var(--neutral-background-strong)] pr-4 leading-snug" style="font-family: var(--font-shields-sans-semibold);">
-                                            {item.pregunta}
-                                        </h4>
-                                        <i class="fa-solid fa-chevron-down text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0 text-lg" :class="{'rotate-180': open}"></i>
+                    return (
+                        <div class="w-full">
+                            <HeadingTag class="font-bold text-xl mb-5 text-[var(--neutral-background-strong)] uppercase tracking-wide" style="font-family: var(--font-shields-sans-bold);">
+                                {seccion.titulo_seccion}
+                            </HeadingTag>
+
+                            <div class="space-y-3">
+                                {seccion.faq_items.map((item) => {
+                                    const HeadingTagItem = getHeadingTag(item.nivel_heading);
+                                    return (
+                                    <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-sm border border-[var(--surface-brand-primary)] rounded-md overflow-hidden">
+                                        <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
+                                            <HeadingTagItem class="text-sm md:text-base text-[var(--neutral-background-strong)] pr-4 leading-snug" style="font-family: var(--font-shields-sans-semibold);">
+                                                {item.pregunta}
+                                            </HeadingTagItem>
+                                            <i class="fa-solid fa-chevron-down text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0 text-lg" :class="{'rotate-180': open}"></i>
+                                        </div>
+                                        <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4 bg-[var(--neutral-background-subtle)]">
+                                            <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-sm text-[var(--neutral-background-strong)] max-w-none pt-2" set:html={getAnswerHtml(item)} />
+                                        </div>
                                     </div>
-                                    <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4 bg-[var(--neutral-background-subtle)]">
-                                        <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-sm text-[var(--neutral-background-strong)] max-w-none pt-2" set:html={getAnswerHtml(item)} />
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
             <div class="flex flex-col gap-10">
-                {rightColumnSections.map((seccion) => (
-                    <div class="w-full">
-                        <h3 class="font-bold text-xl mb-5 text-[var(--neutral-background-strong)] uppercase tracking-wide" style="font-family: var(--font-shields-sans-bold);">
-                            {seccion.titulo_seccion}
-                        </h3>
+                {rightColumnSections.map((seccion) => {
+                    const HeadingTag = getHeadingTag(seccion.nivel_heading);
 
-                        <div class="space-y-3">
-                            {seccion.faq_items.map((item) => (
-                                <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-sm border border-[var(--surface-brand-primary)] rounded-md overflow-hidden">
-                                    <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
-                                        <h4 class="text-sm md:text-base text-[var(--neutral-background-strong)] pr-4 leading-snug" style="font-family: var(--font-shields-sans-semibold);">
-                                            {item.pregunta}
-                                        </h4>
-                                        <i class="fa-solid fa-chevron-down text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0 text-lg" :class="{'rotate-180': open}"></i>
+                    return (
+                        <div class="w-full">
+                            <HeadingTag class="font-bold text-xl mb-5 text-[var(--neutral-background-strong)] uppercase tracking-wide" style="font-family: var(--font-shields-sans-bold);">
+                                {seccion.titulo_seccion}
+                            </HeadingTag>
+
+                            <div class="space-y-3">
+                                {seccion.faq_items.map((item) => {
+                                    const HeadingTagItem = getHeadingTag(item.nivel_heading);
+
+                                    return (
+                                    <div x-data="{ open: false }" class="bg-[var(--neutral-background-subtle)] shadow-sm border border-[var(--surface-brand-primary)] rounded-md overflow-hidden">
+                                        <div @click="open = !open" class="flex items-center justify-between p-4 cursor-pointer">
+                                            <HeadingTagItem class="text-sm md:text-base text-[var(--neutral-background-strong)] pr-4 leading-snug" style="font-family: var(--font-shields-sans-semibold);">
+                                                {item.pregunta}
+                                            </HeadingTagItem>
+                                            <i class="fa-solid fa-chevron-down text-[var(--brand-interactive-base)] transition-transform duration-300 shrink-0 text-lg" :class="{'rotate-180': open}"></i>
+                                        </div>
+                                        <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4 bg-[var(--neutral-background-subtle)]">
+                                            <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-sm text-[var(--neutral-background-strong)] max-w-none pt-2" set:html={getAnswerHtml(item)} />
+                                        </div>
                                     </div>
-                                    <div x-show="open" x-collapse.duration.300ms class="px-4 pb-4 bg-[var(--neutral-background-subtle)]">
-                                        <div style="font-family: var(--font-shields-sans-regular);" class="font-normal prose text-sm text-[var(--neutral-background-strong)] max-w-none pt-2" set:html={getAnswerHtml(item)} />
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
         </div>
