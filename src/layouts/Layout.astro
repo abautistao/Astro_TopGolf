@@ -109,6 +109,10 @@ const seoProps = seo || defaultSeo;
             alternateLinks={alternateLinks}
             class="fixed bottom-20 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"
         />
+
+        {setupData.activar_widget_chat && (
+            <div set:html={setupData.html_script_widget}></div>
+        )}
     </body>
 </html>
 
