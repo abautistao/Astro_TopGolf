@@ -89,7 +89,7 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
                 {/* Descripción (Rich Text / Blocks) */}
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)] text-[17px] md:text-[22px] text-[var(--surface-brand-primary)] font-normal leading-relaxed mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        class="font-[family-name:var(--font-secundaria)] text-[17px] md:text-[22px] text-[var(--surface-brand-primary)] font-normal leading-[26px] mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
                         set:html={stringifyRichText(descripcion)}
                     />
                 )}

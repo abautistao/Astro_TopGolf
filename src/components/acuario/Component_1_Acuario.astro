@@ -165,12 +165,12 @@ const getHeadingTag = (nivel?: string) => {
                                 <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
                                     <div class="w-full max-w-[1440px] mx-auto px-6 flex flex-col items-center justify-center text-center text-[var(--neutral-text-inverted)] pointer-events-auto">
                                         {slide.subtitulo && (
-                                            <span class="block text-[20px] font-medium tracking-[0.1em] uppercase text-[var(--accent-highlight-primary)] font-[family-name:var(--font-secundaria)] mb-4 drop-shadow-md">
+                                            <span class="block text-[14px] md:text-[40px] font-medium tracking-wide uppercase font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] mb-2" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                                 {slide.subtitulo}
                                             </span>
                                         )}
                                         
-                                        <HeadingTag class="text-[32px] md:text-[60px] font-bold font-[family-name:var(--font-principal)] leading-tight mb-6 uppercase drop-shadow-lg text-center">
+                                        <HeadingTag class="text-[28px] md:text-[80px] font-black font-[family-name:var(--font-principal)] leading-[50px] mb-6 uppercase text-center" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                             {slide.texto_principal}
                                         </HeadingTag>
 

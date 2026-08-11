@@ -130,7 +130,7 @@ const renderMarkdown = (text) => {
                                 {tarjeta.precio_regular && (
                                     <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
                                         <!-- Label (Arriba en móvil, Izquierda en desktop) -->
-                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--accent-highlight-primary,#76E5FE)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
+                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
                                             {tarjeta.label_precio_regular || "PRECIO REGULAR"}
                                         </span>
                                         <!-- Valor -->
@@ -150,14 +150,14 @@ const renderMarkdown = (text) => {
                                 
                                 <!-- Línea separadora vertical siempre visible -->
                                 {tarjeta.precio_regular && tarjeta.precio_en_linea && (
-                                    <div class="w-[2px] sm:w-[3px] h-8 bg-[var(--accent-highlight-primary,#76E5FE)] mx-2 sm:mx-3 self-center rounded-full"></div>
+                                    <div class="w-[2px] sm:w-[3px] h-8 bg-[var(--custom-color-01,#00B2EA)] mx-2 sm:mx-3 self-center rounded-full"></div>
                                 )}
 
                                 <!-- Precio en Línea -->
                                 {tarjeta.precio_en_linea && (
                                     <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
                                         <!-- Label (Arriba en móvil, Izquierda en desktop) -->
-                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--accent-highlight-primary,#76E5FE)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
+                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
                                             {tarjeta.label_precio_en_linea || "PRECIO EN LÍNEA"}
                                         </span>
                                         <!-- Valor -->
