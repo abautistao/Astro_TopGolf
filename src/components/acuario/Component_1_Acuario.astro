@@ -29,12 +29,44 @@ export interface Props {
     subtitulo?: string;
     descripcion?: any;
     boton?: any[];
+    // Banner superior (overrides + tag semántico)
+    mostrar_banner_superior?: boolean;
+    banner_texto?: string;
+    banner_enlace?: string;
+    banner_color_fondo_override?: string;
+    banner_color_texto_override?: string;
+    banner_html_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
 }
 
-const { slides = [], imagen, imagen_mobile, titulo, subtitulo, boton } = Astro.props;
+const {
+    slides = [],
+    imagen,
+    imagen_mobile,
+    titulo,
+    subtitulo,
+    boton,
+    mostrar_banner_superior = true,
+    banner_texto = "COMPRA TUS BOLETOS AL ACUARIO SOLO EN EL SITIO OFICIAL",
+    banner_enlace,
+    banner_color_fondo_override,
+    banner_color_texto_override,
+    banner_html_tag,
+} = Astro.props;
 
 // Build final slides array with fallback for old data structure
 let finalSlides = slides && slides.length > 0 ? slides : [];
+
+// Banner: tag dinámico respetando la convención del proyecto (single text components).
+// Default: <p>. Si el editor quiere darle peso semántico para SEO, puede elegir h2/h3.
+const validBannerTags = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"];
+const BannerTag = validBannerTags.includes(banner_html_tag || "")
+    ? (banner_html_tag as "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p")
+    : "p";
+
+// Color resolution: override explícito gana; si no, usa los CSS variables del setup-site.
+// Esto mantiene la regla del AGENTS.md: nunca hardcodear hex en componentes.
+const bannerBg = banner_color_fondo_override || "var(--brand-interactive-base)";
+const bannerColor = banner_color_texto_override || "var(--neutral-background-strong)";
 
 if (finalSlides.length === 0 && (imagen || titulo)) {
     finalSlides = [{
@@ -59,6 +91,28 @@ const getHeadingTag = (nivel?: string) => {
     return validTags.includes(nivel || "") ? nivel : "h1";
 };
 ---
+
+{/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
+{mostrar_banner_superior && banner_texto && (
+    <div
+        class="w-full text-center py-3 px-4 font-[family-name:var(--font-principal)] font-bold uppercase tracking-wide text-sm md:text-base"
+        style={`background-color: ${bannerBg}; color: ${bannerColor};`}
+        role="region"
+        aria-label={banner_texto}
+    >
+        {banner_enlace ? (
+            <a
+                href={banner_enlace}
+                class="block w-full no-underline"
+                style={`background-color: ${bannerBg}; color: ${bannerColor};`}
+            >
+                <BannerTag class="m-0">{banner_texto}</BannerTag>
+            </a>
+        ) : (
+            <BannerTag class="m-0">{banner_texto}</BannerTag>
+        )}
+    </div>
+)}
 
 <section class="relative z-10 w-screen left-1/2 -ml-[50vw] aspect-video md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
     {finalSlides && finalSlides.length > 0 ? (
