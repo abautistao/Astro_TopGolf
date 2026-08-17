@@ -12,6 +12,7 @@ interface Props {
     video_thumbnail?: any;
     video_url?: string;
     nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    is_video: boolean
 }
 
 const {
@@ -22,7 +23,8 @@ const {
     promo_texto,
     video_thumbnail,
     video_url,
-    nivel_heading
+    nivel_heading,
+    is_video
 } = Astro.props;
 
 const video_thumbnail_url = getStrapiUrl(video_thumbnail);
@@ -89,7 +91,7 @@ const HeadingTag = getHeadingTag(nivel_heading);
 
             <!-- Descripción -->
             <div
-                class="text-[var(--neutral-background-strong)] strapi-rich-text !py-4 text-sm lg:text-base mb-3 leading-relaxed font-(family-name:--font-shields-sans-regular)"
+                class="text-[var(--neutral-background-strong)] strapi-rich-text !py-4 text-sm lg:text-base leading-relaxed font-(family-name:--font-shields-sans-regular)"
                 set:html={descriptionHtml}
             />
 
@@ -122,35 +124,38 @@ const HeadingTag = getHeadingTag(nivel_heading);
                     inferSize={true}
                 />
 
-                <!-- Overlay Gradiente -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-r from-black/20 to-purple-900/40 mix-blend-multiply"
-                >
-                </div>
-
-                <!-- BOTÓN DE PLAY -->
-                <button
-                    id="play-btn"
-                    class="absolute inset-0 !m-auto bg-white text-purple-600 rounded-full w-20 h-20 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 group-active:scale-95 z-30"
-                >
-                    <svg
-                        class="w-8 h-8 !ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
+                {is_video && (
+                    <!-- Overlay Gradiente -->
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-black/20 to-purple-900/40 mix-blend-multiply"
                     >
-                        <path d="M8 5v14l11-7z"></path>
-                    </svg>
-                    <span
-                        class="absolute inline-flex h-full w-full rounded-full bg-white opacity-30 animate-ping"
-                    ></span>
-                </button>
+                    </div>
 
-                <!-- Etiqueta opcional "Ver Video" -->
-                <div
-                    class="absolute bottom-6 w-full text-center text-white font-bold tracking-widest uppercase text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none"
-                >
-                    Ver Video
-                </div>
+                    <!-- BOTÓN DE PLAY -->
+                    <button
+                        id="play-btn"
+                        class="absolute inset-0 !m-auto bg-white text-purple-600 rounded-full w-20 h-20 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 group-active:scale-95 z-30"
+                    >
+                        <svg
+                            class="w-8 h-8 !ml-1"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M8 5v14l11-7z"></path>
+                        </svg>
+                        <span
+                            class="absolute inline-flex h-full w-full rounded-full bg-white opacity-30 animate-ping"
+                        ></span>
+                    </button>
+
+                    <!-- Etiqueta opcional "Ver Video" -->
+                    <div
+                        class="absolute bottom-6 w-full text-center text-white font-bold tracking-widest uppercase text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none"
+                    >
+                        Ver Video
+                    </div>
+                )}
+                
             </div>
 
             <!-- CONTENEDOR DEL IFRAME (Video) - Oculto inicialmente -->
