@@ -1,0 +1,35 @@
+---
+interface Props {
+    url: string;
+    padding_top: string;
+    padding_bottom: string;
+    background: string;
+}
+
+const { url, padding_top, padding_bottom, background } = Astro.props;
+
+const paddingTop = padding_top ?? '45px';
+const paddingBottom = padding_bottom ?? '45px';
+const bg = background ?? '#ebe8e1';
+---
+<script 
+    is:inline
+    type="text/javascript" 
+    src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=af8b2fd3-821f-4b7a-b978-11d4dc0f4618" async>
+</script>
+     
+<div id="bokun_widget" class="bokunWidget" data-src={url}></div>
+<noscript>Please enable javascript in your browser to book</noscript>
+<style define:vars={{ paddingTop, paddingBottom, bg }}>
+    #bokun_widget {
+        background-color: var(--bg);
+        padding-top: var(--paddingTop);
+        padding-bottom: var(--paddingBottom);
+    }
+
+    @media (max-width: 480px) {
+        #bokun_widget {
+            padding-top: 80px;
+        }
+    }
+</style>
