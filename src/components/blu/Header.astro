@@ -39,6 +39,15 @@ const ctaButtonLocalized = {
 };
 
 const buttons: Boton[] = [ctaButtonLocalized];
+
+const { lang } = Astro.params;
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+const currentLang = lang || defaultLocale;
+const isEn = currentLang === 'en';
+
+const t = {
+    booking_label_button: isEn ? "BOOK NOW" : "RESERVAR",
+};
 ---
 
 <header
@@ -124,7 +133,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
                 })()
             }
 
-            <Button botones={buttons} clase="hidden! md:block!" />
+            <style> #bokun_0c583ddb_cec2_482f_8033_15e751ed6a6a { display: inline-block; padding: 10px 20px; background: transparent; border-radius: 50px; box-shadow: none; font-weight: 600; font-size: 16px; text-decoration: none; text-align: center; color: #FFFFFF; border:1px solid #fff; cursor: pointer; transition: background .2s ease; } #bokun_0c583ddb_cec2_482f_8033_15e751ed6a6a:hover{ background: #fff; color: #012b49 } #bokun_0c583ddb_cec2_482f_8033_15e751ed6a6a:active{ background: #30682e; } </style> <button class="bokunButton" disabled id=bokun_0c583ddb_cec2_482f_8033_15e751ed6a6a data-src="https://widgets.bokun.io/online-sales/af8b2fd3-821f-4b7a-b978-11d4dc0f4618/experience-calendar/1266414?partialView=1" data-testid="widget-book-button" > {t.booking_label_button} </button> 
 
             <button
                 id="mobile-menu-toggle"
@@ -155,8 +164,6 @@ const buttons: Boton[] = [ctaButtonLocalized];
             ))
         }
         <div class="pt-4 flex flex-col gap-6">
-            <Button botones={buttons} clase="w-full py-5! text-center! text-xl!" />
-
             <!-- Mobile Language Switcher -->
             {
                 (() => {
@@ -195,7 +202,7 @@ const buttons: Boton[] = [ctaButtonLocalized];
         </div>
     </nav>
 </div>
-
+<script type="text/javascript" src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=af8b2fd3-821f-4b7a-b978-11d4dc0f4618" async></script>
 <style>
     /* Default Mobile Background: Solid Blue */
     #blu-header {
