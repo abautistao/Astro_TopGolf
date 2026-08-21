@@ -11,6 +11,7 @@ const { url, padding_top, padding_bottom, background } = Astro.props;
 const paddingTop = padding_top ?? '45px';
 const paddingBottom = padding_bottom ?? '45px';
 const bg = background ?? '#ebe8e1';
+const { lang } = Astro.params
 ---
 <script 
     is:inline
@@ -20,6 +21,14 @@ const bg = background ?? '#ebe8e1';
      
 <div id="bokun_widget" class="bokunWidget" data-src={url}></div>
 <noscript>Please enable javascript in your browser to book</noscript>
+<script is:inline define:vars={{ lang }}>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const currency = lang == 'en' ? 'USD' : 'MXN';
+            BokunWidgets.setCurrency(currency);
+        }, 1000);
+    })
+</script>
 <style define:vars={{ paddingTop, paddingBottom, bg }}>
     #bokun_widget {
         background-color: var(--bg);

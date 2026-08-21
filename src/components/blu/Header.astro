@@ -250,7 +250,7 @@ const t = {
     }
 </style>
 
-<script>
+<script define:vars={{lang}}>
     const header = document.getElementById("blu-header");
     const toggle = document.getElementById("mobile-menu-toggle");
     const menu = document.getElementById("mobile-menu");
@@ -284,4 +284,11 @@ const t = {
             document.body.style.overflow = "";
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const currency = lang == 'en' ? 'USD' : 'MXN';
+            BokunWidgets.setCurrency(currency);
+        }, 1000);
+    })
 </script>
