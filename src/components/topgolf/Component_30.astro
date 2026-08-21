@@ -26,14 +26,7 @@ const dataToRender = {
     titulo: titulo || placeholderData.titulo,
     contenido: stringifyRichText(contenido || placeholderData.contenido),
 };
-const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton) || [
-    {
-        id: 1,
-        texto: "MÁS INFORMACIÓN",
-        url: "#",
-        tipo: "version_3"
-    }
-];
+const componentButtons: Boton[] = (Boton && !Array.isArray(Boton) ? [Boton] : Boton);
 ---
 
 <CalloutSection

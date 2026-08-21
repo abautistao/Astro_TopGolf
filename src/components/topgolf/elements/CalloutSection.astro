@@ -72,9 +72,11 @@ const HeadingTag = getHeadingTag(nivel_heading);
                 <div set:html={contenido}></div>
             </div>
 
-            <div class="w-full mt-10 inline-block">
-                <ButtonGroup botones={botones} clase="flex flex-col items-center"/>
-            </div>
+            {botones && (
+                <div class="w-full mt-10 inline-block">
+                    <ButtonGroup botones={botones} clase="flex flex-col items-center"/>
+                </div>
+            )}
         </div>
     </div>
 
