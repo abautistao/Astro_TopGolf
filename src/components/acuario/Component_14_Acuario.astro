@@ -5,12 +5,15 @@ export interface Props {
     disposicion?: "texto_izquierda" | "texto_derecha" | "solo_texto_centrado" | "solo_texto";
     titulo?: string;
     subtitulo?: string;
+    posicion_subtitulo?: "arriba" | "debajo";
     htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
     descripcion?: any;
     media?: any;
     galeria?: { data: any[] } | any[];
     color_fondo?: string;
     color_texto?: string;
+    color_titulo?: string;
+    color_subtitulo?: string;
     imagen_fondo?: any;
 }
 
@@ -18,18 +21,23 @@ const {
     disposicion = "texto_izquierda",
     titulo,
     subtitulo,
+    posicion_subtitulo = "debajo",
     htmlTag = "h2",
     descripcion,
     media,
     galeria,
     color_fondo,
     color_texto,
+    color_titulo,
+    color_subtitulo,
     imagen_fondo,
 } = Astro.props;
 
 const TitleTag = htmlTag;
 const finalBgColor = color_fondo || "var(--neutral-background-subtle)";
 const finalTextColor = color_texto || "var(--surface-brand-primary)";
+const finalTitleColor = color_titulo || finalTextColor;
+const finalSubtitleColor = color_subtitulo || finalTextColor;
 const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
 
 const hasMedia = media?.data || media;
@@ -53,18 +61,18 @@ if (disposicion === "texto_izquierda") {
     textContainerClasses += "lg:w-1/2 lg:pl-8";
 } else if (disposicion === "solo_texto_centrado") {
     containerClasses = "flex flex-col items-center justify-center";
-    textContainerClasses = "w-full max-w-4xl text-center mx-auto";
+    textContainerClasses = "w-full text-center mx-auto";
     mediaContainerClasses = "hidden";
 } else {
     // solo_texto
     containerClasses = "flex flex-col items-start";
-    textContainerClasses = "w-full max-w-4xl";
+    textContainerClasses = "w-full";
     mediaContainerClasses = "hidden";
 }
 ---
 
 <section
-    class="w-full py-12 md:py-20 relative overflow-hidden"
+    class="w-full pt-12 md:pt-20 pb-7 md:pb-12 relative overflow-hidden"
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -77,25 +85,48 @@ if (disposicion === "texto_izquierda") {
             
             {/* Columna de Texto */}
             <div class={textContainerClasses}>
-                {titulo && (
-                    <TitleTag
-                        class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase mb-2 leading-tight ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
-                        style={`color: ${finalTextColor};`}
-                    >
-                        {titulo}
-                    </TitleTag>
-                )}
-                {subtitulo && (
-                    <p
-                        class={`font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase mb-6 ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
-                        style={`color: ${finalTextColor}; opacity: 0.85;`}
-                    >
-                        {subtitulo}
-                    </p>
+                {posicion_subtitulo === "arriba" ? (
+                    <>
+                        {subtitulo && (
+                            <p
+                                class={`font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase mb-2 leading-[1em] ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
+                                style={color_subtitulo ? `color: ${finalSubtitleColor};` : `color: ${finalTextColor}; opacity: 0.85;`}
+                            >
+                                {subtitulo}
+                            </p>
+                        )}
+                        {titulo && (
+                            <TitleTag
+                                class={`font-[family-name:var(--font-principal)] text-[40px] font-black uppercase mb-6 leading-[1em] ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
+                                style={`color: ${finalTitleColor};`}
+                            >
+                                {titulo}
+                            </TitleTag>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {titulo && (
+                            <TitleTag
+                                class={`font-[family-name:var(--font-principal)] text-[40px] font-black uppercase mb-2 leading-[1em] ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
+                                style={`color: ${finalTitleColor};`}
+                            >
+                                {titulo}
+                            </TitleTag>
+                        )}
+                        {subtitulo && (
+                            <p
+                                class={`font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase mb-6 leading-[1em] ${disposicion === 'solo_texto_centrado' ? 'mx-auto' : ''}`}
+                                style={color_subtitulo ? `color: ${finalSubtitleColor};` : `color: ${finalTextColor}; opacity: 0.85;`}
+                            >
+                                {subtitulo}
+                            </p>
+                        )}
+                    </>
                 )}
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] leading-relaxed [&>p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_li]:mb-1"
+                        class="font-[family-name:var(--font-secundaria)] text-[22px] font-normal leading-[24px] [&>p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_li]:mb-1"
                         style={`color: ${finalTextColor};`}
                         set:html={stringifyRichText(descripcion)}
                     />

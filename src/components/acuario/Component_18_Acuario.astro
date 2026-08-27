@@ -19,19 +19,17 @@ export interface TarjetaHover {
 
 export interface Props {
     color_fondo?: string;
-    tarjeta_1?: TarjetaHover;
-    tarjeta_2?: TarjetaHover;
+    tarjetas?: TarjetaHover[];
 }
 
 const {
     color_fondo,
-    tarjeta_1,
-    tarjeta_2,
+    tarjetas = [],
 } = Astro.props;
 
-const tarjetas: TarjetaHover[] = [tarjeta_1, tarjeta_2].filter(
-    (t): t is TarjetaHover => Boolean(t && t.imagen)
-);
+const tarjetasVisibles = tarjetas.filter((t): t is TarjetaHover => Boolean(t && t.imagen));
+const totalTarjetas = tarjetasVisibles.length;
+const isCarousel = totalTarjetas >= 3;
 ---
 
 <section
@@ -39,43 +37,190 @@ const tarjetas: TarjetaHover[] = [tarjeta_1, tarjeta_2].filter(
     style={{ backgroundColor: color_fondo || "var(--surface-brand-primary)" }}
 >
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {tarjetas.map((tarjeta) => {
-                const imgUrl = getStrapiUrl(tarjeta.imagen);
-                const btn = Array.isArray(tarjeta.boton) ? tarjeta.boton[0] : tarjeta.boton;
-                return (
-                    <div class="acuario-hover-card group relative w-full aspect-[4/3] md:aspect-[5/4] rounded-[16px] overflow-hidden shadow-xl">
-                        <img
-                            src={imgUrl}
-                            alt={tarjeta.imagen?.alternativeText || tarjeta.titulo || "Tarjeta"}
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            loading="lazy"
-                        />
-                        <div class="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/65"></div>
+        {isCarousel ? (
+            <div class="relative w-full px-2 md:px-10">
+                <div class="overflow-hidden">
+                    <div class="acuario-18-swiper w-full pb-4">
+                        <div class="swiper-wrapper">
+                            {tarjetasVisibles.map((tarjeta) => {
+                                const imgUrl = getStrapiUrl(tarjeta.imagen);
+                                const btn = Array.isArray(tarjeta.boton) ? tarjeta.boton[0] : tarjeta.boton;
+                                return (
+                                    <div class="swiper-slide">
+                                        <div class="acuario-hover-card group relative w-full aspect-[4/3] md:aspect-[5/4] rounded-[16px] overflow-hidden shadow-xl">
+                                            <img
+                                                src={imgUrl}
+                                                alt={tarjeta.imagen?.alternativeText || tarjeta.titulo || "Tarjeta"}
+                                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                loading="lazy"
+                                            />
+                                            <div class="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/65"></div>
 
-                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {tarjeta.titulo && (
-                                <h3 class="font-[family-name:var(--font-principal)] text-white text-[24px] md:text-[28px] font-bold mb-3 uppercase">
-                                    {tarjeta.titulo}
-                                </h3>
-                            )}
-                            {tarjeta.descripcion && (
-                                <p class="font-[family-name:var(--font-secundaria)] text-white/95 text-[15px] md:text-[16px] leading-relaxed max-w-md mb-6">
-                                    {tarjeta.descripcion}
-                                </p>
-                            )}
-                            {btn && btn.texto && btn.url && (
-                                <a
-                                    href={btn.url}
-                                    class="inline-flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[15px] uppercase tracking-wide px-7 py-3 rounded-[30px] transition-all bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:opacity-90"
-                                >
-                                    {btn.texto}
-                                </a>
-                            )}
+                                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                {tarjeta.titulo && (
+                                                    <h3 class="font-[family-name:var(--font-principal)] text-white text-[24px] md:text-[28px] font-bold mb-3 uppercase">
+                                                        {tarjeta.titulo}
+                                                    </h3>
+                                                )}
+                                                {tarjeta.descripcion && (
+                                                    <p class="font-[family-name:var(--font-secundaria)] text-white/95 text-[15px] md:text-[16px] leading-relaxed max-w-md mb-6">
+                                                        {tarjeta.descripcion}
+                                                    </p>
+                                                )}
+                                                {btn && btn.texto && btn.url && (
+                                                    <a
+                                                        href={btn.url}
+                                                        class="inline-flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[15px] uppercase tracking-wide px-7 py-3 rounded-[30px] transition-all bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:opacity-90"
+                                                    >
+                                                        {btn.texto}
+                                                    </a>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
-                );
-            })}
-        </div>
+                </div>
+
+                <button
+                    class="swiper-btn-prev absolute top-1/2 -translate-y-1/2 -left-2 md:-left-6 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    aria-label="Anterior"
+                >
+                    <i class="fa-solid fa-angle-left text-2xl md:text-3xl"></i>
+                </button>
+
+                <button
+                    class="swiper-btn-next absolute top-1/2 -translate-y-1/2 -right-2 md:-right-6 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    aria-label="Siguiente"
+                >
+                    <i class="fa-solid fa-angle-right text-2xl md:text-3xl"></i>
+                </button>
+            </div>
+        ) : (
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {tarjetasVisibles.map((tarjeta) => {
+                    const imgUrl = getStrapiUrl(tarjeta.imagen);
+                    const btn = Array.isArray(tarjeta.boton) ? tarjeta.boton[0] : tarjeta.boton;
+                    return (
+                        <div class="acuario-hover-card group relative w-full aspect-[4/3] md:aspect-[5/4] rounded-[16px] overflow-hidden shadow-xl">
+                            <img
+                                src={imgUrl}
+                                alt={tarjeta.imagen?.alternativeText || tarjeta.titulo || "Tarjeta"}
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                loading="lazy"
+                            />
+                            <div class="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/65"></div>
+
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                {tarjeta.titulo && (
+                                    <h3 class="font-[family-name:var(--font-principal)] text-white text-[24px] md:text-[28px] font-bold mb-3 uppercase">
+                                        {tarjeta.titulo}
+                                    </h3>
+                                )}
+                                {tarjeta.descripcion && (
+                                    <p class="font-[family-name:var(--font-secundaria)] text-white/95 text-[15px] md:text-[16px] leading-relaxed max-w-md mb-6">
+                                        {tarjeta.descripcion}
+                                    </p>
+                                )}
+                                {btn && btn.texto && btn.url && (
+                                    <a
+                                        href={btn.url}
+                                        class="inline-flex items-center justify-center font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[15px] uppercase tracking-wide px-7 py-3 rounded-[30px] transition-all bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] hover:opacity-90"
+                                    >
+                                        {btn.texto}
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        )}
+
+        {isCarousel && (
+            <div class="acuario-18-pagination flex justify-center items-center gap-3 mt-6"></div>
+        )}
     </div>
 </section>
+
+<style>
+    .swiper-btn-prev,
+    .swiper-btn-next {
+        user-select: none;
+    }
+
+    .swiper-btn-prev.swiper-button-disabled,
+    .swiper-btn-next.swiper-button-disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    :global(.acuario-18-pagination .swiper-pagination-bullet) {
+        width: 18px;
+        height: 18px;
+        background-color: white;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        margin: 0 !important;
+    }
+
+    :global(.acuario-18-pagination .swiper-pagination-bullet-active) {
+        background-color: var(--brand-interactive-base, #FBF21A);
+        opacity: 1;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/navigation';
+    import 'swiper/css/pagination';
+
+    function initC18Swiper() {
+        const sliders = document.querySelectorAll('.acuario-18-swiper');
+
+        sliders.forEach((sliderElement) => {
+            const container = sliderElement.closest('.relative.w-full');
+            const prevBtn = container?.querySelector('.swiper-btn-prev') as HTMLElement;
+            const nextBtn = container?.querySelector('.swiper-btn-next') as HTMLElement;
+            const section = sliderElement.closest('section');
+            const paginationEl = section?.querySelector('.acuario-18-pagination') as HTMLElement;
+
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Navigation, Pagination, Autoplay],
+                loop: true,
+                slidesPerGroup: 1,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                slidesPerView: 1,
+                spaceBetween: 16,
+                navigation: {
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                },
+                pagination: {
+                    el: paginationEl,
+                    clickable: true,
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 24,
+                    },
+                },
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initC18Swiper);
+    document.addEventListener('astro:page-load', initC18Swiper);
+</script>

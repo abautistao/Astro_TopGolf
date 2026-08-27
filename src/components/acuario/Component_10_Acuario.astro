@@ -7,6 +7,10 @@ export interface Props {
     htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
     color_fondo?: string;
     imagen_fondo?: any;
+    color_titulo_acordeon?: string;
+    color_fondo_titulo_acordeon?: string;
+    color_texto_acordeon?: string;
+    color_fondo_acordeon?: string;
     acordeones?: any[];
 }
 
@@ -16,6 +20,10 @@ const {
     htmlTag = "h2",
     color_fondo,
     imagen_fondo,
+    color_titulo_acordeon,
+    color_fondo_titulo_acordeon,
+    color_texto_acordeon,
+    color_fondo_acordeon,
     acordeones = [],
 } = Astro.props;
 
@@ -27,6 +35,22 @@ const isFAQ = variante === "Preguntas Frecuentes";
 const defaultBgColor = isFAQ ? "var(--surface-brand-primary)" : "var(--neutral-background-subtle)";
 const finalBgColor = color_fondo || defaultBgColor;
 const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
+
+// Colores de texto por variante (preservan comportamiento actual)
+const defaultAccTitleColor = isFAQ ? "#FFFFFF" : "var(--surface-brand-primary)";
+const defaultAccContentColor = "#FFFFFF";
+
+const finalAccTitleColor = color_titulo_acordeon || defaultAccTitleColor;
+const finalAccContentColor = color_texto_acordeon || defaultAccContentColor;
+
+// Fondos: solo se aplican como style inline si hay override desde Strapi.
+// Sin override, las clases Tailwind en headerClass/bodyContainerClass dan el default por variante.
+const headerBgStyle = color_fondo_titulo_acordeon
+    ? { backgroundColor: color_fondo_titulo_acordeon }
+    : undefined;
+const bodyBgStyle = color_fondo_acordeon
+    ? { backgroundColor: color_fondo_acordeon }
+    : undefined;
 
 // Estilos dinámicos para los ítems
 const itemContainerClass = isFAQ 
@@ -41,17 +65,15 @@ const iconClass = isFAQ
     ? "text-[var(--brand-interactive-base)] text-xl shrink-0 transition-transform duration-300" 
     : "text-[var(--surface-brand-primary)] text-xl shrink-0 transition-transform duration-300 order-last";
 
-const titleTextClass = isFAQ 
-    ? "text-white font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px]" 
-    : "text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px]";
+const titleTextClass = "font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px]";
 
 const bodyContainerClass = isFAQ 
     ? "overflow-hidden transition-all duration-300 max-h-0" 
     : "overflow-hidden transition-all duration-300 max-h-0 bg-[var(--surface-brand-primary)]";
 
-const bodyContentClass = isFAQ 
-    ? "pt-4 pb-2 text-white font-[family-name:var(--font-secundaria)] text-[16px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic" 
-    : "p-4 text-white font-[family-name:var(--font-secundaria)] text-[16px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1";
+const bodyContentClass = "font-[family-name:var(--font-secundaria)] text-[16px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic" + (isFAQ
+    ? " p-12"
+    : " p-12 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1");
 
 // Generar un ID único para este componente para aislar la interactividad
 const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
@@ -66,7 +88,7 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
         backgroundPosition: "center",
     }}
 >
-    <div class={`container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 ${isFAQ ? 'max-w-4xl' : 'max-w-5xl'}`}>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Título Principal */}
         {titulo && (
@@ -81,7 +103,12 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
         <div class="flex flex-col w-full" id={componentId}>
             {acordeones.map((item, index) => (
                 <div class={`accordion-item ${itemContainerClass}`}>
-                    <button class={`accordion-header ${headerClass}`} aria-expanded="false" aria-controls={`content-${componentId}-${index}`}>
+                    <button
+                        class={`accordion-header ${headerClass}`}
+                        style={headerBgStyle}
+                        aria-expanded="false"
+                        aria-controls={`content-${componentId}-${index}`}
+                    >
                         {/* Icono izquierdo (o derecho en variante 2) */}
                         <div class={`accordion-icon ${iconClass}`}>
                             {item.icono ? (
@@ -90,18 +117,26 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
                                 <i class={`fa-solid ${isFAQ ? 'fa-circle-plus' : 'fa-plus'}`}></i>
                             )}
                         </div>
-                        
+
                         {/* Título del Acordeón */}
-                        <span class={`accordion-title ${titleTextClass} flex items-center gap-2`}>
-                            {!isFAQ && item.icono && <i class={`${item.icono} text-xl shrink-0`}></i>} 
+                        <span
+                            class={`accordion-title ${titleTextClass} flex items-center gap-2`}
+                            style={{ color: finalAccTitleColor }}
+                        >
+                            {!isFAQ && item.icono && <i class={`${item.icono} text-xl shrink-0`}></i>}
                             {item.titulo}
                         </span>
                     </button>
-                    
+
                     {/* Contenido Desplegable */}
-                    <div id={`content-${componentId}-${index}`} class={`accordion-body ${bodyContainerClass}`}>
-                        <div 
+                    <div
+                        id={`content-${componentId}-${index}`}
+                        class={`accordion-body ${bodyContainerClass}`}
+                        style={bodyBgStyle}
+                    >
+                        <div
                             class={`accordion-content-inner ${bodyContentClass}`}
+                            style={{ color: finalAccContentColor }}
                             set:html={stringifyRichText(item.contenido)}
                         />
                     </div>
