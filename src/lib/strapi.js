@@ -36,6 +36,10 @@ export async function getPageBySlug(slug, locale = 'en') {
   return pages?.[0]; // Devuelve el primer elemento o undefined
 }
 
+export async function getAllPagesMulti(locale = 'en') {
+  return await fetchAPI(`/paginas?locale=*&pagination[pageSize]=100`);
+}
+
 export async function getAllPages(locale = 'en') {
   return await fetchAPI(`/paginas?locale=${locale}&pagination[pageSize]=100`);
 }
