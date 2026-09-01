@@ -10,7 +10,6 @@ export async function GET() {
 
   // Juntamos todas las URLs
   const todasLasUrls = paginas;
-  console.log("urls", todasLasUrls)
 
   // 3. Construimos la estructura XML obligatoria para Google
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
