@@ -25,7 +25,7 @@ const { padding_top } = Astro.props
 const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
-
+const { lang } = Astro.params;
 for (const [key, value] of Object.entries(rawParams)) {
     if (value) { 
         paramsLimpios[key] = value;
@@ -37,7 +37,8 @@ for (const [key, value] of Object.entries(rawParams)) {
     <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
     <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
     <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
-    
+    <input id="vmg_plugin_lang" type="hidden" value={lang}>
+
     <div id="pluginContainer" class="container mx-auto px-4"></div>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
@@ -47,6 +48,7 @@ for (const [key, value] of Object.entries(rawParams)) {
             var vmg_plugin_id = $('#vmg_plugin_id').val();
             var vmg_plugin_url = $('#vmg_plugin_url').val();
             var vmg_plugin_version = $('#vmg_plugin_version').val();
+            var vmg_plugin_lang = $('#vmg_plugin_lang').val();
             var paramsVMG = paramsLimpios;
 
             $.getScript( `https://plugin.venturae.com.mx/js/pluginscripts.js`, function(jd) {
@@ -66,6 +68,206 @@ for (const [key, value] of Object.entries(rawParams)) {
                     jQuery( "#pluginContainer" ).html(data);
                 });
             });
+
+            var checkoutItems = [];
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        jQuery(document).on('click', '#next_one', function(e) {
+            $id = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-select > button').data('prodid');
+            $category = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-name > .prod-type').text();
+            $service = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-name > .prod-name').text();
+            $price = jQuery('#dates .date-list-button-selected > .price').text();
+            $adults = parseInt(jQuery('#zona-pax0 .mainpax').val());
+            $childs = parseInt(jQuery('#zona-pax1 .mainpax').val()) ?? 0;
+            $totalPax = $adults + $childs;
+
+
+            var itemGA4service = {
+                "item_id": $id,
+                "item_name": $service,
+                "item_category": $category,
+                'price': parseFloat($price.split('$')[1]),
+                'quantity': $totalPax
+            };
+                    
+            checkoutItems.push(itemGA4service)
+            window.dataLayer = window.dataLayer || [];
+            
+            console.log({
+                'event': 'add_to_cart',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': [itemGA4service],
+                    'value': $totalPax * parseFloat($price.split('$')[1]),
+                }
+            });
+
+            window.dataLayer.push({
+                'event': 'add_to_cart',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': [itemGA4service],
+                    'value': $totalPax * parseFloat($price.split('$')[1]),
+                }
+            });
+            
+            
+        })
+
+        //add to cart addons
+        jQuery(document).on('click', '#next_two', function(e) {
+            $cartAddons = [];
+            $cartAddonsGA4 = [];
+            $btnSelected = jQuery('.btn-addon-selected');
+
+            $btnSelected.each((index,element) => {
+                $btnAddonId = $(element).data('id')
+                $addonName = jQuery.trim($(element).closest('.addon-card-content').children('.addon-card-name').text())
+
+                $adults = parseInt(jQuery(element).closest('.addon-card-control').children('.addon-card-paxcontrols').children('.row').children('#addon-card-pax-0').children('input#add_' + $btnAddonId).val())
+                $priceAdults = parseFloat(jQuery(element).closest('.addon-card-control').children('.addon-card-paxcontrols').children('.row').children('#addon-card-pax-0').children('input#add_' + $btnAddonId).data('price'))
+
+        $childs = parseInt(jQuery(element).closest('.addon-card-control').children('.addon-card-paxcontrols').children('.row').children('#addon-card-pax-1').children('input#add_' + $btnAddonId).val()) || 0
+                $priceChilds = parseFloat(jQuery(element).closest('.addon-card-control').children('.addon-card-paxcontrols').children('.row').children('#addon-card-pax-1').children('input#add_' + $btnAddonId).data('price')) || 0;
+                    
+                $totalPax = $adults + $childs;
+
+                let itemAddon = {
+                    "ProductName": $addonName,
+                    "ProductID": $btnAddonId,
+                    "SKU": $btnAddonId,
+                    "Categories": "Adicional",
+                    "Adults": $adults,
+                    "Price Adult": $priceAdults,
+                    "Childs": $childs,
+                    "Price Child": $priceAdults,
+                    "Total pax": $totalPax,
+                    "Step": 2
+                }
+                        
+                var itemGA4addon = {
+                    "item_id": $btnAddonId,
+                    "item_name": $addonName,
+                    "item_category": 'Adicional',
+                    'price': ($adults * $priceAdults) + ($childs * $priceChilds),
+                    'quantity': $totalPax
+                };
+
+                $cartAddons.push(itemAddon)
+                        $cartAddonsGA4.push(itemGA4addon)
+                        checkoutItems.push(itemGA4addon)
+            });
+                
+                var totalCartValue = $cartAddonsGA4.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue.price;
+                }, 0);
+                
+                window.dataLayer = window.dataLayer || [];
+
+                console.log({
+                    'event': 'add_to_cart',
+                    'ecommerce': {
+                        'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                        'items': $cartAddonsGA4,
+                        'value': totalCartValue
+                    }
+                });
+
+                window.dataLayer.push({
+                    'event': 'add_to_cart',
+                    'ecommerce': {
+                        'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                        'items': $cartAddonsGA4,
+                        'value': totalCartValue
+                    }
+                });
+        })
+
+        // Started Checkout
+        jQuery(document).on('click', '#next_three', function(e) {
+            let $name = jQuery('#cliente_nombre').val()
+            let $lastname = jQuery('#cliente_apellido').val()
+            let $email = jQuery('#cliente_email').val()
+
+            let unixTimestamp = Math.floor(Date.now() / 1000);
+            let uniqueId = getRandomInt(1,5000);
+
+            let checkoutItem = {
+                "$event_id": uniqueId + "_" + unixTimestamp,
+                "customer": {
+                    "name": $name,
+                    "lastname": $lastname,
+                    "email": $email,
+                },
+            };
+
+            var totalCheckoutValue = checkoutItems.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue.price;
+            }, 0);
+            
+            
+            window.dataLayer = window.dataLayer || [];
+
+            console.log({
+                'event': 'begin_checkout',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': checkoutItems,
+                    'value': totalCheckoutValue
+                }
+            });
+
+            window.dataLayer.push({
+                'event': 'begin_checkout',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': checkoutItems,
+                    'value': totalCheckoutValue
+                }
+            });
+        })
+
+        
+        jQuery(document).on('click', '.btn-select-prod', function(e) {
+            $id = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-select > button').data('prodid')
+            $category = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-name > .prod-type').text()
+            $service = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-name > .prod-name').text()
+                
+            $price = jQuery('.vmgcard-selected > .vmgcard-content > .vmgcard-name > .row > .col-6:last > .price-show').text()
+        
+            $price = $price.split('MXN')
+            $price = $price[0].split('$')
+            $finalPrice = parseFloat($price[1])
+            
+            let viewItem = {
+                "ProductName": $service,
+                "ProductID": $id,
+                "SKU": $id,
+                "Categories": $category,
+            };
+                
+            let itemGA4 = {
+                "item_id": $id,
+                "item_name": $service,
+                "item_category": $category,
+                "price": $finalPrice
+            };
+            
+            console.log(itemGA4);
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'view_item',
+                'ecommerce': {
+                    'currency': vmg_plugin_lang == 'es' ? 'MXN' : 'USD',
+                    'items': [itemGA4]
+                }
+            });
+        })
         });
     </script>
 </div>
