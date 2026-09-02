@@ -95,7 +95,7 @@ const getHeadingTag = (nivel?: string) => {
 {/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
 {mostrar_banner_superior && banner_texto && (
     <div
-        class="w-full text-center py-3 px-4 font-[family-name:var(--font-principal)] font-bold uppercase tracking-wide text-sm md:text-base"
+        class="w-full text-center py-3 px-4 font-[family-name:var(--font-principal)] font-extrabold uppercase tracking-wide text-[16px] md:text-[24px]"
         style={`background-color: ${bannerBg}; color: ${bannerColor};`}
         role="region"
         aria-label={banner_texto}
@@ -114,7 +114,7 @@ const getHeadingTag = (nivel?: string) => {
     </div>
 )}
 
-<section class="relative z-10 w-screen left-1/2 -ml-[50vw] aspect-video md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
+<section class="relative z-10 w-screen left-1/2 -ml-[50vw] aspect-[4/5] md:aspect-auto md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
     {finalSlides && finalSlides.length > 0 ? (
         <div class="swiper acuario-banner-swiper w-full h-full absolute inset-0">
             <div class="swiper-wrapper h-full">
@@ -165,12 +165,12 @@ const getHeadingTag = (nivel?: string) => {
                                 <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
                                     <div class="w-full max-w-[1440px] mx-auto px-6 flex flex-col items-center justify-center text-center text-[var(--neutral-text-inverted)] pointer-events-auto">
                                         {slide.subtitulo && (
-                                            <span class="block text-[14px] md:text-[40px] font-medium tracking-wide uppercase font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] mb-2" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
+                                            <span class="block text-[18px] md:text-[40px] font-medium tracking-wide uppercase font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] mb-2" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                                 {slide.subtitulo}
                                             </span>
                                         )}
                                         
-                                        <HeadingTag class="text-[28px] md:text-[80px] font-black font-[family-name:var(--font-principal)] leading-[50px] mb-6 uppercase text-center" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
+                                        <HeadingTag class="text-[32px] md:text-[80px] font-black font-[family-name:var(--font-principal)] leading-[36px] md:leading-[50px] mb-6 uppercase text-center" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                             {slide.texto_principal}
                                         </HeadingTag>
 

@@ -48,7 +48,7 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
             <div class="text-center mb-10 md:mb-16">
                 {titulo && (
                     <TitleTag
-                        class="font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase mb-2"
+                        class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-black uppercase mb-2"
                         style={`color: ${finalTitleColor};`}
                     >
                         {titulo}
@@ -57,7 +57,7 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 
                 {subtitulo && (
                     <span
-                        class="block font-[family-name:var(--font-principal)] text-[18px] md:text-[22px] font-medium uppercase tracking-wide"
+                        class="block font-[family-name:var(--font-principal)] text-[18px] md:text-[24px] font-medium uppercase tracking-wide"
                         style={`color: ${finalTextColor};`}
                     >
                         {subtitulo}
@@ -66,7 +66,7 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 
                 {descripcion && (
                     <div
-                        class="mt-6 mx-auto max-w-3xl font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        class="mt-6 mx-auto max-w-3xl font-[family-name:var(--font-secundaria)] text-[16px] md:text-[24px] font-normal md:leading-[25px] [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
                         style={`color: ${finalTextColor};`}
                         set:html={stringifyRichText(descripcion)}
                     />

@@ -1,22 +1,36 @@
 ---
-const { texto_resaltado, texto_secundario, boton } = Astro.props;
+const { texto_resaltado, texto_secundario, boton, color_texto_resaltado_override, color_texto_secundario_override, color_fondo_override } = Astro.props;
 
 // Normalizamos el botón si viene como array o objeto singular
 const btn = Array.isArray(boton) ? boton[0] : boton;
+
+// Overrides de color (caen al default via class si no se definen)
+const textoResaltadoStyle = color_texto_resaltado_override ? `color: ${color_texto_resaltado_override}` : undefined;
+const textoSecundarioStyle = color_texto_secundario_override ? `color: ${color_texto_secundario_override}` : undefined;
+const fondoStyle = color_fondo_override ? `background-color: ${color_fondo_override}; border-color: ${color_fondo_override};` : undefined;
 ---
 
-<section class="w-full bg-[var(--accent-highlight-primary)] max-md:hover:bg-[var(--brand-interactive-base)] max-md:active:bg-[var(--brand-interactive-base)] transition-colors py-3 px-4 border-b border-[var(--accent-highlight-primary)] max-md:hover:border-[var(--brand-interactive-base)] max-md:active:border-[var(--brand-interactive-base)] overflow-hidden">
+<section
+    class="w-full bg-[var(--accent-highlight-primary)] max-md:hover:bg-[var(--brand-interactive-base)] max-md:active:bg-[var(--brand-interactive-base)] transition-colors py-3 px-4 border-b border-[var(--accent-highlight-primary)] max-md:hover:border-[var(--brand-interactive-base)] max-md:active:border-[var(--brand-interactive-base)] overflow-hidden"
+    style={fondoStyle}
+>
     <div class="w-full max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 px-2 md:px-10">
         
         <!-- Text Container -->
         <div class="flex flex-col md:flex-row items-center justify-center text-center md:text-left text-[var(--surface-brand-primary)]">
             {texto_resaltado && (
-                <h2 class="font-[family-name:var(--font-principal)] text-[24px] md:text-[32px] font-bold uppercase md:mr-2">
+                <h2
+                    class="font-[family-name:var(--font-principal)] text-[24px] md:text-[32px] font-bold uppercase md:mr-2"
+                    style={textoResaltadoStyle}
+                >
                     {texto_resaltado}
                 </h2>
             )}
             {texto_secundario && (
-                <p class="font-[family-name:var(--font-principal)] text-[18px] md:text-[32px] font-bold uppercase mt-1 md:mt-0">
+                <p
+                    class="font-[family-name:var(--font-principal)] text-[18px] md:text-[32px] font-bold uppercase mt-1 md:mt-0"
+                    style={textoSecundarioStyle}
+                >
                     <span class="border-b-[3px] border-[var(--surface-brand-primary)] md:border-none pb-1 md:pb-0">
                         {texto_secundario}
                     </span>

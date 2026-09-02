@@ -14,6 +14,11 @@ export interface Props {
     elementos_lista?: any[];
     galeria?: { data: any[] } | any[];
     youtube_url?: string;
+    imagen_fondo?: any;
+    color_titulo_override?: string;
+    color_subtitulo_override?: string;
+    color_texto_override?: string;
+    color_item_lista_override?: string;
 }
 
 const {
@@ -29,6 +34,11 @@ const {
     elementos_lista = [],
     galeria,
     youtube_url,
+    imagen_fondo,
+    color_titulo_override,
+    color_subtitulo_override,
+    color_texto_override,
+    color_item_lista_override,
 } = Astro.props;
 
 const TitleTag = htmlTag;
@@ -56,7 +66,12 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
 
 <section 
     class="w-full py-12 md:py-20 relative overflow-hidden" 
-    style={{ backgroundColor: color_fondo || "#E8F6FD" }}
+    style={{
+        backgroundColor: color_fondo || "#E8F6FD",
+        backgroundImage: imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+    }}
 >
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
@@ -78,12 +93,18 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
                 {posicion_subtitulo === "debajo" ? (
                     <>
                         {titulo && (
-                            <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-2 uppercase w-full text-center lg:text-left">
+                            <TitleTag
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-2 uppercase w-full text-center lg:text-left"
+                                style={color_titulo_override ? `color: ${color_titulo_override}` : undefined}
+                            >
                                 {titulo}
                             </TitleTag>
                         )}
                         {subtitulo && (
-                            <span class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-6 w-full text-center lg:text-left">
+                            <span
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-6 w-full text-center lg:text-left"
+                                style={color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined}
+                            >
                                 {subtitulo}
                             </span>
                         )}
@@ -91,12 +112,18 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
                 ) : (
                     <>
                         {subtitulo && (
-                            <span class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-2 w-full text-center lg:text-left">
+                            <span
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-2 w-full text-center lg:text-left"
+                                style={color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined}
+                            >
                                 {subtitulo}
                             </span>
                         )}
                         {titulo && (
-                            <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-6 uppercase w-full text-center lg:text-left">
+                            <TitleTag
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-6 uppercase w-full text-center lg:text-left"
+                                style={color_titulo_override ? `color: ${color_titulo_override}` : undefined}
+                            >
                                 {titulo}
                             </TitleTag>
                         )}
@@ -107,6 +134,7 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
                 {descripcion && (
                     <div
                         class="font-[family-name:var(--font-secundaria)] text-[17px] md:text-[22px] text-[var(--surface-brand-primary)] font-normal leading-[26px] mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        style={color_texto_override ? `color: ${color_texto_override}` : undefined}
                         set:html={stringifyRichText(descripcion)}
                     />
                 )}
@@ -122,7 +150,10 @@ const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
                 {elementos_lista && elementos_lista.length > 0 && (
                     <ul class="flex flex-col gap-3">
                         {elementos_lista.map((item) => (
-                            <li class="flex items-start gap-3 font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] font-bold">
+                            <li
+                                class="flex items-start gap-3 font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] font-bold"
+                                style={color_item_lista_override ? `color: ${color_item_lista_override}` : undefined}
+                            >
                                 {item.icono && (
                                     <i class={`${item.icono} text-[var(--surface-brand-secondary)] mt-1 text-[20px] w-6 text-center shrink-0`}></i>
                                 )}

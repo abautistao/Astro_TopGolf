@@ -11,6 +11,9 @@ export interface Props {
     color_titulo?: string;
     color_texto?: string;
     tarjetas?: any[];
+    titulo_alineacion?: "center" | "left" | "right";
+    subtitulo_alineacion?: "center" | "left" | "right";
+    descripcion_alineacion?: "center" | "left" | "right";
 }
 
 const {
@@ -23,9 +26,18 @@ const {
     color_titulo,
     color_texto,
     tarjetas = [],
+    titulo_alineacion = "center",
+    subtitulo_alineacion = "center",
+    descripcion_alineacion = "center",
 } = Astro.props;
 
 const TitleTag = htmlTag;
+
+// Helper: enum → clase Tailwind text-align (default: center)
+const alignClass = (a?: "center" | "left" | "right") =>
+    a === "left" ? "text-left" :
+    a === "right" ? "text-right" :
+    "text-center";
 ---
 
 <section
@@ -39,10 +51,10 @@ const TitleTag = htmlTag;
 >
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         {(titulo || subtitulo || descripcion) && (
-            <div class="text-center mb-10 md:mb-16">
+            <div class="mb-10 md:mb-16">
                 {titulo && (
                     <TitleTag
-                        class="font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase mb-2"
+                        class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase mb-2 ${alignClass(titulo_alineacion)}`}
                         style={color_titulo ? { color: color_titulo } : { color: "var(--surface-brand-primary)" }}
                     >
                         {titulo}
@@ -51,7 +63,7 @@ const TitleTag = htmlTag;
 
                 {subtitulo && (
                     <span
-                        class="block font-[family-name:var(--font-principal)] text-[18px] md:text-[22px] font-medium uppercase tracking-wide"
+                        class={`block font-[family-name:var(--font-principal)] text-[18px] md:text-[22px] font-medium uppercase tracking-wide ${alignClass(subtitulo_alineacion)}`}
                         style={color_texto ? { color: color_texto } : { color: "var(--surface-brand-primary)" }}
                     >
                         {subtitulo}
@@ -60,7 +72,7 @@ const TitleTag = htmlTag;
 
                 {descripcion && (
                     <div
-                        class="mt-6 mx-auto max-w-3xl font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-normal leading-relaxed text-center [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        class={`font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-normal leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic ${alignClass(descripcion_alineacion)}`}
                         style={color_texto ? { color: color_texto } : undefined}
                         set:html={stringifyRichText(descripcion)}
                     />

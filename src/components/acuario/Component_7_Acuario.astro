@@ -8,6 +8,8 @@ export interface Props {
     etiqueta_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
     color_fondo?: string;
     imagen_fondo?: any;
+    color_titulo_override?: string;
+    color_subtitulo_override?: string;
     tarjetas?: any[];
 }
 
@@ -18,6 +20,8 @@ const {
     etiqueta_subtitulo = "span",
     color_fondo,
     imagen_fondo,
+    color_titulo_override,
+    color_subtitulo_override,
     tarjetas = []
 } = Astro.props;
 
@@ -29,6 +33,11 @@ const renderMarkdown = (text) => {
     if (!text) return "";
     return stringifyRichText(text);
 };
+
+// Helper: devuelve el override si existe, si no devuelve undefined
+// para no pisar los CSS variables definidos en el class
+const titleColorStyle = color_titulo_override ? `color: ${color_titulo_override}` : undefined;
+const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined;
 ---
 
 <section 
@@ -52,12 +61,18 @@ const renderMarkdown = (text) => {
         <!-- Headers (Título y Subtítulo Centrados) -->
         <div class="mb-14 text-center">
             {titulo && (
-                <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide">
+                <TitleTag
+                    class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
+                    style={titleColorStyle}
+                >
                     {titulo}
                 </TitleTag>
             )}
             {subtitulo && (
-                <SubtitleTag class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[16px] md:text-[20px] font-medium mt-2 uppercase tracking-widest">
+                <SubtitleTag
+                    class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[16px] md:text-[20px] font-medium mt-2 uppercase tracking-widest"
+                    style={subtitleColorStyle}
+                >
                     {subtitulo}
                 </SubtitleTag>
             )}
@@ -65,12 +80,26 @@ const renderMarkdown = (text) => {
 
         <!-- Grid de Tarjetas de Entradas/Paquetes -->
         <div class="flex flex-col gap-8 md:gap-10">
-            {tarjetas && tarjetas.map((tarjeta) => (
+            {tarjetas && tarjetas.map((tarjeta) => {
+                const tarjetaTituloStyle = tarjeta.color_titulo_override ? `color: ${tarjeta.color_titulo_override}` : undefined;
+                const tarjetaPrecioLabelStyle = tarjeta.color_precio_label_override ? `color: ${tarjeta.color_precio_label_override}` : undefined;
+                const tarjetaPrecioValorStyle = tarjeta.color_precio_valor_override ? `color: ${tarjeta.color_precio_valor_override}` : undefined;
+                const tarjetaIncluyeTituloStyle = tarjeta.color_incluye_titulo_override ? `color: ${tarjeta.color_incluye_titulo_override}` : undefined;
+                const tarjetaIncluyeTextoHex = tarjeta.color_incluye_texto_override || undefined;
+                const tarjetaIncluyeIconoHex = tarjeta.color_incluye_icono_override || undefined;
+                const tarjetaIncluyeTextoStyle = tarjetaIncluyeTextoHex ? `color: ${tarjetaIncluyeTextoHex}` : undefined;
+                const tarjetaIncluyeIconoStyle = tarjetaIncluyeIconoHex ? `color: ${tarjetaIncluyeIconoHex}` : undefined;
+                const destacadoFondoStyle = tarjeta.color_fondo_destacado_override ? `background-color: ${tarjeta.color_fondo_destacado_override}` : undefined;
+
+                return (
                 <div class="relative w-full">
                     
                     <!-- Decoración "EL MÁS POPULAR" (Banner Superior) -->
                     {tarjeta.es_destacado && (
-                        <div class="w-full bg-[var(--accent-highlight-secondary,#0097C4)] rounded-t-[20px] py-3 md:py-4 px-6 md:px-10 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6">
+                        <div
+                            class="w-full bg-[var(--accent-highlight-secondary,#0097C4)] rounded-t-[20px] py-3 md:py-4 px-6 md:px-10 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6"
+                            style={destacadoFondoStyle}
+                        >
                             <span class="font-[family-name:var(--font-principal)] text-white font-bold text-[22px] md:text-[28px] uppercase tracking-wide drop-shadow-sm text-center">
                                 {tarjeta.texto_destacado || "EL MÁS POPULAR"}
                             </span>
@@ -119,7 +148,10 @@ const renderMarkdown = (text) => {
                         <div class="w-full md:w-[55%] lg:w-[60%] p-6 md:p-8 md:pl-0 flex flex-col">
                             
                             <!-- Título -->
-                            <h3 class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[24px] md:text-[32px] font-bold leading-tight uppercase tracking-wide mb-6 text-center">
+                            <h3
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[24px] md:text-[32px] font-bold leading-tight uppercase tracking-wide mb-6 text-center"
+                                style={tarjetaTituloStyle}
+                            >
                                 {tarjeta.titulo}
                             </h3>
 
@@ -130,11 +162,17 @@ const renderMarkdown = (text) => {
                                 {tarjeta.precio_regular && (
                                     <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
                                         <!-- Label (Arriba en móvil, Izquierda en desktop) -->
-                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
+                                        <span
+                                            class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
+                                            style={tarjetaPrecioLabelStyle}
+                                        >
                                             {tarjeta.label_precio_regular || "PRECIO REGULAR"}
                                         </span>
                                         <!-- Valor -->
-                                        <div class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] opacity-90 leading-none">
+                                        <div
+                                            class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] opacity-90 leading-none"
+                                            style={tarjetaPrecioValorStyle}
+                                        >
                                             <span class="font-[family-name:var(--font-principal)] text-[18px] sm:text-[20px] md:text-[24px] font-black line-through decoration-[2px] mr-0.5">
                                                 $
                                             </span>
@@ -157,11 +195,17 @@ const renderMarkdown = (text) => {
                                 {tarjeta.precio_en_linea && (
                                     <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
                                         <!-- Label (Arriba en móvil, Izquierda en desktop) -->
-                                        <span class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0">
+                                        <span
+                                            class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
+                                            style={tarjetaPrecioLabelStyle}
+                                        >
                                             {tarjeta.label_precio_en_linea || "PRECIO EN LÍNEA"}
                                         </span>
                                         <!-- Valor -->
-                                        <div class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] leading-none">
+                                        <div
+                                            class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] leading-none"
+                                            style={tarjetaPrecioValorStyle}
+                                        >
                                             <span class="font-[family-name:var(--font-principal)] text-[20px] sm:text-[22px] md:text-[26px] font-black mr-0.5">
                                                 $
                                             </span>
@@ -177,7 +221,10 @@ const renderMarkdown = (text) => {
                             </div>
 
                             <!-- "Incluye" Título Fijo -->
-                            <h4 class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[18px] md:text-[20px] font-bold mb-4">
+                            <h4
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[18px] md:text-[20px] font-bold mb-4"
+                                style={tarjetaIncluyeTituloStyle}
+                            >
                                 Incluye
                             </h4>
 
@@ -187,24 +234,36 @@ const renderMarkdown = (text) => {
                                 {/* Opción 1: Lista Dinámica de Iconos */}
                                 {tarjeta.lista_incluye && tarjeta.lista_incluye.length > 0 && (
                                     <ul class="flex flex-col gap-3">
-                                        {tarjeta.lista_incluye.map((item) => (
+{tarjeta.lista_incluye.map((item) => {
+                                            const itemIconHex = item.color_icono_override || tarjetaIncluyeIconoHex;
+                                            const itemTextoHex = item.color_texto_override || tarjetaIncluyeTextoHex;
+                                            const itemIconStyle = itemIconHex ? `color: ${itemIconHex}` : undefined;
+                                            const itemTextoStyle = itemTextoHex ? `color: ${itemTextoHex}` : undefined;
+                                            return (
                                             <li class="flex items-start gap-3">
                                                 <!-- Icono Ticket/Pez (Renderiza la imagen de Strapi, o un SVG fallback) -->
-                                                <div class="w-6 h-6 shrink-0 mt-0.5 text-[var(--surface-brand-secondary,#1E8CA6)]">
+                                                <div
+                                                    class="w-6 h-6 shrink-0 mt-0.5 text-[var(--surface-brand-secondary,#1E8CA6)]"
+                                                    style={itemIconStyle}
+                                                >
                                                     {item.icono ? (
                                                         <img src={getStrapiUrl(item.icono)} alt="Icono" class="w-full h-full object-contain" />
                                                     ) : (
                                                         /* Ticket Fallback Icon */
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                                            <path d="M21.5,10.8l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0L17,9l-2-2l0.6-0.6c0.4-0.4,0.4-1.1,0-1.5l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0 L11,3.2L9,1.2C8.6,0.8,8,0.8,7.6,1.2L5.2,3.6c-0.4,0.4-0.4,1.1,0,1.5L5.8,5.8l-2,2L3.2,7.2c-0.4-0.4-1.1-0.4-1.5,0L-0.7,9.6 c-0.4,0.4-0.4,1.1,0,1.5L1.7,13.5l2-2l-0.6-0.6c-0.4-0.4-0.4-1.1,0-1.5l2.4-2.4c0.4-0.4,1.1-0.4,1.5,0L7,7.6l2,2L8.4,10.2 c-0.4,0.4-0.4,1.1,0,1.5l2.4,2.4c0.4,0.4,1.1,0.4,1.5,0L13,13.4l2,2l0.6,0.6c0.4,0.4,0.4,1.1,0,1.5l-2.4,2.4 c-0.4,0.4-1.1,0.4-1.5,0l-2.4-2.4L7.8,20.2L9.2,21.6c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4c0.4-0.4,0.4-1.1,0-1.5l-0.6-0.6l2-2l0.6,0.6 c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4C21.9,11.9,21.9,11.2,21.5,10.8z"/>
+                                                            <path d="M21.5,10.8l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0L17,9l-2-2l0.6-0.6c0.4-0.4,0.4-1.1,0-1.5l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0 L11,3.2L9,1.2C8.6,0.8,8,0.8,7.6,1.2L5.2,3.6c-0.4-0.4-0.4-1.1,0-1.5L5.8,5.8l-2,2L3.2,7.2c-0.4-0.4-1.1-0.4-1.5,0L-0.7,9.6 c-0.4,0.4-0.4,1.1,0,1.5L1.7,13.5l2-2l-0.6-0.6c-0.4-0.4-0.4-1.1,0-1.5l2.4-2.4c0.4-0.4,1.1-0.4,1.5,0L7,7.6l2,2L8.4,10.2 c-0.4,0.4-0.4,1.1,0,1.5l2.4,2.4c0.4,0.4,1.1,0.4,1.5,0L13,13.4l2,2l0.6,0.6c0.4,0.4,0.4,1.1,0,1.5l-2.4,2.4 c-0.4-0.4-1.1-0.4-1.5,0l-2.4-2.4L7.8,20.2L9.2,21.6c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4c0.4-0.4,0.4-1.1,0-1.5l-0.6-0.6l2-2l0.6,0.6 c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4C21.9,11.9,21.9,11.2,21.5,10.8z"/>
                                                         </svg>
                                                     )}
                                                 </div>
-                                                <span class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[15px] md:text-[16px] leading-snug font-medium">
+                                                <span
+                                                    class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[15px] md:text-[16px] leading-snug font-medium"
+                                                    style={itemTextoStyle}
+                                                >
                                                     {item.texto}
                                                 </span>
                                             </li>
-                                        ))}
+                                            );
+                                        })}
                                     </ul>
                                 )}
 
@@ -219,7 +278,7 @@ const renderMarkdown = (text) => {
 
                             <!-- Nota Legal Importante -->
                             {tarjeta.nota_importante && (
-                                <p class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[11px] md:text-[12px] font-normal italic opacity-80 mb-4 text-center md:text-left">
+                                <p class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[11px] md:text-[12px] font-bold opacity-80 mb-4 text-center md:text-left">
                                     {tarjeta.nota_importante}
                                 </p>
                             )}
@@ -229,7 +288,7 @@ const renderMarkdown = (text) => {
                                 <div class="w-full flex justify-center md:justify-start">
                                     <a 
                                         href={tarjeta.boton.url || "#"} 
-                                        class="w-full md:w-auto min-w-[280px] flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-[var(--surface-brand-primary,#003F7F)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#FBF21A)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#FBF21A)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-3 md:py-4 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
+                                        class="w-full md:w-auto min-w-[280px] flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-[var(--neutral-background-strong,#1A1A2E)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#FBF21A)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#FBF21A)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-3 md:py-4 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
                                     >
                                         {tarjeta.boton.texto || "COMPRA TU ENTRADA"}
                                     </a>
@@ -239,7 +298,8 @@ const renderMarkdown = (text) => {
                         </div>
                     </div>
                 </div>
-            ))}
+                );
+            })}
         </div>
 
     </div>

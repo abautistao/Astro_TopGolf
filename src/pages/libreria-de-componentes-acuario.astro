@@ -1,0 +1,631 @@
+---
+// src/pages/libreria-de-componentes-acuario.astro
+import Layout from "../layouts/Layout.astro";
+
+import AcuarioHeader from "../components/acuario/Header.astro";
+import AcuarioFooter from "../components/acuario/Footer.astro";
+import Component_1_Acuario from "../components/acuario/Component_1_Acuario.astro";
+import Component_2_Acuario from "../components/acuario/Component_2_Acuario.astro";
+import Component_3_Acuario from "../components/acuario/Component_3_Acuario.astro";
+import Component_4_Acuario from "../components/acuario/Component_4_Acuario.astro";
+import Component_5_Acuario from "../components/acuario/Component_5_Acuario.astro";
+import Component_6_Acuario from "../components/acuario/Component_6_Acuario.astro";
+import Component_7_Acuario from "../components/acuario/Component_7_Acuario.astro";
+import Component_8_Acuario from "../components/acuario/Component_8_Acuario.astro";
+import Component_9_Acuario from "../components/acuario/Component_9_Acuario.astro";
+import Component_10_Acuario from "../components/acuario/Component_10_Acuario.astro";
+import Component_11_Acuario from "../components/acuario/Component_11_Acuario.astro";
+import Component_12_Acuario from "../components/acuario/Component_12_Acuario.astro";
+import Component_13_Acuario from "../components/acuario/Component_13_Acuario.astro";
+import Component_14_Acuario from "../components/acuario/Component_14_Acuario.astro";
+import Component_15_Acuario from "../components/acuario/Component_15_Acuario.astro";
+import Component_16_Acuario from "../components/acuario/Component_16_Acuario.astro";
+import Component_17_Acuario from "../components/acuario/Component_17_Acuario.astro";
+import Component_18_Acuario from "../components/acuario/Component_18_Acuario.astro";
+import Component_19_Acuario from "../components/acuario/Component_19_Acuario.astro";
+import Component_20_Acuario from "../components/acuario/Component_20_Acuario.astro";
+import Component_21_Acuario from "../components/acuario/Component_21_Acuario.astro";
+import Component_22_Acuario from "../components/acuario/Component_22_Acuario.astro";
+import Component_23_Acuario from "../components/acuario/Component_23_Acuario.astro";
+import Separadores from "../components/acuario/Separadores.astro";
+
+// ============================================================
+//  DUMMY DATA — solo para visualización (BD vacía en producción)
+// ============================================================
+const IMG = (label: string, w = 800, h = 600) =>
+    `https://placehold.co/${w}x${h}/003F7F/76E5FE?text=${encodeURIComponent(label)}`;
+
+const media = (label: string, w = 800, h = 600) => ({
+    url: IMG(label, w, h),
+    alternativeText: label,
+});
+
+const boton = (texto: string, url = "#") => ({ texto, url });
+
+const dummySlides = [
+    {
+        id: 1,
+        fondo: media("Banner Acuario 1", 1920, 900),
+        fondo_mobile: media("Banner Acuario 1 Mobile", 800, 1200),
+        texto_principal: "DESCUBRE EL ACUARIO INBURSA",
+        nivel_heading: "h1",
+        subtitulo: "Una experiencia submarina única",
+        boton: [boton("COMPRA TUS BOLETOS", "#comprar")],
+    },
+    {
+        id: 2,
+        fondo: media("Banner Acuario 2", 1920, 900),
+        texto_principal: "VIVE LA AVENTURA MARINA",
+        nivel_heading: "h1",
+        subtitulo: "Más de 30,000 especies te esperan",
+        boton: [boton("RESERVA AHORA", "#reservar")],
+    },
+];
+
+const dummyTarjetas7 = [
+    {
+        id: 1,
+        titulo: "ENTRADA GENERAL",
+        imagen: media("Paquete General", 600, 400),
+        precio_regular: "350 MXN",
+        precio_en_linea: "299 MXN",
+        label_precio_regular: "PRECIO REGULAR",
+        label_precio_en_linea: "PRECIO EN LÍNEA",
+        lista_incluye: [
+            { texto: "Acceso a todas las exhibiciones", icono: null },
+            { texto: "Show de delfines incluido", icono: null },
+            { texto: "Recorrido completo autoguiado", icono: null },
+        ],
+        nota_importante: "Válido de lunes a domingo",
+        boton: boton("COMPRA TU ENTRADA", "#comprar"),
+    },
+    {
+        id: 2,
+        titulo: "PAQUETE FAMILIAR",
+        imagen: media("Paquete Familiar", 600, 400),
+        precio_regular: "1200 MXN",
+        precio_en_linea: "999 MXN",
+        label_precio_regular: "PRECIO REGULAR",
+        label_precio_en_linea: "PRECIO EN LÍNEA",
+        es_destacado: true,
+        texto_destacado: "EL MÁS POPULAR",
+        lista_incluye: [
+            { texto: "4 entradas generales", icono: null },
+            { texto: "Almuerzo para 4 personas", icono: null },
+            { texto: "Foto recuerdo del grupo", icono: null },
+            { texto: "Acceso prioritario sin fila", icono: null },
+        ],
+        nota_importante: "Aplica para 4 personas",
+        boton: boton("COMPRA PAQUETE", "#comprar"),
+    },
+];
+
+const dummyTarjetas4 = [
+    {
+        titulo: "VISITA GENERAL",
+        imagen: media("Tarjeta 1", 400, 300),
+        precio_regular: "350 MXN",
+        precio_en_linea: "299 MXN",
+        label_precio_regular: "REGULAR",
+        label_precio_en_linea: "EN LÍNEA",
+        boton: boton("COMPRA AQUÍ", "#"),
+        es_popular: false,
+    },
+    {
+        titulo: "PAQUETE PREMIUM",
+        imagen: media("Tarjeta 2", 400, 300),
+        precio_regular: "650 MXN",
+        precio_en_linea: "549 MXN",
+        label_precio_regular: "REGULAR",
+        label_precio_en_linea: "EN LÍNEA",
+        boton: boton("COMPRA AQUÍ", "#"),
+        es_popular: true,
+        texto_popular: "MÁS POPULAR",
+    },
+    {
+        titulo: "FAMILIAR",
+        imagen: media("Tarjeta 3", 400, 300),
+        precio_regular: "1200 MXN",
+        precio_en_linea: "999 MXN",
+        label_precio_regular: "REGULAR",
+        label_precio_en_linea: "EN LÍNEA",
+        boton: boton("COMPRA AQUÍ", "#"),
+        es_popular: false,
+    },
+];
+
+const dummyTarjetas5 = [
+    { titulo: "PINGÜINOS", imagen: media("Pingüinos", 600, 450), texto_enlace: "CONOCE MÁS", url: "#" },
+    { titulo: "DELFINES", imagen: media("Delfines", 600, 450), texto_enlace: "CONOCE MÁS", url: "#" },
+    { titulo: "MANTARRAYAS", imagen: media("Mantarrayas", 600, 450), texto_enlace: "CONOCE MÁS", url: "#" },
+];
+
+const dummyTarjetas6 = {
+    tarjeta_principal: {
+        titulo: "Noticia Principal — Apertura nueva exhibición",
+        descripcion: "Descubre nuestra nueva exhibición de tiburones ballena en el acuario.",
+        imagen: media("Noticia Principal", 800, 600),
+        fecha: "15 de octubre, 2024",
+        url: "#",
+    },
+    tarjetas_secundarias: [
+        {
+            titulo: "Noticia secundaria 1",
+            descripcion: "Resumen corto de la noticia secundaria para mostrar el formato de la card.",
+            imagen: media("Noticia 2", 400, 300),
+            url: "#",
+        },
+        {
+            titulo: "Noticia secundaria 2",
+            descripcion: "Otra noticia relevante del acuario.",
+            imagen: media("Noticia 3", 400, 300),
+            url: "#",
+        },
+    ],
+};
+
+const dummyTarjetas8 = [
+    {
+        imagen_fondo: media("Promo Fondo 1", 400, 600),
+        imagen_logo: media("Logo Promo 1", 200, 100),
+        texto_superior: "PROMOCIÓN ESPECIAL",
+        texto_secundario: "DISPONIBLE POR TIEMPO LIMITADO",
+        precio: "$299",
+        texto_inferior: "POR PERSONA",
+        boton: boton("ADQUIÉRELO AQUÍ", "#"),
+        texto_disclaimer: "Aplican restricciones",
+        texto_terminos: "Términos y condiciones",
+        enlace_terminos: "#",
+    },
+    {
+        imagen_fondo: media("Promo Fondo 2", 400, 600),
+        imagen_logo: media("Logo Promo 2", 200, 100),
+        texto_superior: "VERANO ACUARIO",
+        texto_secundario: "JUNIO - AGOSTO",
+        precio: "$199",
+        texto_inferior: "POR VISITA",
+        boton: boton("RESERVA YA", "#"),
+        texto_disclaimer: "Solo online",
+        texto_terminos: "Ver términos",
+        enlace_terminos: "#",
+    },
+];
+
+const dummyTarjetas12 = [
+    {
+        titulo: "EDUCATIVO",
+        icono: media("Icono Educativo", 100, 100),
+        descripcion: "<p>Programas educativos para escuelas y grupos.</p>",
+    },
+    {
+        titulo: "FAMILIAR",
+        icono: media("Icono Familiar", 100, 100),
+        descripcion: "<p>Paquetes diseñados para disfrutar en familia.</p>",
+    },
+    {
+        titulo: "EVENTOS",
+        icono: media("Icono Eventos", 100, 100),
+        descripcion: "<p>Celebra tus eventos especiales en el acuario.</p>",
+    },
+];
+
+const dummyTarjetas18 = [
+    {
+        imagen: media("Hover Card 1", 600, 500),
+        titulo: "EXHIBICIÓN 1",
+        descripcion: "Conoce a nuestros pingüinos de Magallanes.",
+        boton: boton("VER MÁS", "#"),
+    },
+    {
+        imagen: media("Hover Card 2", 600, 500),
+        titulo: "EXHIBICIÓN 2",
+        descripcion: "Sumérgete con tiburones y mantarrayas.",
+        boton: boton("VER MÁS", "#"),
+    },
+    {
+        imagen: media("Hover Card 3", 600, 500),
+        titulo: "EXHIBICIÓN 3",
+        descripcion: "Acuario de medusas bioluminiscentes.",
+        boton: boton("VER MÁS", "#"),
+    },
+];
+
+const dummyTarjetas19 = [
+    {
+        imagen: media("Card 19 - 1", 400, 600),
+        titulo: "PINGÜINOS",
+        descripcion: "Los pingüinos de Magallanes son una especie que habita en las costas del sur.",
+    },
+    {
+        imagen: media("Card 19 - 2", 400, 600),
+        titulo: "DELFINES",
+        descripcion: "Nuestros delfines nariz de botella te sorprenderán con sus trucos.",
+    },
+    {
+        imagen: media("Card 19 - 3", 400, 600),
+        titulo: "TIBURONES",
+        descripcion: "Observa de cerca a los tiburones en nuestro túnel submarino.",
+    },
+];
+
+const dummyTarjetas21 = [
+    {
+        imagen_fondo: media("Card 21 BG 1", 400, 600),
+        imagen_logo: media("Card 21 Logo 1", 200, 100),
+        texto_superior: "PROMOCIÓN",
+        texto_secundario: "LIMITADA",
+        precio: "$199",
+        texto_inferior: "POR PERSONA",
+        boton: boton("COMPRA", "#"),
+        texto_disclaimer: "Aplica restricciones",
+        texto_terminos: "Términos",
+        enlace_terminos: "#",
+    },
+];
+
+const dummyTarjetas22 = [
+    {
+        imagen: media("Logo Aliado 1", 200, 200),
+        titulo: "ALIADO 1",
+        subtitulo: "Empresa aliada del acuario",
+    },
+    {
+        imagen: media("Logo Aliado 2", 200, 200),
+        titulo: "ALIADO 2",
+        subtitulo: "Patrocinador oficial",
+    },
+    {
+        imagen: media("Logo Aliado 3", 200, 200),
+        titulo: "ALIADO 3",
+        subtitulo: "Colaborador estratégico",
+    },
+];
+
+const dummyGaleria = [
+    media("Galería 1", 800, 600),
+    media("Galería 2", 800, 600),
+    media("Galería 3", 800, 600),
+    media("Galería 4", 800, 600),
+    media("Galería 5", 800, 600),
+];
+
+const dummyElementosLista9 = [
+    { texto: "Más de 30,000 especies marinas", icono: "fa-solid fa-fish" },
+    { texto: "Shows de delfines y leones marinos", icono: "fa-solid fa-water" },
+    { texto: "Túnel submarino de 360°", icono: "fa-solid fa-eye" },
+    { texto: "Área interactiva para niños", icono: "fa-solid fa-child" },
+];
+
+const dummyAcordeones10 = [
+    {
+        titulo: "¿Cuáles son los horarios del acuario?",
+        contenido: "<p>El acuario abre de lunes a domingo de 10:00 a 19:00 hrs. Última entrada a las 18:00 hrs.</p>",
+        icono: null,
+    },
+    {
+        titulo: "¿Se permite el ingreso con alimentos?",
+        contenido: "<p>No está permitido el ingreso con alimentos externos. Contamos con restaurantes dentro del acuario.</p>",
+        icono: null,
+    },
+    {
+        titulo: "¿Hay descuentos para estudiantes?",
+        contenido: "<p>Sí, presentamos tu credencial vigente y obtén 20% de descuento en la entrada general.</p>",
+        icono: null,
+    },
+];
+
+const dummyCampos16 = [
+    { id: 1, tipo: "text", name: "nombre", label: "Nombre completo", placeholder: "Tu nombre", required: true, ancho: "full" },
+    { id: 2, tipo: "email", name: "email", label: "Correo electrónico", placeholder: "tu@email.com", required: true, ancho: "half" },
+    { id: 3, tipo: "tel", name: "telefono", label: "Teléfono", placeholder: "55 1234 5678", required: true, ancho: "half" },
+    { id: 4, tipo: "date", name: "fecha_visita", label: "Fecha de visita", required: false, ancho: "half" },
+    { id: 5, tipo: "select", name: "tipo_entrada", label: "Tipo de entrada", placeholder: "Selecciona", required: true, ancho: "half", opciones: [
+        { value: "general", label: "General" },
+        { value: "vip", label: "VIP" },
+        { value: "familiar", label: "Familiar" },
+    ] },
+    { id: 6, tipo: "textarea", name: "comentarios", label: "Comentarios", placeholder: "Cuéntanos algo...", required: false, ancho: "full", filas: 3 },
+];
+
+const componentsBlock = [
+    { name: "Header",              Comp: AcuarioHeader,         props: {} },
+    { name: "Footer",              Comp: AcuarioFooter,         props: {} },
+    { name: "Separadores",         Comp: Separadores,           props: {} },
+    {
+        name: "Component_1 (Banner con Slides)",
+        Comp: Component_1_Acuario,
+        props: {
+            slides: dummySlides,
+            banner_texto: "COMPRA TUS BOLETOS AL ACUARIO SOLO EN EL SITIO OFICIAL",
+            banner_enlace: "#",
+        },
+    },
+    {
+        name: "Component_2 (Cintillo Promocional)",
+        Comp: Component_2_Acuario,
+        props: {
+            texto_resaltado: "COMPRA TUS BOLETOS",
+            texto_secundario: "AL ACUARIO SOLO EN EL SITIO OFICIAL",
+            boton: boton("VER MÁS", "#"),
+        },
+    },
+    {
+        name: "Component_3 (Texto + Carrusel Media)",
+        Comp: Component_3_Acuario,
+        props: {
+            subtitulo: "BIENVENIDO",
+            titulo: "DESCUBRE EL ACUARIO",
+            descripcion: "<p>El Acuario Inbursa es uno de los acuarios más grandes de Latinoamérica, con más de 30,000 especies marinas.</p>",
+            boton: boton("CONOCE MÁS", "#"),
+            slides: [
+                { fondo: media("Slide 3-1", 800, 600), fondo_mobile: media("Slide 3-1 mobile", 600, 800), texto_principal: "Slide 1" },
+                { fondo: media("Slide 3-2", 800, 600), fondo_mobile: media("Slide 3-2 mobile", 600, 800), texto_principal: "Slide 2" },
+                { fondo: media("Slide 3-3", 800, 600), fondo_mobile: media("Slide 3-3 mobile", 600, 800), texto_principal: "Slide 3" },
+            ],
+        },
+    },
+    {
+        name: "Component_4 (Cards con Hover)",
+        Comp: Component_4_Acuario,
+        props: {
+            titulo: "VISITA EL ACUARIO",
+            subtitulo: "Elige tu paquete",
+            tarjetas: dummyTarjetas4,
+        },
+    },
+    {
+        name: "Component_5 (Grid de Tarjetas con Imagen)",
+        Comp: Component_5_Acuario,
+        props: {
+            titulo: "CONOCE NUESTRAS ESPECIES",
+            subtitulo: "Una experiencia única",
+            descripcion: "Más de 30,000 especies marinas te esperan.",
+            tarjetas: dummyTarjetas5,
+        },
+    },
+    {
+        name: "Component_6 (Noticias — Principal + Secundarias)",
+        Comp: Component_6_Acuario,
+        props: {
+            titulo: "NOTICIAS Y EVENTOS",
+            tarjeta_principal: dummyTarjetas6.tarjeta_principal,
+            tarjetas_secundarias: dummyTarjetas6.tarjetas_secundarias,
+            boton: boton("OTRAS NOTICIAS", "#"),
+        },
+    },
+    {
+        name: "Component_7 (Paquetes / Cards de Precios)",
+        Comp: Component_7_Acuario,
+        props: {
+            titulo: "ENTRADAS Y PAQUETES",
+            subtitulo: "ELIGE TU EXPERIENCIA",
+            tarjetas: dummyTarjetas7,
+        },
+    },
+    {
+        name: "Component_8 (Promociones — Cards con Overlay)",
+        Comp: Component_8_Acuario,
+        props: {
+            titulo: "PROMOCIONES ESPECIALES",
+            subtitulo: "DISFRUTA ESTAS OFERTAS",
+            tarjetas: dummyTarjetas8,
+        },
+    },
+    {
+        name: "Component_9 (Galería + Info + Lista)",
+        Comp: Component_9_Acuario,
+        props: {
+            mostrar_tag_destacado: true,
+            texto_tag_destacado: "EL MÁS POPULAR",
+            subtitulo: "NUESTRO TOQUE ESPECIAL",
+            titulo: "EXHIBICIÓN DE MEDUSAS",
+            descripcion: "<p>Más de <strong>10,000 medusas</strong> bioluminiscentes en una exhibición única en Latinoamérica.</p>",
+            titulo_lista: "INCLUYE",
+            elementos_lista: dummyElementosLista9,
+            galeria: dummyGaleria.slice(0, 4),
+        },
+    },
+    {
+        name: "Component_10 (Acordeón FAQ / Restricciones)",
+        Comp: Component_10_Acuario,
+        props: {
+            variante: "Preguntas Frecuentes",
+            titulo: "PREGUNTAS FRECUENTES",
+            acordeones: dummyAcordeones10,
+        },
+    },
+    {
+        name: "Component_11 (Carrusel de Galería)",
+        Comp: Component_11_Acuario,
+        props: {
+            titulo: "GALERÍA",
+            subtitulo: "DESCUBRE NUESTRAS INSTALACIONES",
+            slides_desktop: 3,
+            galeria: dummyGaleria,
+        },
+    },
+    {
+        name: "Component_12 (Grid de Iconos + Texto)",
+        Comp: Component_12_Acuario,
+        props: {
+            titulo: "NUESTROS SERVICIOS",
+            subtitulo: "TODO PARA TU VISITA",
+            tarjetas: dummyTarjetas12,
+        },
+    },
+    {
+        name: "Component_13 (Carrusel Horizontal)",
+        Comp: Component_13_Acuario,
+        props: {
+            titulo: "EXPLORA",
+            subtitulo: "MOMENTOS INOLVIDABLES",
+            descripcion: "<p>Revive los mejores momentos del acuario.</p>",
+            galeria: dummyGaleria,
+        },
+    },
+    {
+        name: "Component_14 (Texto + Media Single/Gallery)",
+        Comp: Component_14_Acuario,
+        props: {
+            disposicion: "texto_izquierda",
+            titulo: "EXHIBICIÓN PERMANENTE",
+            subtitulo: "CONOCE NUESTROS HABITATS",
+            descripcion: "<p>Más de 30 exhibiciones temáticas que recrean los ecosistemas marinos más importantes del mundo.</p>",
+            media: media("Imagen Principal 14", 800, 600),
+        },
+    },
+    {
+        name: "Component_15 (Post de Blog con ToC)",
+        Comp: Component_15_Acuario,
+        props: {
+            titulo_principal: "LA IMPORTANCIA DE CONSERVAR LOS OCÉANOS",
+            subtitulo: "Educación ambiental",
+            etiqueta_texto: "BLOG",
+            etiqueta_color: "#FBF21A",
+            descripcion_inicial: [
+                { type: "heading", level: 2, children: [{ text: "Introducción" }] },
+                { type: "paragraph", children: [{ text: "Los océanos cubren más del 70% de la superficie terrestre y son vitales para la vida en el planeta." }] },
+                { type: "heading", level: 2, children: [{ text: "Conservación Marina" }] },
+                { type: "paragraph", children: [{ text: "La conservación de los ecosistemas marinos es una prioridad global." }] },
+            ],
+            imagen_principal: media("Imagen Blog Principal", 1200, 600),
+            bloques_contenido: [
+                {
+                    titulo: "Especies en peligro",
+                    descripcion: "<p>Muchas especies marinas están en peligro de extinción debido a la actividad humana.</p>",
+                    imagen: media("Bloque Blog 1", 800, 500),
+                    disposicion: "texto_izquierda",
+                },
+            ],
+        },
+    },
+    {
+        name: "Component_16 (Formulario de Contacto)",
+        Comp: Component_16_Acuario,
+        props: {
+            titulo: "CONTÁCTANOS",
+            subtitulo: "Estamos para ayudarte",
+            campos: dummyCampos16,
+            texto_boton: "ENVIAR MENSAJE",
+        },
+    },
+    {
+        name: "Component_17 (Blog — 3 secciones)",
+        Comp: Component_17_Acuario,
+        props: {
+            titulo_seccion_1: "ÚLTIMAS NOTICIAS",
+            titulo_seccion_2: "LOS MÁS POPULARES",
+            titulo_seccion_3: "DESCUBRE MÁS",
+        },
+    },
+    {
+        name: "Component_18 (Cards con Hover Effect)",
+        Comp: Component_18_Acuario,
+        props: {
+            tarjetas: dummyTarjetas18,
+        },
+    },
+    {
+        name: "Component_19 (Carrusel de Cards con Imagen)",
+        Comp: Component_19_Acuario,
+        props: {
+            titulo: "CONOCE A NUESTROS HABITANTES",
+            subtitulo: "Especies destacadas del acuario",
+            cards: dummyTarjetas19,
+        },
+    },
+    {
+        name: "Component_20 (Botón de Descarga)",
+        Comp: Component_20_Acuario,
+        props: {
+            texto: "DESCARGA NUESTRO MAPA",
+            archivo: {
+                id: 1,
+                url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                name: "mapa-acuario.pdf",
+                mime: "application/pdf",
+            },
+        },
+    },
+    {
+        name: "Component_21 (Promociones — Variante 2)",
+        Comp: Component_21_Acuario,
+        props: {
+            titulo: "MÁS PROMOCIONES",
+            subtitulo: "DISFRUTA ESTAS OFERTAS",
+            tarjetas: dummyTarjetas21,
+        },
+    },
+    {
+        name: "Component_22 (Logos / Aliados)",
+        Comp: Component_22_Acuario,
+        props: {
+            titulo: "NUESTROS ALIADOS",
+            subtitulo: "EMPRESAS QUE NOS ACOMPAÑAN",
+            tarjetas: dummyTarjetas22,
+        },
+    },
+    {
+        name: "Component_23 (Banner Promocional)",
+        Comp: Component_23_Acuario,
+        props: {
+            titulo: "PROMOCIÓN VÁLIDA RESERVANDO EN LÍNEA CON 24 HORAS DE ANTICIPACIÓN",
+            htmlTag: "h3",
+            descripcion: [
+                { type: "paragraph", children: [
+                    { text: "*Tu entrada Shark Pass incluye los adicionales: " },
+                    { text: "1 Foto de bienvenida y Alimentos que se agregarán automáticamente a tu carrito", bold: true },
+                    { text: ". Sólo selecciona tu entrada y listo, ¡a disfrutar!" },
+                ] },
+                { type: "paragraph", children: [
+                    { text: "*Esta actividad es apta para marineros a partir de los 4 años en adelante." },
+                ] },
+            ],
+        },
+    },
+];
+---
+
+<Layout title="Librería de Componentes — Acuario">
+  <main class="w-full p-4 mx-auto my-12 md:p-8">
+    <h1 class="mb-2 text-3xl font-bold text-center">Librería de Componentes — Acuario</h1>
+    <p class="mb-2 text-center text-gray-500">Catálogo visual para identificar cada componente del theme <code class="px-1 bg-gray-100 rounded">acuario</code>.</p>
+    <p class="mb-10 text-xs text-center text-amber-600">⚠ Datos dummy. La BD de Strapi está vacía; este render no representa contenido real.</p>
+
+    <nav class="sticky top-0 z-50 p-3 mb-12 bg-white border rounded-lg shadow-sm">
+      <div class="flex flex-wrap gap-2 text-sm">
+        {componentsBlock.map(({ name }) => (
+          <a href={`#${name}`} class="px-2 py-1 text-blue-700 underline rounded hover:bg-blue-50">
+            {name}
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    <div class="grid grid-cols-1 gap-12">
+      {componentsBlock.map(({ name, Comp, props }) => (
+        <section id={name} class="p-4 border rounded-lg shadow-lg md:p-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-semibold">{name}</h2>
+            <span class="px-2 py-1 text-xs text-gray-500 bg-gray-100 rounded">
+              frontend/src/components/acuario/{["Header","Footer","Separadores"].includes(name.split(" ")[0]) ? name.split(" ")[0] : name.split(" ")[0] + "_Acuario"}.astro
+            </span>
+          </div>
+          <div class="component-wrapper">
+            <Comp {...props} />
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .component-wrapper {
+    border: 2px dashed #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #fdfdff;
+    overflow: hidden;
+  }
+</style>
