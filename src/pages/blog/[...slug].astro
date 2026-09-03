@@ -18,7 +18,15 @@ export async function getStaticPaths() {
     return [];
   }
   return pages
-    .filter((page: any) => (page.locale || "en") === defaultLocale)
+    .filter((page: any) => {
+      if (!page || !page.slug || (page.locale || "en") !== defaultLocale) {
+        if (page && !page.slug) {
+          console.warn(`[getStaticPaths] Saltando blog sin slug: id=${page.id} titulo="${page.titulo}" locale=${page.locale}`);
+        }
+        return false;
+      }
+      return true;
+    })
     .map((page: any) => ({
       params: { slug: page.slug },
     }));

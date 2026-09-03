@@ -28,6 +28,10 @@ export async function getStaticPaths() {
     const pages = await getAllBlogs(lang);
     if (pages && Array.isArray(pages)) {
       pages.forEach((page: any) => {
+        if (!page || !page.slug) {
+          if (page && !page.slug) console.warn(`[getStaticPaths] Saltando blog [${lang}] sin slug: id=${page.id} titulo="${page.titulo}"`);
+          return;
+        }
         allPaths.push({
           params: { lang, slug: page.slug },
         });

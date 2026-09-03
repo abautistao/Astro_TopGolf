@@ -17,9 +17,17 @@ export async function getStaticPaths() {
   
   if (!pages || !Array.isArray(pages)) return [];
 
-  return pages.map((page: any) => ({
-    params: { slug: page.slug },
-  }));
+  return pages
+    .filter((page: any) => {
+      if (!page || !page.slug) {
+        console.warn(`[getStaticPaths] Saltando pase sin slug: id=${page?.id} titulo="${page?.titulo}" locale=${page?.locale}`);
+        return false;
+      }
+      return true;
+    })
+    .map((page: any) => ({
+      params: { slug: page.slug },
+    }));
 }
 
 // ==========================================================================================

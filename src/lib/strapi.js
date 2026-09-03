@@ -129,7 +129,7 @@ export async function getBlogsForListing(locale = 'es') {
 }
 
 export async function getPromocionBySlug(slug, locale = 'en') {
-  const query = `filters[slug][$eq]=${slug}&locale=${locale}&populate[ContenidoPagina][populate]=*&pagination[pageSize]=100`;
+  const query = `filters[slug][$eq]=${slug}&locale=${locale}&populate=*&pagination[pageSize]=100`;
   const pagesResponse = await fetchAPI(`/promociones?${query}`);
   const page = pagesResponse?.[0];
 
@@ -143,26 +143,25 @@ export async function getPromocionBySlug(slug, locale = 'en') {
     page.ContenidoPagina = page.ContenidoPagina.map((component, index) => {
       const deepComponent = deepPage.ContenidoPagina[index];
       if (!deepComponent || deepComponent.__component !== component.__component) return component;
-      if (component.__component === 'secciones.componente-1-acuario') return { ...component, slides: deepComponent.slides };
-      if (component.__component === 'secciones.componente-3-acuario') return { ...component, slides: deepComponent.slides, imagen_decorativa: deepComponent.imagen_decorativa, boton: deepComponent.boton };
-      if (component.__component === 'secciones.componente-4-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo, icono_decorativo_hover: deepComponent.icono_decorativo_hover };
-      if (component.__component === 'secciones.componente-5-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo };
-      if (component.__component === 'secciones.componente-8-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
-      if (component.__component === 'secciones.componente-9-acuario') return { ...component, elementos_lista: deepComponent.elementos_lista, galeria: deepComponent.galeria };
-      if (component.__component === 'secciones.componente-10-acuario') return { ...component, acordeones: deepComponent.acordeones };
-      if (component.__component === 'secciones.componente-11-acuario') return { ...component, galeria: deepComponent.galeria };
-      if (component.__component === 'secciones.componente-12-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
-      if (component.__component === 'secciones.componente-13-acuario') return { ...component, galeria: deepComponent.galeria };
-      if (component.__component === 'secciones.componente-15-acuario') return { ...component, bloques_contenido: deepComponent.bloques_contenido };
-      if (component.__component === 'secciones.componente-19-acuario') {
-        const deepCards = deepComponent.cards;
-        if (Array.isArray(deepCards) && deepCards.length > 0) {
-          return { ...component, cards: deepCards };
-        }
-        return component;
-      }
-      if (component.__component === 'secciones.componente-21-acuario') return { ...component, tarjetas: deepComponent.tarjetas };
-      if (component.__component === 'secciones.componente-22-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_fondo: deepComponent.imagen_fondo };
+      // Helper: solo sobrescribir con datos del deep fetch si tienen contenido real.
+      // Esto evita perder datos del shallow cuando el deep query falla silenciosamente
+      // (URL truncada, populate que Strapi no acepta, etc.).
+      const safe = (deepVal, shallowVal) =>
+        (Array.isArray(deepVal) ? (deepVal.length > 0 ? deepVal : shallowVal) : (deepVal ?? shallowVal));
+      if (component.__component === 'secciones.componente-1-acuario') return { ...component, slides: safe(deepComponent.slides, component.slides) };
+      if (component.__component === 'secciones.componente-3-acuario') return { ...component, slides: safe(deepComponent.slides, component.slides), imagen_decorativa: deepComponent.imagen_decorativa ?? component.imagen_decorativa, boton: deepComponent.boton ?? component.boton };
+      if (component.__component === 'secciones.componente-4-acuario') return { ...component, tarjetas: safe(deepComponent.tarjetas, component.tarjetas), imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo ?? component.imagen_decorativa_fondo, icono_decorativo_hover: deepComponent.icono_decorativo_hover ?? component.icono_decorativo_hover };
+      if (component.__component === 'secciones.componente-5-acuario') return { ...component, tarjetas: safe(deepComponent.tarjetas, component.tarjetas), imagen_decorativa_fondo: deepComponent.imagen_decorativa_fondo ?? component.imagen_decorativa_fondo };
+      if (component.__component === 'secciones.componente-8-acuario') return { ...component, tarjetas: safe(deepComponent.tarjetas, component.tarjetas) };
+      if (component.__component === 'secciones.componente-9-acuario') return { ...component, elementos_lista: safe(deepComponent.elementos_lista, component.elementos_lista), galeria: deepComponent.galeria ?? component.galeria };
+      if (component.__component === 'secciones.componente-10-acuario') return { ...component, acordeones: safe(deepComponent.acordeones, component.acordeones) };
+      if (component.__component === 'secciones.componente-11-acuario') return { ...component, galeria: deepComponent.galeria ?? component.galeria };
+      if (component.__component === 'secciones.componente-12-acuario') return { ...component, tarjetas: safe(deepComponent.tarjetas, component.tarjetas) };
+      if (component.__component === 'secciones.componente-13-acuario') return { ...component, galeria: deepComponent.galeria ?? component.galeria };
+      if (component.__component === 'secciones.componente-15-acuario') return { ...component, bloques_contenido: safe(deepComponent.bloques_contenido, component.bloques_contenido) };
+      if (component.__component === 'secciones.componente-19-acuario') return { ...component, cards: safe(deepComponent.cards, component.cards) };
+      if (component.__component === 'secciones.componente-21-acuario') return { ...component, tarjetas: safe(deepComponent.tarjetas, component.tarjetas) };
+      if (component.__component === 'secciones.componente-22-acuario') return { ...component, tarjetas: safe(deepComponent.tarjetas, component.tarjetas), imagen_fondo: deepComponent.imagen_fondo ?? component.imagen_fondo };
       return component;
     });
   }

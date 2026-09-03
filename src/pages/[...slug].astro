@@ -20,9 +20,17 @@ export async function getStaticPaths() {
 
     if (!pages) return [];
 
-    return pages.map((page) => ({
-        params: { slug: page.slug }
-    }));
+    return pages
+        .filter((page: any) => {
+            if (!page || !page.slug) {
+                console.warn(`[getStaticPaths] Saltando página sin slug: id=${page?.id} titulo="${page?.titulo}" locale=${page?.locale}`);
+                return false;
+            }
+            return true;
+        })
+        .map((page) => ({
+            params: { slug: page.slug }
+        }));
 }
 
 // 3. Runtime Logic

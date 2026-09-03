@@ -1,0 +1,193 @@
+---
+// src/components/acuario/Component_24_Acuario.astro
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    subtitulo_1?: string;
+    subtitulo_2?: string;
+    descripcion?: any;
+    galeria?: { data: any[] } | any[];
+    color_fondo_seccion?: string;
+    imagen_fondo?: any;
+    color_titulo_override?: string;
+    color_subtitulo_1_override?: string;
+    color_subtitulo_2_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    titulo,
+    htmlTag = "h2",
+    subtitulo_1,
+    subtitulo_2,
+    descripcion,
+    galeria,
+    color_fondo_seccion,
+    imagen_fondo,
+    color_titulo_override,
+    color_subtitulo_1_override,
+    color_subtitulo_2_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag;
+
+// Procesar galería (soporta Strapi v4 y v5)
+const mediaFiles: any[] = (galeria?.data || galeria || []).filter(Boolean);
+
+// Defaults via setup-site CSS variables (regla del AGENTS.md: nunca hardcodear hex en class/style de UI)
+const finalSectionBg = color_fondo_seccion || "var(--surface-brand-primary)";
+const finalTitleColor = color_titulo_override || "var(--neutral-text-inverted, #ffffff)";
+const finalSubtitle1Color = color_subtitulo_1_override || "var(--neutral-text-inverted, #ffffff)";
+const finalSubtitle2Color = color_subtitulo_2_override || "var(--brand-interactive-base)";
+const finalTextColor = color_texto_override || "var(--neutral-text-inverted, #ffffff)";
+
+const bgStyle = imagen_fondo
+    ? {
+          backgroundColor: finalSectionBg,
+          backgroundImage: `url(${getStrapiUrl(imagen_fondo)})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+      }
+    : { backgroundColor: finalSectionBg };
+
+const hasGallery = mediaFiles.length > 0;
+---
+
+<section
+    class="w-full py-12 md:py-20 relative overflow-hidden"
+    style={bgStyle}
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+        {/* Bloque de texto centrado */}
+        <div class="text-center max-w-5xl mx-auto mb-10 md:mb-14">
+            {titulo && (
+                <TitleTag
+                    class="font-[family-name:var(--font-principal)] text-[28px] md:text-[42px] font-bold uppercase leading-tight mb-3 md:mb-4"
+                    style={`color: ${finalTitleColor};`}
+                >
+                    {titulo}
+                </TitleTag>
+            )}
+
+            {subtitulo_1 && (
+                <span
+                    class="block font-[family-name:var(--font-principal)] text-[18px] md:text-[22px] font-bold uppercase tracking-wide mb-2 md:mb-3"
+                    style={`color: ${finalSubtitle1Color};`}
+                >
+                    {subtitulo_1}
+                </span>
+            )}
+
+            {subtitulo_2 && (
+                <span
+                    class="block font-[family-name:var(--font-principal)] text-[20px] md:text-[26px] font-black uppercase tracking-wide mb-4 md:mb-6"
+                    style={`color: ${finalSubtitle2Color};`}
+                >
+                    {subtitulo_2}
+                </span>
+            )}
+
+            {descripcion && (
+                <div
+                    class="font-[family-name:var(--font-secundaria)] text-[15px] md:text-[17px] font-normal leading-relaxed [&>p]:mb-3 last:[&>p]:mb-0 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                    style={`color: ${finalTextColor};`}
+                    set:html={stringifyRichText(descripcion)}
+                />
+            )}
+        </div>
+
+        {/* Galería en carrusel */}
+        {hasGallery && (
+            <div class="relative w-full px-2 md:px-12">
+                <div class="overflow-hidden">
+                    <div class="acuario-24-swiper w-full pb-2">
+                        <div class="swiper-wrapper items-stretch">
+                            {mediaFiles.map((img: any) => {
+                                const imgUrl = getStrapiUrl(img);
+                                const altText = img?.alternativeText || img?.name || "Galería Acuario";
+                                return (
+                                    <div class="swiper-slide h-auto">
+                                        <div class="relative w-full aspect-[3/4] md:aspect-[3/4] rounded-[16px] md:rounded-[24px] overflow-hidden shadow-2xl bg-black">
+                                            <img
+                                                src={imgUrl}
+                                                alt={altText}
+                                                class="absolute inset-0 w-full h-full object-cover"
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    class="swiper-btn-prev absolute top-1/2 -translate-y-1/2 left-0 md:-left-2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-text-inverted)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    aria-label="Anterior"
+                >
+                    <i class="fa-solid fa-chevron-left text-2xl md:text-3xl"></i>
+                </button>
+
+                <button
+                    class="swiper-btn-next absolute top-1/2 -translate-y-1/2 right-0 md:-right-2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-text-inverted)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    aria-label="Siguiente"
+                >
+                    <i class="fa-solid fa-chevron-right text-2xl md:text-3xl"></i>
+                </button>
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    .swiper-btn-prev,
+    .swiper-btn-next {
+        user-select: none;
+    }
+
+    .swiper-btn-prev.swiper-button-disabled,
+    .swiper-btn-next.swiper-button-disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation } from "swiper/modules";
+    import "swiper/css";
+    import "swiper/css/navigation";
+
+    function initC24Swiper() {
+        const sliders = document.querySelectorAll(".acuario-24-swiper");
+
+        sliders.forEach((sliderElement) => {
+            const container = sliderElement.closest(".relative");
+            const prevBtn = container?.querySelector(".swiper-btn-prev") as HTMLElement;
+            const nextBtn = container?.querySelector(".swiper-btn-next") as HTMLElement;
+
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Navigation],
+                loop: true,
+                slidesPerGroup: 1,
+                slidesPerView: 1,
+                spaceBetween: 16,
+                navigation: {
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2, spaceBetween: 20 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
+                },
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", initC24Swiper);
+    document.addEventListener("astro:page-load", initC24Swiper);
+</script>

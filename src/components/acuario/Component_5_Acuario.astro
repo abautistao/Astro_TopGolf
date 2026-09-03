@@ -25,25 +25,28 @@ const {
 
 const TitleTag = etiqueta_titulo;
 const SubtitleTag = etiqueta_subtitulo;
+
+// Decorative bg URL (computado una sola vez para no romper si llega null)
+const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_fondo) : null;
 ---
 
-<section 
+<section
     class="w-full pt-2 pb-16 md:pt-4 md:pb-24 relative overflow-hidden"
-    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: var(--surface-brand-secondary, #005DA8);"}
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: var(--surface-brand-primary, #003F7F);"}
 >
-    <!-- Elemento Decorativo Fondo (Pingüinos) -->
-    {imagen_decorativa_fondo && (
+    <!-- Elemento Decorativo Fondo (opcional) -->
+    {decorativaUrl && (
         <div class="relative z-10 flex justify-center mb-8 md:mb-12 max-w-[1000px] mx-auto px-6">
-            <img 
-                src={getStrapiUrl(imagen_decorativa_fondo)} 
-                alt="Decoración de fondo" 
-                class="w-full h-auto object-contain" 
+            <img
+                src={decorativaUrl}
+                alt="Decoración de fondo"
+                class="w-full h-auto object-contain"
             />
         </div>
     )}
 
     <div class="max-w-[1440px] mx-auto px-6 relative z-10">
-        
+
         <!-- Header de la sección -->
         <div class="text-center mb-12 md:mb-16 text-white max-w-4xl mx-auto">
             {titulo && (
@@ -65,41 +68,58 @@ const SubtitleTag = etiqueta_subtitulo;
 
         <!-- Grid de Tarjetas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {tarjetas.map((card) => {
+            {tarjetas.map((card: any) => {
+                // Calculamos el URL UNA vez por tarjeta. Si llega null (imagen no poblada o URL rota)
+                // NO renderizamos el <img> para que el navegador no muestre el alt como "imagen rota".
+                const imgUrl = card?.imagen ? getStrapiUrl(card.imagen) : null;
+
                 return (
-                    <a 
-                        href={card.url || "#"} 
-                        class="group block relative rounded-[16px] overflow-hidden aspect-[4/3] md:aspect-[4/3] shadow-lg hover:shadow-2xl transition-all duration-300"
+                    <a
+                        href={card?.url || "#"}
+                        class="group block relative rounded-[16px] overflow-hidden aspect-[4/3] md:aspect-[4/3] shadow-lg hover:shadow-2xl transition-all duration-300 bg-[#002A4E]"
                     >
-                        {/* Imagen de fondo de la tarjeta */}
-                        <img 
-                            src={getStrapiUrl(card.imagen)} 
-                            alt={card.titulo} 
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        
+                        {/* Imagen de fondo (solo si hay URL válida) */}
+                        {imgUrl ? (
+                            <img
+                                src={imgUrl}
+                                alt={card?.titulo || "Tarjeta"}
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                loading="lazy"
+                            />
+                        ) : (
+                            /* Placeholder cuando la imagen no está poblada (común en promociones
+                               si el deep-populate no llega por merge por índice) */
+                            <div class="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-[#002A4E] via-[#003F7F] to-[#005DA8]">
+                                <i class="fas fa-image text-white/30 text-5xl" aria-hidden="true"></i>
+                            </div>
+                        )}
+
                         {/* 1. ESTADO: ESCRITORIO NORMAL (Franja Blanca Inferior) */}
-                        <div class="hidden md:flex absolute bottom-0 left-0 w-full bg-white text-[#003F7F] py-4 px-4 items-center justify-center transition-opacity duration-300 z-30">
-                            <h3 class="font-[family-name:var(--font-principal)] text-[16px] lg:text-[18px] font-bold uppercase text-center m-0">
-                                {card.titulo}
-                            </h3>
-                        </div>
+                        {card?.titulo && (
+                            <div class="hidden md:flex absolute bottom-0 left-0 w-full bg-white text-[var(--surface-brand-primary)] py-4 px-4 items-center justify-center transition-opacity duration-300 z-30">
+                                <h3 class="font-[family-name:var(--font-principal)] text-[16px] lg:text-[18px] font-bold uppercase text-center m-0">
+                                    {card.titulo}
+                                </h3>
+                            </div>
+                        )}
 
                         {/* 2. ESTADO: ESCRITORIO HOVER (Oscuro + Lupa) */}
-                        <div class="hidden md:flex absolute inset-0 bg-[#002A4E]/70 flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pb-14">
-                            <i class="fas fa-search text-5xl mb-4"></i>
+                        <div class="hidden md:flex absolute inset-0 bg-[#002A4E]/70 flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pb-14 pointer-events-none">
+                            <i class="fas fa-search text-5xl mb-4" aria-hidden="true"></i>
                             <span class="font-[family-name:var(--font-principal)] font-bold text-[20px]">
-                                {card.texto_enlace || 'Leer más'}
+                                {card?.texto_enlace || 'Leer más'}
                             </span>
                         </div>
 
                         {/* 3. ESTADO: MÓVIL NORMAL (Oscuro + Título + Botón) */}
                         <div class="md:hidden absolute inset-0 bg-[#002A4E]/60 flex flex-col items-center justify-center text-white p-6 z-20">
-                            <h3 class="font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase text-center mb-6 leading-tight drop-shadow-md">
-                                {card.titulo}
-                            </h3>
+                            {card?.titulo && (
+                                <h3 class="font-[family-name:var(--font-principal)] text-[24px] font-bold uppercase text-center mb-6 leading-tight drop-shadow-md">
+                                    {card.titulo}
+                                </h3>
+                            )}
                             <button class="bg-[var(--accent-highlight-primary,#76E5FE)] text-[#002A4E] font-[family-name:var(--font-secundaria)] font-bold text-[16px] py-3 px-8 rounded-full shadow-lg uppercase tracking-wider">
-                                {card.texto_enlace || 'LEER MÁS'}
+                                {card?.texto_enlace || 'LEER MÁS'}
                             </button>
                         </div>
                     </a>
