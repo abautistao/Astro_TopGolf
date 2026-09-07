@@ -31,9 +31,11 @@ export interface Package {
 
 export interface Props {
     paquetes: Package[];
+    titulo: string;
+    nivel_heading_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
-const { paquetes } = Astro.props;
+const { paquetes, nivel_heading_tag, titulo } = Astro.props;
 
 const placeholderButton: Boton[] = [
     {
@@ -64,14 +66,22 @@ const placeholderPackages: Package[] = [
 
 const packagesToRender =
     paquetes && paquetes.length > 0 ? paquetes : placeholderPackages;
+
+const HeadingTag = getHeadingTag(nivel_heading_tag);
 ---
 
-<section class="w-full bg-[var(--neutral-text-inverted)] py-10 sm:py-4">
+<section class="w-full bg-(--neutral-text-inverted) py-10 sm:py-14">
     <div
         style="font-family: var(--font-shields-sans-regular);"
         class="container mx-auto px-4"
     >
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <HeadingTag
+            class="font-(family-name:--font-shields-sans-condensed) text-3xl font-semibold uppercase text-(--neutral-background-strong) sm:text-5xl md:text-5xl text-center mb-12"
+        >
+            {titulo}
+        </HeadingTag>
+
+        <div class="flex flex-wrap justify-center gap-8 sm:py-4 max-w-7xl mx-auto">
             {
                 packagesToRender.map((pkg) => {
                     const contentHtml = stringifyRichText(pkg.descripcion);
@@ -99,7 +109,7 @@ const packagesToRender =
                     const HeadingTagSubtitulo = getHeadingTag(pkg.nivel_heading_subtitulo);
 
                     return (
-                        <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
+                        <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center md:w-[calc(50%-2rem)] lg:w-[calc(33.333%-2rem)]">
                             <div class="relative">
                                 <Image
                                     src={imageUrl}
@@ -114,7 +124,7 @@ const packagesToRender =
                                 </div>
                             </div>
                             <div class="p-8 flex flex-col flex-grow">
-                                <HeadingTagTitulo class="text-4xl font-semibold text-[var(--surface-brand-primary)] uppercase font-(family-name:--font-shields-sans-semibold-condensed) whitespace-nowrap leading-none mb-0">
+                                <HeadingTagTitulo class="text-4xl font-semibold text-[var(--surface-brand-primary)] uppercase font-(family-name:--font-shields-sans-semibold-condensed) leading-none mb-0">
                                     {pkg.titulo}
                                 </HeadingTagTitulo>
                                 <HeadingTagSubtitulo class="text-base font-normal text-[var(--surface-brand-primary)] uppercase tracking-wider mt-0 font-(family-name:--font-shields-sans-regular)">

@@ -21,6 +21,7 @@ export interface Props {
     Boton: Boton[];
     nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    boton_secundario: Boton[];
 }
 
 // 2. Recibimos las props y definimos placeholders
@@ -39,7 +40,8 @@ const {
     alt_imagen_decorativa_mobile,
     Boton,
     nivel_heading_titulo,
-    nivel_heading_subtitulo
+    nivel_heading_subtitulo,
+    boton_secundario
 } = Astro.props;
 
 const placeholder = {
@@ -172,7 +174,15 @@ const HeadingTagSubtitulo = getHeadingTag(nivel_heading_subtitulo);
                     class="font-(family-name:--font-shields-sans-regular) mb-6 leading-relaxed strapi-rich-text text-lg font-normal"
                     set:html={descriptionHtml}
                 />
-                <ButtonGroup botones={componentButtons} />
+
+                <div class="flex flex-col gap-6 lg:flex-row">
+                    <ButtonGroup botones={componentButtons} />
+
+                    {boton_secundario && (
+                        <ButtonGroup botones={[boton_secundario]} />
+                    )}
+                </div>
+                
             </div>
         </div>
         <Image
