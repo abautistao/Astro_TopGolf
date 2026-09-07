@@ -5,7 +5,7 @@
 // UPDATED PROPS & INTERFACES
 // ----------------------------------------
 import type { Boton } from "./elements/Button.astro";
-import { getHeadingTag } from '../../lib/strapi.js';
+import { getHeadingTag, stringifyRichText } from '../../lib/strapi.js';
 
 interface FormField {
     id: number;
@@ -122,6 +122,14 @@ const HeadingTag = getHeadingTag(nivel_heading);
     <HeadingTag class="text-2xl font-bold uppercase mb-8 text-black tracking-tight">
         {data.title}
     </HeadingTag>
+
+
+    {description && (
+        <div
+            class="font-(family-name:--font-shields-sans-regular) max-w-3xl text-base text-(--neutral-background-strong) sm:text-lg prose strapi-rich-text mb-8"
+            set:html={stringifyRichText(description)}
+        />
+    )}
 
     <form class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6" id="events-form">
         {
@@ -260,7 +268,7 @@ const HeadingTag = getHeadingTag(nivel_heading);
         }
         <div
             id="form-message"
-            class="col-span-1 md:col-span-2 text-xl mt-4 text-center text-sm font-semibold hidden "
+            class="col-span-1 md:col-span-2 text-md mt-4 text-center font-semibold hidden "
         >
         </div>
     </form>
@@ -297,7 +305,7 @@ const HeadingTag = getHeadingTag(nivel_heading);
                 messageDiv.classList.add("hidden");
                 messageDiv.textContent = "";
                 messageDiv.className =
-                    "mt-4 text-center text-sm font-semibold hidden";
+                    "col-span-1 md:col-span-2 text-md mt-4 text-center font-semibold hidden";
             }
 
             try {
@@ -318,8 +326,8 @@ const HeadingTag = getHeadingTag(nivel_heading);
                     form.reset();
 
                     setTimeout(() => {
-                        messageDiv.classList.add("hidden");
-                    }, 5000);
+                        messageDiv.classList.add("col-span-1","md:col-span-2", "mt-4", "text-center", "text-md", "font-semibold", "text-green-400", "hidden");
+                    }, 3000);
                 } else {
                     throw new Error(
                         data.message || "Error al enviar el formulario",
