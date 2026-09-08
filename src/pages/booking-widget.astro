@@ -1,0 +1,66 @@
+---
+const vmgPluginUrl = (import.meta.env.PUBLIC_VMG_PLUGIN_URL || '')
+    .replace(/^https?:\/\//, '')
+    .replace(/\/$/, '');
+const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION || '';
+---
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" />
+        <title>Booking</title>
+        <style>
+            html, body {
+                background-color: var(--surface-brand-primary, #002a4e);
+                background-image: url('https://cms.bluoceanclub.com/uploads/Booking_ce5a0fd70b.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                min-height: 100vh;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="pluginContainer" class="container"></div>
+        <script is:inline define:vars={{ vmgPluginUrl, vmgPluginVersion }}>
+            (function () {
+                var allowedParams = [
+                    'plugin_id', 'user_language', 'producto_id', 'set_producto_id',
+                    'promocode', 'set_promocode', 'pax_min', 'pax_max',
+                    'reservacion_fecha', 'vendedor_id'
+                ];
+                var params = {};
+                var urlParams = new URLSearchParams(window.location.search);
+                allowedParams.forEach(function (name) {
+                    var value = urlParams.get(name);
+                    if (value) params[name] = value;
+                });
+                var pluginHost = 'https://' + vmgPluginUrl;
+                var pluginUrl = pluginHost + '/' + vmgPluginVersion + '.php';
+                var jquery = document.createElement('script');
+                jquery.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js';
+                jquery.onload = function () {
+                    window.jQuery.getScript(pluginHost + '/js/pluginscripts.js')
+                        .done(function () {
+                            window.jQuery.post(pluginUrl, params, function (data) {
+                                window.jQuery('#pluginContainer').html(data);
+                            }).fail(function (error) {
+                                console.error('Booking widget request failed:', error);
+                            });
+                        })
+                        .fail(function (error) {
+                            console.error('Booking widget plugin script failed:', error);
+                        });
+                };
+                jquery.onerror = function (error) {
+                    console.error('Booking widget jQuery failed:', error);
+                };
+                document.head.appendChild(jquery);
+            })();
+        </script>
+    </body>
+</html>
