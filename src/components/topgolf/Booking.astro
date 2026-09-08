@@ -1,12 +1,21 @@
 ---
 /**
  * @component Booking
- * @description Este componente renderiza un plugin de booking externo dentro de un <iframe>.
- * Prioriza los parámetros de la URL, pero puede usar valores preconfigurados desde Strapi como fallback.
+ * @description Aísla el widget de booking externo (Bootstrap + plugin VMG) dentro de un
+ * Shadow DOM para evitar que las clases/selectores globales de Bootstrap rompan el
+ * layout de Tailwind v4 del header/footer.
+ *
+ * Antes: el <link> de bootstrap.min.css y el HTML inyectado por $.post(...) vivían
+ * en el light DOM y contaminaban el documento. Ahora viven dentro de un shadow root
+ * con mode="open".
+ *
+ * - jQuery permanece global (no contamina CSS, solo expone `$`).
+ * - Los <script> del HTML del widget se re-crean manualmente porque innerHTML
+ *   no los ejecuta ni en light DOM ni en shadow DOM (jQuery's `.html()` lo hacía
+ *   automáticamente; al usar shadow tenemos que replicarlo a mano).
  */
 import type { HTMLAttributes } from 'astro/types';
 
-// Interfaz de props para recibir datos desde Strapi.
 export interface Props extends HTMLAttributes<'div'> {
     plugin_id?: string | null;
     user_language?: string | null;
@@ -16,76 +25,130 @@ export interface Props extends HTMLAttributes<'div'> {
     set_promocode?: string | null;
     pax_min?: number | null;
     pax_max?: number | null;
-    reservacion_fecha?: string | null; // Se usa string para fechas para simplificar el paso
+    reservacion_fecha?: string | null;
     vendedor_id?: string | null;
 }
 
-const defaults = {
-    plugin_id: null, 
-    user_language: null,
-    producto_id: null,
-    set_producto_id: null,
-    promocode: null,
-    set_promocode: null,
-    pax_min: null,
-    pax_max: null,
-    reservacion_fecha: null,
-    vendedor_id: null,
-};
-
-// 2. Fusionamos con las props que llegan
 const rawParams = {...Astro.props };
 const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
 
 for (const [key, value] of Object.entries(rawParams)) {
-    // Esto es EXÁCTAMENTE tu: if($valor) { ... }
-    if (value) { 
+    if (value) {
         paramsLimpios[key] = value;
     }
 }
 ---
 
 <div id="booking-container" class="font-(family-name:--font-shields-sans-bold)">
-    <!-- El contenido se generará dinámicamente por el script -->
-    <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
-    <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
-    <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
-    
-    <div  id="pluginContainer" class="container"></div>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
-    <script is:inline src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script is:inline define:vars={{ paramsLimpios, vmgPluginUrl }}>
-	jQuery(document).ready(function($){
-		var vmg_plugin_id = $('#vmg_plugin_id').val();
-		var vmg_plugin_url = $('#vmg_plugin_url').val();
-		var vmg_plugin_version = $('#vmg_plugin_version').val();
-        var paramsVMG = paramsLimpios;
-
-		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
-			"use strict";
-			$.pluginUrl = `https://${vmg_plugin_url}/${vmg_plugin_version}.php`;
-			var params = {
-                ...paramsVMG,
-				'plugin_id': vmg_plugin_id
-			};
-			
-			const urlParams = new URLSearchParams(window.location.search);
-			urlParams.forEach((value, key) => {
-
-			  params[key] = value;
-			});
-            
-            $.post($.pluginUrl,params,function(data, status){
-				jQuery( "#pluginContainer" ).html(data);
-			});
-
-		});
-	});
-</script>
+    <!-- El widget se monta dentro de un Shadow DOM para aislar Bootstrap. -->
 </div>
+
+<script is:inline define:vars={{ paramsLimpios, vmgPluginUrl, vmgPluginVersion }}>
+    (function () {
+        var host = document.getElementById('booking-container');
+        if (!host || host.__bookingShadowReady) return;
+        host.__bookingShadowReady = true;
+
+        var shadow = host.attachShadow({ mode: 'open' });
+
+        // 1) Bootstrap + FontAwesome: scopeados al shadow (no afectan el documento).
+        var bootstrapCss = document.createElement('link');
+        bootstrapCss.rel = 'stylesheet';
+        bootstrapCss.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
+        bootstrapCss.crossOrigin = 'anonymous';
+        shadow.appendChild(bootstrapCss);
+
+        var faCss = document.createElement('link');
+        faCss.rel = 'stylesheet';
+        faCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css';
+        shadow.appendChild(faCss);
+
+        // 2) Contenedor del plugin: vive dentro del shadow (los selectores de
+        //    jQuery no atraviesan shadow boundaries, así que conservamos la
+        //    referencia directa al nodo).
+        var pluginContainer = document.createElement('div');
+        pluginContainer.id = 'pluginContainer';
+        pluginContainer.className = 'container';
+        shadow.appendChild(pluginContainer);
+
+        // 3) Re-crea <script> del HTML inyectado (innerHTML no los ejecuta).
+        function reexecuteScripts(root) {
+            var scripts = root.querySelectorAll('script');
+            for (var i = 0; i < scripts.length; i++) {
+                var oldScript = scripts[i];
+                var newScript = document.createElement('script');
+                for (var j = 0; j < oldScript.attributes.length; j++) {
+                    var a = oldScript.attributes[j];
+                    newScript.setAttribute(a.name, a.value);
+                }
+                newScript.text = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            }
+        }
+
+        // 4) Carga idempotente de scripts globales (jQuery puede estar ya cargado).
+        function loadGlobalScript(src) {
+            return new Promise(function (resolve, reject) {
+                if (src.indexOf('jquery') !== -1 && window.jQuery) return resolve();
+                var selector = 'script[data-booking-src="' + src + '"]';
+                var existing = document.querySelector(selector);
+                if (existing) {
+                    if (existing.dataset.loaded === 'true') return resolve();
+                    existing.addEventListener('load', function () { resolve(); });
+                    existing.addEventListener('error', reject);
+                    return;
+                }
+                var s = document.createElement('script');
+                s.src = src;
+                s.async = true;
+                s.dataset.bookingSrc = src;
+                s.addEventListener('load', function () {
+                    s.dataset.loaded = 'true';
+                    resolve();
+                });
+                s.addEventListener('error', reject);
+                document.head.appendChild(s);
+            });
+        }
+
+        var pluginId = paramsLimpios.plugin_id || '';
+
+        loadGlobalScript('https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+            .then(function () {
+                return new Promise(function (resolve, reject) {
+                    window.jQuery
+                        .getScript('https://' + vmgPluginUrl + '/js/pluginscripts.js', resolve)
+                        .fail(reject);
+                });
+            })
+            .then(function () {
+                var $ = window.jQuery;
+                $.pluginUrl = 'https://' + vmgPluginUrl + '/' + vmgPluginVersion + '.php';
+                var params = Object.assign({}, paramsLimpios, { plugin_id: pluginId });
+
+                var urlParams = new URLSearchParams(window.location.search);
+                urlParams.forEach(function (value, key) {
+                    params[key] = value;
+                });
+
+                return new Promise(function (resolve, reject) {
+                    $.post($.pluginUrl, params, function (data) {
+                        pluginContainer.innerHTML = data;
+                        reexecuteScripts(pluginContainer);
+                        resolve();
+                    }).fail(reject);
+                });
+            })
+            .catch(function (err) {
+                if (window.console && console.error) {
+                    console.error('Booking widget failed:', err);
+                }
+            });
+    })();
+</script>
+
 <style>
     #booking-container {
         background-image: url('https://cms.bluoceanclub.com/uploads/Booking_ce5a0fd70b.jpg');

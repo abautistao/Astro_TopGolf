@@ -1,8 +1,9 @@
 ---
 /**
  * @component Booking_Dolphinaris
- * @description Este componente renderiza un plugin de booking externo dentro de un <iframe>.
- * Estilizado adaptado a Dolphinaris (fuentes Roboto y colores correspondientes).
+ * @description Variante Dolphinaris del widget de booking. Mismo aislamiento Shadow DOM
+ * que topgolf/Booking.astro: el CSS de Bootstrap y el HTML del plugin VMG quedan
+ * scopeados dentro del shadow root para no contaminar Tailwind v4 del header/footer.
  */
 import type { HTMLAttributes } from 'astro/types';
 
@@ -21,56 +22,126 @@ export interface Props extends HTMLAttributes<'div'> {
 }
 
 const rawParams = {...Astro.props };
-const { padding_top } = Astro.props
+const { padding_top } = Astro.props;
 const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
 
 for (const [key, value] of Object.entries(rawParams)) {
-    if (value) { 
+    if (value) {
         paramsLimpios[key] = value;
     }
 }
 ---
 
 <div id="booking-container-dolphinaris" class="bg-(--neutral-background-subtle) py-12">
-    <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
-    <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
-    <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
-    
-    <div id="pluginContainer" class="container mx-auto px-4"></div>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
-    <script is:inline src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script is:inline define:vars={{ paramsLimpios, vmgPluginUrl }}>
-        jQuery(document).ready(function($){
-            var vmg_plugin_id = $('#vmg_plugin_id').val();
-            var vmg_plugin_url = $('#vmg_plugin_url').val();
-            var vmg_plugin_version = $('#vmg_plugin_version').val();
-            var paramsVMG = paramsLimpios;
-
-            $.getScript( `https://plugin.venturae.com.mx/js/pluginscripts.js`, function(jd) {
-                "use strict";
-                $.pluginUrl = `https://plugin.venturae.com.mx/${vmg_plugin_version}.php`;
-                var params = {
-                    ...paramsVMG,
-                    'plugin_id': vmg_plugin_id
-                };
-                
-                const urlParams = new URLSearchParams(window.location.search);
-                urlParams.forEach((value, key) => {
-                params[key] = value;
-                });
-                
-                $.post($.pluginUrl,params,function(data, status){
-                    jQuery( "#pluginContainer" ).html(data);
-                });
-            });
-        });
-    </script>
+    <!-- El widget se monta dentro de un Shadow DOM para aislar Bootstrap. -->
 </div>
+
+<script is:inline define:vars={{ paramsLimpios, vmgPluginUrl, vmgPluginVersion }}>
+    (function () {
+        var host = document.getElementById('booking-container-dolphinaris');
+        if (!host || host.__bookingShadowReady) return;
+        host.__bookingShadowReady = true;
+
+        var shadow = host.attachShadow({ mode: 'open' });
+
+        // CSS de Bootstrap + FontAwesome: scopeadas al shadow.
+        var bootstrapCss = document.createElement('link');
+        bootstrapCss.rel = 'stylesheet';
+        bootstrapCss.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
+        bootstrapCss.crossOrigin = 'anonymous';
+        shadow.appendChild(bootstrapCss);
+
+        var faCss = document.createElement('link');
+        faCss.rel = 'stylesheet';
+        faCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css';
+        shadow.appendChild(faCss);
+
+        var pluginContainer = document.createElement('div');
+        pluginContainer.id = 'pluginContainer';
+        // El original usaba `container mx-auto px-4`. Dentro del shadow no hay
+        // acceso a Tailwind, así que reusamos la utilidad `container` de Bootstrap
+        // (que sí tenemos scopeada en este mismo shadow).
+        pluginContainer.className = 'container mx-auto px-4';
+        shadow.appendChild(pluginContainer);
+
+        function reexecuteScripts(root) {
+            var scripts = root.querySelectorAll('script');
+            for (var i = 0; i < scripts.length; i++) {
+                var oldScript = scripts[i];
+                var newScript = document.createElement('script');
+                for (var j = 0; j < oldScript.attributes.length; j++) {
+                    var a = oldScript.attributes[j];
+                    newScript.setAttribute(a.name, a.value);
+                }
+                newScript.text = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            }
+        }
+
+        function loadGlobalScript(src) {
+            return new Promise(function (resolve, reject) {
+                if (src.indexOf('jquery') !== -1 && window.jQuery) return resolve();
+                var selector = 'script[data-booking-src="' + src + '"]';
+                var existing = document.querySelector(selector);
+                if (existing) {
+                    if (existing.dataset.loaded === 'true') return resolve();
+                    existing.addEventListener('load', function () { resolve(); });
+                    existing.addEventListener('error', reject);
+                    return;
+                }
+                var s = document.createElement('script');
+                s.src = src;
+                s.async = true;
+                s.dataset.bookingSrc = src;
+                s.addEventListener('load', function () {
+                    s.dataset.loaded = 'true';
+                    resolve();
+                });
+                s.addEventListener('error', reject);
+                document.head.appendChild(s);
+            });
+        }
+
+        var pluginId = paramsLimpios.plugin_id || '';
+
+        loadGlobalScript('https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+            .then(function () {
+                return new Promise(function (resolve, reject) {
+                    window.jQuery
+                        .getScript('https://' + vmgPluginUrl + '/js/pluginscripts.js', resolve)
+                        .fail(reject);
+                });
+            })
+            .then(function () {
+                var $ = window.jQuery;
+                $.pluginUrl = 'https://' + vmgPluginUrl + '/' + vmgPluginVersion + '.php';
+                var params = Object.assign({}, paramsLimpios, { plugin_id: pluginId });
+
+                var urlParams = new URLSearchParams(window.location.search);
+                urlParams.forEach(function (value, key) {
+                    params[key] = value;
+                });
+
+                return new Promise(function (resolve, reject) {
+                    $.post($.pluginUrl, params, function (data) {
+                        pluginContainer.innerHTML = data;
+                        reexecuteScripts(pluginContainer);
+                        resolve();
+                    }).fail(reject);
+                });
+            })
+            .catch(function (err) {
+                if (window.console && console.error) {
+                    console.error('Booking Dolphinaris widget failed:', err);
+                }
+            });
+    })();
+</script>
+
 <style define:vars={{ padding_top }}>
-  #booking-container-dolphinaris {
-    padding-top: var(--padding_top);
-  }
+    #booking-container-dolphinaris {
+        padding-top: var(--padding_top);
+    }
 </style>

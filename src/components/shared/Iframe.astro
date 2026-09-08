@@ -6,13 +6,66 @@ interface Props {
 const { codigo } = Astro.props;
 ---
 
-<div class="w-full iframe-container" set:html={codigo} />
+<div class="w-full iframe-host" data-codigo={codigo}></div>
 
-<style>
-    .iframe-container :global(iframe) {
-        width: 100%;
-        height: 100vh;
-        border: none;
-        display: block;
+<script>
+    /**
+     * Aísla el HTML arbitrario del bloque `shared.iframe` dentro de un Shadow DOM
+     * para que cualquier <script> / <link rel="stylesheet"> (incluido Bootstrap)
+     * del codigo inyectado no contamine el documento principal con Tailwind v4.
+     *
+     * Caso iframe real: si `codigo` contiene un <iframe src="...">, sigue
+     * funcionando — el <iframe> renderiza dentro del shadow con sus propias
+     * dimensiones.
+     */
+    const hydratedHosts = new WeakSet<HTMLElement>();
+
+    function hydrateIframeHost(host: HTMLElement) {
+        if (hydratedHosts.has(host)) return;
+        hydratedHosts.add(host);
+
+        // Restore HTML entities que Astro/JSON suelen escapar (e.g. &quot; -> ")
+        const raw = host.dataset.codigo ?? '';
+        const decoder = document.createElement('textarea');
+        decoder.innerHTML = raw;
+        const codigo = decoder.value;
+
+        const shadow = host.attachShadow({ mode: 'open' });
+
+        // Estilos del iframe real: ahora viven dentro del shadow para no
+        // necesitar `:global(iframe)` en el documento.
+        const style = document.createElement('style');
+        style.textContent = `
+            :host { display: block; width: 100%; }
+            iframe { width: 100%; height: 100vh; border: none; display: block; }
+        `;
+        shadow.appendChild(style);
+
+        // Contenedor del HTML inyectado.
+        const content = document.createElement('div');
+        content.className = 'iframe-content';
+        shadow.appendChild(content);
+
+        // Inyectamos el HTML. Para que los <script> del codigo también se
+        // ejecuten (innerHTML no los corre ni en light ni en shadow), los
+        // re-creamos vía DOM API.
+        content.innerHTML = codigo;
+        const scripts = content.querySelectorAll('script');
+        scripts.forEach((oldScript) => {
+            const newScript = document.createElement('script');
+            for (let i = 0; i < oldScript.attributes.length; i++) {
+                const a = oldScript.attributes[i];
+                newScript.setAttribute(a.name, a.value);
+            }
+            newScript.text = oldScript.textContent;
+            oldScript.parentNode?.replaceChild(newScript, oldScript);
+        });
     }
-</style>
+
+    function initAll() {
+        document.querySelectorAll<HTMLElement>('.iframe-host').forEach(hydrateIframeHost);
+    }
+
+    initAll();
+    document.addEventListener('astro:page-load', initAll);
+</script>
