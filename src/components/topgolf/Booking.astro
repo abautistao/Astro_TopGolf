@@ -61,9 +61,9 @@ for (const [key, value] of Object.entries(rawParams)) {
 		var vmg_plugin_url = $('#vmg_plugin_url').val();
         var paramsVMG = paramsLimpios;
 
-		$.getScript( `https://${vmg_plugin_url}/js/pluginscripts.js`, function(jd) {
+		$.getScript( `https://plugin.venturae.com.mx/js/pluginscripts.js`, function(jd) {
 			"use strict";
-			$.pluginUrl = `https://${vmg_plugin_url}/requesterv2.php`;
+			$.pluginUrl = `https://plugin.venturae.com.mx/requesterv2.php`;
 			var params = {
                 ...paramsVMG,
 				'plugin_id': vmg_plugin_id
