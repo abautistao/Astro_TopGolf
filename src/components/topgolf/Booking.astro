@@ -6,8 +6,20 @@
  * cosa que en iframe fallaba intermitente) y el CSS de Bootstrap que inyecta se
  * reescribe scopeado a `#booking-container` para que no contamine el header/footer
  * de Tailwind. Sin `!important`, sin iframe, sin Shadow DOM.
+ *
+ * Layout configurable desde Strapi (no se envía al plugin):
+ * - `color_fondo`: color del wrapper (hex, e.g. "#002A4E"). Si hay `imagen_fondo`,
+ *   funciona como fallback mientras la imagen carga.
+ * - `imagen_fondo`: media opcional. Se renderiza como `<img>` overlay detrás del
+ *   widget (object-cover/object-center, -z-10). Equivalente visual a
+ *   `bg-[url(...)] bg-cover bg-center` con URL dinámica — Tailwind v4 compila
+ *   valores arbitrarios en build time, así que un `bg-[url('${runtime}')]` no
+ *   puede resolverse en runtime; el overlay `<img>` sí.
+ * - `ancho`: "contenido" (default, mx-auto max-w-7xl con padding lateral) |
+ *   "completo" (full width sin padding, como el comportamiento histórico).
  */
 import type { HTMLAttributes } from 'astro/types';
+import { getStrapiUrl } from "../../lib/strapi.js";
 
 export interface Props extends HTMLAttributes<'div'> {
     plugin_id?: string | null;
@@ -20,7 +32,15 @@ export interface Props extends HTMLAttributes<'div'> {
     pax_max?: number | null;
     reservacion_fecha?: string | null;
     vendedor_id?: string | null;
+    /** Color de fondo del wrapper (hex). Usado como fallback mientras carga `imagen_fondo`. */
+    color_fondo?: string | null;
+    /** Imagen de fondo del wrapper. Si existe, se pinta como overlay con object-cover/center. */
+    imagen_fondo?: any;
+    /** "contenido" = mx-auto max-w-7xl con padding lateral (default); "completo" = full width. */
+    ancho?: string | null;
 }
+
+const { color_fondo, imagen_fondo, ancho } = Astro.props;
 
 const rawParams = {...Astro.props };
 const vmgPluginUrlRaw = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
@@ -28,17 +48,54 @@ const vmgPluginUrl = (vmgPluginUrlRaw || '').replace(/^https?:\/\//, '').replace
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
 
+// `__component` / `id` son metadatos del dynamic zone de Strapi.
+// `color_fondo` / `imagen_fondo` / `ancho` son del wrapper, no del plugin.
+// `class*` los añade el caller (no deberían llegar aquí, pero por si acaso).
+const excludeKeys = new Set([
+    '__component', 'id',
+    'color_fondo', 'imagen_fondo', 'ancho',
+    'class', 'class:list', 'className',
+]);
+
 for (const [key, value] of Object.entries(rawParams)) {
-    if (key === '__component' || key === 'id') continue;
+    if (excludeKeys.has(key)) continue;
     if (value) {
         paramsLimpios[key] = value;
     }
 }
+
+const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
+const isFullWidth = ancho === "completo";
+
+// Tailwind v4 compila `bg-[#hex]` arbitrarios en build time; un valor runtime
+// (template literal) no tiene garantía de matchear el CSS emitido. Mantenemos
+// la firma en el source por completitud y para que el scanner detecte la
+// intención; si Tailwind no la emite, el wrapper queda transparente y el
+// `div#booking-container` interior conserva su propio `bg-[#002a4e]`.
+const sectionBgClass = color_fondo ? `bg-[${color_fondo}]` : "";
 ---
 
-<div id="booking-container" class="font-(family-name:--font-shields-sans-bold) bg-[#002a4e] bg-cover bg-center bg-no-repeat bg-[url('https://cms.bluoceanclub.com/uploads/Booking_ce5a0fd70b.jpg')]">
-    <!-- El widget VMG se monta aquí en light DOM. -->
-</div>
+<section class:list={["relative w-full overflow-hidden", sectionBgClass]}>
+    {bgUrl && (
+        <img
+            src={bgUrl}
+            alt=""
+            aria-hidden="true"
+            class="absolute inset-0 w-full h-full object-cover object-center -z-10 pointer-events-none"
+        />
+    )}
+    {isFullWidth ? (
+        <div id="booking-container" class="font-(family-name:--font-shields-sans-bold) bg-[#002a4e] bg-cover bg-center bg-no-repeat bg-[url('https://cms.bluoceanclub.com/uploads/Booking_ce5a0fd70b.jpg')]">
+            <!-- El widget VMG se monta aquí en light DOM. -->
+        </div>
+    ) : (
+        <div class="mx-auto max-w-7xl px-4 md:px-8 py-10">
+            <div id="booking-container" class="font-(family-name:--font-shields-sans-bold) bg-[#002a4e] bg-cover bg-center bg-no-repeat bg-[url('https://cms.bluoceanclub.com/uploads/Booking_ce5a0fd70b.jpg')]">
+                <!-- El widget VMG se monta aquí en light DOM. -->
+            </div>
+        </div>
+    )}
+</section>
 
 <script is:inline define:vars={{ paramsLimpios, vmgPluginUrl, vmgPluginVersion }}>
     (function () {
