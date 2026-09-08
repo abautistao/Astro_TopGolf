@@ -18,6 +18,11 @@ export interface SlideAcuario {
     nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     subtitulo?: string;
     boton?: any[];
+    /**
+     * "recortar" (default): la imagen llena el contenedor y se recorta (object-cover / h fija).
+     * "completa": la imagen se muestra entera, ancho viewport, alto según aspect-ratio natural.
+     */
+    ajuste_imagen?: "recortar" | "completa";
 }
 
 export interface Props {
@@ -90,6 +95,18 @@ const getHeadingTag = (nivel?: string) => {
     const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
     return validTags.includes(nivel || "") ? nivel : "h1";
 };
+
+// Modo del banner: lo define el primer slide. Default "recortar" (comportamiento histórico).
+// "completa" -> imagen a ancho viewport, alto natural según aspect-ratio, sin recortes.
+const bannerMode: "recortar" | "completa" =
+    finalSlides[0]?.ajuste_imagen === "completa" ? "completa" : "recortar";
+const isCompleta = bannerMode === "completa";
+
+// Clases del contenedor según modo. En "completa" removemos aspect-ratio, h fija y overflow-hidden
+// para que la imagen dicte el alto del banner y nunca se recorte.
+const sectionClass = isCompleta
+    ? "relative z-10 w-screen left-1/2 -ml-[50vw] bg-[var(--surface-brand-primary)]"
+    : "relative z-10 w-screen left-1/2 -ml-[50vw] aspect-[4/5] md:aspect-auto md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]";
 ---
 
 {/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
@@ -114,51 +131,89 @@ const getHeadingTag = (nivel?: string) => {
     </div>
 )}
 
-<section class="relative z-10 w-screen left-1/2 -ml-[50vw] aspect-[4/5] md:aspect-auto md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]">
+<section class={sectionClass}>
     {finalSlides && finalSlides.length > 0 ? (
-        <div class="swiper acuario-banner-swiper w-full h-full absolute inset-0">
-            <div class="swiper-wrapper h-full">
+        <div
+            class:list={[
+                "swiper acuario-banner-swiper w-full",
+                isCompleta ? "relative" : "h-full absolute inset-0",
+            ]}
+            data-auto-height={isCompleta ? "true" : "false"}
+        >
+            <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full"]}>
                 {finalSlides.map((slide) => {
                     const bgUrl = getStrapiUrl(slide.fondo);
                     const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
                     const hasMobileImage = !!slide.fondo_mobile;
                     const altText = slide.fondo?.alternativeText || "Acuario Inbursa";
                     const isBgVideo = isVideo(bgUrl);
-                    
+
                     const HeadingTag = getHeadingTag(slide.nivel_heading);
-                    
+
                     return (
-                        <div class="swiper-slide relative w-full h-full">
+                        <div class:list={["swiper-slide relative w-full", isCompleta ? "block" : "h-full"]}>
                             <!-- Background Media -->
-                            <div class="absolute inset-0 z-0 overflow-hidden w-full h-full">
-                                {isBgVideo ? (
-                                    <video
-                                        src={bgUrl}
-                                        autoplay
-                                        loop
-                                        muted
-                                        playsinline
-                                        class="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <>
-                                        <picture class="absolute inset-0 w-full h-full block">
+                            {isCompleta ? (
+                                <!-- Modo "completa": la imagen manda. w-full, h-auto, object-contain.
+                                     Sin aspect-ratio fijo, sin overflow-hidden, sin altura fija en ningún ancestro. -->
+                                <div class="relative w-full z-0">
+                                    {isBgVideo ? (
+                                        <video
+                                            src={bgUrl}
+                                            autoplay
+                                            loop
+                                            muted
+                                            playsinline
+                                            class="block w-full h-auto max-w-full"
+                                        />
+                                    ) : (
+                                        <picture class="block w-full">
                                             {hasMobileImage && (
                                                 <source media="(max-width: 767px)" srcset={bgMobileUrl} />
                                             )}
                                             <img
                                                 src={bgUrl}
                                                 alt={altText}
-                                                class="absolute inset-0 w-full h-full object-cover"
+                                                class="block w-full h-auto max-w-full"
                                             />
                                         </picture>
-                                    </>
-                                )}
-                                {(slide.texto_principal || slide.subtitulo) && (
-                                    <!-- Overlay oscuro para que el texto resalte -->
-                                    <div class="absolute inset-0 bg-black/40 z-10"></div>
-                                )}
-                            </div>
+                                    )}
+                                    {(slide.texto_principal || slide.subtitulo) && (
+                                        <div class="absolute inset-0 bg-black/40 z-10"></div>
+                                    )}
+                                </div>
+                            ) : (
+                                <!-- Modo "recortar" (legado): object-cover con h fija recorta si la imagen trae texto. -->
+                                <div class="absolute inset-0 z-0 overflow-hidden w-full h-full">
+                                    {isBgVideo ? (
+                                        <video
+                                            src={bgUrl}
+                                            autoplay
+                                            loop
+                                            muted
+                                            playsinline
+                                            class="absolute inset-0 w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <>
+                                            <picture class="absolute inset-0 w-full h-full block">
+                                                {hasMobileImage && (
+                                                    <source media="(max-width: 767px)" srcset={bgMobileUrl} />
+                                                )}
+                                                <img
+                                                    src={bgUrl}
+                                                    alt={altText}
+                                                    class="absolute inset-0 w-full h-full object-cover"
+                                                />
+                                            </picture>
+                                        </>
+                                    )}
+                                    {(slide.texto_principal || slide.subtitulo) && (
+                                        <!-- Overlay oscuro para que el texto resalte -->
+                                        <div class="absolute inset-0 bg-black/40 z-10"></div>
+                                    )}
+                                </div>
+                            )}
 
                             <!-- Text Content (Optional) -->
                             {slide.texto_principal && (
@@ -169,7 +224,7 @@ const getHeadingTag = (nivel?: string) => {
                                                 {slide.subtitulo}
                                             </span>
                                         )}
-                                        
+
                                         <HeadingTag class="text-[32px] md:text-[80px] font-black font-[family-name:var(--font-principal)] leading-[36px] md:leading-[50px] mb-6 uppercase text-center" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                             {slide.texto_principal}
                                         </HeadingTag>
@@ -188,7 +243,7 @@ const getHeadingTag = (nivel?: string) => {
                     );
                 })}
             </div>
-            
+
             {/* Controles del carrusel si hay más de 1 slide */}
             {finalSlides.length > 1 && (
                 <>
@@ -200,7 +255,10 @@ const getHeadingTag = (nivel?: string) => {
         </div>
     ) : (
         <!-- Placeholder if no slides are added yet -->
-        <div class="text-white z-10 text-center relative w-full h-full flex flex-col justify-center items-center">
+        <div class:list={[
+            "text-white z-10 text-center relative w-full flex flex-col justify-center items-center",
+            isCompleta ? "min-h-[400px] px-6" : "h-full"
+        ]}>
              <div class="absolute inset-0 bg-black/40 z-0"></div>
             <div class="relative z-10">
                 <h1 class="text-[32px] md:text-[60px] font-bold font-[family-name:var(--font-principal)] leading-tight mb-6 uppercase drop-shadow-lg">Banner Acuario</h1>
@@ -241,6 +299,9 @@ const getHeadingTag = (nivel?: string) => {
         const slides = swiperContainer.querySelectorAll(".swiper-slide");
         if (slides.length <= 1) return;
 
+        // Modo "completa" -> autoHeight para que el alto del carrusel siga el aspect-ratio natural del slide activo.
+        const autoHeight = swiperContainer.getAttribute("data-auto-height") === "true";
+
         try {
             new Swiper(".acuario-banner-swiper", {
                 modules: [Navigation, Pagination, Autoplay, EffectFade],
@@ -249,6 +310,7 @@ const getHeadingTag = (nivel?: string) => {
                     crossFade: true
                 },
                 loop: true,
+                autoHeight,
                 autoplay: {
                     delay: 5000,
                     disableOnInteraction: false,
