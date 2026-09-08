@@ -1,4 +1,10 @@
 ---
+/**
+ * @component Booking_Dolphinaris
+ * @description Variante Dolphinaris del motor VMG en light DOM. Mismo enfoque que
+ * topgolf/Booking.astro: el widget vive en el documento (los retornos del flujo
+ * funcionan normal) y el Bootstrap inyectado se reescribe scopeado al contenedor.
+ */
 import type { HTMLAttributes } from 'astro/types';
 
 export interface Props extends HTMLAttributes<'div'> {
@@ -15,14 +21,150 @@ export interface Props extends HTMLAttributes<'div'> {
     padding_top: string;
 }
 
-const params = new URLSearchParams();
-for (const [key, value] of Object.entries(Astro.props)) {
+const rawParams = {...Astro.props };
+const vmgPluginUrlRaw = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
+const vmgPluginUrl = (vmgPluginUrlRaw || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
+const paramsLimpios: { [key: string]: any } = {};
+
+for (const [key, value] of Object.entries(rawParams)) {
     if (key === '__component' || key === 'id' || key === 'padding_top') continue;
-    if (value) params.set(key, String(value));
+    if (value) {
+        paramsLimpios[key] = value;
+    }
 }
-const iframeSrc = `/booking-widget?${params.toString()}`;
 ---
 
 <div class="bg-(--neutral-background-subtle) py-12">
-    <iframe src={iframeSrc} title="Booking engine" loading="lazy" height="1000"></iframe>
+    <div id="booking-container-dolphinaris">
+        <!-- El widget VMG se monta aquí en light DOM. -->
+    </div>
 </div>
+
+<script is:inline define:vars={{ paramsLimpios, vmgPluginUrl, vmgPluginVersion }}>
+    (function () {
+        var HOST_ID = 'booking-container-dolphinaris';
+        var host = document.getElementById(HOST_ID);
+        if (!host || host.dataset.bookingReady === 'true') return;
+        host.dataset.bookingReady = 'true';
+
+        function scopeCssText(cssText, scope) {
+            var tmp = document.createElement('style');
+            tmp.textContent = cssText;
+            document.head.appendChild(tmp);
+            var out = '';
+            function emitSelector(sel) {
+                return sel.split(',').map(function (s) {
+                    s = s.trim();
+                    if (!s || s === ':root' || s === 'html' || s === 'body') return scope;
+                    return scope + ' ' + s;
+                }).join(', ');
+            }
+            function proc(rules) {
+                for (var i = 0; i < rules.length; i++) {
+                    var r = rules[i];
+                    if (r.type === 1) {
+                        out += emitSelector(r.selectorText) + '{' + r.style.cssText + '}';
+                    } else if (r.type === 4) {
+                        out += '@media ' + r.media.mediaText + '{';
+                        proc(r.cssRules);
+                        out += '}';
+                    } else if (r.type === 3) {
+                        continue;
+                    } else {
+                        try { out += r.cssText; } catch (e) { /* @font-face/@keyframes van tal cual */ }
+                    }
+                }
+            }
+            try { proc(tmp.sheet.cssRules); } catch (e) { /* hoja ilegible: fallback abajo */ }
+            tmp.remove();
+            return out;
+        }
+
+        var scopedCache = null;
+        function scopeBootstrap() {
+            var bootLink = null;
+            var links = host.querySelectorAll('link[rel="stylesheet"]');
+            for (var i = 0; i < links.length; i++) {
+                if ((links[i].href || '').indexOf('bootstrap') !== -1) bootLink = links[i];
+            }
+            function applyScoped(cssText) {
+                var scoped = scopeCssText(cssText, '#' + HOST_ID);
+                if (!scoped) return;
+                var old = document.getElementById('booking-scoped-css-dolphinaris');
+                if (old) old.remove();
+                var st = document.createElement('style');
+                st.id = 'booking-scoped-css-dolphinaris';
+                st.textContent = scoped;
+                document.head.appendChild(st);
+                if (bootLink) bootLink.remove();
+            }
+            if (scopedCache) { applyScoped(scopedCache); return; }
+            var cssUrl = bootLink
+                ? bootLink.href
+                : 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
+            fetch(cssUrl).then(function (r) { return r.text(); }).then(function (t) {
+                scopedCache = t;
+                applyScoped(t);
+            }).catch(function () { /* sin scope: el widget sigue funcionando */ });
+        }
+
+        function loadGlobalScript(src) {
+            return new Promise(function (resolve, reject) {
+                if (src.indexOf('jquery') !== -1 && window.jQuery) return resolve();
+                var selector = 'script[data-booking-src="' + src + '"]';
+                var existing = document.querySelector(selector);
+                if (existing) {
+                    if (existing.dataset.loaded === 'true') return resolve();
+                    existing.addEventListener('load', function () { resolve(); });
+                    existing.addEventListener('error', reject);
+                    return;
+                }
+                var s = document.createElement('script');
+                s.src = src;
+                s.async = true;
+                s.dataset.bookingSrc = src;
+                s.addEventListener('load', function () {
+                    s.dataset.loaded = 'true';
+                    resolve();
+                });
+                s.addEventListener('error', reject);
+                document.head.appendChild(s);
+            });
+        }
+
+        var pluginId = paramsLimpios.plugin_id || '';
+
+        loadGlobalScript('https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+            .then(function () {
+                return new Promise(function (resolve, reject) {
+                    window.jQuery
+                        .getScript('https://' + vmgPluginUrl + '/js/pluginscripts.js', resolve)
+                        .fail(reject);
+                });
+            })
+            .then(function () {
+                var $ = window.jQuery;
+                $.pluginUrl = 'https://' + vmgPluginUrl + '/' + vmgPluginVersion + '.php';
+                var params = Object.assign({}, paramsLimpios, { plugin_id: pluginId });
+
+                var urlParams = new URLSearchParams(window.location.search);
+                urlParams.forEach(function (value, key) {
+                    params[key] = value;
+                });
+
+                return new Promise(function (resolve, reject) {
+                    $.post($.pluginUrl, params, function (data) {
+                        $(host).html(data);
+                        scopeBootstrap();
+                        resolve();
+                    }).fail(reject);
+                });
+            })
+            .catch(function (err) {
+                if (window.console) {
+                    console.error('Booking Dolphinaris widget failed:', err);
+                }
+            });
+    })();
+</script>
