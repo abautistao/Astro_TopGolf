@@ -15,7 +15,6 @@ export interface Props extends HTMLAttributes<'div'> {
     padding_top: string;
 }
 
-const { padding_top } = Astro.props;
 const params = new URLSearchParams();
 for (const [key, value] of Object.entries(Astro.props)) {
     if (key === '__component' || key === 'id' || key === 'padding_top') continue;
@@ -24,6 +23,6 @@ for (const [key, value] of Object.entries(Astro.props)) {
 const iframeSrc = `/booking-widget?${params.toString()}`;
 ---
 
-<div class="bg-(--neutral-background-subtle) py-12" style={`padding-top: ${padding_top}`}>
-    <iframe src={iframeSrc} title="Booking engine" loading="lazy" style="width:100%;border:0" height="1000"></iframe>
+<div class="bg-(--neutral-background-subtle) py-12">
+    <iframe src={iframeSrc} title="Booking engine" loading="lazy" height="1000"></iframe>
 </div>
