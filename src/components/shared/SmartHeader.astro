@@ -5,8 +5,9 @@ import TocaHeader from "../toca/Header.astro";
 import BluHeader from "../blu/Header.astro";
 import DolphinarisHeader from "../dolphinaris/Header.astro";
 import AcuarioHeader from "../acuario/Header.astro";
+import HeaderSimpleAcuario from "../acuario/HeaderSimpleAcuario.astro";
 
-const { locale = "en", alternateLinks = {} } = Astro.props;
+const { locale = "en", alternateLinks = {}, simplified = false } = Astro.props;
 // Fetch data directly here
 const headerData = await getHeaderData(locale);
 
@@ -18,7 +19,7 @@ const headerData = await getHeaderData(locale);
 // Case B: The attributes directly match Topgolf (legacy)
 
 let Component = TopgolfHeader;
-let props = { data: headerData, locale: locale, alternateLinks: alternateLinks };
+let props: Record<string, any> = { data: headerData, locale: locale, alternateLinks: alternateLinks };
 
 // Logic to detect variant:
 if (
@@ -26,10 +27,21 @@ if (
     Array.isArray(headerData.Variante) &&
     headerData.Variante.length > 0
 ) {
-    const variant = headerData.Variante[0];
-    const componentName = variant.__component;
+    // When `simplified` is on, prefer the variant whose __component includes "simple".
+    // If none is found, fall back to the legacy Variante[0] path so existing behavior is preserved.
+    const variant = simplified
+        ? (headerData.Variante.find((v: any) => v?.__component?.includes("simple")) ?? headerData.Variante[0])
+        : headerData.Variante[0];
 
-    if (componentName.includes("toca")) {
+    const componentName = variant?.__component ?? "";
+
+    // Simplified lookup runs first: any "simple" variant wins, regardless of brand,
+    // because the simple header component is brand-agnostic at render time (it uses
+    // CSS variables for colors/typography). Today only HeaderSimpleAcuario exists;
+    // if more "simple" variants land later, we can extend this branch by brand.
+    if (simplified && componentName.includes("simple")) {
+        Component = HeaderSimpleAcuario;
+    } else if (componentName.includes("toca")) {
         Component = TocaHeader;
     } else if (componentName.includes("acuario")) {
         Component = AcuarioHeader;
@@ -47,7 +59,7 @@ if (
     // console.log("SmartHeader: 'Variante' array not found or empty in headerData.");
 }
 
-console.log(`SmartHeader rendering: ${Component.name}`);
+console.log(`SmartHeader rendering: ${Component.name}${simplified ? " (simplified)" : ""}`);
 ---
 
 <Component {...props} />

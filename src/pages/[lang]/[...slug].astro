@@ -71,7 +71,7 @@ if (notFound) {
   Astro.response.statusText = "Not Found";
 }
 
-const { titulo, ContenidoPagina, SEO, localizations } = pagina || {};
+const { titulo, ContenidoPagina, SEO, localizations, header_simplificado } = pagina || {};
 
 const alternateLinks: any = {};
 const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
@@ -92,6 +92,7 @@ locs.forEach((loc: any) => {
   alternateLinks={alternateLinks}
   lang={lang || defaultLocale}
   title={notFound ? "Page Not Found" : titulo}
+  headerSimplified={Boolean(header_simplificado)}
 >
   {
     notFound ? (

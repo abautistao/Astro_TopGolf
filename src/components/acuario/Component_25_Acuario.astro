@@ -1,0 +1,92 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import Component_16_Acuario from "./Component_16_Acuario.astro";
+
+export interface Props {
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    elementos_lista?: Array<{ id?: number; icono?: string; texto?: string }>;
+    formulario?: any;
+    color_fondo?: string;
+    imagen_fondo?: any;
+    color_titulo?: string;
+    color_texto?: string;
+}
+
+const {
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    elementos_lista = [],
+    formulario,
+    color_fondo,
+    imagen_fondo,
+    color_titulo,
+    color_texto,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+const finalBg = color_fondo || "var(--surface-brand-primary)";
+const finalTitleColor = color_titulo || "var(--neutral-text-inverted)";
+const finalTextColor = color_texto || "var(--neutral-text-inverted)";
+const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
+---
+
+<section
+    class="w-full py-12 md:py-20 relative overflow-hidden"
+    style={`background-color: ${finalBg}; color: ${finalTextColor};`}
+>
+    {bgUrl && (
+        <>
+            <div
+                class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                style={`background-image: url(${bgUrl});`}
+                aria-hidden="true"
+            ></div>
+            <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
+        </>
+    )}
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+            <div class="flex flex-col gap-5">
+                {titulo && (
+                    <TitleTag
+                        class="font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase leading-tight text-center lg:text-left"
+                        style={`color: ${finalTitleColor};`}
+                    >
+                        {titulo}
+                    </TitleTag>
+                )}
+
+                {descripcion && (
+                    <div
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-normal leading-relaxed text-center lg:text-left [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+
+                {elementos_lista && elementos_lista.length > 0 && (
+                    <ul class="flex flex-col gap-3 mt-2">
+                        {elementos_lista.map((item) => (
+                            <li class="flex items-start gap-3 font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-medium">
+                                {item.icono && (
+                                    <i class={`${item.icono} text-[var(--accent-highlight-primary)] mt-1 text-[20px] w-6 text-center shrink-0`}></i>
+                                )}
+                                <span>{item.texto}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
+            <div class="w-full">
+                {formulario ? (
+                    <Component_16_Acuario {...formulario} />
+                ) : null}
+            </div>
+        </div>
+    </div>
+</section>

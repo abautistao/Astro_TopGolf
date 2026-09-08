@@ -27,6 +27,9 @@ import Component_20_Acuario from "../components/acuario/Component_20_Acuario.ast
 import Component_21_Acuario from "../components/acuario/Component_21_Acuario.astro";
 import Component_22_Acuario from "../components/acuario/Component_22_Acuario.astro";
 import Component_23_Acuario from "../components/acuario/Component_23_Acuario.astro";
+import Component_24_Acuario from "../components/acuario/Component_24_Acuario.astro";
+import Component_25_Acuario from "../components/acuario/Component_25_Acuario.astro";
+import Component_26_Acuario from "../components/acuario/Component_26_Acuario.astro";
 import Separadores from "../components/acuario/Separadores.astro";
 
 // ============================================================
@@ -581,6 +584,46 @@ const componentsBlock = [
                     { text: "*Esta actividad es apta para marineros a partir de los 4 años en adelante." },
                 ] },
             ],
+        },
+    },
+    {
+        name: "Component_24 (Texto + Carrusel de Galería)",
+        Comp: Component_24_Acuario,
+        props: {
+            titulo: "EXHIBICIONES TEMÁTICAS",
+            htmlTag: "h2",
+            subtitulo_1: "DESCUBRE",
+            subtitulo_2: "NUESTROS HABITATS",
+            descripcion: "<p>Recorre nuestras exhibiciones y descubre la biodiversidad marina que habita en cada ecosistema.</p>",
+            galeria: dummyGaleria,
+        },
+    },
+    {
+        name: "Component_25 (Texto + Lista + Formulario)",
+        Comp: Component_25_Acuario,
+        props: {
+            titulo: "CONTÁCTANOS",
+            htmlTag: "h2",
+            descripcion: "<p>¿Tienes alguna pregunta? Escríbenos y te responderemos a la brevedad.</p>",
+            elementos_lista: [
+                { id: 1, icono: "fa-solid fa-phone", texto: "55 1234 5678" },
+                { id: 2, icono: "fa-solid fa-envelope", texto: "contacto@acuarioinbursa.mx" },
+                { id: 3, icono: "fa-solid fa-location-dot", texto: "Av. Miguel de Cervantes Saavedra, CDMX" },
+            ],
+            formulario: {
+                titulo: "ENVÍA TU MENSAJE",
+                subtitulo: "Te responderemos pronto",
+                campos: dummyCampos16,
+                texto_boton: "ENVIAR MENSAJE",
+            },
+        },
+    },
+    {
+        name: "Component_26 (Mapa Google Maps Fullwidth)",
+        Comp: Component_26_Acuario,
+        props: {
+            url_mapa: "https://www.google.com/maps?q=Acuario+Inbursa&output=embed",
+            altura: "450",
         },
     },
 ];

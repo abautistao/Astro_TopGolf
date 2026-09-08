@@ -1,0 +1,21 @@
+---
+export interface Props {
+    url_mapa: string;
+    altura?: "300" | "400" | "500" | "600" | "700" | "800" | string;
+}
+
+const { url_mapa, altura = "450" } = Astro.props;
+const finalHeight = `${altura}px`;
+---
+
+<section class="w-full">
+    <iframe
+        src={url_mapa}
+        title="Mapa de ubicación"
+        class="block w-full"
+        style={`border: 0; height: ${finalHeight};`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+    ></iframe>
+</section>

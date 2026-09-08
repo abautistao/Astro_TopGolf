@@ -1,0 +1,138 @@
+---
+// frontend/src/components/acuario/HeaderSimpleAcuario.astro
+//
+// Simplified header variant for the Acuario/Sealands brand. Replicates the
+// first row of the full Acuario header (the desktop top bar — a 3-col flex
+// row: social | horario | CTA) but reduced to TWO columns:
+//
+//   col1 = mirrors the original social-icons column (same wrapper classes).
+//   col2 = logo centered (`mx-auto` / `text-center` / `justify-center`),
+//          REPLACES the original horario-text column.
+//   col3 = the yellow CTA/Botón column from the original is INTENTIONALLY
+//          DROPPED per design — no CTA in this variant.
+//
+// Mobile + desktop menus, dropdowns, mobile overlay, hamburger button and
+// any related `<script>` are removed. There is NO menu at all. CSS variables
+// drive every color and font — no hex literals.
+//
+// Schema compatibility (`backend/src/components/header/header-simple-acuario.json`):
+//   - logo, logo_mobile : RENDERED in col2 (desktop + mobile variants).
+//   - social            : not present in the simplified schema, but the col1
+//                         wrapper is preserved and rendered when data is
+//                         supplied (defensive — future-proof).
+//   - texto_horario     : not present in the simplified schema (col2 no longer
+//                         renders horario text — it renders the centered logo).
+//   - links             : present in schema but UNUSED (no menu in this variant).
+//   - Boton             : present in schema but UNUSED (col3 dropped per design).
+//
+// Decision: the `Boton` field is left in the schema as-is (no removal) and is
+// not rendered here. Editors can still attach a CTA in Strapi without breaking
+// anything; future iterations can opt-in to render it again without a migration.
+
+import {
+    getHeaderData,
+    getStrapiUrl,
+} from "../../lib/strapi";
+import { Image } from "astro:assets";
+
+interface Props {
+    data?: any;
+    locale?: string;
+}
+
+const { data, locale = "es" } = Astro.props;
+void locale; // unused in this variant, kept in Props to honour the SmartHeader contract
+const headerData = data || (await getHeaderData());
+
+const logoUrl = getStrapiUrl(headerData?.logo);
+const logoMobileUrl = getStrapiUrl(headerData?.logo_mobile) || logoUrl;
+
+// Defensive read: `social` is not part of the simplified schema today, but the
+// col1 wrapper mirrors the original and renders the list when present.
+const social = headerData?.social || [];
+
+// `links` and `Boton` exist in the simplified schema but are intentionally not
+// rendered here — see the file header. We touch them so the destructuring is
+// visible and the documentation comment lives next to the variables it applies to.
+const _links = headerData?.links || [];
+const _ctaButtonRaw = headerData?.Boton;
+void _links;
+void _ctaButtonRaw;
+---
+
+<header class="w-full relative z-50">
+    <!--
+        Simplified bar: 2-column flex row that mirrors the original Acuario
+        header's first-row structure (desktop top bar) minus col3.
+        Outer wrapper keeps `bg-[var(--neutral-background-strong)]` and the
+        `border-b-4 border-[var(--brand-interactive-base)]` from the original
+        main-nav row to preserve the yellow underline accent.
+    -->
+    <div class="bg-[var(--neutral-background-strong)] border-b-4 border-[var(--brand-interactive-base)] flex w-full min-h-[60px] md:min-h-[100px] font-bold">
+        {/*
+            col1 — social icons column.
+            Same wrapper classes as the original Acuario header (col1):
+              `bg-[var(--custom-color-01)]`, `flex items-center justify-start`,
+              `px-8`, `min-w-[420px]`.
+            Hidden on mobile (`hidden md:flex`) to match the original top bar's
+            desktop-only behaviour. Conditionally rendered because the
+            simplified schema does not include a `social` field — without data
+            this would otherwise leave a 420px-wide empty dark block on the left.
+        */}
+        {social.length > 0 && (
+            <div class="bg-[var(--custom-color-01)] hidden md:flex items-center justify-start px-8 min-w-[420px]">
+                <div class="flex items-center gap-5 text-white">
+                    {social.map((item: any) => (
+                        <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="hover:opacity-80 transition-opacity"
+                        >
+                            <i class={`${item.icono_clase} text-[17px]`}></i>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )}
+
+        {/*
+            col2 — logo centered.
+            This replaces the original's horario-text column (`flex-grow`
+            secondary background). Same `flex-grow` so it absorbs any leftover
+            space whether col1 renders or not. `justify-center` + `text-center`
+            + `mx-auto` keep the logo centered on both axes.
+        */}
+        <div class="flex-grow bg-[var(--neutral-background-strong)] flex items-center justify-center text-center">
+            <a
+                href="/"
+                class="h-full py-2 inline-flex items-center justify-center mx-auto"
+                aria-label="Acuario — inicio"
+            >
+                {logoUrl && (
+                    <Image
+                        src={logoUrl}
+                        alt="Acuario"
+                        width={250}
+                        height={100}
+                        class="hidden md:block h-full w-auto object-contain mx-auto"
+                    />
+                )}
+                {logoMobileUrl && (
+                    <Image
+                        src={logoMobileUrl}
+                        alt="Acuario"
+                        width={200}
+                        height={80}
+                        class="block md:hidden h-full w-auto object-contain py-1 mx-auto"
+                    />
+                )}
+            </a>
+        </div>
+
+        {/*
+            col3 — Botón/CTA column from the original is INTENTIONALLY OMITTED.
+            Schema field is preserved for forward compatibility (see file header).
+        */}
+    </div>
+</header>

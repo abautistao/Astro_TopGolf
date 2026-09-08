@@ -46,7 +46,7 @@ if (!page) {
     });
 }
 
-const { titulo, ContenidoPagina, SEO, localizations } = page;
+const { titulo, ContenidoPagina, SEO, localizations, header_simplificado } = page;
 
 const alternateLinks: any = {};
 const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
@@ -62,7 +62,7 @@ locs.forEach((loc: any) => {
 });
 ---
 
-<Layout seo={SEO} alternateLinks={alternateLinks}>
+<Layout seo={SEO} alternateLinks={alternateLinks} headerSimplified={Boolean(header_simplificado)}>
     <main class="mx-auto container-full">
         <RenderBlocks blocks={ContenidoPagina} />
     </main>

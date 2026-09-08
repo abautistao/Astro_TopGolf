@@ -15,7 +15,13 @@ import {
 // Obtiene los datos de configuración del sitio.
 // Obtiene los datos de configuración del sitio.
 const { lang: paramsLang } = Astro.params;
-const { lang: propsLang, seo, title, alternateLinks } = Astro.props;
+const {
+    lang: propsLang,
+    seo,
+    title,
+    alternateLinks,
+    headerSimplified = false,
+} = Astro.props;
 
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
 const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
@@ -102,7 +108,7 @@ const seoProps = seo || defaultSeo;
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         )}
         
-        <Header locale={locale} alternateLinks={alternateLinks} />
+        <Header locale={locale} alternateLinks={alternateLinks} simplified={headerSimplified} />
         <!-- El contenido de la página se insertará aquí. -->
         <slot />
         <Footer locale={locale} />
