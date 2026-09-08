@@ -30,11 +30,13 @@ export interface Props extends HTMLAttributes<'div'> {
 }
 
 const rawParams = {...Astro.props };
-const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
+const vmgPluginUrlRaw = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
+const vmgPluginUrl = (vmgPluginUrlRaw || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
 
 for (const [key, value] of Object.entries(rawParams)) {
+    if (key === '__component' || key === 'id') continue;
     if (value) {
         paramsLimpios[key] = value;
     }
