@@ -33,9 +33,10 @@ export interface Props {
     paquetes: Package[];
     titulo: string;
     nivel_heading_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    columns: string;
 }
 
-const { paquetes, nivel_heading_tag, titulo } = Astro.props;
+const { paquetes, nivel_heading_tag, titulo, columns } = Astro.props;
 
 const placeholderButton: Boton[] = [
     {
@@ -68,6 +69,7 @@ const packagesToRender =
     paquetes && paquetes.length > 0 ? paquetes : placeholderPackages;
 
 const HeadingTag = getHeadingTag(nivel_heading_tag);
+const cols = columns ? columns : 3;
 ---
 
 <section class="w-full bg-(--neutral-text-inverted) py-10 sm:py-14">
@@ -81,7 +83,7 @@ const HeadingTag = getHeadingTag(nivel_heading_tag);
             {titulo}
         </HeadingTag>
 
-        <div class="flex flex-wrap justify-center gap-8 sm:py-4 max-w-7xl mx-auto">
+        <div class=`grid grid-cols-1 lg:grid-cols-${cols} justify-center gap-8 sm:py-4 max-w-7xl mx-auto`>
             {
                 packagesToRender.map((pkg) => {
                     const contentHtml = stringifyRichText(pkg.descripcion);
@@ -109,7 +111,7 @@ const HeadingTag = getHeadingTag(nivel_heading_tag);
                     const HeadingTagSubtitulo = getHeadingTag(pkg.nivel_heading_subtitulo);
 
                     return (
-                        <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center md:w-[calc(50%-2rem)] lg:w-[calc(33.333%-2rem)]">
+                        <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                             <div class="relative">
                                 <Image
                                     src={imageUrl}

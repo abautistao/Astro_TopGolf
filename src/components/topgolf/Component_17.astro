@@ -74,15 +74,20 @@ const botonesToRender =
       />
     </div>
 
-    <div
-      class="font-(family-name:--font-tee-line-bold-italic) text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose md:whitespace-nowrap"
-      set:html={tituloHtml}
-    />
-    <div
-      class="w-full flex flex-col sm:flex-row items-center justify-center gap-4"
-    >
-      <ButtonGroup botones={botonesToRender} />
-    </div>
+    {titulo && (
+      <div
+        class="font-(family-name:--font-tee-line-bold-italic) text-[26px] md:text-5xl font-bold text-[var(--neutral-background-strong)] max-w-4xl prose md:whitespace-nowrap"
+        set:html={stringifyRichText(titulo)}
+      />
+    )}
+
+    {botones && botones.length > 0 && (
+      <div
+        class="w-full flex flex-col sm:flex-row items-center justify-center gap-4"
+      >
+        <ButtonGroup botones={[botones]} />
+      </div>
+    )}
   </div>
 </section>
 
