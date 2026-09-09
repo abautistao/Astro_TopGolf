@@ -81,11 +81,11 @@ const botonesToRender =
       />
     )}
 
-    {botones && botones.length > 0 && (
+    {botones.length > 0 && (
       <div
         class="w-full flex flex-col sm:flex-row items-center justify-center gap-4"
       >
-        <ButtonGroup botones={[botones]} />
+        <ButtonGroup botones={[...botones]} />
       </div>
     )}
   </div>
