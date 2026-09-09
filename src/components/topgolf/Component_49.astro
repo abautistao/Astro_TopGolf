@@ -1,0 +1,149 @@
+---
+import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
+import Component_40_TGM from "./Component_40.astro";
+import type { Boton } from './elements/Button.astro';
+
+interface GroupItem {
+    titulo: any;
+    descripcion: any;
+    imagen: any;
+    background: string;
+    botones: Boton[];
+}
+
+interface Props {
+    background: string;
+    titulo?: string;
+    color_titulo?: string;
+    subtitulo?: string;
+    descripcion?: any;
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    columnas: number;
+    cards?: GroupItem[];
+    message: any;
+    footer_text: any;
+}
+
+const {
+    background,
+    titulo,
+    color_titulo,
+    subtitulo,
+    descripcion,
+    nivel_heading_titulo,
+    columnas,
+    cards,
+    message,
+    footer_text
+} = Astro.props;
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const cols = columnas ? columnas : 3;
+const bg = background ? background : "#050786"
+const colorTitle = color_titulo ? color_titulo : "#00ffff"
+---
+<section id="component-48" class="content relative">
+    <div class="container mx-auto bg-transparent overflow-hidden pt-8 lg:pt-16 pb-8 lg:pb-16 pr-4 md:pr-8 lg:pr-16 pl-4 md:pl-8 lg:pl-16">
+        {subtitulo && (
+            <span
+                class="block uppercase text-sm font-(family-name:--font-shields-sans-black) text-white text-center"
+            >{subtitulo}
+            </span>
+        )}
+
+        {titulo && (
+            <HeadingTagTitulo
+                id="titulo"
+                class="text-center text-accent-cyan text-2xl sm:text-7xl md:text-3 normal-case mb-4 font-(family-name:--font-tee-line-bold-italic)"
+            >{titulo}
+            </HeadingTagTitulo>
+        )}
+
+        {descripcion && (
+            <div class="description max-w-3xl mx-auto md:text-center text-white mb-8 font-(family-name:--font-shields-sans-regular)" set:html={stringifyRichText(descripcion)}></div>
+        )}
+
+        
+        <div class=`grid md:grid-cols-${cols} gap-8 items-stretch`>
+            {cards && cards.map(comp => (
+                <div class="flex flex-col lg:grid lg:grid-cols-5 z-10 rounded-md overflow-hidden items-stretch h-full">
+                    <div class="overflow-hidden relative order-2 lg:order-1 lg:col-span-3 bg-white dark:bg-brand-bright px-6 py-8 lg:p-12 z-10 flex flex-col flex-1 justify-center gap-4">
+                        <div class="group-title uppercase leading-none text-(--brand-interactive-base) dark:text-white font-(family-name:--font-shields-sans-regular) text-2xl" set:html={stringifyRichText(comp.titulo)}></div>
+
+                        <div class="max-w-3xl font-(family-name:--font-shields-sans-regular)" set:html={stringifyRichText(comp.descripcion)}></div>
+                        
+                        <div class="flex flex-wrap items-center gap-4">
+                            {comp.botones && comp.botones.map(btn => (
+                                <a 
+                                    id="btn-ep-small-groups-bn" 
+                                    class:list={[
+                                        'btn sm rounded-full uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)',
+                                        {
+                                            'bg-(--neutral-text-inverted)] text-(--surface-brand-primary)] shadow-lg hover:text-[var(--surface-brand-primary)]': btn.tipo === 'version_1',
+                                            'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)] hover:text-[var(--accent-highlight-secondary)]': btn.tipo === 'version_2',
+                                            'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]': btn.tipo === 'version_3',
+                                            'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] hover:text-[var(--accent-highlight-secondary)]': btn.tipo === 'version_4',
+                                            'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)]':  btn.tipo === 'version_5',
+                                            'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]':  btn.tipo === 'version_6',
+                                        }
+                                    ]} 
+                                    href={btn.url}>
+                                    {btn.texto}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <div class="order-1 lg:order-2 lg:col-span-2">
+                        <div class="relative h-full">
+                            <picture class="overflow-hidden">
+                                <source srcset="https://topgolf.com/api/urls/image?fwd=1&amp;path=https%3A%2F%2Fs3.topgolf.com%2Fuploads%2Fimages%2Ffnb%2Fevent%2Ftg-fnb-events-26-tgbites-spread-wine.jpg&amp;fit=cover&amp;width=1280" media="(min-width: 768px)" class="">
+                                    <img class="w-full h-full object-cover" alt="" width="800" height="450" loading="lazy" src="https://topgolf.com/api/urls/image?fwd=1&amp;path=https%3A%2F%2Fs3.topgolf.com%2Fuploads%2Fimages%2Ffnb%2Fevent%2Ftg-fnb-events-26-tgbites-spread-wine.jpg&amp;fit=cover&amp;width=800&amp;height=450&amp;format=png">
+                            </picture>
+                            
+                            <div class="absolute bottom-0 right-0 px-2 py-1 bg-[#0d1117]/50  text-xs font-shield-bold tracking-wide uppercase text-white">
+                                Taste of Topgolf
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>    
+        
+        {message && (
+            <div class="message md:text-2xl text-center text-white font-(family-name:--font-tee-line-regular) italic mt-8 mb-4" set:html={stringifyRichText(message)}></div>
+        )}
+
+        {footer_text && (
+            <p class="text-center mx-auto max-w-3xl italic text-xs text-white m-0 font-(family-name:--font-shields-sans-regular)">
+                {footer_text}
+            </p>
+        )}
+    </div>
+</section>
+<style define:vars={{ bg, colorTitle }}>
+    #component-48 {
+        background-color: var(--bg);
+    }
+
+    #component-48 #titulo{
+        color: var(--colorTitle);
+    }
+
+    .btn.sm, .prose .btn.sm {
+        padding: .625rem 1.25rem;
+        font-size: .75rem;
+    }
+
+    .group-title :global(strong) {
+        display: block;
+        font-weight: bold;
+        font-family: var(--font-shields-sans-semibold-condensed);
+    }
+
+    .message :global(a) {
+        font-weight: bold;
+        border-color: var(--accent-highlight-secondary);
+        border-bottom-width: 2px;
+    }
+</style>
