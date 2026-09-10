@@ -27,6 +27,8 @@ export interface Package {
     Boton: Boton[];
     nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    tag_background: string;
+    tag_text_color: string;
 }
 
 export interface Props {
@@ -62,6 +64,8 @@ const placeholderPackages: Package[] = [
         texto_boton: "¡RESERVA EN LÍNEA!",
         url_boton: "#",
         Boton: placeholderButton,
+        tag_background: "#050786",
+        tag_text_color: "#00FFFF",
     },
 ];
 
@@ -110,6 +114,9 @@ const cols = columns ? columns : 3;
                     const HeadingTagTitulo = getHeadingTag(pkg.nivel_heading_titulo);
                     const HeadingTagSubtitulo = getHeadingTag(pkg.nivel_heading_subtitulo);
 
+                    const tagBg = pkg.tag_background ? pkg.tag_background : "#050786";
+                    const tagTextColor= pkg.tag_text_color ? pkg.tag_text_color : "#00FFFF";
+
                     return (
                         <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                             <div class="relative">
@@ -120,7 +127,9 @@ const cols = columns ? columns : 3;
                                     inferSize={true}
                                 />
                                 <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                                    <span class="whitespace-nowrap font-(family-name:--font-shields-sans-bold) bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] font-semibold tracking-wider px-4 py-2 uppercase text-[13px]">
+                                    <span
+                                        style={{ color: tagTextColor, background: tagBg }} 
+                                        class="whitespace-nowrap font-(family-name:--font-shields-sans-bold) font-semibold tracking-wider px-4 py-2 uppercase text-[13px]">
                                         {pkg.tag}
                                     </span>
                                 </div>
