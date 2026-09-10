@@ -12,24 +12,31 @@ import Generic_404 from "../../components/errors/Generic_404.astro";
 // ==========================================================================================
 export async function getStaticPaths() {
   const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
-  const pages = await getAllBlogs(defaultLocale);
+  const fallbackLocale = "es";
 
-  if (!pages) {
-    return [];
+  // Fetch both locales in parallel. When defaultLocale=en but content lives in es,
+  // the default-only fetch returns nothing and every blog 404s. Dedupe by slug,
+  // preferring defaultLocale so URLs resolve to the canonical version when both exist.
+  const [defaultBlogs, esBlogs] = await Promise.all([
+    getAllBlogs(defaultLocale),
+    getAllBlogs(fallbackLocale),
+  ]);
+
+  const seenSlugs = new Set<string>();
+  const routes: any[] = [];
+
+  for (const blog of [...(defaultBlogs || []), ...(esBlogs || [])]) {
+    if (!blog) continue;
+    if (!blog.slug) {
+      console.warn(`[getStaticPaths] Saltando blog sin slug: id=${blog.id} titulo="${blog.titulo}" locale=${blog.locale}`);
+      continue;
+    }
+    if (seenSlugs.has(blog.slug)) continue; // defaultLocale wins on duplicate slugs
+    seenSlugs.add(blog.slug);
+    routes.push({ params: { slug: blog.slug } });
   }
-  return pages
-    .filter((page: any) => {
-      if (!page || !page.slug || (page.locale || "en") !== defaultLocale) {
-        if (page && !page.slug) {
-          console.warn(`[getStaticPaths] Saltando blog sin slug: id=${page.id} titulo="${page.titulo}" locale=${page.locale}`);
-        }
-        return false;
-      }
-      return true;
-    })
-    .map((page: any) => ({
-      params: { slug: page.slug },
-    }));
+
+  return routes;
 }
 
 // ==========================================================================================
@@ -44,6 +51,11 @@ let pagina = null;
 
 if (!notFound) {
   pagina = await getBlogBySlug(slug, defaultLocale);
+  if (!pagina) {
+    // Fallback when defaultLocale has no localization for this slug (e.g. default=en,
+    // content lives in es): try es before declaring 404.
+    pagina = await getBlogBySlug(slug, 'es');
+  }
   if (!pagina) notFound = true;
 }
 

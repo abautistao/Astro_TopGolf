@@ -106,8 +106,36 @@ export async function getAllPages(locale = 'en') {
 }
 
 export async function getBlogBySlug(slug, locale = 'en') {
-  const pages = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&locale=${locale}&populate=*`);
-  return pages?.[0];
+  // 1. Shallow fetch: blog entity + ContenidoPagina components, but nested media
+  //    inside dynamic-zone items is not recursed by Strapi 5's populate=*.
+  const baseResponse = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&locale=${locale}&populate=*&pagination[pageSize]=100`);
+  const blog = baseResponse?.[0];
+
+  if (!blog || !blog.ContenidoPagina) return blog;
+
+  // 2. Deep fetch: explicit populate for nested media inside componente-15-acuario
+  //    (bloques_contenido.imagen, imagen_principal) plus root-level imagen_destacada.
+  //    Without this, those fields arrive empty even though the componente shell exists.
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][imagen_principal][populate]=*&populate[imagen_destacada][populate]=*`;
+  const deepResponse = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
+  const deepBlog = deepResponse?.[0];
+
+  // 3. Merge by INDEX (Strapi 5 returns the parent's id for every dynamic-zone item,
+  //    so id-based matching overwrites every component with the first one's data).
+  if (deepBlog && deepBlog.ContenidoPagina) {
+    blog.ContenidoPagina = blog.ContenidoPagina.map((component, index) => {
+      const deepComponent = deepBlog.ContenidoPagina[index];
+      if (!deepComponent || deepComponent.__component !== component.__component) {
+        return component;
+      }
+      if (component.__component === 'secciones.componente-15-acuario') {
+        return { ...component, bloques_contenido: deepComponent.bloques_contenido };
+      }
+      return component;
+    });
+  }
+
+  return blog;
 }
 export async function getBlogBySlugIndividual(slug, locale = 'en') {
   const pages = await fetchAPI(`/blogs?filters[slug][$eq]=${slug}&locale=${locale}&populate[SEO][populate]=*`);
@@ -115,7 +143,9 @@ export async function getBlogBySlugIndividual(slug, locale = 'en') {
 }
 
 export async function getAllBlogs(locale = 'en') {
-  return await fetchAPI(`/blogs?locale=${locale}`);
+  // Strapi defaults pageSize to 25, so without explicit pagination ~half of the
+  // 57 published es blogs never become routes. Cap at the schema max (100).
+  return await fetchAPI(`/blogs?locale=${locale}&pagination[pageSize]=100`);
 }
 
 export async function getBlogsForListing(locale = 'es') {
