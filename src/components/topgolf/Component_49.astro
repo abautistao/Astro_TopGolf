@@ -1,6 +1,6 @@
 ---
-import { stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
-import Component_40_TGM from "./Component_40.astro";
+import { stringifyRichText, getHeadingTag, getStrapiUrl } from '../../lib/strapi.js';
+import { Image } from "astro:assets";
 import type { Boton } from './elements/Button.astro';
 
 interface GroupItem {
@@ -96,10 +96,17 @@ const colorTitle = color_titulo ? color_titulo : "#00ffff"
                     
                     <div class="order-1 lg:order-2 lg:col-span-2">
                         <div class="relative h-full">
-                            <picture class="overflow-hidden">
-                                <source srcset="https://topgolf.com/api/urls/image?fwd=1&amp;path=https%3A%2F%2Fs3.topgolf.com%2Fuploads%2Fimages%2Ffnb%2Fevent%2Ftg-fnb-events-26-tgbites-spread-wine.jpg&amp;fit=cover&amp;width=1280" media="(min-width: 768px)" class="">
-                                    <img class="w-full h-full object-cover" alt="" width="800" height="450" loading="lazy" src="https://topgolf.com/api/urls/image?fwd=1&amp;path=https%3A%2F%2Fs3.topgolf.com%2Fuploads%2Fimages%2Ffnb%2Fevent%2Ftg-fnb-events-26-tgbites-spread-wine.jpg&amp;fit=cover&amp;width=800&amp;height=450&amp;format=png">
-                            </picture>
+                            <div class="overflow-hidden h-full">
+                                <Image
+                                    src={getStrapiUrl(comp.imagen)}
+                                    alt="Evento Toca"
+                                    class="w-full h-full object-cover"
+                                    height={450}
+                                    width={800}
+                                />
+                                {/* <img class="w-full h-full object-cover" 
+                                alt="" width="800" height="450" loading="lazy" src="https://topgolf.com/api/urls/image?fwd=1&amp;path=https%3A%2F%2Fs3.topgolf.com%2Fuploads%2Fimages%2Ffnb%2Fevent%2Ftg-fnb-events-26-tgbites-spread-wine.jpg&amp;fit=cover&amp;width=800&amp;height=450&amp;format=png"> */}
+                            </div>
                             
                             <div class="absolute bottom-0 right-0 px-2 py-1 bg-[#0d1117]/50  text-xs font-shield-bold tracking-wide uppercase text-white">
                                 Taste of Topgolf
