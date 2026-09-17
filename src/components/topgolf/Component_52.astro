@@ -1,0 +1,123 @@
+---
+// src/components/BannerPromotional.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
+import type { Boton } from "./elements/Button.astro";
+import ButtonGroup from "./elements/Button.astro";
+
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    color_texto_titulo: string;
+    color_texto_subtitulo: string;
+    descripcion?: any;
+    imagen: any;
+    imagen_mobile: any;
+    background_color: string
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+}
+
+const {
+    titulo,
+    subtitulo,
+    color_texto_titulo,
+    color_texto_subtitulo,
+    descripcion,
+    imagen,
+    background_color,
+    nivel_heading_titulo,
+} = Astro.props;
+
+const image_desktop = getStrapiUrl(imagen);
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(image_desktop);
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+---
+
+<div 
+    id="component-52-banner" 
+    class="content relative from-accent-pine to-brand-navy overflow-hidden"
+    >
+    <div class="headerWrap relative py-6! px-6! lg:px-16! lg:py-16! grid grid-cols-1 md:grid-cols-[51%_49%] items-center gap-y-6">
+        
+        <!-- SECCIÓN TEXTO (Derecha en Desktop / Abajo en Mobile) -->
+        <div
+            class="self-center md:w-4/5 z-10"
+        >
+            <!-- Título Secundario -->
+            <HeadingTagTitulo
+                style={{ color: color_texto_titulo }}
+                class="text-5xl md:text-7xl font-medium tracking-wider uppercase mb-3 font-(family-name:--font-shields-sans-black)"
+            >
+                <span style={{ color: color_texto_titulo}} class="block leading-none text-accent-mint">{titulo}</span>
+                <span style={{ color: color_texto_subtitulo }}class="block leading-none tracking-wide ">
+                    {subtitulo}
+                </span>
+            </HeadingTagTitulo>
+
+            <!-- Párrafo Descriptivo -->
+            <div
+                class="text-base md:text-lg font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular)"
+            >
+                <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
+            </div>
+        </div>
+
+         <!-- SECCIÓN IMAGEN (Izquierda en Desktop / Arriba en Mobile) -->
+        <div class="w-full sm:w-3/4 md:w-full mx-auto md:mt-8">
+            <div
+                class="relative w-full h-64 md:h-100 overflow-hidden bg-gray-900 shadow-2xl z-10"
+            >
+                {showVideo ? (
+                <video
+                        src={image_desktop}
+                        loop
+                        playsinline
+                        preload="auto"
+                        controls
+                        class="absolute inset-0 w-full h-full object-cover"
+                    />
+                ) : (
+                    <Image
+                        src={image_desktop}
+                        alt="foto"
+                        class="w-full h-full object-cover object-center opacity-90 hover:scale-105 transition-transform duration-700"
+                        inferSize={true}
+                    />
+                )}
+            </div>
+        </div>
+
+        <div class="absolute inset-x-0 bottom-0 z-0 bg-[#2afd94] px-4 pb-4 pt-20 md:p-8 lg:px-16 -mt-20 -mx-4 md:m-0"></div>
+    </div>
+    <!-- Contenido Flexible -->
+    
+</div>
+
+<style>
+    #component-52-banner {
+        background-image: linear-gradient(to right, var(--surface-brand-secondary), var(--brand-interactive-base));
+    }
+    
+    /* Estilos para Rich Text */
+    .strapi-rich-text :global(p) {
+        margin-bottom: 1rem;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: 700;
+        font-family: var(--font-shields-sans-semibold);
+        color: #2afd94;
+    }
+</style>
