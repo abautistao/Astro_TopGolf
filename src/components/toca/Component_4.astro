@@ -63,12 +63,14 @@ const boton_pricing: Boton[] = button
                     <Fragment set:html={descripcionHtml} />
                 </div>
 
-                <div class="scale-90 lg:scale-100">
-                    <Button
-                        botones={boton_pricing}
-                        clase="flex justify-center"
-                    />
-                </div>
+                {button && (
+                    <div class="scale-90 lg:scale-100">
+                        <Button
+                            botones={boton_pricing}
+                            clase="flex justify-center"
+                        />
+                    </div>
+                )}
             </div>
         </div>
     </div>
