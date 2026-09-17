@@ -1,0 +1,76 @@
+---
+// src/components/BannerPromotional.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
+
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    descripcion?: any;
+    color_texto_titulo?: string;
+    color_texto_subtitulo?: any;
+    background_color: string
+}
+
+const {
+    titulo,
+    subtitulo,
+    descripcion,
+    color_texto_titulo,
+    color_texto_subtitulo,
+    background_color,
+} = Astro.props;
+---
+
+<section id="promotional-banner" class="w-full overflow-hidden relative font-sans text-white">
+    <div class="container mx-auto bg-[#042c20] overflow-hidden px-6! md:px-20! py-4">
+        <div
+            class="flex flex-col md:flex-row items-center gap-8"
+        >
+            <!-- SECCIÓN TEXTO (Derecha en Desktop / Abajo en Mobile) -->
+            <div
+                class="font-(family-name:--font-shields-sans-semibold-condensed) uppercase text-left lg:text-left!"
+            >
+                <!-- Título Secundario -->
+                <h2>
+                    <span style={{ color: color_texto_titulo}} class="block leading-none text-accent-mint text-[2.5rem]">{titulo}</span>
+                    <span style={{ color: color_texto_subtitulo }}class="block leading-none text-white text-[1.8rem] tracking-wide ">
+                        {subtitulo}
+                    </span>
+                </h2>                
+            </div>
+
+            <!-- Párrafo Descriptivo -->
+            <div
+                class="text-white flex-1 m-0 leading-snug text-left md:text-left font-(family-name:--font-shields-sans-regular)"
+            >
+                <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
+            </div>
+        </div>
+    </div>
+    <!-- Contenido Flexible -->
+</section>
+
+<style define:vars={{ background_color }}>
+    /* Patrón de puntos personalizado */
+    .dot-pattern {
+        background-image: radial-gradient(#00ffff 2px, transparent 2px);
+        background-size: 20px 20px; /* Espaciado entre puntos */
+        width: 160px; /* Ancho del área de puntos */
+        height: 160px; /* Alto del área de puntos */
+    }
+
+    /* Estilos para Rich Text */
+    .strapi-rich-text :global(p) {
+        margin-bottom: 1rem;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: 700;
+        font-family: var(--font-shields-sans-semibold);
+        color: #2afd94;
+    }
+
+    #promotional-banner {
+        background-color: var(--background);
+    }
+</style>
