@@ -1,0 +1,108 @@
+---
+// src/components/BannerPromotional.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
+import type { Boton } from "./elements/Button.astro";
+import ButtonGroup from "./elements/Button.astro";
+
+interface Props {
+    titulo?: string;
+    color_texto_titulo: string;
+    descripcion?: any;
+    imagen_desktop: any;
+    imagen_mobile: any;
+    background_color: string
+    background_color_gradient: string
+    is_gradiente: boolean
+    Boton: Boton[];
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+}
+
+const {
+    titulo,
+    color_texto_titulo,
+    descripcion,
+    imagen_desktop,
+    imagen_mobile,
+    background_color,
+    background_color_gradient,
+    is_gradiente,
+    Boton,
+    nivel_heading_titulo,
+} = Astro.props;
+
+const image_desktop = getStrapiUrl(imagen_desktop);
+const image_mobile = getStrapiUrl(imagen_mobile);
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const backgroundStyle = is_gradiente 
+  ? `linear-gradient(to bottom, ${background_color}, ${background_color_gradient})` 
+  : background_color;
+---
+
+<div 
+    id="promotional-banner" 
+    class="content relative from-accent-pine to-brand-navy overflow-hidden"
+    style={{ background: backgroundStyle }}
+    >
+    <div class="mx-auto bg-transparent overflow-hidden">
+        <div
+        class="flex flex-col md:flex-row gap-8 lg:gap-x-16 xl:gap-x-24 relative z-10 py-6! px-6! lg:px-16! lg:py-16!"
+    >
+        <!-- SECCIÓN IMAGEN (Izquierda en Desktop / Arriba en Mobile) -->
+        <div class="w-4/5 md:w-2/5 mx-auto flex items-center">
+            <div
+                class="relative w-full h-64 md:h-100 overflow-hidden bg-gray-900 shadow-2xl"
+            >
+                <Image
+                    src={image_desktop}
+                    alt="foto"
+                    class="w-full h-full object-cover object-center opacity-90 hover:scale-105 transition-transform duration-700"
+                    inferSize={true}
+                />
+            </div>
+        </div>
+
+        <!-- SECCIÓN TEXTO (Derecha en Desktop / Abajo en Mobile) -->
+        <div
+            class="self-center md:w-3/5 z-10"
+        >
+            <!-- Título Secundario -->
+            <HeadingTagTitulo
+                style={{ color: color_texto_titulo }}
+                class="text-5xl md:text-5xl font-medium tracking-wider uppercase mb-3 font-(family-name:--font-shields-sans-black)"
+            >{titulo}</HeadingTagTitulo>
+
+            <!-- Párrafo Descriptivo -->
+            <div
+                class="text-base md:text-lg font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular)"
+            >
+                <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
+            </div>
+
+            <div class="mt-5">
+                {Boton && (
+                    <ButtonGroup
+                        botones={[Boton]}
+                        clase="flex flex-col items-start"
+                    />
+                )}
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Contenido Flexible -->
+    
+</div>
+
+<style>
+    /* Estilos para Rich Text */
+    .strapi-rich-text :global(p) {
+        margin-bottom: 1rem;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: 700;
+        font-family: var(--font-shields-sans-semibold);
+        color: #2afd94;
+    }
+</style>
