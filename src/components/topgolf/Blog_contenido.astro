@@ -92,14 +92,14 @@ const currentStyle: any = configs[tipo] || configs.version_1;
 
             <Image
                 src={getStrapiUrl(finalImgUrl)}
-                alt={finalImgAlt}
+                alt={titulo}
                 class="w-full aspect-3/2 object-cover relative z-10 shadow-lg hidden md:block"
                 inferSize={true}
             />
 
             <Image
                 src={getStrapiUrl(finalImgUrlMobile)}
-                alt={finalImgAltMobile}
+                alt={titulo}
                 class="w-full aspect-3/2 object-cover relative z-10 shadow-lg block md:hidden"
                 inferSize={true}
             />
