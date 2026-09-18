@@ -3,7 +3,8 @@
 import { formatUrl } from "../../lib/strapi.js";
 import Component_40_TGM from "./Component_40.astro";
 import Modal_TGM from "./Modal.astro";
-import ArrowIcon from "../../assets/down-arrow-circle-neon.svg?raw"
+import ArrowIcon from "../../assets/down-arrow-circle-cobalt.svg?raw"
+import CalendarIcon from "../../assets/calendar-days.svg?raw"
 
 interface Props {
     // Componentes individuales como campos de Strapi
@@ -19,53 +20,53 @@ const {
 } = Astro.props;
 
 const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIcon)}")`;
+const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(CalendarIcon)}")`;
 ---
 
 <section id="container-widget-background" class="relative max-w-270 mx-auto">
     {/* --- RENDERIZADO DE COMPONENTES POR SLOTS --- */}
     <div
         class:list={[
-            'relative block rounded-2xl bg-(--surface-brand-secondary) px-6! sm:px-10! py-6! text-center shadow-lg mx-4',
+            'sticky top-0 block py-8 z-[99999] bg-white',
         ]}
     >
-        <form class="pav-widget w-full flex flex-wrap md:justify-center gap-2 sm:gap-y-4 mt-1 mb-3" method="get" action="">
-    <div class="basis-full h-0 sm:hidden"></div>
-    <div class="flex-1 md:flex-none rounded-full border border-(--accent-highlight-secondary) border-opacity-50 hover:border-white hover:border-opacity-70 relative">
-    <label>
-        <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Fecha</div>
-        <div role="application" class="datecalendar">
-            <div role="button" aria-label="Spacer" class="hidden">
-                <input tabindex="-1"/></div>
-                <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
-                    <input class="flatpickr-input !appearance-none min-w-[110px] sm:min-w-40! md:min-w-0! w-full! h-12! md:h-10! lg:h-12! px-2.5! py-2! md:pl-5! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-white leading-none md:text-sm!" name="reservacion_fecha" id="date" readonly="" tabindex="-1" value="12/15/2025"/>
-                </div> 
+        <form class="pav-widget w-full flex flex-wrap md:justify-center" method="get" action="">
+            <div id="form-calendar" class="flex-1 md:flex-none rounded-l-lg rounded-r-none! border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+                <label class="mb-0!">
+                        <div role="application" class="datecalendar">
+                            <div role="button" aria-label="Spacer" class="hidden">
+                                <input tabindex="-1"/>
+                            </div>
+                                
+                            <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
+                            <input class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-6! md:pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
+                        </div> 
+                    </div>
+                </label>
             </div>
-        </label>
-    </div>
-    <div class="flex-1 md:flex-none rounded-full border border-[var(--accent-highlight-secondary)] border-opacity-50 hover:border-white hover:border-opacity-70 relative">
-        <label>
-            <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) lg:font-shield-black text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Jugadores</div>
-            <span class="select-container">
-                <select id="pax_min" name="pax_min" class="!appearance-none pl-2.5 md:pl-5 py-2 pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] h-12 md:h-10 lg:h-12 bg-transparent text-white border-0 neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-sm leading-none">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                </select>
-            </span>
-        </label>
-    </div>
-</form>
+            <div id="form-players" class="flex-1 md:flex-none rounded-r-lg rounded-l-none! border border-l-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+                <label class="mb-0!">
+                    <span class="select-container">
+                        <select id="pax" name="pax" class="focus:outline-none appearance-none! pl-2.5 md:pl-10 py-6! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
+                            <option value="1" selected>1 jugador</option>
+                            <option value="2">2 jugadores</option>
+                            <option value="3">3 jugadores</option>
+                            <option value="4">4 jugadores</option>
+                            <option value="5">5 jugadores</option>
+                            <option value="6">6 jugadores</option>
+                            <option value="7">7 jugadores</option>
+                            <option value="8">8 jugadores</option>
+                            <option value="9">9 jugadores</option>
+                            <option value="10">10 jugadores</option>
+                            <option value="11">11 jugadores</option>
+                            <option value="12">12 jugadores</option>
+                            <option value="13">13 jugadores</option>
+                            <option value="14">14 jugadores</option>
+                        </select>
+                    </span>
+                </label>
+            </div>
+        </form>
     </div>
 
     <div class="w-full flex">
@@ -74,13 +75,50 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
                 <Component_40_TGM {...comp} />
             ))}
         </div>
-        {Modal && <Modal_TGM {...Modal} />}
+        {Modal && <Modal_TGM {...Modal}>
+            <div class="bg-white sticky top-0 z-99999 py-6">
+                <form class="pav-widget w-full flex flex-wrap md:justify-center mb-6" method="get" action="">
+                    <div id="form-players-modal" class="flex-1 md:flex-none rounded-lg border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+                        <label class="mb-0!">
+                            <span class="select-container">
+                                <select id="pax_modal" name="pax" class="focus:outline-none appearance-none! pl-2.5 md:pl-10 py-6! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
+                                    <option value="1" selected>1 jugador</option>
+                                    <option value="2">2 jugadores</option>
+                                    <option value="3">3 jugadores</option>
+                                    <option value="4">4 jugadores</option>
+                                    <option value="5">5 jugadores</option>
+                                    <option value="6">6 jugadores</option>
+                                    <option value="7">7 jugadores</option>
+                                    <option value="8">8 jugadores</option>
+                                    <option value="9">9 jugadores</option>
+                                    <option value="10">10 jugadores</option>
+                                    <option value="11">11 jugadores</option>
+                                    <option value="12">12 jugadores</option>
+                                    <option value="13">13 jugadores</option>
+                                    <option value="14">14 jugadores</option>
+                                </select>
+                            </span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </Modal_TGM>}
 
         {/* Slot por si se usa de forma manual en el código */}
         <slot />
     </div>
 </section>
-<style define:vars={{ padding_top, arrowDataUri }}>
+<style define:vars={{ padding_top, arrowDataUri, calendarDataUri }}>
+    #form-calendar, #form-players {
+        border: 3px solid var(--brand-interactive-base) !important;
+    }
+
+    #form-players {
+        border-left: none !important;
+    }
+    #form-players-modal {
+        border: 3px solid var(--brand-interactive-base) !important;
+    }
     #container-widget-background {
         padding-top: var(--padding_top);
     }
@@ -90,11 +128,18 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
   }
   
 
-  .datepicker-input.neon, .flatpickr-input.neon, .select-container select.neon {
+  .datepicker-input.neon, .flatpickr-input.neon {
+    background: var(--calendarDataUri) no-repeat right 10px center;
+    background-color: transparent;
+    background-size: 16px 16px;
+    background-position: left 12px center;
+}
+
+.select-container select.neon {
     background: var(--arrowDataUri) no-repeat right 10px center;
     background-color: transparent;
     background-size: 16px 16px;
-    background-position: right 12px center;
+    background-position: left 12px center;
 }
 </style>
 
@@ -110,8 +155,7 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
 
     inputs.forEach((input) => {
       // Leemos los datos que Astro inyectó en el HTML
-      const disabledDatesRaw = input.getAttribute('data-disabled');
-
+        console.log("inicializar")
       flatpickr(input as HTMLInputElement, {
         locale: Spanish,
         dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
@@ -127,8 +171,12 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
     const dynamicBtn = document.querySelectorAll('.dynamic_btn');
     const modal = document.getElementById('vmg');
     const date = document.getElementById('date');
-    const pax = document.getElementById('pax_min');
-    
+    const pax = document.getElementById('pax');
+
+    const paxModal = document.getElementById('pax_modal');
+
+
+    let pluginIdValue;
     // Función para alternar el estado del modal
     const toggleModal = () => {
     modal?.showModal()
@@ -136,9 +184,11 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
 
     dynamicBtn.forEach(function(dBtn) {
         dBtn.addEventListener('click', function(btn) {
-            const pluginIdValue = btn.currentTarget?.dataset.vendedor_id;
+            
+            pluginIdValue = btn.currentTarget?.dataset.vendedor_id;
             btn.preventDefault()
-            console.log(pluginIdValue)
+            
+            paxModal.value = pax.value
             window.dispatchEvent(new CustomEvent('update-booking-plugin', {
                 detail: { 
                     pluginId: 42,
@@ -148,9 +198,21 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
                 }
             }));
             toggleModal()
-
-
         })
     })
+
+    paxModal?.addEventListener('change', function(paxM) {
+        paxM.preventDefault()
+        
+        window.dispatchEvent(new CustomEvent('update-booking-plugin', {
+            detail: { 
+                pluginId: 42,
+                vendedorId: pluginIdValue,
+                date: date.value,
+                pax: paxModal.value
+            }
+        }));
+    })
+    
 
 </script>

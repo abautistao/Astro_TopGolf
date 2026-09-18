@@ -47,17 +47,18 @@ for (const [key, value] of Object.entries(rawParams)) {
             if (!pluginId) return;
 
             // Muestra un estado de carga mientras hace el request (opcional)
-            $("#pluginContainer").html('<p>Cargando reservación...</p>');
+            $("#pluginContainer").html('<p>Cargando información...</p>');
 
-            $.getScript(`https://plugin.venturae.com.mx/js/pluginscripts.js`, function() {
+            $.getScript(`https://dev-plugin.venturae.com.mx/js/pluginscripts.js`, function() {
                 "use strict";
-                $.pluginUrl = `https://plugin.venturae.com.mx/requesterv2.php`;
+                $.pluginUrl = `https://dev-plugin.venturae.com.mx/requesterv2.php`;
                 var params = {
                     ...paramsVMG,
                     'plugin_id': pluginId,
                     'vendedor_id': vendedorId,
                     'reservacion_fecha': date,
                     'pax': pax,
+                    'dev_plugin': 1
                 };
                 
                 const urlParams = new URLSearchParams(window.location.search);
