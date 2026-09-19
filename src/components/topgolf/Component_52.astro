@@ -47,6 +47,7 @@ const isVideo = (url: string | undefined | null) => {
 const showVideo = isVideo(image_desktop);
 
 const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const bg = background_color ? background_color : '#0004FF'
 ---
 
 <div 
@@ -116,9 +117,9 @@ const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
     
 </div>
 
-<style>
+<style define:vars={{ bg }}>
     #component-52-banner {
-        background-image: linear-gradient(to right, var(--surface-brand-secondary), var(--brand-interactive-base));
+        background-color: var(--bg);
     }
     
     /* Estilos para Rich Text */
