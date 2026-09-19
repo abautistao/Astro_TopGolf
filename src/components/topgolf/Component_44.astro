@@ -2,7 +2,8 @@
 // src/components/Component_44.astro
 import { Image } from "astro:assets";
 import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
-console.log(Astro.props);
+import type { Boton } from "./elements/Button.astro";
+import ButtonGroup from "./elements/Button.astro";
 interface Props {
     titulo_principal?: string;
     precio?: string;
@@ -13,6 +14,7 @@ interface Props {
     video_url?: string;
     nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     is_video: boolean
+    Boton: Boton[]
 }
 
 const {
@@ -24,7 +26,8 @@ const {
     video_thumbnail,
     video_url,
     nivel_heading,
-    is_video
+    is_video,
+    Boton
 } = Astro.props;
 
 const video_thumbnail_url = getStrapiUrl(video_thumbnail);
@@ -69,11 +72,11 @@ const HeadingTag = getHeadingTag(nivel_heading);
 
     <!-- TARJETA PRINCIPAL -->
     <div
-        class="flex flex-col lg:flex-row relative z-10 overflow-hidden text-left w-full min-h-[600px]"
+        class="flex flex-col-reverse lg:flex-row relative z-10 overflow-hidden text-left w-full min-h-[600px]"
     >
         <!-- 1. COLUMNA IZQUIERDA: Información (Texto) -->
         <div
-            class="w-full lg:w-5/12 p-8 lg:p-12 flex flex-col justify-center bg-white z-20 order-2 lg:order-1"
+            class="w-full lg:w-5/12 p-0 lg:p-12 lg:pl-0 flex flex-col justify-center bg-white z-20 order-2 lg:order-1"
         >
             <!-- Título Principal -->
             <div
@@ -95,15 +98,21 @@ const HeadingTag = getHeadingTag(nivel_heading);
                 set:html={descriptionHtml}
             />
 
-            <!-- Caja Azul Promocional -->
-            <div
-                class="bg-[var(--neutral-background-subtle)] !py-4 !px-5 rounded-sm flex justify-center items-center gap-4 !mt-2"
-            >
+            {promo_texto && (
+                <!-- Caja Azul Promocional -->
                 <div
-                    class="text-[var(--surface-brand-primary)] text-sm text-center lg:text-base font-(family-name:--font-shields-sans-regular) strapi-rich-text-2"
-                    set:html={promo_textoHtml}
-                />
-            </div>
+                    class="bg-[var(--neutral-background-subtle)] !py-4 !px-5 rounded-sm flex justify-center items-center gap-4 !mt-2"
+                >
+                    <div
+                        class="text-[var(--surface-brand-primary)] text-sm text-center lg:text-base font-(family-name:--font-shields-sans-regular) strapi-rich-text-2"
+                        set:html={promo_textoHtml}
+                    />
+                </div>
+            )}
+
+            {Boton && (
+                <ButtonGroup botones={[...Boton]} clase="w-full flex flex-col lg:flex-row gap-6 justify-center items-center lg:justify-start mb-6 lg:mb-0"/>
+            )}
         </div>
 
         <!-- 2. COLUMNA DERECHA: Video / Thumbnail Completo -->

@@ -4,7 +4,9 @@ export interface Boton {
     id: number;
     texto: string;
     url: string;
-    tipo: 'version_1' | 'version_2'| 'version_3'| 'version_4'| 'version_5'| 'version_6';
+    tipo: 'version_1' | 'version_2'| 'version_3'| 'version_4'| 'version_5'| 'version_6' | 'version_7';
+    label?: string;
+    label_color?: string;
 }
 
 export interface Props {
@@ -20,25 +22,32 @@ const {
 
 <div class={clase}>
     {botones.map(boton => (
-        <a
-            href={formatUrl(boton.url)}
-            class:list={[
-                'transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)',
-                'w-[80%] sm:w-auto',
-                '!px-4 !py-3 sm:!px-8 sm:!py-3',
-                'text-center flex justify-center items-center text-sm sm:text-base hover:!no-underline',
+        <div class="hover:cursor-pointer">
+            <a
+                href={formatUrl(boton.url)}
+                class:list={[
+                    'transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)',
+                    'w-[100%] sm:w-auto',
+                    '!px-4 !py-3 sm:!px-8 sm:!py-3',
+                    'text-center flex justify-center items-center text-sm sm:text-base hover:!no-underline hover:cursor-pointer',
 
-                {
-                    'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg hover:text-[var(--surface-brand-primary)]': boton.tipo === 'version_1',
-                    'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)] hover:text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
-                    'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
-                    'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] hover:text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
-                    'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)]':  boton.tipo === 'version_5',
-                    'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]':  boton.tipo === 'version_6',
-                }
-            ]}
-            set:html={boton.texto}
-        >
-        </a>
+                    {
+                        'bg-[var(--neutral-text-inverted)] text-[var(--surface-brand-primary)] shadow-lg hover:text-[var(--surface-brand-primary)]': boton.tipo === 'version_1',
+                        'border-2 border-[var(--accent-highlight-secondary)] text-[var(--accent-highlight-secondary)] hover:text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_2',
+                        'bg-[var(--brand-interactive-base)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]': boton.tipo === 'version_3',
+                        'bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] hover:text-[var(--accent-highlight-secondary)]': boton.tipo === 'version_4',
+                        'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)]':  boton.tipo === 'version_5',
+                        'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]':  boton.tipo === 'version_6',
+                        'bg-red-700 text-white hover:text-(--neutral-text-inverted)':  boton.tipo === 'version_7',
+                    }
+                ]}
+                set:html={boton.texto}
+            >
+            </a>
+            {boton.label && (
+
+                <span style={{ color: boton.label_color }}class="text-sm font-(family-name:--font-shields-sans-bold)">{boton.label}</span>
+            )}
+        </div>
     ))}
 </div>

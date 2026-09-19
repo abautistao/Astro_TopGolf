@@ -15,6 +15,7 @@ interface Props {
     imagen_mobile: any;
     background_color: string
     nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    image_decoration: any;
 }
 
 const {
@@ -26,9 +27,11 @@ const {
     imagen,
     background_color,
     nivel_heading_titulo,
+    image_decoration
 } = Astro.props;
 
 const image_desktop = getStrapiUrl(imagen);
+const imageDecoration = getStrapiUrl(image_decoration);
 
 const isVideo = (url: string | undefined | null) => {
     if (!url) return false;
@@ -48,9 +51,16 @@ const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
 
 <div 
     id="component-52-banner" 
-    class="content relative from-accent-pine to-brand-navy overflow-hidden"
+    class="content relative from-accent-pine to-brand-navy overflow-hidden pt-12 lg:pt-0"
     >
-    <div class="headerWrap relative py-6! px-6! lg:px-16! lg:py-16! grid grid-cols-1 md:grid-cols-[51%_49%] items-center gap-y-6">
+    <Image
+        src={imageDecoration}
+        alt="foto"
+        class="w-full h-15 lg:h-auto absolute inset-10 left-0 lg:inset-0"
+        inferSize={true}
+    />
+
+    <div class="headerWrap relative py-6! px-6! lg:px-16! lg:py-20! grid grid-cols-1 md:grid-cols-[51%_49%] items-center gap-y-6">
         
         <!-- SECCIÓN TEXTO (Derecha en Desktop / Abajo en Mobile) -->
         <div
@@ -59,17 +69,17 @@ const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
             <!-- Título Secundario -->
             <HeadingTagTitulo
                 style={{ color: color_texto_titulo }}
-                class="text-5xl md:text-7xl font-medium tracking-wider uppercase mb-3 font-(family-name:--font-shields-sans-black)"
+                class="text-3xl md:text-5xl font-medium tracking-wider uppercase mb-3 font-(family-name:--font-shields-sans-regular) text-center md:text-left"
             >
                 <span style={{ color: color_texto_titulo}} class="block leading-none text-accent-mint">{titulo}</span>
-                <span style={{ color: color_texto_subtitulo }}class="block leading-none tracking-wide ">
+                <span style={{ color: color_texto_subtitulo }}class="block leading-none tracking-wide font-(family-name:--font-shields-sans-bold)">
                     {subtitulo}
                 </span>
             </HeadingTagTitulo>
 
             <!-- Párrafo Descriptivo -->
             <div
-                class="text-base md:text-lg font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular)"
+                class="text-base text-center md:text-left md:text-lg font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular)"
             >
                 <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
             </div>
