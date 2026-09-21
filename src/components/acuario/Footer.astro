@@ -39,24 +39,24 @@ const separadorColorFinal = separadorInferior?.color_final || "var(--accent-high
 const separadorTipo = separadorInferior?.tipo || "tipo_1";
 ---
 
-<footer class="w-full relative font-[family-name:var(--font-secundaria)]">
+<footer class="w-full! relative! font-[family-name:var(--font-secundaria)]">
 
     <!-- SECCIÓN 1 — Banner CTA superior (tarjetahabientes) -->
     {(ctaTitulo || ctaBotonTexto) && (
         <section
-            class="w-full py-5 md:py-6 text-center text-white"
+            class="w-full! py-5! md:py-6! text-center! text-white!"
             style={`background-color: ${ctaColorFondo};`}
         >
-            <div class="container mx-auto px-4 max-w-5xl flex flex-col items-center justify-center gap-3 md:gap-4">
+            <div class="container! mx-auto! px-4! max-w-5xl! flex! flex-col! items-center! justify-center! gap-3! md:gap-4!">
                 {ctaTitulo && (
-                    <h2 class="font-[family-name:var(--font-principal)] font-bold md:font-black text-[18px] md:text-[32px] uppercase tracking-wide leading-tight">
+                    <h2 class="font-[family-name:var(--font-principal)]! font-bold! md:font-black! text-[18px]! md:text-[32px]! uppercase! tracking-wide! leading-tight!">
                         {ctaTitulo}
                     </h2>
                 )}
                 {ctaBotonTexto && (
                     <a
                         href={ctaBotonUrl}
-                        class="inline-block bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-[20px] uppercase px-8 md:px-10 py-3 rounded-full shadow-[0_4px_10px_0_rgba(0,0,0,0.5)] transition-opacity hover:opacity-90 tracking-wide"
+                        class="inline-block! bg-(--brand-interactive-base)! text-(--surface-brand-primary)! font-[family-name:var(--font-principal)]! font-bold! text-[20px]! uppercase! px-8! md:px-10! py-3! rounded-full! shadow-[0_4px_10px_0_rgba(0,0,0,0.5)]! transition-opacity! hover:opacity-90! tracking-wide!"
                     >
                         {ctaBotonTexto}
                     </a>
@@ -66,37 +66,37 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     )}
 
     <!-- SECCIÓN 2 — Logos + columnas de enlaces + contacto + Newsletter -->
-    <section class="w-full py-10 md:py-14 bg-[var(--neutral-background-strong)] text-white">
-        <div class="container mx-auto px-6 max-w-[1280px]">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 items-center">
+    <section class="w-full! py-10! md:py-14! bg-(--neutral-background-strong)! text-white!">
+        <div class="container! mx-auto! px-6! max-w-[1280px]!">
+            <div class="grid! grid-cols-1! md:grid-cols-12! gap-8! md:gap-6! items-center!">
 
                 <!-- Columna 1: Logos -->
-                <div class="md:col-span-2 flex flex-row items-center justify-center gap-6 md:gap-8">
+                <div class="md:col-span-2! flex! flex-row! items-center! justify-center! gap-6! md:gap-8!">
                     {logoPrincipal && (
-                        <Image src={logoPrincipal} alt="Logo principal" width={240} height={140} class="h-14 md:h-20 w-auto object-contain" />
+                        <Image src={logoPrincipal} alt="Logo principal" width={240} height={140} class="h-14! md:h-20! w-auto! object-contain!" />
                     )}
                     {logoSecundario && (
-                        <Image src={logoSecundario} alt="Logo secundario" width={220} height={130} class="h-14 md:h-16 w-auto object-contain" />
+                        <Image src={logoSecundario} alt="Logo secundario" width={220} height={130} class="h-14! md:h-16! w-auto! object-contain!" />
                     )}
                 </div>
 
                 <!-- Columnas 2 y 3: Menús (Nosotros / Beneficios) -->
                 {columnasEnlaces.length > 0 && (
-                    <div class="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+                    <div class="md:col-span-5! grid! grid-cols-1! sm:grid-cols-2! gap-6! md:gap-8!">
                         {columnasEnlaces.map((columna: any) => (
-                            <div class="footer-accordion-group border-b border-white/20 md:border-0 pb-3 md:pb-0">
-                                <button class="footer-accordion-btn w-full md:w-auto flex justify-between items-center text-left md:cursor-default focus:outline-none">
-                                    <h3 class="text-[var(--accent-highlight-primary)] font-[family-name:var(--font-principal)] font-bold text-base md:text-lg border-b-2 border-[var(--accent-highlight-primary)] pb-1 inline-block leading-tight">
+                            <div class="footer-accordion-group border-b! border-white/20! md:border-0! pb-3! md:pb-0!">
+                                <button class="footer-accordion-btn w-full! md:w-auto! flex! justify-between! items-center! text-left! md:cursor-default! focus:outline-none!">
+                                    <h3 class="text-(--accent-highlight-primary)! font-[family-name:var(--font-principal)]! font-bold! text-base! md:text-lg! border-b-2! border-(--accent-highlight-primary)! pb-1! inline-block! leading-tight!">
                                         {columna.titulo}
                                     </h3>
-                                    <i class="fa-solid fa-chevron-down text-[var(--accent-highlight-primary)] md:hidden transition-transform duration-300 text-sm ml-2"></i>
+                                    <i class="fa-solid fa-chevron-down text-(--accent-highlight-primary)! md:hidden! transition-transform! duration-300! text-sm! ml-2!"></i>
                                 </button>
-                                <ul class="footer-accordion-content hidden md:flex flex-col gap-1.5 mt-3 md:mt-4">
+                                <ul class="footer-accordion-content hidden! md:flex! flex-col! gap-1.5! mt-3! md:mt-4!">
                                     {columna.enlaces?.map((link: any) => (
                                         <li>
                                             <a
                                                 href={link.url ? getLocalizedUrl(link.url, locale) : "#"}
-                                                class="text-white hover:text-[var(--accent-highlight-primary)] transition-colors text-sm leading-relaxed"
+                                                class="text-white! hover:text-(--accent-highlight-primary)! transition-colors text-sm! leading-relaxed!"
                                             >
                                                 {link.texto}
                                             </a>
@@ -109,21 +109,21 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
                 )}
 
                 <!-- Columna 4: Contacto -->
-                <div class="md:col-span-2 flex flex-col gap-4">
+                <div class="md:col-span-2! flex! flex-col! gap-4!">
                     {(data?.contacto_direccion || data?.contacto_telefono) ? (
                         <>
                             {data.contacto_direccion && (
-                                <div class="flex items-start gap-3">
-                                    <i class="fa-solid fa-location-dot text-[var(--accent-highlight-primary)] mt-1 text-base shrink-0"></i>
-                                    <p class="text-[var(--accent-highlight-primary)] text-sm leading-snug">{data.contacto_direccion}</p>
+                                <div class="flex! items-start! gap-3!">
+                                    <i class="fa-solid fa-location-dot text-(--accent-highlight-primary)! mt-1! text-base! shrink-0!"></i>
+                                    <p class="text-(--accent-highlight-primary)! text-sm! leading-snug!">{data.contacto_direccion}</p>
                                 </div>
                             )}
                             {data.contacto_telefono && (
-                                <div class="flex items-center gap-3">
-                                    <i class="fa-solid fa-phone text-[var(--accent-highlight-primary)] text-base shrink-0"></i>
+                                <div class="flex! items-center! gap-3!">
+                                    <i class="fa-solid fa-phone text-(--accent-highlight-primary)! text-base! shrink-0!"></i>
                                     <a
                                         href={`tel:${data.contacto_telefono.replace(/\s|\(|\)|-/g, '')}`}
-                                        class="text-[var(--accent-highlight-primary)] text-sm hover:underline"
+                                        class="text-(--accent-highlight-primary)! text-sm! hover:underline!"
                                     >
                                         {data.contacto_telefono}
                                     </a>
@@ -134,16 +134,16 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
                 </div>
 
                 <!-- Columna 5: Newsletter -->
-                <div class="md:col-span-3">
-                    <h3 class="font-[family-name:var(--font-principal)] font-bold text-base md:text-lg mb-2 text-white tracking-wide">
+                <div class="md:col-span-3!">
+                    <h3 class="font-[family-name:var(--font-principal)]! font-bold! text-base! md:text-lg! mb-2! text-white! tracking-wide!">
                         {newsletterTitulo}
                     </h3>
-                    <p class="text-white/90 text-sm mb-4 leading-snug">{newsletterDesc}</p>
-                    <form class="flex flex-row w-full h-11" onsubmit="event.preventDefault();">
-                        <input type="email" placeholder="Email" class="w-full px-4 bg-white text-black placeholder:text-gray-400 outline-none font-[family-name:var(--font-secundaria)] text-sm" required />
+                    <p class="text-white/90! text-sm! mb-4! leading-snug!">{newsletterDesc}</p>
+                    <form class="flex! flex-row! w-full! h-11!" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Email" class="w-full! px-4! bg-white! text-black! placeholder:text-gray-400! outline-none! font-[family-name:var(--font-secundaria)]! text-sm!" required />
                         <button
                             type="submit"
-                            class="bg-[var(--accent-highlight-primary)] text-[var(--surface-brand-primary)] font-bold px-5 uppercase hover:brightness-110 transition-all font-[family-name:var(--font-principal)] text-xs md:text-sm whitespace-nowrap"
+                            class="bg-(--accent-highlight-primary)! text-(--surface-brand-primary)! font-bold! px-5! uppercase! hover:brightness-110! transition-all! font-[family-name:var(--font-principal)]! text-xs! md:text-sm! whitespace-nowrap!"
                         >
                             {newsletterBoton}
                         </button>
@@ -154,15 +154,15 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     </section>
 
     <!-- SECCIÓN 3 — Franja de pagos -->
-    <section class="w-full bg-[var(--surface-brand-secondary)] py-8 text-center px-4 text-white">
-        <h2 class="font-[family-name:var(--font-principal)] font-bold text-lg md:text-xl mb-2">{franjaTitulo}</h2>
-        <p class="text-white/90 text-xs md:text-sm mb-6 whitespace-pre-line leading-snug">{franjaTexto}</p>
+    <section class="w-full! bg-(--surface-brand-secondary)! py-8! text-center! px-4! text-white!">
+        <h2 class="font-[family-name:var(--font-principal)]! font-bold! text-lg! md:text-xl! mb-2!">{franjaTitulo}</h2>
+        <p class="text-white/90! text-xs! md:text-sm! mb-6! whitespace-pre-line! leading-snug!">{franjaTexto}</p>
         {logosPagos.length > 0 && (
-            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-10">
+            <div class="flex! flex-wrap! justify-center! items-center! gap-6! md:gap-10!">
                 {logosPagos.map((logoItem: any) => {
                     const url = getStrapiUrl(logoItem);
                     return url ? (
-                        <Image src={url} alt="Logo de pago" width={120} height={48} class="h-6 md:h-8 w-auto object-contain" />
+                        <Image src={url} alt="Logo de pago" width={120} height={48} class="h-6! md:h-8! w-auto! object-contain!" />
                     ) : null;
                 })}
             </div>
@@ -170,16 +170,16 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     </section>
 
     <!-- SECCIÓN 4 — Otros Parques -->
-    <section class="w-full bg-[var(--surface-brand-primary)] pt-10 pb-4 md:pt-14 md:pb-5 text-center text-white px-6">
-        <div class="container mx-auto max-w-[1280px]">
-            <p class="text-sm md:text-base font-bold mb-2">{textoMarcas}</p>
-            <p class="text-sm md:text-base font-bold mb-8 uppercase tracking-wide text-[var(--accent-highlight-primary)]">{tituloParques}</p>
+    <section class="w-full! bg-(--surface-brand-primary)! pt-10! pb-4! md:pt-14! md:pb-5! text-center! text-white! px-6!">
+        <div class="container! mx-auto! max-w-[1280px]!">
+            <p class="text-sm! md:text-base! font-bold! mb-2!">{textoMarcas}</p>
+            <p class="text-sm! md:text-base! font-bold! mb-8! uppercase! tracking-wide! text-(--accent-highlight-primary)!">{tituloParques}</p>
             {logosParques.length > 0 && (
-                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-14 mb-2">
+                <div class="flex! flex-wrap! justify-center! items-center! gap-8! md:gap-14! mb-2!">
                     {logosParques.map((logoItem: any) => {
                         const url = getStrapiUrl(logoItem);
                         return url ? (
-                            <Image src={url} alt="Parque aliado" width={140} height={80} class="h-10 md:h-12 w-auto object-contain" />
+                            <Image src={url} alt="Parque aliado" width={140} height={80} class="h-10! md:h-12! w-auto! object-contain!" />
                         ) : null;
                     })}
                 </div>
@@ -198,24 +198,24 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
 
     <!-- SECCIÓN 5 — Banda cyan inferior con imagen decorativa -->
     <section
-        class="w-full relative overflow-hidden py-12 md:py-16 min-h-[80px] text-white"
+        class="w-full! relative! overflow-hidden! py-12! md:py-16! min-h-[80px]! text-white!"
         style={seccion5ColorFondo ? `background-color: ${seccion5ColorFondo};` : "background-color: var(--accent-highlight-primary);"}
     >
         {imagenFondo && (
-            <div class="absolute inset-0 z-0 pointer-events-none">
-                <Image src={imagenFondo} alt="" width={1920} height={600} class="w-full h-full object-cover opacity-60 mix-blend-multiply" />
+            <div class="absolute! inset-0! z-0! pointer-events-none!">
+                <Image src={imagenFondo} alt="" width={1920} height={600} class="w-full! h-full! object-cover! opacity-60! mix-blend-multiply!" />
             </div>
         )}
 
-        <div class="relative z-10 container mx-auto px-6 max-w-[1280px] text-center">
+        <div class="relative! z-10! container! mx-auto! px-6! max-w-[1280px]! text-center!">
             {social.length > 0 && (
-                <div class="flex justify-center items-center gap-6 md:gap-10 mb-6">
+                <div class="flex! justify-center! items-center! gap-6! md:gap-10! mb-6!">
                     {social.map((item: any) => (
                         <a
                             href={item.url || "#"}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="text-white hover:opacity-70 transition-opacity text-2xl"
+                            class="text-white! hover:opacity-70! transition-opacity! text-2xl!"
                             aria-label={item.icono_clase || "social"}
                         >
                             <i class={item.icono_clase || "fa-solid fa-share-nodes"}></i>
@@ -224,20 +224,20 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
                 </div>
             )}
 
-            <p class="text-xs md:text-sm font-bold mb-6">{copyright}</p>
+            <p class="text-xs! md:text-sm! font-bold! mb-6!">{copyright}</p>
 
-            <div class="w-full max-w-3xl mx-auto border-t border-white/30 pt-5 pb-20">
-                <ul class="flex flex-wrap justify-center items-center text-xs md:text-sm font-bold gap-y-2">
+            <div class="w-full! max-w-3xl! mx-auto! border-t! border-white/30! pt-5! pb-20!">
+                <ul class="flex! flex-wrap! justify-center! items-center! text-xs! md:text-sm! font-bold! gap-y-2! text-white!">
                     {enlacesLegales.map((link: any, index: number) => (
-                        <li class="flex items-center">
+                        <li class="flex! items-center!">
                             <a
                                 href={link.url ? getLocalizedUrl(link.url, locale) : "#"}
-                                class="hover:underline transition-colors px-3"
+                                class="hover:underline! transition-colors! px-3! text-white!"
                             >
                                 {link.texto}
                             </a>
                             {index < enlacesLegales.length - 1 && (
-                                <span class="text-white/60">|</span>
+                                <span class="text-white!">|</span>
                             )}
                         </li>
                     ))}
@@ -255,13 +255,13 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
             const content = btn.nextElementSibling as HTMLElement | null;
             const icon = btn.querySelector('i');
             if (!content) return;
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                content.classList.add('flex');
+            if (content.classList.contains('hidden!')) {
+                content.classList.remove('hidden!');
+                content.classList.add('flex!');
                 if (icon) icon.style.transform = 'rotate(180deg)';
             } else {
-                content.classList.add('hidden');
-                content.classList.remove('flex');
+                content.classList.add('hidden!');
+                content.classList.remove('flex!');
                 if (icon) icon.style.transform = 'rotate(0deg)';
             }
         });
