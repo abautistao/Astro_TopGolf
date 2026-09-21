@@ -68,7 +68,7 @@ const isCompleta = ajuste_imagen === "completa";
 ---
 
 <section 
-    class="w-full py-12 md:py-20 relative overflow-hidden" 
+    class="w-full! py-12! md:py-20! relative! overflow-hidden!"
     style={{
         backgroundColor: color_fondo || "#E8F6FD",
         backgroundImage: imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none",
@@ -76,16 +76,16 @@ const isCompleta = ajuste_imagen === "completa";
         backgroundPosition: "center",
     }}
 >
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+    <div class="container! mx-auto! px-4! sm:px-6! lg:px-8! max-w-7xl! relative! z-10!">
+            <div class="grid! grid-cols-1! lg:grid-cols-2! gap-10! items-center!">
             
             {/* Columna Izquierda: Información */}
-            <div class="flex flex-col items-start w-full pr-0 lg:pr-8">
+            <div class="flex! flex-col! items-start! w-full! pr-0! lg:pr-8!">
                 
                 {/* Etiqueta Destacada (Listón) */}
                 {mostrar_tag_destacado && texto_tag_destacado && (
-                    <div class="relative mb-6">
-                        <div class="bg-[var(--brand-interactive-base)] text-[#002A4E] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[22px] px-6 py-2 shadow-sm inline-block"
+                    <div class="relative! mb-6!">
+                        <div class="bg-(--brand-interactive-base)! text-[#002A4E]! font-[family-name:var(--font-principal)]! font-bold! text-[18px]! md:text-[22px]! px-6! py-2! shadow-sm! inline-block!"
                              style="clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%); padding-right: 2.5rem;">
                             {texto_tag_destacado}
                         </div>
@@ -97,7 +97,7 @@ const isCompleta = ajuste_imagen === "completa";
                     <>
                         {titulo && (
                             <TitleTag
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-2 uppercase w-full text-center lg:text-left"
+                                class="font-[family-name:var(--font-principal)]! text-[var(--surface-brand-primary)]! text-[36px]! md:text-[40px]! font-black! leading-tight! mb-2! uppercase! w-full! text-center! lg:text-left!"
                                 style={color_titulo_override ? `color: ${color_titulo_override}` : undefined}
                             >
                                 {titulo}
@@ -105,7 +105,7 @@ const isCompleta = ajuste_imagen === "completa";
                         )}
                         {subtitulo && (
                             <span
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-6 w-full text-center lg:text-left"
+                                class="font-[family-name:var(--font-principal)]! text-[var(--surface-brand-secondary)]! text-[20px]! md:text-[23px]! font-bold! uppercase! tracking-wide! mb-6! w-full! text-center! lg:text-left!"
                                 style={color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined}
                             >
                                 {subtitulo}
@@ -116,7 +116,7 @@ const isCompleta = ajuste_imagen === "completa";
                     <>
                         {subtitulo && (
                             <span
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] md:text-[23px] font-bold uppercase tracking-wide mb-2 w-full text-center lg:text-left"
+                                class="font-[family-name:var(--font-principal)]! text-(--surface-brand-secondary)! text-[20px]! md:text-[23px]! font-bold! uppercase! tracking-wide! mb-2! w-full! text-center! lg:text-left1"
                                 style={color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined}
                             >
                                 {subtitulo}
@@ -124,7 +124,7 @@ const isCompleta = ajuste_imagen === "completa";
                         )}
                         {titulo && (
                             <TitleTag
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary)] text-[36px] md:text-[40px] font-black leading-tight mb-6 uppercase w-full text-center lg:text-left"
+                                class="font-[family-name:var(--font-principal)]! text-(--surface-brand-primary)! text-[36px]! md:text-[40px]! font-black! leading-tight! mb-6! uppercase! w-full! text-center! lg:text-left!"
                                 style={color_titulo_override ? `color: ${color_titulo_override}` : undefined}
                             >
                                 {titulo}
@@ -136,7 +136,7 @@ const isCompleta = ajuste_imagen === "completa";
                 {/* Descripción (Rich Text / Blocks) */}
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)] text-[17px] md:text-[22px] text-[var(--surface-brand-primary)] font-normal leading-[26px] mb-6 [&>p]:mb-4 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        class="font-[family-name:var(--font-secundaria)]! text-[17px]! md:text-[22px]! text-(--surface-brand-primary)! font-normal! leading-[26px]! mb-6! [&>p]:mb-4! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
                         style={color_texto_override ? `color: ${color_texto_override}` : undefined}
                         set:html={stringifyRichText(descripcion)}
                     />
@@ -144,21 +144,21 @@ const isCompleta = ajuste_imagen === "completa";
                 
                 {/* Título de Lista */}
                 {titulo_lista && (
-                    <h3 class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary)] text-[20px] font-bold mb-4">
+                    <h3 class="font-[family-name:var(--font-principal)]! text-(--surface-brand-secondary)! text-[20px]! font-bold! mb-4!">
                         {titulo_lista}
                     </h3>
                 )}
                 
                 {/* Elementos de Lista (Iconos FontAwesome) */}
                 {elementos_lista && elementos_lista.length > 0 && (
-                    <ul class="flex flex-col gap-3">
+                    <ul class="flex! flex-col! gap-3!">
                         {elementos_lista.map((item) => (
                             <li
-                                class="flex items-start gap-3 font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] font-bold"
+                                class="flex! items-start! gap-3! font-[family-name:var(--font-secundaria)]! text-[16px]! md:text-[18px]! text-(--surface-brand-primary)! font-bold!"
                                 style={color_item_lista_override ? `color: ${color_item_lista_override}` : undefined}
                             >
                                 {item.icono && (
-                                    <i class={`${item.icono} text-[var(--surface-brand-secondary)] mt-1 text-[20px] w-6 text-center shrink-0`}></i>
+                                    <i class={`${item.icono} text-(--surface-brand-secondary)! mt-1! text-[20px]! w-6! text-center! shrink-0!`}></i>
                                 )}
                                 <span>{item.texto}</span>
                             </li>
@@ -168,19 +168,19 @@ const isCompleta = ajuste_imagen === "completa";
             </div>
 
             {/* Columna Derecha: Carrusel Swiper */}
-            <div class="w-full h-full relative flex items-center justify-center mt-10 lg:mt-0">
+            <div class="w-full! h-full! relative! flex! items-center! justify-center! mt-10! lg:mt-0!">
                 {slideCount > 0 && (
                     <div class:list={[
-                        "acuario-galeria-swiper w-full rounded-[24px] shadow-2xl relative",
-                        isCompleta ? "bg-white" : "aspect-[5/4] md:aspect-square overflow-hidden",
+                        "acuario-galeria-swiper w-full! rounded-[24px]! shadow-2xl! relative!",
+                        isCompleta ? "bg-white!" : "aspect-[5/4]! md:aspect-square! overflow-hidden!",
                     ]}>
-                        <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full"]}>
+                        <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full!"]}>
                             {youtubeId && (
-                                <div class="swiper-slide w-full h-full relative bg-black">
+                                <div class="swiper-slide w-full! h-full! relative! bg-black!">
                                     <iframe
                                         src={`https://www.youtube.com/embed/${youtubeId}`}
                                         title={titulo || "YouTube video"}
-                                        class="w-full h-full"
+                                        class="w-full! h-full!"
                                         frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                         allowfullscreen
@@ -193,11 +193,11 @@ const isCompleta = ajuste_imagen === "completa";
                                 const isVideo = mediaFile?.attributes?.mime?.startsWith('video/') || mediaFile?.mime?.startsWith('video/');
                                 
                                 return (
-                                <div class:list={["swiper-slide w-full relative", isCompleta ? "" : "h-full"]}>
+                                <div class:list={["swiper-slide w-full! relative!", isCompleta ? "" : "h-full!"]}>
                                         {isVideo ? (
                                             <video 
                                                 src={url} 
-                                                class:list={["w-full", isCompleta ? "h-auto object-contain" : "h-full object-cover"]}
+                                                class:list={["w-full!", isCompleta ? "h-auto! object-contain!" : "h-full! object-cover!"]}
                                                 autoplay 
                                                 loop 
                                                 muted 
@@ -207,7 +207,7 @@ const isCompleta = ajuste_imagen === "completa";
                                             <img 
                                                 src={url} 
                                                 alt="Galería" 
-                                                class:list={["w-full", isCompleta ? "h-auto object-contain" : "h-full object-cover"]}
+                                                class:list={["w-full!", isCompleta ? "h-auto! object-contain!" : "h-full! object-cover!"]}
                                             />
                                         )}
                                     </div>

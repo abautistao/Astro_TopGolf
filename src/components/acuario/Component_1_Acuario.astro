@@ -105,14 +105,14 @@ const isCompleta = bannerMode === "completa";
 // Clases del contenedor según modo. En "completa" removemos aspect-ratio, h fija y overflow-hidden
 // para que la imagen dicte el alto del banner y nunca se recorte.
 const sectionClass = isCompleta
-    ? "relative z-10 w-screen left-1/2 -ml-[50vw] bg-[var(--surface-brand-primary)]"
-    : "relative z-10 w-screen left-1/2 -ml-[50vw] aspect-[4/5] md:aspect-auto md:h-[700px] flex items-center justify-center overflow-hidden bg-[var(--surface-brand-primary)]";
+    ? "relative! z-10! w-screen! left-1/2! -ml-[50vw]! bg-[var(--surface-brand-primary)]!"
+    : "relative! z-10! w-screen left-1/2! -ml-[50vw]! aspect-[4/5]! md:aspect-auto! md:h-[700px]! flex! items-center! justify-center! overflow-hidden! bg-[var(--surface-brand-primary)]!";
 ---
 
 {/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
 {mostrar_banner_superior && banner_texto && (
     <div
-        class="w-full text-center py-3 px-4 font-[family-name:var(--font-principal)] font-extrabold uppercase tracking-wide text-[16px] md:text-[24px]"
+        class="w-full! text-center! py-3! px-4! font-[family-name:var(--font-principal)]! font-extrabold! uppercase! tracking-wide! text-[16px]! md:text-[24px]!"
         style={`background-color: ${bannerBg}; color: ${bannerColor};`}
         role="region"
         aria-label={banner_texto}
@@ -120,7 +120,7 @@ const sectionClass = isCompleta
         {banner_enlace ? (
             <a
                 href={banner_enlace}
-                class="block w-full no-underline"
+                class="block! w-full! no-underline!"
                 style={`background-color: ${bannerBg}; color: ${bannerColor};`}
             >
                 <BannerTag class="m-0">{banner_texto}</BannerTag>
@@ -135,12 +135,12 @@ const sectionClass = isCompleta
     {finalSlides && finalSlides.length > 0 ? (
         <div
             class:list={[
-                "swiper acuario-banner-swiper w-full",
-                isCompleta ? "relative" : "h-full absolute inset-0",
+                "swiper acuario-banner-swiper w-full!",
+                isCompleta ? "relative!" : "h-full! absolute! inset-0!",
             ]}
             data-auto-height={isCompleta ? "true" : "false"}
         >
-            <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full"]}>
+            <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full!"]}>
                 {finalSlides.map((slide) => {
                     const bgUrl = getStrapiUrl(slide.fondo);
                     const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
@@ -151,12 +151,12 @@ const sectionClass = isCompleta
                     const HeadingTag = getHeadingTag(slide.nivel_heading);
 
                     return (
-                        <div class:list={["swiper-slide relative w-full", isCompleta ? "block" : "h-full"]}>
+                        <div class:list={["swiper-slide relative! w-full!", isCompleta ? "block!" : "h-full!"]}>
                             <!-- Background Media -->
                             {isCompleta ? (
                                 <!-- Modo "completa": la imagen manda. w-full, h-auto, object-contain.
                                      Sin aspect-ratio fijo, sin overflow-hidden, sin altura fija en ningún ancestro. -->
-                                <div class="relative w-full z-0">
+                                <div class="relative! w-full! z-0!">
                                     {isBgVideo ? (
                                         <video
                                             src={bgUrl}
@@ -164,27 +164,27 @@ const sectionClass = isCompleta
                                             loop
                                             muted
                                             playsinline
-                                            class="block w-full h-auto max-w-full"
+                                            class="block! w-full! h-auto! max-w-full!"
                                         />
                                     ) : (
-                                        <picture class="block w-full">
+                                        <picture class="block! w-full!">
                                             {hasMobileImage && (
                                                 <source media="(max-width: 767px)" srcset={bgMobileUrl} />
                                             )}
                                             <img
                                                 src={bgUrl}
                                                 alt={altText}
-                                                class="block w-full h-auto max-w-full"
+                                                class="block! w-full! h-auto! max-w-full!"
                                             />
                                         </picture>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
-                                        <div class="absolute inset-0 bg-black/40 z-10"></div>
+                                        <div class="absolute! inset-0! bg-black/40! z-10!"></div>
                                     )}
                                 </div>
                             ) : (
                                 <!-- Modo "recortar" (legado): object-cover con h fija recorta si la imagen trae texto. -->
-                                <div class="absolute inset-0 z-0 overflow-hidden w-full h-full">
+                                <div class="absolute! inset-0! z-0! overflow-hidden! w-full! h-full!">
                                     {isBgVideo ? (
                                         <video
                                             src={bgUrl}
@@ -192,46 +192,46 @@ const sectionClass = isCompleta
                                             loop
                                             muted
                                             playsinline
-                                            class="absolute inset-0 w-full h-full object-cover"
+                                            class="absolute! inset-0! w-full! h-full! object-cover!"
                                         />
                                     ) : (
                                         <>
-                                            <picture class="absolute inset-0 w-full h-full block">
+                                            <picture class="absolute! inset-0! w-full! h-full! block!">
                                                 {hasMobileImage && (
                                                     <source media="(max-width: 767px)" srcset={bgMobileUrl} />
                                                 )}
                                                 <img
                                                     src={bgUrl}
                                                     alt={altText}
-                                                    class="absolute inset-0 w-full h-full object-cover"
+                                                    class="absolute! inset-0! w-full! h-full! object-cover!"
                                                 />
                                             </picture>
                                         </>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
                                         <!-- Overlay oscuro para que el texto resalte -->
-                                        <div class="absolute inset-0 bg-black/40 z-10"></div>
+                                        <div class="absolute! inset-0! bg-black/40! z-10!"></div>
                                     )}
                                 </div>
                             )}
 
                             <!-- Text Content (Optional) -->
                             {slide.texto_principal && (
-                                <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
-                                    <div class="w-full max-w-[1440px] mx-auto px-6 flex flex-col items-center justify-center text-center text-[var(--neutral-text-inverted)] pointer-events-auto">
+                                <div class="absolute! inset-0! z-20! flex! flex-col! items-center! justify-center! pointer-events-none!">
+                                    <div class="w-full! max-w-[1440px]! mx-auto! px-6! flex! flex-col! items-center! justify-center! text-center! text-(--neutral-text-inverted) pointer-events-auto">
                                         {slide.subtitulo && (
-                                            <span class="block text-[18px] md:text-[40px] font-medium tracking-wide uppercase font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] mb-2" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
+                                            <span class="block! text-[18px]! md:text-[40px]! font-medium! tracking-wide! uppercase! font-[family-name:var(--font-principal)]! text-(--neutral-text-inverted)! mb-2!" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                                 {slide.subtitulo}
                                             </span>
                                         )}
 
-                                        <HeadingTag class="text-[32px] md:text-[80px] font-black font-[family-name:var(--font-principal)] leading-[36px] md:leading-[50px] mb-6 uppercase text-center" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
+                                        <HeadingTag class="text-[32px]! md:text-[80px]! font-black! font-[family-name:var(--font-principal)]! leading-[36px]! md:leading-[50px]! mb-6! uppercase! text-center!" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
                                             {slide.texto_principal}
                                         </HeadingTag>
 
                                         {slide.boton && slide.boton.length > 0 && (
                                             <div class="mt-4 flex justify-center">
-                                                <a href={slide.boton[0].url} class="inline-block bg-[var(--brand-interactive-base)] text-[var(--neutral-background-strong)] font-[family-name:var(--font-principal)] font-bold text-lg py-4 px-10 rounded-md uppercase hover:brightness-110 transition-all shadow-md">
+                                                <a href={slide.boton[0].url} class="inline-block! bg-[var(--brand-interactive-base)]! text-[var(--neutral-background-strong)]! font-[family-name:var(--font-principal)]! font-bold! text-lg! py-4! px-10! rounded-md! uppercase! hover:brightness-110! transition-all! shadow-md!">
                                                     {slide.boton[0].texto}
                                                 </a>
                                             </div>
@@ -248,21 +248,21 @@ const sectionClass = isCompleta
             {finalSlides.length > 1 && (
                 <>
                     <div class="swiper-pagination"></div>
-                    <div class="swiper-button-prev hidden md:flex"></div>
-                    <div class="swiper-button-next hidden md:flex"></div>
+                    <div class="swiper-button-prev hidden! md:flex!"></div>
+                    <div class="swiper-button-next hidden! md:flex!"></div>
                 </>
             )}
         </div>
     ) : (
         <!-- Placeholder if no slides are added yet -->
         <div class:list={[
-            "text-white z-10 text-center relative w-full flex flex-col justify-center items-center",
-            isCompleta ? "min-h-[400px] px-6" : "h-full"
+            "text-white! z-10! text-center! relative! w-full! flex! flex-col! justify-center! items-center!",
+            isCompleta ? "min-h-[400px]! px-6!" : "h-full!"
         ]}>
-             <div class="absolute inset-0 bg-black/40 z-0"></div>
-            <div class="relative z-10">
-                <h1 class="text-[32px] md:text-[60px] font-bold font-[family-name:var(--font-principal)] leading-tight mb-6 uppercase drop-shadow-lg">Banner Acuario</h1>
-                <p class="font-[family-name:var(--font-secundaria)] text-[20px]">Añade slides desde el panel de Strapi</p>
+             <div class="absolute! inset-0! bg-black/40! z-0!"></div>
+            <div class="relative! z-10!">
+                <h1 class="text-[32px]! md:text-[60px]! font-bold! font-[family-name:var(--font-principal)]! leading-tight! mb-6! uppercase! drop-shadow-lg!">Banner Acuario</h1>
+                <p class="font-[family-name:var(--font-secundaria)]! text-[20px]!">Añade slides desde el panel de Strapi</p>
             </div>
         </div>
     )}

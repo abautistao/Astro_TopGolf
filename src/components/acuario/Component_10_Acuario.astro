@@ -54,7 +54,7 @@ const bodyBgStyle = color_fondo_acordeon
 
 // Estilos dinámicos para los ítems
 const itemContainerClass = isFAQ 
-    ? "border-b border-white py-4" 
+    ? "border-b border-white py-4!" 
     : "border-2 border-[var(--surface-brand-primary)] mb-2";
 
 const headerClass = isFAQ 
@@ -72,8 +72,8 @@ const bodyContainerClass = isFAQ
     : "overflow-hidden transition-all duration-300 max-h-0 bg-[var(--surface-brand-primary)]";
 
 const bodyContentClass = "font-[family-name:var(--font-secundaria)] text-[16px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic" + (isFAQ
-    ? " p-12"
-    : " p-12 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1");
+    ? " p-8!"
+    : " p-8! [&_ul]:list-disc! [&_ul]:pl-5! [&_li]:mb-1!");
 
 // Generar un ID único para este componente para aislar la interactividad
 const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
@@ -104,7 +104,7 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
             {acordeones.map((item, index) => (
                 <div class={`accordion-item ${itemContainerClass}`}>
                     <button
-                        class={`accordion-header ${headerClass}`}
+                        class={`accordion-header ${headerClass} focus:outline-none!`}
                         style={headerBgStyle}
                         aria-expanded="false"
                         aria-controls={`content-${componentId}-${index}`}
