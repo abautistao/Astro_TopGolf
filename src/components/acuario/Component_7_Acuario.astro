@@ -170,18 +170,16 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                                         </span>
                                         <!-- Valor -->
                                         <div
-                                            class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] opacity-90 leading-none"
+                                            class="flex items-center text-[var(--surface-brand-primary,#003F7F)] opacity-90 leading-none relative"
                                             style={tarjetaPrecioValorStyle}
                                         >
-                                            <span class="font-[family-name:var(--font-principal)] text-[18px] sm:text-[20px] md:text-[24px] font-black line-through decoration-[2px] mr-0.5">
-                                                $
-                                            </span>
                                             <span class="font-[family-name:var(--font-principal)] text-[32px] sm:text-[34px] md:text-[44px] font-black line-through decoration-[2px]">
                                                 {tarjeta.precio_regular}
                                             </span>
                                             <span class="font-[family-name:var(--font-principal)] text-[13px] sm:text-[14px] md:text-[16px] font-black ml-1.5 uppercase">
                                                 MXN
                                             </span>
+                                            <div class="absolute w-full h-[2px] bg-(--surface-brand-primary,#003F7F) top-1/2 left-0 -rotate-1 opacity-100"></div>
                                         </div>
                                     </div>
                                 )}
@@ -203,12 +201,9 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                                         </span>
                                         <!-- Valor -->
                                         <div
-                                            class="flex items-baseline text-[var(--surface-brand-primary,#003F7F)] leading-none"
+                                            class="flex items-center text-[var(--surface-brand-primary,#003F7F)] leading-none"
                                             style={tarjetaPrecioValorStyle}
                                         >
-                                            <span class="font-[family-name:var(--font-principal)] text-[20px] sm:text-[22px] md:text-[26px] font-black mr-0.5">
-                                                $
-                                            </span>
                                             <span class="font-[family-name:var(--font-principal)] text-[38px] sm:text-[40px] md:text-[50px] font-black">
                                                 {tarjeta.precio_en_linea}
                                             </span>
