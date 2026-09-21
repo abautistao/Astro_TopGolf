@@ -107,7 +107,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                     <span class="text-[28px] md:text-[34px] font-normal opacity-100">
                                                         {item.precio_regular?.split(' ')[0]}
                                                     </span>
-                                                    <span class="text-[10px] font-bold uppercase ml-0.5 mt-1">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
+                                                    <span class="text-[10px] font-bold uppercase ml-0.5">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
                                                     <div class="absolute w-full h-[2px] bg-white top-1/2 left-0 -rotate-1 opacity-100"></div>
                                                 </div>
                                             </div>
@@ -116,7 +116,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                 <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-bold tracking-wider">
                                                     {item.label_precio_en_linea || 'Precio en Línea'}
                                                 </span>
-                                                <div class="flex items-baseline justify-center">
+                                                <div class="flex items-center justify-center">
                                                     <span class="text-[28px] md:text-[34px] font-black">
                                                         {item.precio_en_linea?.split(' ')[0]}
                                                     </span>
@@ -146,7 +146,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                                     <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-bold tracking-wider">
                                                         {item.label_precio_en_linea || 'Precio en Línea'}
                                                     </span>
-                                                    <div class="flex items-baseline justify-center">
+                                                    <div class="flex items-center justify-center">
                                                         <span class="text-[28px] md:text-[34px] font-black">
                                                             {item.precio_en_linea?.split(' ')[0]}
                                                         </span>
@@ -245,7 +245,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                             centeredSlides: false,
                             spaceBetween: 20,
                             loop: count > 1, // Solo hacer loop si hay más de 1 tarjeta
-                            autoplay: count > 3 ? {
+                            autoplay: false ? {
                                 delay: 3000, // 3 segundos
                                 disableOnInteraction: false,
                             } : false,
