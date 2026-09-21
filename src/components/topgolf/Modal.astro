@@ -45,10 +45,10 @@ const { id, image, titulo, descripcion, boton, delay, show_form, form, id_modal,
 const imageModal = getStrapiUrl(image);
 ---
 
-<dialog
+<div
   id={id_modal}
   data-delay={delay}
-  class="fixed inset-0 z-50 hidden m-auto max-h-[90vh] w-[100%] flex-col overflow-y-auto rounded-2xl border-none bg-white p-0 outline-none open:flex md:flex-row backdrop:bg-black/70 backdrop:backdrop-blur-md animate-in fade-in zoom-in duration-300"
+  class="fixed inset-0 z-50 hidden m-auto max-h-[90vh] w-[90%] flex-col md:flex-row overflow-visible rounded-2xl border-none bg-white p-0 outline-none shadow-2xl animate-in fade-in zoom-in duration-300"
   class:list={[
     { 'shadow-2xl': imageModal }
   ]}
@@ -57,7 +57,7 @@ const imageModal = getStrapiUrl(image);
     <div class="relative w-full md:w-1/2 flex-shrink-0">
       <button
         id={`close-${id_modal}-mobile`}
-        class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 md:hidden z-9999999"
+        class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 md:hidden z-50"
         aria-label="Cerrar"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -73,10 +73,11 @@ const imageModal = getStrapiUrl(image);
     </div>
   )}
 
-  <div class="relative w-full p-6 md:p-10">
+  <!-- Contenedor con scroll interno -->
+  <div class="relative w-full lg:p-6 md:p-10 max-h-[90vh] overflow-y-auto">
     <button
       id={`close-${id_modal}`}
-      class="absolute top-2 right-2 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 z-999999"
+      class="absolute top-2 right-2 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-gray-700 transition-all hover:bg-white hover:scale-110 active:scale-90 z-50"
       class:list={[
         {'hidden md:flex' : imageModal},
         {'flex md:flex' : !imageModal}
@@ -113,37 +114,42 @@ const imageModal = getStrapiUrl(image);
       )}
     </div>
   </div>
-</dialog>
+</div>
+
+<!-- Backdrop con z-index inferior al modal -->
+<div id={`backdrop-${id_modal}`} class="fixed inset-0 z-45 hidden bg-black/70 backdrop-blur-md"></div>
 
 <script is:inline define:vars={{ id_modal }}>
   window.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById(id_modal);
+    const backdrop = document.getElementById(`backdrop-${id_modal}`);
     const closeBtn = document.getElementById(`close-${id_modal}`);
     const closeBtnMobile = document.getElementById(`close-${id_modal}-mobile`);
     const delay = parseInt(modal?.getAttribute('data-delay') || '0');
 
+    const openModal = () => {
+
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+      backdrop?.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Evita el scroll en la página de fondo
+    };
+
+    const closeModal = () => {
+      modal?.classList.remove('flex');
+      modal?.classList.add('hidden');
+      backdrop?.classList.add('hidden');
+      document.body.style.overflow = ''; // Restablece el scroll de la página
+    };
+
     setTimeout(() => {
-      if (modal && !modal.open && delay) {
-        modal.showModal();
+      if (modal && delay) {
+        openModal();
       }
     }, delay);
 
-    closeBtn?.addEventListener('click', () => {
-      modal.close();
-    });
-
-    closeBtnMobile?.addEventListener('click', () => {
-      modal.close();
-    });
-
-    modal?.addEventListener('click', (e) => {
-      if (e.target === modal) modal.close();
-    });
+    closeBtn?.addEventListener('click', closeModal);
+    closeBtnMobile?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
   });
 </script>
-
-<style is:inline>
-  dialog::backdrop {
-    transition: opacity 0.5s ease;
-  }
-</style>

@@ -27,7 +27,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     {/* --- RENDERIZADO DE COMPONENTES POR SLOTS --- */}
     <div
         class:list={[
-            'sticky top-0 block py-8 z-99999 bg-white px-10 lg:px-0',
+            'sticky top-0 block py-8 z-40 bg-white px-10 lg:px-0',
         ]}
     >
         <form class="pav-widget w-full flex flex-col! lg:flex-row! flex-wrap md:justify-center" method="get" action="">
@@ -76,7 +76,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             ))}
         </div>
         {Modal && <Modal_TGM {...Modal}>
-            <div class="bg-white sticky top-5 lg:top-0 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0">
+            <div class="bg-white sticky top-10 lg:top-0 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
                 <form class="pav-widget w-full flex flex-wrap md:justify-center mb-6" method="get" action="">
                     <div id="form-players-modal" class="flex-1 md:flex-none rounded-lg border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
                         <label class="mb-0!">
@@ -179,6 +179,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     const modal = document.getElementById('vmg');
     const date = document.getElementById('date');
     const pax = document.getElementById('pax');
+    const backdrop = document.getElementById(`backdrop-vmg`);
 
     const paxModal = document.getElementById('pax_modal');
 
@@ -186,7 +187,8 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     let pluginIdValue;
     // Función para alternar el estado del modal
     const toggleModal = () => {
-    modal?.showModal()
+        modal?.classList.toggle('hidden')
+        backdrop?.classList.toggle('hidden')
     };
 
     dynamicBtn.forEach(function(dBtn) {
