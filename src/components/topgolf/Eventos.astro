@@ -30,16 +30,16 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             'sticky top-0 block py-8 z-40 bg-white px-10 lg:px-0',
         ]}
     >
-        <form class="pav-widget w-full flex flex-col! lg:flex-row! flex-wrap md:justify-center" method="get" action="">
+        <form class="pav-widget w-full flex lg:flex-row! flex-wrap md:justify-center" method="get" action="">
             <div id="form-calendar" class="flex-1 md:flex-none lg:rounded-l-lg lg:rounded-r-none! border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
                 <label class="mb-0!">
-                        <div role="application" class="datecalendar">
-                            <div role="button" aria-label="Spacer" class="hidden">
-                                <input tabindex="-1"/>
-                            </div>
-                                
-                            <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
-                            <input class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
+                    <div role="application" class="datecalendar">
+                        <div role="button" aria-label="Spacer" class="hidden">
+                            <input tabindex="-1"/>
+                        </div>
+                            
+                        <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
+                            <input id="calendar" class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
                         </div> 
                     </div>
                 </label>
@@ -76,9 +76,9 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             ))}
         </div>
         {Modal && <Modal_TGM {...Modal}>
-            <div class="bg-white sticky top-10 lg:top-0 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
-                <form class="pav-widget w-full flex flex-wrap md:justify-center mb-6" method="get" action="">
-                    <div id="form-players-modal" class="flex-1 md:flex-none rounded-lg border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+            <div class="bg-white sticky top-10 lg:top-5 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
+                <form class="pav-widget w-full flex flex-wrap justify-center mb-6" method="get" action="">
+                    <div id="form-players-modal" class=" md:flex-none rounded-lg border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
                         <label class="mb-0!">
                             <span class="select-container">
                                 <select id="pax_modal" name="pax" class="focus:outline-none appearance-none! pl-10 py-4! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
@@ -143,10 +143,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
 }
 
 @media (max-width: 480px) {
-    #form-players {
-        border-left: 3px solid var(--brand-interactive-base) !important;
-        border-top: none !important
-    }
+    
 }
 </style>
 
