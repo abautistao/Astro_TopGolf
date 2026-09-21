@@ -55,10 +55,10 @@ const isLinkActiveOrChild = (link: any) => {
     <!-- Desktop Top Bar -->
     <div class="hidden md:flex w-full min-h-[60px] font-bold">
         <!-- Social Icons -->
-            <div class="bg-[var(--custom-color-01)] flex items-center justify-start px-8 min-w-[420px]">
-            <div class="flex items-center gap-5 text-white">
+            <div class="bg-(--custom-color-01)! flex! items-center! justify-start! px-8! min-w-[420px]">
+            <div class="flex items-center gap-5 text-white!">
                 {social.map((item: any) => (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
+                    <a href={item.url} target="_blank" rel="noopener noreferrer" class="text-white! hover:opacity-80! transition-opacity">
                             <i class={`${item.icono_clase} text-[17px]`}></i>
                     </a>
                 ))}
@@ -72,8 +72,8 @@ const isLinkActiveOrChild = (link: any) => {
         </div>
         <!-- Right Yellow Button Section -->
         {buttons.length > 0 && (
-            <div class="bg-[var(--brand-interactive-base)] flex items-center justify-center px-12 self-stretch cursor-pointer hover:brightness-110 transition-all min-w-[250px]">
-                <a href={buttons[0].url} class="cta-bounce inline-block text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-extrabold text-[20px] tracking-wide uppercase">
+            <div class="bg-(--brand-interactive-base)! flex! items-center! justify-center! px-12! self-stretch! cursor-pointer! hover:brightness-110! transition-all min-w-[250px]">
+                <a href={buttons[0].url} class="cta-bounce inline-block text-(--surface-brand-primary)! font-[family-name:var(--font-principal)] font-extrabold! text-[20px]! tracking-wide uppercase hover:no-underline!">
                     {buttons[0].texto}
                 </a>
             </div>
@@ -81,18 +81,17 @@ const isLinkActiveOrChild = (link: any) => {
     </div>
 
     <!-- Main Navigation Bar -->
-    <div class="bg-[var(--neutral-background-strong)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)]">
-        <div class="max-w-[1440px] mx-auto px-4 md:px-8 h-24 md:h-[100px] flex items-center justify-between">
+    <div class="bg-(--neutral-background-strong)! border-b-4! md:border-b-0! border-(--brand-interactive-base)!">
+        <div class="max-w-[1440px] mx-auto! px-4! md:px-8! h-24! md:h-[100px]! flex! items-center! justify-between!">
             <!-- Logo -->
-            <a href="/" class="shrink-0 h-full py-2">
+            <a href="/" class=" py-2!">
                 <!-- Desktop Logo -->
                 {logoUrl && (
                     <Image
                         src={logoUrl}
                         alt="Acuario"
-                        width={250}
-                        height={100}
-                        class="hidden md:block h-full w-auto object-contain"
+                        inferSize={true}
+                        class="hidden! md:block! h-15! object-contain"
                     />
                 )}
                 <!-- Mobile Logo -->
@@ -100,23 +99,22 @@ const isLinkActiveOrChild = (link: any) => {
                     <Image
                         src={logoMobileUrl}
                         alt="Acuario Mobile"
-                        width={200}
-                        height={80}
-                        class="block md:hidden h-full w-auto object-contain py-1"
+                        inferSize={true}
+                        class="block! md:hidden! h-20 object-contain py-1"
                     />
                 )}
             </a>
 
             <!-- Desktop Links -->
-            <nav class="hidden md:flex items-center justify-end gap-6 h-full flex-grow">
+            <nav class="hidden! md:flex! items-center! justify-end! gap-6! h-full! grow!">
                 {links.map((link: any) => (
                     <div class="relative group h-full flex items-center">
                         <a
                             href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
-                            class={`flex items-center gap-1.5 font-[family-name:var(--font-principal)] text-[15px] font-medium tracking-wide uppercase transition-colors ${
+                            class={`flex! items-center! gap-1.5! font-[family-name:var(--font-principal)] text-[15px]! font-medium! tracking-wide! uppercase! transition-colors! hover:no-underline!  ${
                                 isLinkActiveOrChild(link)
-                                    ? "text-[var(--brand-interactive-base)]"
-                                    : "text-white hover:text-[var(--accent-highlight-primary)]"
+                                    ? "text-(--brand-interactive-base)!"
+                                    : "text-white! hover:text-(--accent-highlight-primary)!"
                             }`}
                             aria-current={isLinkActive(link.url) ? "page" : undefined}
                         >
@@ -128,16 +126,16 @@ const isLinkActiveOrChild = (link: any) => {
                         
                         <!-- Dropdown -->
                         {link.sublinks && link.sublinks.length > 0 && (
-                            <div class="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-max min-w-[240px] bg-white border-t-4 border-[var(--brand-interactive-base)] shadow-2xl z-50">
-                                <ul class="flex flex-col">
+                            <div class="absolute! top-full! left-0! opacity-0! invisible! group-hover:opacity-100! group-hover:visible! transition-all duration-300 w-max min-w-[240px] bg-white! border-t-4! border-(--brand-interactive-base) shadow-2xl z-50!">
+                                <ul class="flex! flex-col!">
                                     {link.sublinks.map((sublink: any) => (
                                         <li>
                                             <a
                                                 href={getLocalizedUrl(sublink.url, locale)}
-                                                class={`block px-8 py-4 font-[family-name:var(--font-principal)] font-bold text-[15px] transition-colors ${
+                                                class={`block! px-8! py-4! font-[family-name:var(--font-principal)]! font-bold! text-[15px]! transition-colors hover:no-underline! ${
                                                     isLinkActive(sublink.url)
-                                                        ? "bg-[var(--neutral-background-strong)] text-[var(--brand-interactive-base)]"
-                                                        : "text-[var(--surface-brand-primary)] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)]"
+                                                        ? "bg-(--neutral-background-strong)! text-(--brand-interactive-base)!"
+                                                        : "text-(--surface-brand-primary)! hover:bg-(--neutral-background-strong)! hover:text-(--brand-interactive-base)!"
                                                 }`}
                                                 aria-current={isLinkActive(sublink.url) ? "page" : undefined}
                                             >
@@ -153,13 +151,13 @@ const isLinkActiveOrChild = (link: any) => {
             </nav>
 
             <!-- Mobile Info & Hamburger -->
-            <div class="flex md:hidden items-center gap-3">
-                <span class="text-white text-[10px] sm:text-xs font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase text-right max-w-[150px] leading-tight">
+            <div class="flex! md:hidden! items-center! gap-15!">
+                <span class="text-white! text-[10px]! sm:text-xs! font-[family-name:var(--font-principal)] font-bold! tracking-wide uppercase! text-right! max-w-[150px]! leading-tight">
                     {textoHorario.split('/')[1]?.trim() || textoHorario} <!-- Shorten for mobile if contains / -->
                 </span>
-                <button id="mobile-menu-toggle" class="text-white text-3xl focus:outline-none ml-1 w-8 h-8 flex items-center justify-center">
+                <button id="mobile-menu-toggle" class="text-white! text-3xl! focus:outline-none ml-1! w-8! h-8! flex! items-center! justify-center!">
                     <span id="menu-icon"><i class="fa-solid fa-bars"></i></span>
-                    <span id="close-icon" class="hidden"><i class="fa-solid fa-xmark"></i></span>
+                    <span id="close-icon" class="hidden!"><i class="fa-solid fa-xmark"></i></span>
                 </button>
             </div>
         </div>
@@ -167,24 +165,24 @@ const isLinkActiveOrChild = (link: any) => {
 </header>
 
 <!-- Mobile Overlay Menu -->
-<div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[100px] bg-white z-40 overflow-y-auto flex-col pb-20 border-t-4 border-[var(--brand-interactive-base)]">
+<div id="mobile-menu" class="hidden! md:hidden! fixed! inset-0! top-[100px]! bg-white! z-40! overflow-y-auto! flex-col! pb-20! border-t-4! border-[var(--brand-interactive-base)]!">
     <nav class="flex flex-col">
         {links.map((link: any, index: number) => (
-            <div class="mobile-menu-group border-b border-gray-200">
-                <div class="mobile-menu-header flex items-center justify-between px-6 py-4 bg-white text-[var(--surface-brand-primary)] transition-colors duration-300">
-                    <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class={`font-[family-name:var(--font-principal)] text-[15px] uppercase font-bold flex-grow text-inherit ${isLinkActiveOrChild(link) ? "text-[var(--brand-interactive-base)]" : ""}`} aria-current={isLinkActive(link.url) ? "page" : undefined}>
+            <div class="mobile-menu-group border-b! border-gray-200!">
+                <div class="mobile-menu-header flex! items-center! justify-between! px-6! py-4! bg-white! text-(--surface-brand-primary) transition-colors duration-300">
+                    <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class={`font-[family-name:var(--font-principal)] text-[15px]! uppercase! font-bold! grow! text-inherit! ${isLinkActiveOrChild(link) ? "text-[var(--brand-interactive-base)]" : ""}`} aria-current={isLinkActive(link.url) ? "page" : undefined}>
                         {link.texto}
                     </a>
                     {link.sublinks && link.sublinks.length > 0 && (
-                        <button class="p-2 mobile-submenu-toggle focus:outline-none text-inherit" data-target={`submenu-${index}`}>
+                        <button class="p-2! mobile-submenu-toggle focus:outline-none! text-inherit!" data-target={`submenu-${index}`}>
                             <i class="fa-solid fa-chevron-down transition-transform duration-300"></i>
                         </button>
                     )}
                 </div>
                 {link.sublinks && link.sublinks.length > 0 && (
-                    <div id={`submenu-${index}`} class="hidden flex-col bg-white">
+                    <div id={`submenu-${index}`} class="hidden! flex-col! bg-white!">
                         {link.sublinks.map((sublink: any) => (
-                            <a href={getLocalizedUrl(sublink.url, locale)} class={`block px-8 py-3.5 font-[family-name:var(--font-principal)] font-bold text-[15px] transition-colors border-t border-gray-100 ${isLinkActive(sublink.url) ? "bg-[var(--neutral-background-strong)] text-[var(--brand-interactive-base)]" : "text-[var(--surface-brand-primary)] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)]"}`} aria-current={isLinkActive(sublink.url) ? "page" : undefined}>
+                            <a href={getLocalizedUrl(sublink.url, locale)} class={`block! px-8! py-3.5! font-[family-name:var(--font-principal)]! font-bold! text-[15px]! transition-colors border-t! border-gray-100! ${isLinkActive(sublink.url) ? "bg-[var(--neutral-background-strong)] text-[var(--brand-interactive-base)]" : "text-[var(--surface-brand-primary)] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)]"}`} aria-current={isLinkActive(sublink.url) ? "page" : undefined}>
                                 {sublink.texto}
                             </a>
                         ))}
@@ -193,8 +191,8 @@ const isLinkActiveOrChild = (link: any) => {
             </div>
         ))}
         {buttons.length > 0 && (
-            <div class="p-6 mt-4">
-                <a href={buttons[0].url} class="block w-full text-center bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] font-[family-name:var(--font-principal)] font-bold text-lg py-4 rounded-md uppercase shadow-sm">
+            <div class="p-6! mt-4!">
+                <a href={buttons[0].url} class="block! w-full! text-center! bg-(--brand-interactive-base) text-(--surface-brand-primary) font-[family-name:var(--font-principal)]! font-bold! text-lg! py-4! rounded-md! uppercase! shadow-sm">
                     {buttons[0].texto}
                 </a>
             </div>
@@ -209,18 +207,18 @@ const isLinkActiveOrChild = (link: any) => {
     const closeIcon = document.getElementById("close-icon");
 
     toggle?.addEventListener("click", () => {
-        const isHidden = menu?.classList.contains("hidden");
+        const isHidden = menu?.classList.contains("hidden!");
         if (isHidden) {
-            menu?.classList.remove("hidden");
-            menu?.classList.add("flex");
-            menuIcon?.classList.add("hidden");
-            closeIcon?.classList.remove("hidden");
-            document.body.style.overflow = "hidden";
+            menu?.classList.remove("hidden!");
+            menu?.classList.add("flex!");
+            menuIcon?.classList.add("hidden!");
+            closeIcon?.classList.remove("hidden!");
+            document.body.style.overflow = "hidden!";
         } else {
-            menu?.classList.add("hidden");
-            menu?.classList.remove("flex");
-            menuIcon?.classList.remove("hidden");
-            closeIcon?.classList.add("hidden");
+            menu?.classList.add("hidden!");
+            menu?.classList.remove("flex!");
+            menuIcon?.classList.remove("hidden!");
+            closeIcon?.classList.add("hidden!");
             document.body.style.overflow = "";
         }
     });
@@ -236,22 +234,22 @@ const isLinkActiveOrChild = (link: any) => {
                 const icon = btn.querySelector('i');
                 const header = btn.closest('.mobile-menu-header');
                 
-                if (submenu?.classList.contains('hidden')) {
-                    submenu.classList.remove('hidden');
-                    submenu.classList.add('flex');
+                if (submenu?.classList.contains('hidden!')) {
+                    submenu.classList.remove('hidden!');
+                    submenu.classList.add('flex!');
                     if (icon) icon.style.transform = 'rotate(180deg)';
                     
                     // Apply expanded styles to header wrapper
-                    header?.classList.remove('bg-white', 'text-[var(--surface-brand-primary)]');
-                    header?.classList.add('bg-[var(--surface-brand-primary)]', 'text-[var(--brand-interactive-base)]');
+                    header?.classList.remove('bg-white!', 'text-[var(--surface-brand-primary)]!');
+                    header?.classList.add('bg-[var(--surface-brand-primary)]!', 'text-[var(--brand-interactive-base)]!');
                 } else {
-                    submenu?.classList.add('hidden');
-                    submenu?.classList.remove('flex');
+                    submenu?.classList.add('hidden!');
+                    submenu?.classList.remove('flex!');
                     if (icon) icon.style.transform = 'rotate(0deg)';
                     
                     // Revert styles on header wrapper
-                    header?.classList.add('bg-white', 'text-[var(--surface-brand-primary)]');
-                    header?.classList.remove('bg-[var(--surface-brand-primary)]', 'text-[var(--brand-interactive-base)]');
+                    header?.classList.add('bg-white!', 'text-[var(--surface-brand-primary)]!');
+                    header?.classList.remove('bg-[var(--surface-brand-primary)]!', 'text-[var(--brand-interactive-base)]!');
                 }
             }
         });
