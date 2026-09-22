@@ -7,7 +7,7 @@ import Toca_404 from "../components/errors/Toca_404.astro";
 import Generic_404 from "../components/errors/Generic_404.astro";
 
 const currentPath = Astro.url.pathname;
-const lang = currentPath.startsWith("/es") ? "es" : "en";
+const lang = currentPath.startsWith("/") ? "es" : "en";
 
 // Get theme from environment variable
 const theme = import.meta.env.PUBLIC_THEME || "generic";
