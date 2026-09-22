@@ -54,7 +54,7 @@ const isCarousel = totalTarjetas >= 3;
                                                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                                 loading="lazy"
                                             />
-                                            <div class="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/65"></div>
+                                            <div class="absolute inset-0 bg-black/0 transition-opacity duration-300 group-hover:bg-black/65"></div>
 
                                             <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                 {tarjeta.titulo && (
@@ -85,14 +85,14 @@ const isCarousel = totalTarjetas >= 3;
                 </div>
 
                 <button
-                    class="swiper-btn-prev absolute top-1/2 -translate-y-1/2 -left-2 md:-left-6 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    class="swiper-btn-prev absolute top-1/2 -translate-y-1/2 -left-2 md:-left-6 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
                     aria-label="Anterior"
                 >
                     <i class="fa-solid fa-angle-left text-2xl md:text-3xl"></i>
                 </button>
 
                 <button
-                    class="swiper-btn-next absolute top-1/2 -translate-y-1/2 -right-2 md:-right-6 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    class="swiper-btn-next absolute top-1/2 -translate-y-1/2 -right-2 md:-right-6 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
                     aria-label="Siguiente"
                 >
                     <i class="fa-solid fa-angle-right text-2xl md:text-3xl"></i>
@@ -111,7 +111,7 @@ const isCarousel = totalTarjetas >= 3;
                                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 loading="lazy"
                             />
-                            <div class="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/65"></div>
+                            <div class="absolute inset-0 bg-black/0 transition-opacity duration-300 group-hover:bg-black/65"></div>
 
                             <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 {tarjeta.titulo && (

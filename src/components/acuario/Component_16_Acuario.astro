@@ -13,6 +13,8 @@ export interface Props {
     texto_boton?: string;
     url_post?: string;
     texto_envia_correo?: string;
+    texto_privacidad?: string;
+    ocultar_labels?: boolean;
     campos?: Array<{
         id?: number;
         tipo: "text" | "email" | "tel" | "date" | "number" | "textarea" | "select" | "radio";
@@ -38,6 +40,8 @@ const {
     texto_boton = "ENVIAR",
     url_post,
     texto_envia_correo,
+    texto_privacidad,
+    ocultar_labels = false,
     color_fondo_input_override,
     campos = [],
 } = Astro.props;
@@ -115,7 +119,7 @@ const baseLabel =
                 if (campo.tipo === "textarea") {
                     return (
                         <div class={w}>
-                            {campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
+                            {!ocultar_labels && campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
                             <textarea
                                 id={inputId}
                                 name={campo.name}
@@ -132,7 +136,7 @@ const baseLabel =
                     const opts = parseOpts(campo.opciones);
                     return (
                         <div class={w}>
-                            {campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
+                            {!ocultar_labels && campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
                             <select id={inputId} name={campo.name} required={campo.required} class={`${baseInput} cursor-pointer`}>
                                 {campo.placeholder && <option value="" disabled selected>{campo.placeholder}</option>}
                                 {opts.map((op) => (
@@ -147,7 +151,7 @@ const baseLabel =
                     const opts = parseOpts(campo.opciones);
                     return (
                         <fieldset class={w}>
-                            {campo.label && <legend class={baseLabel}>{campo.label}</legend>}
+                            {!ocultar_labels && campo.label && <legend class={baseLabel}>{campo.label}</legend>}
                             <div class="flex flex-col gap-2">
                                 {opts.map((op) => (
                                     <label class="inline-flex items-center gap-2 font-[family-name:var(--font-secundaria)] text-[16px] cursor-pointer">
@@ -174,7 +178,7 @@ const baseLabel =
                     "text";
                 return (
                     <div class={w}>
-                        {campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
+                        {!ocultar_labels && campo.label && <label class={baseLabel} for={inputId}>{campo.label}</label>}
                         <input
                             id={inputId}
                             type={htmlType}
@@ -194,6 +198,13 @@ const baseLabel =
             >
                 {texto_boton}
             </button>
+
+            {texto_privacidad && (
+                <p
+                    class="basis-full font-[family-name:var(--font-secundaria)] text-[12px] md:text-[13px] leading-relaxed opacity-80 mt-3 [&_a]:underline [&_a]:font-bold"
+                    set:html={texto_privacidad}
+                />
+            )}
 
             <p class="basis-full text-center text-[14px] min-h-[1.25rem] mt-1" data-form-status aria-live="polite"></p>
         </form>

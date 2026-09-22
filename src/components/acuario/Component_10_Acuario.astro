@@ -59,7 +59,7 @@ const itemContainerClass = isFAQ
 
 const headerClass = isFAQ 
     ? "w-full flex justify-start items-center gap-4 text-left cursor-pointer focus:outline-none" 
-    : "w-full flex justify-between items-center bg-[var(--surface-brand-secondary)]/10 p-4 text-left cursor-pointer focus:outline-none";
+    : "w-full flex justify-between items-center bg-[var(--surface-brand-secondary)]/10 p-2 text-left cursor-pointer focus:outline-none";
 
 const iconClass = isFAQ 
     ? "text-[var(--brand-interactive-base)] text-xl shrink-0 transition-transform duration-300" 
@@ -72,15 +72,15 @@ const bodyContainerClass = isFAQ
     : "overflow-hidden transition-all duration-300 max-h-0 bg-[var(--surface-brand-primary)]";
 
 const bodyContentClass = "font-[family-name:var(--font-secundaria)] text-[16px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic" + (isFAQ
-    ? " p-8!"
-    : " p-8! [&_ul]:list-disc! [&_ul]:pl-5! [&_li]:mb-1!");
+    ? " p-5! md:p-6!"
+    : " p-4! md:p-5! [&_ul]:list-disc! [&_ul]:pl-5! [&_li]:mb-1!");
 
 // Generar un ID único para este componente para aislar la interactividad
 const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
 ---
 
 <section 
-    class="w-full py-16 md:py-24 relative overflow-hidden" 
+    class="w-full py-7 relative overflow-hidden"
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -92,7 +92,7 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
         
         {/* Título Principal */}
         {titulo && (
-            <div class="text-center mb-10 md:mb-16">
+            <div class="text-center mb-8 md:mb-10">
                 <TitleTag class={`font-[family-name:var(--font-principal)] text-[24px] md:text-[40px] font-black uppercase ${isFAQ ? 'text-white' : 'text-[var(--surface-brand-primary)]'}`}>
                     {titulo}
                 </TitleTag>
