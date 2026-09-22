@@ -98,7 +98,7 @@ const isCompleta = ajuste_imagen === "completa";
                         {titulo && (
                             <TitleTag
                                 class="font-[family-name:var(--font-principal)]! text-[var(--surface-brand-primary)]! text-[36px]! md:text-[40px]! font-black! leading-tight! mb-2! uppercase! w-full! text-center! lg:text-left!"
-                                style={color_titulo_override ? `color: ${color_titulo_override}` : undefined}
+                                style={color_titulo_override ? `color: ${color_titulo_override} !important` : undefined}
                             >
                                 {titulo}
                             </TitleTag>
@@ -106,7 +106,7 @@ const isCompleta = ajuste_imagen === "completa";
                         {subtitulo && (
                             <span
                                 class="font-[family-name:var(--font-principal)]! text-[var(--surface-brand-secondary)]! text-[20px]! md:text-[23px]! font-bold! uppercase! tracking-wide! mb-6! w-full! text-center! lg:text-left!"
-                                style={color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined}
+                                style={color_subtitulo_override ? `color: ${color_subtitulo_override} !important` : undefined}
                             >
                                 {subtitulo}
                             </span>
@@ -117,7 +117,7 @@ const isCompleta = ajuste_imagen === "completa";
                         {subtitulo && (
                             <span
                                 class="font-[family-name:var(--font-principal)]! text-(--surface-brand-secondary)! text-[20px]! md:text-[23px]! font-bold! uppercase! tracking-wide! mb-2! w-full! text-center! lg:text-left1"
-                                style={color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined}
+                                style={color_subtitulo_override ? `color: ${color_subtitulo_override} !important` : undefined}
                             >
                                 {subtitulo}
                             </span>
@@ -125,7 +125,7 @@ const isCompleta = ajuste_imagen === "completa";
                         {titulo && (
                             <TitleTag
                                 class="font-[family-name:var(--font-principal)]! text-(--surface-brand-primary)! text-[36px]! md:text-[40px]! font-black! leading-tight! mb-6! uppercase! w-full! text-center! lg:text-left!"
-                                style={color_titulo_override ? `color: ${color_titulo_override}` : undefined}
+                                style={color_titulo_override ? `color: ${color_titulo_override} !important` : undefined}
                             >
                                 {titulo}
                             </TitleTag>
@@ -136,8 +136,8 @@ const isCompleta = ajuste_imagen === "completa";
                 {/* Descripción (Rich Text / Blocks) */}
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)]! text-[17px]! md:text-[22px]! text-(--surface-brand-primary)! font-normal! leading-[26px]! mb-6! [&>p]:mb-4! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
-                        style={color_texto_override ? `color: ${color_texto_override}` : undefined}
+                        class="font-[family-name:var(--font-secundaria)]! text-[17px]! md:text-[16px]! text-(--surface-brand-primary)! font-normal! leading-[26px]! mb-6! [&>p]:mb-4! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
+                        style={color_texto_override ? `color: ${color_texto_override} !important` : undefined}
                         set:html={stringifyRichText(descripcion)}
                     />
                 )}
@@ -155,7 +155,7 @@ const isCompleta = ajuste_imagen === "completa";
                         {elementos_lista.map((item) => (
                             <li
                                 class="flex! items-start! gap-3! font-[family-name:var(--font-secundaria)]! text-[16px]! md:text-[18px]! text-(--surface-brand-primary)! font-bold!"
-                                style={color_item_lista_override ? `color: ${color_item_lista_override}` : undefined}
+                                style={color_item_lista_override ? `color: ${color_item_lista_override} !important` : undefined}
                             >
                                 {item.icono && (
                                     <i class={`${item.icono} text-(--surface-brand-secondary)! mt-1! text-[20px]! w-6! text-center! shrink-0!`}></i>
