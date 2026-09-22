@@ -136,7 +136,7 @@ const isCompleta = ajuste_imagen === "completa";
                 {/* Descripción (Rich Text / Blocks) */}
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)]! text-[17px]! md:text-[16px]! text-(--surface-brand-primary)! font-normal! leading-[26px]! mb-6! [&>p]:mb-4! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
+                        class="rich-text font-[family-name:var(--font-secundaria)]! text-[17px]! md:text-[16px]! text-(--surface-brand-primary)! font-normal! leading-[26px]! mb-6! [&>p]:mb-4! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
                         style={color_texto_override ? `color: ${color_texto_override} !important` : undefined}
                         set:html={stringifyRichText(descripcion)}
                     />
@@ -168,11 +168,11 @@ const isCompleta = ajuste_imagen === "completa";
             </div>
 
             {/* Columna Derecha: Carrusel Swiper */}
-            <div class="w-full! h-full! relative! flex! items-center! justify-center! mt-10! lg:mt-0!">
+            <div class="w-auto! relative! flex! items-center! justify-center! mt-10! lg:mt-0! h-125!">
                 {slideCount > 0 && (
                     <div class:list={[
-                        "acuario-galeria-swiper w-full! rounded-[24px]! shadow-2xl! relative!",
-                        isCompleta ? "bg-white!" : "aspect-[5/4]! md:aspect-square! overflow-hidden!",
+                        "acuario-galeria-swiper w-auto! rounded-[24px]! shadow-2xl! relative! h-125! overflow-hidden",
+                        isCompleta ? "" : "aspect-[5/4]! md:aspect-square! overflow-hidden!",
                     ]}>
                         <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full!"]}>
                             {youtubeId && (
@@ -207,7 +207,7 @@ const isCompleta = ajuste_imagen === "completa";
                                             <img 
                                                 src={url} 
                                                 alt="Galería" 
-                                                class:list={["w-full!", isCompleta ? "h-auto! object-contain!" : "h-full! object-cover!"]}
+                                                class:list={["w-full! max-h-125", isCompleta ? "h-auto! object-contain!" : "h-full! object-cover!"]}
                                             />
                                         )}
                                     </div>
@@ -241,6 +241,12 @@ const isCompleta = ajuste_imagen === "completa";
         width: 24px;
         border-radius: 5px;
     }
+
+    .rich-text :global(h3) {
+        color: #66F179 !important;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
 </style>
 
 <script>
@@ -262,10 +268,7 @@ const isCompleta = ajuste_imagen === "completa";
                     crossFade: true
                 },
                 loop: true,
-                autoplay: {
-                    delay: 4000,
-                    disableOnInteraction: false,
-                },
+                autoplay: false,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true,
