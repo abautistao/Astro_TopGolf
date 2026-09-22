@@ -41,7 +41,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
 ---
 
 <section 
-    class="w-full py-16 md:py-24 relative overflow-hidden z-10"
+    class="w-full py-12 md:py-16 relative overflow-hidden z-10"
     style={color_fondo ? `background-color: ${color_fondo}` : "background-color: #EAF5FC"}
 >
     <!-- Imagen de fondo decorativa si se carga desde Strapi -->
@@ -56,10 +56,10 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
     <!-- Olas/Decoración superior (Simulación si es necesario o puro CSS por theme) -->
     <!-- (Puedes añadir tu SVG de transición aquí si lo requiere el diseño general) -->
 
-    <div class="max-w-[1280px] mx-auto px-4 md:px-6 relative z-10">
+    <div class="max-w-[1280px] mx-auto px-6 md:px-12 relative z-10">
         
         <!-- Headers (Título y Subtítulo Centrados) -->
-        <div class="mb-14 text-center">
+        <div class="mb-10 text-center">
             {titulo && (
                 <TitleTag
                     class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
@@ -79,7 +79,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
         </div>
 
         <!-- Grid de Tarjetas de Entradas/Paquetes -->
-        <div class="flex flex-col gap-8 md:gap-10">
+        <div class="flex flex-col gap-6 md:gap-8">
             {tarjetas && tarjetas.map((tarjeta) => {
                 const tarjetaTituloStyle = tarjeta.color_titulo_override ? `color: ${tarjeta.color_titulo_override}` : undefined;
                 const tarjetaPrecioLabelStyle = tarjeta.color_precio_label_override ? `color: ${tarjeta.color_precio_label_override}` : undefined;
@@ -97,10 +97,10 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                     <!-- Decoración "EL MÁS POPULAR" (Banner Superior) -->
                     {tarjeta.es_destacado && (
                         <div
-                            class="w-full bg-[var(--accent-highlight-secondary,#0097C4)] rounded-t-[20px] py-3 md:py-4 px-6 md:px-10 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6"
+                            class="w-full bg-[var(--accent-highlight-secondary,#0097C4)] rounded-t-[20px] py-2 md:py-3 px-6 md:px-8 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6"
                             style={destacadoFondoStyle}
                         >
-                            <span class="font-[family-name:var(--font-principal)] text-white font-bold text-[22px] md:text-[28px] uppercase tracking-wide drop-shadow-sm text-center">
+                            <span class="font-[family-name:var(--font-principal)] text-white font-black text-[22px] md:text-[40px] uppercase tracking-wide drop-shadow-sm text-center">
                                 {tarjeta.texto_destacado || "EL MÁS POPULAR"}
                             </span>
                             
@@ -130,8 +130,8 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                     <div class={`w-full bg-white rounded-[24px] shadow-xl overflow-hidden flex flex-col md:flex-row items-stretch relative z-10 ${tarjeta.es_destacado ? "pt-4 md:pt-6" : ""}`}>
                         
                         <!-- Columna Izquierda: Imagen del Paquete -->
-                        <div class="w-full aspect-[16/10] md:aspect-auto md:w-[45%] lg:w-[40%] shrink-0 p-5 md:p-6 relative overflow-hidden">
-                            <div class="relative w-full h-full rounded-[20px] overflow-hidden min-h-[220px] md:min-h-full">
+                        <div class="w-full aspect-[16/10] md:aspect-auto md:w-[40%] lg:w-[35%] shrink-0 p-3 md:p-4 relative overflow-hidden">
+                            <div class="relative w-full h-full rounded-[20px] overflow-hidden min-h-[160px] md:min-h-full">
                                 {tarjeta.imagen ? (
                                     <img 
                                         src={getStrapiUrl(tarjeta.imagen)} 
@@ -145,18 +145,18 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                         </div>
 
                         <!-- Columna Derecha: Contenido y Precios -->
-                        <div class="w-full md:w-[55%] lg:w-[60%] p-6 md:p-8 md:pl-0 flex flex-col">
+                        <div class="w-full md:w-[60%] lg:w-[65%] p-5 md:p-6 md:pl-0 flex flex-col">
                             
                             <!-- Título -->
                             <h3
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[24px] md:text-[32px] font-bold leading-tight uppercase tracking-wide mb-6 text-center"
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[24px] md:text-[40px] font-black leading-tight uppercase tracking-wide text-center"
                                 style={tarjetaTituloStyle}
                             >
                                 {tarjeta.titulo}
                             </h3>
 
                             <!-- Sección Precios (Cruzados) Centrada -->
-                            <div class="flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 mb-6 border-b-2 border-[var(--feedback-info-background,#EAF5FC)] pb-4">
+                            <div class="flex flex-row items-center justify-center gap-3 sm:gap-5 md:gap-6 mb-4 border-b-2 border-[var(--feedback-info-background,#EAF5FC)] pb-1">
                                 
                                 <!-- Precio Regular -->
                                 {tarjeta.precio_regular && (
@@ -217,18 +217,18 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
 
                             <!-- "Incluye" Título Fijo -->
                             <h4
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[18px] md:text-[20px] font-bold mb-4"
+                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[18px] md:text-[20px] font-bold mb-3"
                                 style={tarjetaIncluyeTituloStyle}
                             >
                                 Incluye
                             </h4>
 
                             <!-- Contenido "Incluye" (Dos opciones: Lista de iconos O editor WYSIWYG) -->
-                            <div class="flex-grow mb-6">
+                            <div class="flex-grow mb-4">
                                 
                                 {/* Opción 1: Lista Dinámica de Iconos */}
                                 {tarjeta.lista_incluye && tarjeta.lista_incluye.length > 0 && (
-                                    <ul class="flex flex-col gap-3">
+                                    <ul class="flex flex-col gap-2">
 {tarjeta.lista_incluye.map((item) => {
                                             const itemIconHex = item.color_icono_override || tarjetaIncluyeIconoHex;
                                             const itemTextoHex = item.color_texto_override || tarjetaIncluyeTextoHex;
@@ -283,7 +283,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                                 <div class="w-full flex justify-center md:justify-start">
                                     <a 
                                         href={tarjeta.boton.url || "#"} 
-                                        class="w-full md:w-auto min-w-[280px] flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-[var(--neutral-background-strong,#1A1A2E)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#FBF21A)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#FBF21A)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-3 md:py-4 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
+                                        class="w-full md:w-auto min-w-[240px] flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-[var(--neutral-background-strong,#1A1A2E)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#FBF21A)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#FBF21A)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-2.5 md:py-3 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
                                     >
                                         {tarjeta.boton.texto || "COMPRA TU ENTRADA"}
                                     </a>

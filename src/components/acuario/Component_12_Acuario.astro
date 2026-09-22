@@ -25,7 +25,7 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
 ---
 
 <section 
-    class="w-full py-16 md:py-24 relative overflow-hidden" 
+    class="w-full py-10 md:py-14 relative overflow-hidden"
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -33,13 +33,13 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
         backgroundPosition: "center",
     }}
 >
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-6xl">
+    <div class="container mx-auto px-6 md:px-12 relative z-10 max-w-6xl">
         
         {/* Cabecera: Título y Subtítulo */}
         {(titulo || subtitulo) && (
-            <div class="text-center mb-12 md:mb-16">
+            <div class="text-center mb-8 md:mb-10">
                 {titulo && (
-                    <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-2">
+                    <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-1">
                         {titulo}
                     </TitleTag>
                 )}
@@ -52,12 +52,12 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
         )}
 
         {/* Cuadrícula de Tarjetas */}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 lg:gap-8">
             {tarjetas.map((item) => (
                 <div class="flex flex-col items-center text-center group">
                     {/* Icono SVG o Imagen */}
                     {item.icono && (
-                        <div class="w-16 h-16 md:w-20 md:h-20 mb-6 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <div class="w-16 h-16 md:w-20 md:h-20 mb-2 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                             <img 
                                 src={getStrapiUrl(item.icono)} 
                                 alt={item.titulo || "Icono"} 
@@ -68,7 +68,7 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
                     
                     {/* Título de Tarjeta */}
                     {item.titulo && (
-                        <h3 class="font-[family-name:var(--font-principal)] text-[18px] md:text-[20px] font-bold uppercase text-[var(--accent-highlight-primary)] mb-4">
+                        <h3 class="font-[family-name:var(--font-principal)] text-[18px] md:text-[20px] font-bold uppercase text-[var(--accent-highlight-primary)] mb-0">
                             {item.titulo}
                         </h3>
                     )}
@@ -76,7 +76,7 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
                     {/* Descripción */}
                     {item.descripcion && (
                         <div 
-                            class="font-[family-name:var(--font-secundaria)] text-[16px] text-white leading-relaxed [&>p]:mb-3 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                            class="font-[family-name:var(--font-secundaria)] text-[16px] text-white leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
                             set:html={stringifyRichText(item.descripcion)}
                         />
                     )}

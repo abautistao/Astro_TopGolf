@@ -10,6 +10,7 @@ export interface Props {
     icono_decorativo_hover?: any;
     color_fondo?: string;
     imagen_decorativa_fondo?: any;
+    autoplay?: boolean;
 }
 
 const {
@@ -20,7 +21,8 @@ const {
     tarjetas = [],
     icono_decorativo_hover,
     color_fondo,
-    imagen_decorativa_fondo
+    imagen_decorativa_fondo,
+    autoplay = true
 } = Astro.props;
 
 const TitleTag = etiqueta_titulo;
@@ -49,7 +51,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
         </div>
     )}
 
-    <div class="max-w-[1440px] mx-auto px-6 relative z-10">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
         <div class="text-center mb-12 md:mb-16">
             {titulo && (
                 <TitleTag class="font-[family-name:var(--font-principal)] text-[#003F7F] text-[32px] font-black uppercase leading-tight">
@@ -63,12 +65,12 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
             )}
         </div>
 
-        <div class="swiper acuario-precios-swiper" data-count={tarjetas.length}>
+        <div class="swiper acuario-precios-swiper" data-count={tarjetas.length} data-autoplay={autoplay ? "true" : "false"}>
             <div class={`swiper-wrapper ${tarjetas.length <= 3 ? 'lg:!grid lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] lg:gap-8 lg:w-full lg:justify-center' : ''}`}>
                 {tarjetas.map((item) => (
-                    <div class="swiper-slide h-auto group pb-10">
+                    <div class="swiper-slide h-auto group pb-10 pt-4 relative">
                         <div 
-                            class="relative rounded-[30px] overflow-visible flex flex-col h-full border-[3px] border-transparent group-hover:border-[var(--accent-highlight-primary)] transition-all duration-300 shadow-xl group-hover:shadow-2xl group-hover:-translate-y-2"
+                            class="relative z-10 rounded-[30px] overflow-visible flex flex-col h-full border-[7px] border-transparent group-hover:border-[var(--surface-brand-secondary)] transition-all duration-300 shadow-xl group-hover:shadow-2xl group-hover:-translate-y-2"
                             style={item.color_fondo_contenido ? `background-color: ${item.color_fondo_contenido}` : "background-color: #002A4E;"}
                         >
                             
@@ -174,18 +176,18 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                                 )}
                             </div>
 
-                            {/* Estrella / Elemento Decorativo (Solo en Hover) */}
-                            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 pointer-events-none">
-                                {icono_decorativo_hover ? (
-                                    <div class="h-16 flex items-center justify-center">
-                                        <img src={getStrapiUrl(icono_decorativo_hover)} alt="Icono decorativo" class="h-full w-auto object-contain drop-shadow-lg" />
-                                    </div>
-                                ) : (
-                                    <div class="w-12 h-12 flex items-center justify-center bg-[var(--accent-highlight-primary)] text-white rounded-full shadow-lg border-4 border-[#002A4E]">
-                                        <Fragment set:html={defaultSvg} />
-                                    </div>
-                                )}
-                            </div>
+                            {/* Estrella / Elemento Decorativo detrás (solo mitad visible) */}
+                        </div>
+                        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 translate-y-1/2 z-0 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 pointer-events-none">
+                            {icono_decorativo_hover ? (
+                                <div class="h-20 flex items-center justify-center">
+                                    <img src={getStrapiUrl(icono_decorativo_hover)} alt="Icono decorativo" class="h-full w-auto object-contain drop-shadow-lg" />
+                                </div>
+                            ) : (
+                                <div class="w-14 h-14 flex items-center justify-center bg-[var(--accent-highlight-primary)] text-white rounded-full shadow-lg border-4 border-[#002A4E]">
+                                    <Fragment set:html={defaultSvg} />
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -231,6 +233,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
         
         sliders.forEach((sliderElement) => {
             const count = parseInt(sliderElement.getAttribute('data-count') || '0', 10);
+            const autoplayEnabled = sliderElement.getAttribute('data-autoplay') !== "false";
             let swiperInstance: Swiper | null = null;
 
             const handleResize = () => {
@@ -245,7 +248,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                             centeredSlides: false,
                             spaceBetween: 20,
                             loop: count > 1, // Solo hacer loop si hay más de 1 tarjeta
-                            autoplay: false ? {
+                            autoplay: autoplayEnabled ? {
                                 delay: 3000, // 3 segundos
                                 disableOnInteraction: false,
                             } : false,
