@@ -64,6 +64,7 @@ const logoMobileUrl = getStrapiUrl(headerData?.logo_mobile) || logoUrl;
 // fires when the passed data has no social list, keeping the hot path
 // zero-extra-fetch when the simplified variant is fully populated.
 let social = Array.isArray(headerData?.social) ? headerData.social : [];
+let textoHorario: string;
 if (social.length === 0) {
     try {
         const fullHeader = await getHeaderData(locale);
@@ -76,6 +77,10 @@ if (social.length === 0) {
             : null;
         if (acuarioVariant && Array.isArray(acuarioVariant.social)) {
             social = acuarioVariant.social;
+        }
+
+        if(acuarioVariant && acuarioVariant.texto_horario) {
+            textoHorario = acuarioVariant.texto_horario;
         }
     } catch {
         // Fallback failed — keep social as []; fila 1 still renders its band
@@ -103,16 +108,24 @@ void _ctaButtonRaw;
         band keeps its min-height whether or not icons are configured — same
         visual as `Header.astro` with no social configured.
     */}
-    <div class="hidden md:flex bg-[var(--custom-color-01)] items-center justify-center px-8 w-full min-h-[60px] font-bold">
-        <div class="flex items-center gap-5 text-white">
+    <div class="hidden! md:flex! bg-(--custom-color-01)! items-center! justify-between! px-8! w-full! min-h-[60px]! font-bold!">
+        <div class="flex items-center justify-center gap-6">
+            <div class="text-white! text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
+                <i class="fas fa-phone-alt"></i> <span>+ (52) 55 5395 4586</span>
+            </div>
+            <div class="text-white! text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
+                <i class="far fa-clock"></i> <span>Lun - Dom 10:00 -18:00</span>
+            </div>
+        </div>
+        <div class="flex! items-center! gap-5! text-white!">
             {social.map((item: any) => (
                 <a
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="hover:opacity-80 transition-opacity"
+                    class="hover:opacity-80 transition-opacity text-white!"
                 >
-                    <i class={`${item.icono_clase} text-[17px]`}></i>
+                    <i class={`${item.icono_clase} text-[17px]!`}></i>
                 </a>
             ))}
         </div>
