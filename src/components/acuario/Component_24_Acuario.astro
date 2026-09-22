@@ -57,15 +57,15 @@ const hasGallery = mediaFiles.length > 0;
 ---
 
 <section
-    class="w-full py-12 md:py-20 relative overflow-hidden"
+    class="w-full! py-12! md:py-20! relative! overflow-hidden!"
     style={bgStyle}
 >
-    <div class="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
+    <div class="container! mx-auto! px-6! md:px-12! max-w-7xl! relative! z-10!">
         {/* Bloque de texto centrado */}
-        <div class="text-center max-w-5xl mx-auto mb-10 md:mb-14 px-6 md:px-12">
+        <div class="text-center! max-w-5xl! mx-auto! mb-10! md:mb-14! px-6! md:px-12!">
             {titulo && (
                 <TitleTag
-                    class="font-[family-name:var(--font-principal)] text-[28px] md:text-[42px] font-bold uppercase leading-tight mb-3 md:mb-4"
+                    class="font-[family-name:var(--font-principal)]! text-[28px]! md:text-[42px]! font-bold! uppercase! leading-tight mb-3! md:mb-4!"
                     style={`color: ${finalTitleColor};`}
                 >
                     {titulo}
@@ -74,7 +74,7 @@ const hasGallery = mediaFiles.length > 0;
 
             {subtitulo_1 && (
                 <span
-                    class="block font-[family-name:var(--font-principal)] text-[18px] md:text-[22px] font-bold uppercase tracking-wide mb-2 md:mb-3"
+                    class="block! font-[family-name:var(--font-principal)]! text-[18px]! md:text-[22px]! font-bold! uppercase! tracking-wide mb-2! md:mb-3!"
                     style={`color: ${finalSubtitle1Color};`}
                 >
                     {subtitulo_1}
@@ -83,7 +83,7 @@ const hasGallery = mediaFiles.length > 0;
 
             {subtitulo_2 && (
                 <span
-                    class="block font-[family-name:var(--font-principal)] text-[20px] md:text-[26px] font-black uppercase tracking-wide mb-4 md:mb-6"
+                    class="block font-[family-name:var(--font-principal)]! text-[20px]! md:text-[26px]! font-black! uppercase! tracking-wide! mb-4!md:mb-6!"
                     style={`color: ${finalSubtitle2Color};`}
                 >
                     {subtitulo_2}
@@ -92,8 +92,8 @@ const hasGallery = mediaFiles.length > 0;
 
             {descripcion && (
                 <div
-                    class="font-[family-name:var(--font-secundaria)] text-[15px] md:text-[17px] font-normal leading-relaxed [&>p]:mb-3 last:[&>p]:mb-0 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
-                    style={`color: ${finalTextColor};`}
+                    class="font-[family-name:var(--font-secundaria)]! text-[15px]! md:text-[17px]! font-normal! leading-relaxed! [&>p]:mb-3! last:[&>p]:mb-0! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
+                    style={`color: ${finalTextColor} !important;`}
                     set:html={stringifyRichText(descripcion)}
                 />
             )}
@@ -101,20 +101,20 @@ const hasGallery = mediaFiles.length > 0;
 
         {/* Galería en carrusel */}
         {hasGallery && (
-            <div class="relative w-full px-2 md:px-12">
-                <div class="overflow-hidden">
-                    <div class="acuario-24-swiper w-full pb-2">
-                        <div class="swiper-wrapper items-stretch">
+            <div class="relative! w-full! px-2! md:px-12!">
+                <div class="overflow-hidden!">
+                    <div class="acuario-24-swiper w-full! pb-2!">
+                        <div class="swiper-wrapper items-stretch!">
                             {mediaFiles.map((img: any) => {
                                 const imgUrl = getStrapiUrl(img);
                                 const altText = img?.alternativeText || img?.name || "Galería Acuario";
                                 return (
-                                    <div class="swiper-slide h-auto">
-                                        <div class="relative w-full aspect-[3/4] md:aspect-[3/4] rounded-[16px] md:rounded-[24px] overflow-hidden shadow-2xl bg-black">
+                                    <div class="swiper-slide h-auto!">
+                                        <div class="relative! w-full! aspect-[3/4]! md:aspect-[3/4]! rounded-[16px]! md:rounded-[24px]! overflow-hidden! shadow-2xl! bg-black!">
                                             <img
                                                 src={imgUrl}
                                                 alt={altText}
-                                                class="absolute inset-0 w-full h-full object-cover"
+                                                class="absolute! inset-0! w-full! h-full! object-cover!"
                                                 loading="lazy"
                                             />
                                         </div>
@@ -126,17 +126,17 @@ const hasGallery = mediaFiles.length > 0;
                 </div>
 
                 <button
-                    class="swiper-btn-prev absolute top-1/2 -translate-y-1/2 left-0 md:-left-2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-text-inverted)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    class="swiper-btn-prev absolute! top-1/2! -translate-y-1/2! left-0! md:-left-2! z-20! w-10! h-10! md:w-12! md:h-12! flex! items-center! justify-center! text-[var(--neutral-text-inverted)]! hover:text-[var(--brand-interactive-base)]! transition-colors duration-300 focus:outline-none! cursor-pointer!"
                     aria-label="Anterior"
                 >
-                    <i class="fa-solid fa-chevron-left text-2xl md:text-3xl"></i>
+                    <i class="fa-solid fa-chevron-left text-2xl! md:text-3xl!"></i>
                 </button>
 
                 <button
-                    class="swiper-btn-next absolute top-1/2 -translate-y-1/2 right-0 md:-right-2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[var(--neutral-text-inverted)] hover:text-[var(--brand-interactive-base)] transition-colors duration-300 focus:outline-none cursor-pointer"
+                    class="swiper-btn-next absolute! top-1/2! -translate-y-1/2! right-0! md:-right-2! z-20! w-10! h-10! md:w-12! md:h-12! flex! items-center! justify-center! text-[var(--neutral-text-inverted)]! hover:text-[var(--brand-interactive-base)]! transition-colors duration-300 focus:outline-none! cursor-pointer!"
                     aria-label="Siguiente"
                 >
-                    <i class="fa-solid fa-chevron-right text-2xl md:text-3xl"></i>
+                    <i class="fa-solid fa-chevron-right text-2xl! md:text-3xl!"></i>
                 </button>
             </div>
         )}
