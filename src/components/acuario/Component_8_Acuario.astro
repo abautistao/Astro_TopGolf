@@ -9,6 +9,7 @@ export interface Props {
     color_fondo?: string;
     imagen_fondo?: any;
     tarjetas?: any[];
+    boton?: any;
 }
 
 const {
@@ -18,7 +19,8 @@ const {
     descripcion,
     color_fondo,
     imagen_fondo,
-    tarjetas = []
+    tarjetas = [],
+    boton
 } = Astro.props;
 
 const TitleTag = htmlTag;
@@ -157,6 +159,27 @@ const TitleTag = htmlTag;
                         </div>
                     </div>
                 ))}
+            </div>
+        )}
+
+        {/* Botón de sección (centrado debajo de las cards) */}
+        {boton && (
+            <div class="mt-10 md:mt-12 flex justify-center w-full">
+                {boton.tipo === "version_2" ? (
+                    <a
+                        href={boton.url || "#"}
+                        class="w-auto max-w-max inline-flex items-center justify-center bg-transparent hover:bg-white text-white hover:text-[var(--surface-brand-primary,#003F7F)] border-[3px] border-white font-[family-name:var(--font-principal)] font-bold text-[16px] py-3 px-12 rounded-[12px] transition-all duration-300 uppercase tracking-widest text-center shrink-0"
+                    >
+                        {boton.texto || "MÁS PROMOCIONES"}
+                    </a>
+                ) : (
+                    <a
+                        href={boton.url || "#"}
+                        class="w-auto max-w-max inline-flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-white text-[var(--surface-brand-primary,#003F7F)] font-[family-name:var(--font-principal)] font-bold text-[16px] py-3.5 px-12 rounded-[16px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-widest text-center shrink-0"
+                    >
+                        {boton.texto || "Ver más"}
+                    </a>
+                )}
             </div>
         )}
     </div>
