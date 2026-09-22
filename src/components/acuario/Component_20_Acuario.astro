@@ -40,21 +40,21 @@ const finalText = color_texto || "var(--surface-brand-primary)";
 ---
 
 <section
-    class="w-full py-10 md:py-16"
+    class="w-full! py-8!"
     style={`background-color: ${finalSectionBg};`}
 >
-    <div class="container mx-auto px-6 md:px-12 flex justify-center">
+    <div class="container! mx-auto! px-6! md:px-12! flex! justify-center!">
         {fileUrl ? (
             <a
                 href={fileUrl}
                 download={downloadName}
-                class="inline-flex items-center gap-4 px-8 md:px-10 py-4 md:py-5 rounded-2xl transition-transform hover:scale-[1.02] active:scale-[0.99] shadow-md font-[family-name:var(--font-principal)] font-bold uppercase text-[16px] md:text-[20px] tracking-wide"
-                style={`background-color: ${finalBtnBg}; color: ${finalText};`}
+                class="inline-flex! items-center! gap-4! px-sm! md:px-10! py-4! md:py-sm! rounded-2xl! transition-transform hover:scale-[1.02] active:scale-[0.99] shadow-md font-[family-name:var(--font-principal)]! font-bold! uppercase! text-[16px] md:text-[20px]! tracking-wide"
+                style={`background-color: ${finalBtnBg} !important; color: ${finalText} !important;`}
             >
                 {icono_descarga && (
                     <span
-                        class="inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border-2 shrink-0"
-                        style={`border-color: ${finalText}; color: ${finalText};`}
+                        class="inline-flex! items-center! justify-center! w-9! h-9! md:w-10! md:h-10! rounded-full! border-2! shrink-0!"
+                        style={`border-color: ${finalText} !important; color: ${finalText} !important;`}
                         aria-hidden="true"
                     >
                         <svg
@@ -76,7 +76,7 @@ const finalText = color_texto || "var(--surface-brand-primary)";
                 <span>{texto}</span>
             </a>
         ) : (
-            <p class="text-center text-sm opacity-70">Falta subir el archivo a descargar.</p>
+            <p class="text-center! text-sm! opacity-70!">Falta subir el archivo a descargar.</p>
         )}
     </div>
 </section>

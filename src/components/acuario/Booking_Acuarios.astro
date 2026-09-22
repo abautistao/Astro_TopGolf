@@ -18,11 +18,12 @@ export interface Props extends HTMLAttributes<'div'> {
     reservacion_fecha?: string | null;
     vendedor_id?: string | null;
     padding_top: string;
-    background: string;
+    background_color: string;
+    clase: string;
 }
 
 const rawParams = {...Astro.props };
-const { padding_top, background } = Astro.props
+const { padding_top, background_color, clase } = Astro.props
 const vmgPluginUrl = import.meta.env.PUBLIC_VMG_PLUGIN_URL;
 const vmgPluginVersion = import.meta.env.PUBLIC_VMG_PLUGIN_VERSION;
 const paramsLimpios: { [key: string]: any } = {};
@@ -33,10 +34,13 @@ for (const [key, value] of Object.entries(rawParams)) {
     }
 }
 
-const bg = background ? background : '#050146';
+const bg = background_color ? background_color : '#050146';
 ---
 
-<div id="booking-container-dolphinaris" class="bg-(--neutral-background-subtle) py-12">
+<div 
+    id="booking-container-dolphinaris" 
+    class=`bg-(--neutral-background-subtle) py-12 ${clase}` 
+>
     <input id="vmg_plugin_id" type="hidden" value={paramsLimpios.plugin_id}>
     <input id="vmg_plugin_url" type="hidden" value={vmgPluginUrl}>
     <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
