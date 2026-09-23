@@ -39,7 +39,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                         </div>
                             
                         <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
-                            <input id="calendar" class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
+                            <input id="date" class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
                         </div> 
                     </div>
                 </label>
@@ -48,12 +48,6 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                 <label class="mb-0!">
                     <span class="select-container">
                         <select id="pax" name="pax" class="focus:outline-none appearance-none! pl-2.5 pl-10 py-4! lg:py-6! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
-                            <option value="1" selected>1 jugador</option>
-                            <option value="2">2 jugadores</option>
-                            <option value="3">3 jugadores</option>
-                            <option value="4">4 jugadores</option>
-                            <option value="5">5 jugadores</option>
-                            <option value="6">6 jugadores</option>
                             <option value="7">7 jugadores</option>
                             <option value="8">8 jugadores</option>
                             <option value="9">9 jugadores</option>
@@ -62,6 +56,16 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                             <option value="12">12 jugadores</option>
                             <option value="13">13 jugadores</option>
                             <option value="14">14 jugadores</option>
+                            <option value="15">15 jugadores</option>
+                            <option value="16">16 jugadores</option>
+                            <option value="17">17 jugadores</option>
+                            <option value="18">18 jugadores</option>
+                            <option value="19">19 jugadores</option>
+                            <option value="20">20 jugadores</option>
+                            <option value="21">21 jugadores</option>
+                            <option value="22">22 jugadores</option>
+                            <option value="23">23 jugadores</option>
+                            <option value="24">24 jugadores</option>
                         </select>
                     </span>
                 </label>
@@ -82,20 +86,24 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                         <label class="mb-0!">
                             <span class="select-container">
                                 <select id="pax_modal" name="pax" class="focus:outline-none appearance-none! pl-10 py-4! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
-                                    <option value="1" selected>1 jugador</option>
-                                    <option value="2">2 jugadores</option>
-                                    <option value="3">3 jugadores</option>
-                                    <option value="4">4 jugadores</option>
-                                    <option value="5">5 jugadores</option>
-                                    <option value="6">6 jugadores</option>
-                                    <option value="7">7 jugadores</option>
-                                    <option value="8">8 jugadores</option>
-                                    <option value="9">9 jugadores</option>
-                                    <option value="10">10 jugadores</option>
-                                    <option value="11">11 jugadores</option>
-                                    <option value="12">12 jugadores</option>
-                                    <option value="13">13 jugadores</option>
-                                    <option value="14">14 jugadores</option>
+                                            <option value="7">7 jugadores</option>
+                                            <option value="8">8 jugadores</option>
+                                            <option value="9">9 jugadores</option>
+                                            <option value="10">10 jugadores</option>
+                                            <option value="11">11 jugadores</option>
+                                            <option value="12">12 jugadores</option>
+                                            <option value="13">13 jugadores</option>
+                                            <option value="14">14 jugadores</option>
+                                            <option value="15">15 jugadores</option>
+                                            <option value="16">16 jugadores</option>
+                                            <option value="17">17 jugadores</option>
+                                            <option value="18">18 jugadores</option>
+                                            <option value="19">19 jugadores</option>
+                                            <option value="20">20 jugadores</option>
+                                            <option value="21">21 jugadores</option>
+                                            <option value="22">22 jugadores</option>
+                                            <option value="23">23 jugadores</option>
+                                            <option value="24">24 jugadores</option>
                                 </select>
                             </span>
                         </label>
