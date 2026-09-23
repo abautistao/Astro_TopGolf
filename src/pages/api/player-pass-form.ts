@@ -9,11 +9,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // En Cloudflare production, las variables viven en locals.runtime.env
     const runtime = locals.runtime;
     const RESEND_KEY = runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
-    const EMAILS = runtime?.env?.EMAIL_RECIPIENTS_INNOVA || import.meta.env.EMAIL_RECIPIENTS_INNOVA;
-    const EMAILS_BCC = runtime?.env?.EMAIL_RECIPIENTS_PLAYER || import.meta.env.EMAIL_RECIPIENTS_PLAYER;
+    const EMAILS = runtime?.env?.EMAIL_RECIPIENTS_EVENTS || import.meta.env.EMAIL_RECIPIENTS_EVENTS;
+    const EMAILS_BCC = runtime?.env?.EMAIL_BCC || import.meta.env.EMAIL_BCC;
     const FROM_EMAIL = runtime?.env?.FROM_EMAIL || import.meta.env.FROM_EMAIL;
     const FROM_NAME = runtime?.env?.FROM_NAME || import.meta.env.FROM_NAME;
-    const GOOGLE_SHEETS_URL = runtime?.env?.GOOGLE_SHEETS_INNOVA || import.meta.env.GOOGLE_SHEETS_INNOVA;
+    const GOOGLE_EVENTS_URL = runtime?.env?.GOOGLE_SHEETS_PLAYER || import.meta.env.GOOGLE_SHEETS_PLAYER;
     const referer = request.headers.get('referer') || 'Directo/Desconocido';
 
     if (!RESEND_KEY) {
@@ -26,25 +26,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // --- LÓGICA PARA GOOGLE SHEETS ---
     const sheetData = Object.fromEntries(data.entries());
-    // Eliminamos datos binarios o pesados antes de enviar a la hoja
-    delete sheetData.CV; 
-    delete sheetData['cf-turnstile-response'];
-    // AGREGAMOS EL REFERER AL OBJETO DE SHEETS
     sheetData.Referer = referer;
 
     let sheetError = null;
-    // if (GOOGLE_SHEETS_URL) {
-    //     try {
-    //         await fetch(GOOGLE_SHEETS_URL, {
-    //             method: "POST",
-    //             body: JSON.stringify(sheetData),
-    //             headers: { "Content-Type": "application/json" }
-    //         });
-    //     } catch (e) {
-    //         console.error("Error guardando en Sheets:", e);
-    //         sheetError = "Error al registrar en la base de datos";
-    //     }
-    // }
+    if (GOOGLE_EVENTS_URL) {
+        try {
+            await fetch(GOOGLE_EVENTS_URL, {
+                method: "POST",
+                body: JSON.stringify(sheetData),
+                headers: { "Content-Type": "application/json" }
+            });
+
+        } catch (e) {
+            console.error("Error guardando en Sheets:", e);
+            sheetError = "Error al registrar en la base de datos";
+        }
+    }
     
     const entries = [...data.entries()];
 
@@ -65,7 +62,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         `;
     }).join('');
 
-    const subjectData =  `Nuevo Lead Player Pass: ${data.get('Nombre')}}`;
+    const subjectData = "Tu promo TOCA Social y Topgolf llegó😎";
         
     try {
         const { data: emailData, error } = await resend.emails.send({
@@ -74,8 +71,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
             bcc: bcc,
             subject: subjectData,
             html: `
-                <img src="https://cms.tocasocial.com.mx/uploads/PARTIDOS_HOME_DESK_3f79ce2cda.jpg"/>
-                
+                <p>Bienvenido al programa Ventura Player Pass, a partir de hoy ya puedes disfrutar de todos tus beneficios. Para comenzar aquí tienes tu cupón de juego gratis válido en TOCA Social y Topgolf, ¡Te esperamos!</p>
+                <img src="https://cms.topgolf.com.mx/uploads/toca_social_topgolf_monterrey_ltm_f8776bb8ba.jpg" alt="Topgolf Monterrey Player Pass" style="width: 100%"/>
             `,
         },);
 
@@ -90,7 +87,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
         return new Response(
             JSON.stringify({
-                message: "GRACIAS! EL FORMULARIO HA SIDO ENVIADO.",
+                message: "Correo enviado exitosamente",
                 id: emailData?.id
             }),
             { status: 200 }
