@@ -16,6 +16,7 @@ interface Props {
     background_color: string
     nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     image_decoration: any;
+    show_banner_bottom: any;
 }
 
 const {
@@ -27,7 +28,8 @@ const {
     imagen,
     background_color,
     nivel_heading_titulo,
-    image_decoration
+    image_decoration,
+    show_banner_bottom
 } = Astro.props;
 
 const image_desktop = getStrapiUrl(imagen);
@@ -48,18 +50,21 @@ const showVideo = isVideo(image_desktop);
 
 const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
 const bg = background_color ? background_color : '#0004FF'
+const colorStrong = !show_banner_bottom ? '#00FFFF' : '#2afd94';
 ---
 
 <div 
     id="component-52-banner" 
     class="content relative from-accent-pine to-brand-navy overflow-hidden pt-12 lg:pt-0"
     >
-    <Image
-        src={imageDecoration}
-        alt="foto"
-        class="w-full absolute inset-10 left-0 lg:inset-0"
-        inferSize={true}
-    />
+    {image_decoration && (
+        <Image
+            src={imageDecoration}
+            alt="foto"
+            class="w-full absolute inset-10 left-0 lg:inset-0"
+            inferSize={true}
+        />
+    )}
 
     <div class="headerWrap relative py-6! px-6! lg:px-16! lg:py-20! grid grid-cols-1 md:grid-cols-[51%_49%] items-center gap-y-6">
         
@@ -111,13 +116,15 @@ const bg = background_color ? background_color : '#0004FF'
             </div>
         </div>
 
-        <div class="absolute inset-x-0 bottom-0 z-0 bg-[#2afd94] px-4 pb-4 pt-20 md:p-8 lg:px-16 -mt-20 -mx-4 md:m-0"></div>
+        {show_banner_bottom && (
+            <div class="absolute inset-x-0 bottom-0 z-0 bg-[#2afd94] px-4 pb-4 pt-20 md:p-8 lg:px-16 -mt-20 -mx-4 md:m-0"></div>
+        )}
     </div>
     <!-- Contenido Flexible -->
     
 </div>
 
-<style define:vars={{ bg }}>
+<style define:vars={{ bg, colorStrong }}>
     #component-52-banner {
         background-color: var(--bg);
     }
@@ -129,6 +136,10 @@ const bg = background_color ? background_color : '#0004FF'
     .strapi-rich-text :global(strong) {
         font-weight: 700;
         font-family: var(--font-shields-sans-semibold);
-        color: #2afd94;
+        color: var(--colorStrong);
+    }
+
+    .strapi-rich-text :global(ul) {
+        
     }
 </style>
