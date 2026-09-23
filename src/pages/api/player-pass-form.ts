@@ -75,7 +75,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             subject: subjectData,
             html: `
                 <p>Bienvenido al programa Ventura Player Pass, a partir de hoy ya puedes disfrutar de todos tus beneficios. Para comenzar aquí tienes tu cupón de juego gratis válido en TOCA Social y Topgolf, ¡Te esperamos!</p>
-                <img src="https://cms.tocasocial.com.mx/uploads/PARTIDOS_HOME_DESK_3f79ce2cda.jpg"/>
+                <img src="https://cms.tocasocial.com.mx/uploads/toca_social_topgolf_monterrey_ltm_31f8d8fc7a.jpg"/>
                 
             `,
         },);
