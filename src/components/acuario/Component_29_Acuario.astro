@@ -1,0 +1,89 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    subtitulo?: string;
+    imagen_apple?: any;
+    enlace_apple?: string;
+    imagen_google?: any;
+    enlace_google?: string;
+    color_fondo?: string;
+    color_titulo_override?: string;
+    color_subtitulo_override?: string;
+}
+
+const {
+    titulo,
+    htmlTag = "h2",
+    subtitulo,
+    imagen_apple,
+    enlace_apple,
+    imagen_google,
+    enlace_google,
+    color_fondo,
+    color_titulo_override,
+    color_subtitulo_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+// Cascade: editor override (hex from the color picker) wins, otherwise the
+// theme CSS variable defined by setup-site.
+const finalBg = color_fondo || "var(--surface-brand-primary)";
+const finalTitleColor = color_titulo_override || "var(--neutral-text-inverted)";
+const finalSubtitleColor = color_subtitulo_override || "var(--accent-highlight-primary)";
+
+// Resolve media URLs with null guards; Strapi media may arrive wrapped in
+// { data: { attributes: { url } } }. getStrapiUrl returns null when missing.
+const appleUrl = getStrapiUrl(imagen_apple);
+const googleUrl = getStrapiUrl(imagen_google);
+---
+
+<section
+    class="w-full py-12 md:py-16"
+    style={`background-color: ${finalBg};`}
+>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16">
+        <div class="font-[family-name:var(--font-principal)] text-center md:text-left">
+            {titulo && (
+                <TitleTag
+                    class="block text-[37px] font-bold leading-[31px] uppercase"
+                    style={`color: ${finalTitleColor};`}
+                >
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <p
+                    class="text-[39px] font-black leading-[31px] uppercase mt-1"
+                    style={`color: ${finalSubtitleColor};`}
+                >
+                    {subtitulo}
+                </p>
+            )}
+        </div>
+
+        <div class="flex items-center gap-4">
+            {appleUrl && (
+                enlace_apple ? (
+                    <a href={enlace_apple} target="_blank" rel="noopener">
+                        <img src={appleUrl} alt="" class="h-16 md:h-20 w-auto" />
+                    </a>
+                ) : (
+                    <img src={appleUrl} alt="" class="h-16 md:h-20 w-auto" />
+                )
+            )}
+            {googleUrl && (
+                enlace_google ? (
+                    <a href={enlace_google} target="_blank" rel="noopener">
+                        <img src={googleUrl} alt="" class="h-16 md:h-20 w-auto" />
+                    </a>
+                ) : (
+                    <img src={googleUrl} alt="" class="h-16 md:h-20 w-auto" />
+                )
+            )}
+        </div>
+    </div>
+</section>
