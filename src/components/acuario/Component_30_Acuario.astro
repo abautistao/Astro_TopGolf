@@ -1,0 +1,61 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    imagen_1?: any;
+    imagen_2?: any;
+    imagen_3?: any;
+    imagen_4?: any;
+    enlace_1?: string;
+    enlace_2?: string;
+    enlace_3?: string;
+    enlace_4?: string;
+    color_fondo?: string;
+}
+
+const {
+    imagen_1,
+    imagen_2,
+    imagen_3,
+    imagen_4,
+    enlace_1,
+    enlace_2,
+    enlace_3,
+    enlace_4,
+    color_fondo,
+} = Astro.props;
+
+// Cascade: editor override (hex from the color picker) wins, otherwise the
+// theme CSS variable defined by setup-site.
+const finalBg = color_fondo || "var(--surface-brand-primary)";
+
+// Build a normalized array of { url, href } pairs. getStrapiUrl returns null
+// when the media is missing, so empty slots render nothing (no broken boxes).
+const cells = [
+    { url: getStrapiUrl(imagen_1), href: enlace_1 },
+    { url: getStrapiUrl(imagen_2), href: enlace_2 },
+    { url: getStrapiUrl(imagen_3), href: enlace_3 },
+    { url: getStrapiUrl(imagen_4), href: enlace_4 },
+].filter((cell) => Boolean(cell.url));
+---
+
+<section
+    class="w-full py-12 md:py-20"
+    style={`background-color: ${finalBg};`}
+>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {cells.map((cell) => (
+                <div class="w-full aspect-[4/3] overflow-hidden rounded-[24px]">
+                    {cell.href ? (
+                        <a href={cell.href} target="_blank" rel="noopener" class="block w-full h-full">
+                            <img src={cell.url} alt="" class="w-full h-full object-cover" loading="lazy" />
+                        </a>
+                    ) : (
+                        <img src={cell.url} alt="" class="w-full h-full object-cover" loading="lazy" />
+                    )}
+                </div>
+            ))}
+        </div>
+    </div>
+</section>

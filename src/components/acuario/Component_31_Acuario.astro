@@ -1,0 +1,93 @@
+---
+import { stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    mensaje_final?: string;
+    imagen?: any;
+    color_fondo?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+    color_final_override?: string;
+}
+
+const {
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    mensaje_final,
+    imagen,
+    color_fondo,
+    color_titulo_override,
+    color_texto_override,
+    color_final_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+// Resolve the media URL once; null when the editor didn't upload an image
+// so the right grid slot renders nothing (no broken empty <img>).
+const mediaUrl = imagen ? getStrapiUrl(imagen) : null;
+
+// Cascade: editor override (hex from the color picker) wins, otherwise the
+// theme CSS variable defined by setup-site.
+const finalBg = color_fondo || "var(--surface-brand-primary)";
+const finalTitle = color_titulo_override || "var(--accent-highlight-primary)";
+const finalText = color_texto_override || "var(--neutral-text-inverted)";
+const finalClosing = color_final_override || "var(--neutral-text-inverted)";
+---
+
+<section
+    class="relative overflow-hidden w-full py-12 md:py-20"
+    style={`background-color: ${finalBg}; color: ${finalText};`}
+>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        {mediaUrl && (
+            <img
+                src={mediaUrl}
+                alt=""
+                class="block md:hidden w-full h-auto object-contain pointer-events-none -mx-4 -mt-12 mb-8"
+                loading="lazy"
+            />
+        )}
+
+        <div class="relative z-10 md:max-w-[58%]">
+            {titulo && (
+                <TitleTag
+                    class="uppercase font-[family-name:var(--font-principal)] text-[37px] font-bold leading-[31px]"
+                    style={`color: ${finalTitle};`}
+                >
+                    {titulo}
+                </TitleTag>
+            )}
+
+            {descripcion && (
+                <div
+                    class="font-[family-name:var(--font-secundaria)] text-[16px] leading-[24px] mt-6 [&>ul]:list-disc [&>ul]:pl-6 [&>ul>li]:mb-2 [&>p]:mb-3"
+                    set:html={stringifyRichText(descripcion)}
+                />
+            )}
+        </div>
+
+        {mediaUrl && (
+            <img
+                src={mediaUrl}
+                alt=""
+                aria-hidden="true"
+                class="hidden md:block absolute top-0 right-0 h-full max-h-[75%] w-auto max-w-[45%] object-contain object-top pointer-events-none"
+                loading="lazy"
+            />
+        )}
+
+        {mensaje_final && (
+            <p
+                class="font-[family-name:var(--font-principal)] text-[20px] font-bold mt-10 text-center"
+                style={`color: ${finalClosing};`}
+            >
+                {mensaje_final}
+            </p>
+        )}
+    </div>
+</section>

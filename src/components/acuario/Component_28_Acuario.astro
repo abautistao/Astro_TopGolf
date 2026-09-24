@@ -1,0 +1,104 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    tipo_media?: "imagen" | "youtube";
+    imagen?: any;
+    youtube_url?: string;
+    relacion_aspecto?: "16_9" | "4_3" | "1_1" | "21_9" | "3_4" | "libre";
+    color_fondo?: string;
+}
+
+const {
+    tipo_media = "imagen",
+    imagen,
+    youtube_url,
+    relacion_aspecto = "16_9",
+    color_fondo,
+} = Astro.props;
+
+// Cascade: editor override (hex from the color picker) wins, otherwise the
+// theme CSS variable defined by setup-site.
+const finalBg = color_fondo || "var(--surface-brand-primary)";
+
+// Map schema enum values to Tailwind aspect ratio utilities.
+const aspectClassMap: Record<string, string> = {
+    "16_9": "aspect-video",
+    "4_3": "aspect-[4/3]",
+    "1_1": "aspect-square",
+    "21_9": "aspect-[21/9]",
+    "3_4": "aspect-[3/4]",
+    "9_16": "aspect-[9/16]",
+    "libre": "",
+};
+const rawAspect = aspectClassMap[relacion_aspecto] ?? "aspect-video";
+const isLibre = relacion_aspecto === "libre";
+// libre means "auto": images size themselves, but a cross-origin YouTube
+// iframe cannot report its content size, so infer it from the URL instead.
+// Shorts are always vertical; any other video defaults to 16:9.
+const isShortsUrl = /youtube\.com\/shorts\//.test(youtube_url ?? "");
+const libreAspect = tipo_media === "youtube" ? (isShortsUrl ? "aspect-[9/16]" : "aspect-video") : "";
+const wrapperAspect = isLibre ? libreAspect : rawAspect;
+// Portrait boxes would be gigantic at full width, so cap them and center.
+const wrapperWidth = wrapperAspect === "aspect-[9/16]" || wrapperAspect === "aspect-[4/3]" ? "max-w-md mx-auto" : "";
+
+// YouTube URL parser supporting watch, share, embed, and shorts forms.
+// Pattern B from componente-9-acuario.
+const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const patterns = [
+        /youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+        /youtu\.be\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/,
+    ];
+    for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return m[1];
+    }
+    return null;
+};
+
+// Resolve media URL with null guard; Strapi media may come wrapped in { data: { attributes: { url } } }.
+const mediaUrl = getStrapiUrl(imagen);
+const youtubeId = tipo_media === "youtube" ? getYoutubeId(youtube_url ?? "") : null;
+---
+
+<section
+    class="w-full py-12 md:py-20"
+    style={`background-color: ${finalBg};`}
+>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div class:list={[
+            "w-full relative overflow-hidden rounded-[24px] bg-transparent",
+            wrapperAspect,
+            wrapperWidth,
+        ]}>
+            {tipo_media === "youtube" && youtubeId ? (
+                <iframe
+                    src={`https://www.youtube.com/embed/${youtubeId}`}
+                    title="YouTube video"
+                    class="absolute inset-0 w-full h-full"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                />
+            ) : tipo_media === "imagen" && mediaUrl ? (
+                isLibre ? (
+                    <img
+                        src={mediaUrl}
+                        alt=""
+                        class="block w-full h-auto object-contain"
+                    />
+                ) : (
+                    <img
+                        src={mediaUrl}
+                        alt=""
+                        class="w-full h-full object-cover"
+                    />
+                )
+            ) : null}
+        </div>
+    </div>
+</section>
