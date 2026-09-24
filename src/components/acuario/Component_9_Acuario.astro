@@ -20,6 +20,7 @@ export interface Props {
     color_subtitulo_override?: string;
     color_texto_override?: string;
     color_item_lista_override?: string;
+    color_overlay?: string;
 }
 
 const {
@@ -41,6 +42,7 @@ const {
     color_subtitulo_override,
     color_texto_override,
     color_item_lista_override,
+    color_overlay,
 } = Astro.props;
 
 const TitleTag = htmlTag;
@@ -65,9 +67,11 @@ const mediaFiles = galeria?.data || galeria || [];
 const youtubeId = youtube_url ? getYoutubeId(youtube_url) : null;
 const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
 const isCompleta = ajuste_imagen === "completa";
+const overlay = color_overlay ? color_overlay : 'transparent'
 ---
 
 <section 
+    id="component-9"
     class="w-full! py-12! md:py-20! relative! overflow-hidden!"
     style={{
         backgroundColor: color_fondo || "#E8F6FD",
@@ -77,7 +81,7 @@ const isCompleta = ajuste_imagen === "completa";
     }}
 >
     <div class="container! mx-auto! px-6! md:px-12! max-w-7xl! relative! z-10!">
-            <div class="grid! grid-cols-1! lg:grid-cols-2! gap-10! items-center!">
+            <div class="grid! grid-cols-1! lg:grid-cols-2! gap-10!">
             
             {/* Columna Izquierda: Información */}
             <div class="flex! flex-col! items-start! w-full! pr-0! lg:pr-8!">
@@ -226,7 +230,7 @@ const isCompleta = ajuste_imagen === "completa";
     </div>
 </section>
 
-<style>
+<style define:vars={{overlay}}>
     /* Estilos para customizar la paginación de Swiper */
     :global(.acuario-galeria-swiper .swiper-pagination-bullet) {
         background: white;
@@ -252,6 +256,18 @@ const isCompleta = ajuste_imagen === "completa";
         list-style: disc;
         padding-left: 1rem;
     }
+
+    #component-9::before {
+        background-color: var(--overlay);
+        display: block;
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        opacity: .9;
+    }
 </style>
 
 <script>
@@ -268,7 +284,7 @@ const isCompleta = ajuste_imagen === "completa";
             new Swiper(sliderElement as HTMLElement, {
                 modules: [Pagination, Autoplay, EffectFade],
                 slidesPerView: 1,
-                effect: 'fade',
+                effect: 'card',
                 fadeEffect: {
                     crossFade: true
                 },
