@@ -26,6 +26,10 @@ export interface Props {
         filas?: number;
         ancho?: "full" | "half";
     }>;
+    texto_boton_secundario: string;
+    color_texto_boton_secundario: string;
+    color_fondo_boton_secundario: string;
+    url_boton_secundario: string;
 }
 
 const {
@@ -44,6 +48,10 @@ const {
     ocultar_labels = false,
     color_fondo_input_override,
     campos = [],
+    texto_boton_secundario,
+    color_texto_boton_secundario,
+    color_fondo_boton_secundario,
+    url_boton_secundario
 } = Astro.props;
 
 const TitleTag = htmlTag as any;
@@ -204,6 +212,17 @@ const baseLabel =
                     class="basis-full! font-[family-name:var(--font-secundaria)]! text-[12px]! md:text-[13px]! leading-relaxed! opacity-80! mt-3! [&_a]:underline! [&_a]:font-bold!"
                     set:html={texto_privacidad}
                 />
+            )}
+
+            {url_boton_secundario && (
+                <a
+                    href={url_boton_secundario}
+                    target="_blank"
+                    class="basis-full! text-center font-[family-name:var(--font-principal)]! font-bold! text-[16px]! md:text-[18px]! uppercase! py-3! md:py-4! rounded-md! transition-opacity! hover:opacity-90! disabled:opacity-60! text-[var(--surface-brand-primary)]! mt-2!"
+                    style={`background-color: ${color_fondo_boton_secundario} !important; color: ${color_texto_boton_secundario} !important;`}
+                >
+                    {texto_boton_secundario}
+                </a>
             )}
 
         </form>
