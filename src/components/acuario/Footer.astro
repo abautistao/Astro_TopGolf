@@ -24,7 +24,8 @@ const logosPagos = data?.logos_pagos?.data || data?.logos_pagos || [];
 
 const textoMarcas = data?.texto_marcas || "Acuario Inbursa y Acuario Interactivo son marcas de Ventura Entertainment";
 const tituloParques = data?.otros_parques_titulo || "Otros Parques";
-const logosParques = data?.logos_parques?.data || data?.logos_parques || [];
+//const logosParques = data?.logos_parques?.data || data?.logos_parques || [];
+const logosParques = data?.logos?.data || data?.logos || [];
 
 const social = data?.social || [];
 const copyright = data?.copyright || "© Acuario Inbursa. Todos los derechos reservados";
@@ -37,6 +38,8 @@ const separadorInferior = data?.separador_inferior;
 const separadorColorInicio = separadorInferior?.color_inicio || "var(--surface-brand-primary)";
 const separadorColorFinal = separadorInferior?.color_final || "var(--accent-highlight-primary)";
 const separadorTipo = separadorInferior?.tipo || "tipo_1";
+
+console.log(logosParques)
 ---
 
 <footer class="w-full! relative! font-[family-name:var(--font-secundaria)]">
@@ -177,9 +180,11 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
             {logosParques.length > 0 && (
                 <div class="flex! flex-wrap! justify-center! items-center! gap-8! md:gap-14! mb-2!">
                     {logosParques.map((logoItem: any) => {
-                        const url = getStrapiUrl(logoItem);
+                        const url = getStrapiUrl(logoItem.image_logo);
                         return url ? (
-                            <Image src={url} alt="Parque aliado" width={140} height={80} class="h-10! md:h-12! w-auto! object-contain!" />
+                            <a href={logoItem.url} target="_blank">
+                                <Image src={url} alt="Parque aliado" inferSize={true} class="h-10! md:h-11! w-auto! object-contain!" />
+                            </a>
                         ) : null;
                     })}
                 </div>
