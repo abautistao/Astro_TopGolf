@@ -30,6 +30,7 @@ export interface Props {
     color_texto_boton_secundario: string;
     color_fondo_boton_secundario: string;
     url_boton_secundario: string;
+    color_fondo_input_override: string
 }
 
 const {
@@ -240,6 +241,14 @@ const baseLabel =
                 set:html={stringifyRichText(descripcion)}
             />
         )}
+
+        <!-- Messages -->
+            <div
+                id="form-feedback"
+                class="col-span-1 md:col-span-2 text-center text-lg font-bold p-4 rounded-sm hidden font-(family-name:--font-principal)"
+            >
+                <p>GRACIAS! EL FORMULARIO HA SIDO ENVIADO.</p>
+            </div>
     </div>
 </section>
 
@@ -263,42 +272,64 @@ const baseLabel =
 </style>
 
 <script>
-    type Payload = Record<string, FormDataEntryValue>;
-
     function initC16Forms() {
         document.querySelectorAll<HTMLFormElement>('form[data-form-c16]').forEach((form) => {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const status = form.querySelector<HTMLElement>('[data-form-status]');
+                const feedback = document.getElementById("form-feedback");
+                const booking = document.querySelector("#booking-container-acuario");
                 const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
                 const url = (form.dataset.urlPost || '').trim();
-
-                if (status) status.textContent = '';
-
-                if (!url) {
-                    if (status) status.textContent = 'Falta configurar la URL de envío.';
-                    return;
+                
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Enviando...";
                 }
-
-                const data = new FormData(form);
-                const payload: Payload = {};
-                for (const [k, v] of data.entries()) payload[k] = v;
+                // Creamos el FormData directo desde el elemento <form>
+                const formData = new FormData(form);
 
                 submitBtn.disabled = true;
                 try {
                     const res = await fetch(url, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
+                        // NO agregues 'Content-Type', fetch lo configura automáticamente al pasar FormData
+                        body: formData, 
                     });
+                    
+                    const data = await res.json()
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    if (status) status.textContent = 'Enviado. Gracias por contactarnos.';
+                    
+                    if(res.ok) {
+                        
+                        feedback.textContent = data.message;
+                        feedback.classList.remove("hidden");
+                        feedback.classList.add("bg-green-100", "text-green-800");
+                        
+                        if(booking) {
+                            booking.classList.toggle('hidden')
+                            const elementPosition = booking.getBoundingClientRect().top + window.scrollY;
+    
+                            window.scrollTo({
+                                top: elementPosition,
+                                behavior: 'smooth'
+                            });
+
+                        }
+                    }
+                    
                     form.reset();
                 } catch (err) {
-                    console.error('[c16] submit error', err);
-                    if (status) status.textContent = 'No se pudo enviar. Intenta de nuevo.';
+                    
+                        feedback.textContent = err.message.toUpperCase();
+                        feedback.classList.remove("hidden");
+                        feedback.classList.add("bg-red-100", "text-red-800");
+                    
+                    
                 } finally {
-                    submitBtn.disabled = false;
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "ENVIAR";
+                    }
                 }
             });
         });
