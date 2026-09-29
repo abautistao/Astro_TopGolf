@@ -36,6 +36,8 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 
 // Generate stable ID for this component instance to avoid conflicts
 const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
+
+console.log(slides)
 ---
 
 <section
@@ -265,15 +267,15 @@ const componentId = "gallery-" + Math.random().toString(36).substr(2, 9);
                                 {/* Mobile backup for items 2-5 (Hidden on Desktop) */}
                                 {/* Mobile backup for items 2-5 (Hidden on Desktop) */}
                                 <div class="md:hidden grid grid-cols-2 gap-4 mt-4">
-                                    {group.slice(1, 5).map((item, i, arr) => (
+                                    {group.slice(0, 5).map((item, i, arr) => (
                                         <a
                                             href={getStrapiUrl(item)}
-                                            data-fancybox={componentId}
+                                            data-fancybox=`mobile-${componentId}`
                                             class:list={[
                                                 "relative overflow-hidden rounded-xl h-40 w-full",
                                                 arr.length % 2 !== 0 &&
                                                 i === arr.length - 1
-                                                    ? "col-span-2"
+                                                    ? "col-span-2 hidden"
                                                     : "",
                                             ]}
                                         >
