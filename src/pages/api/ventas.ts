@@ -9,7 +9,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // En Cloudflare production, las variables viven en locals.runtime.env
     const runtime = locals.runtime;
     const RESEND_KEY = runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
-    const EMAILS = runtime?.env?.EMAIL_RECIPIENTS || import.meta.env.EMAIL_RECIPIENTS;
+    const EMAILS = runtime?.env?.EMAIL_RECIPIENTS_VENTA_CORPO || import.meta.env.EMAIL_RECIPIENTS_VENTA_CORPO;
     const EMAILS_BCC = runtime?.env?.EMAIL_BCC || import.meta.env.EMAIL_BCC;
     const FROM_EMAIL = runtime?.env?.FROM_EMAIL || import.meta.env.FROM_EMAIL;
     const FROM_NAME = runtime?.env?.FROM_NAME || import.meta.env.FROM_NAME;
