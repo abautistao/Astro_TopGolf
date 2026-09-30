@@ -181,7 +181,7 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
                         const url = getStrapiUrl(logoItem.image_logo);
                         return url ? (
                             <a href={logoItem.url} target="_blank">
-                                <Image src={url} alt="Parque aliado" inferSize={true} class="h-10! md:h-11! w-auto! object-contain!" />
+                                <Image src={url} alt="Parque aliado" inferSize={true} class="h-auto! md:h-11! w-auto! object-contain!" />
                             </a>
                         ) : null;
                     })}
