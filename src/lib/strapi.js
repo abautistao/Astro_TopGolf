@@ -212,6 +212,7 @@ export async function getPaseBySlug(slug, locale = 'en') {
     `populate[SEO][populate]=*`,
     `populate[ContenidoPagina][populate]=*`,
     `populate[ContenidoPagina][on][secciones.booking-acuarios][populate]=*`,
+    `populate[ContenidoPagina][on][secciones.componente-23-acuario][populate]=*`,
     // COMPONENTE 1 ACUARIO: Ajustado a los nombres exactos de Strapi (fondo y fondo_mobile)
     `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate][fondo][populate]=*`,
     `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate][fondo_mobile][populate]=*`,
