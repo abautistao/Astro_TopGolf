@@ -12,6 +12,8 @@ export interface Props {
     color_texto_acordeon?: string;
     color_fondo_acordeon?: string;
     acordeones?: any[];
+    final_text: any;
+    color_final_text: string;
 }
 
 const {
@@ -25,6 +27,8 @@ const {
     color_texto_acordeon,
     color_fondo_acordeon,
     acordeones = [],
+    final_text,
+    color_final_text
 } = Astro.props;
 
 const TitleTag = htmlTag;
@@ -110,7 +114,7 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
                         aria-controls={`content-${componentId}-${index}`}
                     >
                         {/* Icono izquierdo (o derecho en variante 2) */}
-                        <div class={`accordion-icon ${iconClass}`}>
+                        <div style={{ color: finalAccTitleColor }} class={`accordion-icon ${iconClass}`}>
                             {item.icono ? (
                                 <i class={item.icono}></i>
                             ) : (
@@ -143,6 +147,10 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
                 </div>
             ))}
         </div>
+
+        {final_text && (
+            <div set:html={stringifyRichText(final_text)} style={{ color: color_final_text }} class="text-xs mt-2"></div>
+        )}
     </div>
 </section>
 
