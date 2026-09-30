@@ -45,7 +45,7 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
         >
             {titulo && (
                 <TitleTag
-                    class="font-[family-name:var(--font-principal)]! text-[18px]! md:text-[20px]! font-black! uppercase! leading-tight! mb-3!"
+                    class="font-[family-name:var(--font-principal)]! text-[18px]! md:text-[20px]! font-black! leading-tight! mb-3!"
                     style={`${tituloStyle ? tituloStyle + "; " : ""}color: ${finalTitleColor};`}
                 >
                     {titulo}
@@ -54,7 +54,7 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
 
             {descripcion && (
                 <div
-                    class="font-[family-name:var(--font-secundaria)]! text-[16px]! md:text-[18px]! font-normal! leading-snug! [&>p]:mb-2! last:[&>p]:mb-0! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
+                    class="rich-text-cortesias font-[family-name:var(--font-principal)]! text-[16px]! font-normal! leading-snug! [&>p]:mb-2! last:[&>p]:mb-0! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
                     style={`${descripcionStyle ? descripcionStyle + "; " : ""}color: ${finalTextColor};`}
                     set:html={stringifyRichText(descripcion)}
                 />
@@ -62,3 +62,8 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
         </div>
     </div>
 </section>
+<style>
+    .rich-text-cortesias :global(a) {
+        color: #FFB600
+    }
+</style>
