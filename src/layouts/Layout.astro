@@ -21,6 +21,7 @@ const {
     title,
     alternateLinks,
     headerSimplified = false,
+    hide_tarjeta_habiente = false,
 } = Astro.props;
 
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
@@ -111,7 +112,7 @@ const seoProps = seo || defaultSeo;
         <Header locale={locale} alternateLinks={alternateLinks} simplified={headerSimplified} />
         <!-- El contenido de la página se insertará aquí. -->
         <slot />
-        <Footer locale={locale} />
+        <Footer locale={locale} hideTarjeta={hide_tarjeta_habiente}/>
         <LanguageSwitcher
             alternateLinks={alternateLinks}
             class="fixed hidden bottom-20 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"

@@ -3,7 +3,7 @@ import { getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
 import { Image } from "astro:assets";
 import Separadores from "./Separadores.astro";
 
-const { data, locale = "es" } = Astro.props;
+const { data, locale = "es", hideTarjeta } = Astro.props;
 
 const logoPrincipal = getStrapiUrl(data?.logo_principal);
 const logoSecundario = getStrapiUrl(data?.logo_secundario);
@@ -43,7 +43,7 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
 <footer class="w-full! relative! font-[family-name:var(--font-secundaria)]">
 
     <!-- SECCIÓN 1 — Banner CTA superior (tarjetahabientes) -->
-    {(ctaTitulo || ctaBotonTexto) && (
+    {!hideTarjeta && (ctaTitulo || ctaBotonTexto) && (
         <section
             class="w-full! py-5! md:py-6! text-center! text-white!"
             style={`background-color: ${ctaColorFondo};`}
@@ -248,6 +248,12 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
             </div>
         </div>
     </section>
+
+    <div id="wa-contact" class="rounded-full fixed right-[5%] bottom-[10%] w-12 h-12 bg-green-500 flex justify-center items-center text-white! text-3xl! z-50">
+        <a target="_blank" aria-label="WhatsApp Link" class="text-white!" href="https://api.whatsapp.com/send?phone=5215574908330">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+    </div>
 </footer>
 
 <script>

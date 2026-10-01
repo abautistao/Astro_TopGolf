@@ -6,11 +6,11 @@ import BluFooter from "../blu/Footer.astro";
 import DolphinarisFooter from "../dolphinaris/Footer.astro";
 import AcuarioFooter from "../acuario/Footer.astro";
 
-const { locale = "en" } = Astro.props;
+const { locale = "en", hideTarjeta = false } = Astro.props;
 const footerData = await getFooterData(locale);
 
 let Component = TopgolfFooter;
-let props = { data: footerData, locale: locale };
+let props = { data: footerData, locale: locale, hideTarjeta: hideTarjeta };
 
 // Logic to detect variant:
 if (
@@ -33,7 +33,7 @@ if (
         Component = TopgolfFooter;
     }
 
-    props = { data: variant, locale: locale };
+    props = { data: variant, locale: locale, hideTarjeta };
 } else {
     console.log(
         "SmartFooter: 'Variante' array not found or empty in footerData.",
@@ -45,8 +45,6 @@ if (
             JSON.stringify(footerData).substring(0, 200) + "...",
         );
 }
-
-console.log(`SmartFooter rendering: ${Component.name}`);
 ---
 
 <Component {...props} />

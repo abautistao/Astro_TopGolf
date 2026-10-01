@@ -9,6 +9,7 @@ import Blu_404 from "../../components/errors/Blu_404.astro";
 import Toca_404 from "../../components/errors/Toca_404.astro";
 import Component_404 from "../../components/errors/Component_404.astro";
 import Generic_404 from "../../components/errors/Generic_404.astro";
+import { boolean } from "astro:schema";
 
 // export const prerender = true;
 
@@ -71,7 +72,7 @@ if (notFound) {
   Astro.response.statusText = "Not Found";
 }
 
-const { titulo, ContenidoPagina, SEO, localizations, header_simplificado } = pagina || {};
+const { titulo, ContenidoPagina, SEO, localizations, header_simplificado, hide_tarjeta_habiente } = pagina || {};
 
 const alternateLinks: any = {};
 const defaultLocaleStr = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
@@ -93,6 +94,7 @@ locs.forEach((loc: any) => {
   lang={lang || defaultLocale}
   title={notFound ? "Page Not Found" : titulo}
   headerSimplified={Boolean(header_simplificado)}
+  hide_tarjeta_habiente={Boolean(hide_tarjeta_habiente)}
 >
   {
     notFound ? (
