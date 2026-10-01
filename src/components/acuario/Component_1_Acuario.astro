@@ -23,6 +23,7 @@ export interface SlideAcuario {
      * "completa": la imagen se muestra entera, ancho viewport, alto según aspect-ratio natural.
      */
     ajuste_imagen?: "recortar" | "completa";
+    url_link: string
 }
 
 export interface Props {
@@ -149,6 +150,7 @@ const sectionClass = isCompleta
                     const isBgVideo = isVideo(bgUrl);
 
                     const HeadingTag = getHeadingTag(slide.nivel_heading);
+                    const link = slide.url_link || '#';
 
                     return (
                         <div class:list={["swiper-slide relative! w-full!", isCompleta ? "block!" : "h-full!"]}>
@@ -158,25 +160,30 @@ const sectionClass = isCompleta
                                      Sin aspect-ratio fijo, sin overflow-hidden, sin altura fija en ningún ancestro. -->
                                 <div class="relative! w-full! z-0!">
                                     {isBgVideo ? (
-                                        <video
-                                            src={bgUrl}
-                                            autoplay
-                                            loop
-                                            muted
-                                            playsinline
-                                            class="block! w-full! h-auto! max-w-full!"
-                                        />
-                                    ) : (
-                                        <picture class="block! w-full!">
-                                            {hasMobileImage && (
-                                                <source media="(max-width: 767px)" srcset={bgMobileUrl} />
-                                            )}
-                                            <img
+                                        <a href={link}>
+                                            <video
                                                 src={bgUrl}
-                                                alt={altText}
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
                                                 class="block! w-full! h-auto! max-w-full!"
                                             />
-                                        </picture>
+                                        </a>
+                                    ) : (
+                                        <a href={link}>
+
+                                            <picture class="block! w-full!">
+                                                {hasMobileImage && (
+                                                    <source media="(max-width: 767px)" srcset={bgMobileUrl} />
+                                                )}
+                                                <img
+                                                    src={bgUrl}
+                                                    alt={altText}
+                                                    class="block! w-full! h-auto! max-w-full!"
+                                                />
+                                            </picture>
+                                        </a>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
                                         <div class="absolute! inset-0! bg-black/40! z-10!"></div>
@@ -186,16 +193,18 @@ const sectionClass = isCompleta
                                 <!-- Modo "recortar" (legado): object-cover con h fija recorta si la imagen trae texto. -->
                                 <div class="absolute! inset-0! z-0! overflow-hidden! w-full! h-full!">
                                     {isBgVideo ? (
-                                        <video
-                                            src={bgUrl}
-                                            autoplay
-                                            loop
-                                            muted
-                                            playsinline
-                                            class="absolute! inset-0! w-full! h-full! object-cover!"
-                                        />
+                                        <a href={link}>
+                                            <video
+                                                src={bgUrl}
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
+                                                class="absolute! inset-0! w-full! h-full! object-cover!"
+                                            />
+                                        </a>
                                     ) : (
-                                        <>
+                                        <a href={link}>
                                             <picture class="absolute! inset-0! w-full! h-full! block!">
                                                 {hasMobileImage && (
                                                     <source media="(max-width: 767px)" srcset={bgMobileUrl} />
@@ -206,7 +215,7 @@ const sectionClass = isCompleta
                                                     class="absolute! inset-0! w-full! h-full! object-cover!"
                                                 />
                                             </picture>
-                                        </>
+                                        </a>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
                                         <!-- Overlay oscuro para que el texto resalte -->
