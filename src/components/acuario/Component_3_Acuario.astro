@@ -17,6 +17,7 @@ export interface Props {
     boton?: any;
     slides?: any[];
     color_fondo?: string;
+    youtube_url?: string;
 }
 
 const {
@@ -27,7 +28,8 @@ const {
     descripcion,
     boton,
     slides = [],
-    color_fondo
+    color_fondo,
+    youtube_url
 } = Astro.props;
 
 // Use the project's utility to render rich text
@@ -54,7 +56,7 @@ const getYoutubeId = (url: string) => {
     }
     return null;
 };
-
+const youtubeId = youtube_url ? getYoutubeId(youtube_url) : null;
 // Normalize button
 const btn = Array.isArray(boton) ? boton[0] : boton;
 
@@ -114,68 +116,82 @@ const HeadingTag = etiqueta_titulo;
             )}
             
         </div>
+        {youtubeId && (
+            <div class="w-full md:w-1/2 relative">
+                <div class="aspect-video w-full">
+                    <iframe
+                        src={`https://www.youtube.com/embed/${youtubeId}`}
+                        title={titulo || "YouTube video"}
+                        class="block! w-full! h-full! border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                    />
+                </div>
+            </div>
+        )}
 
+        {slides && slides.length > 0 && (
         <!-- Right Column: Carousel -->
-        <div class="w-full md:w-1/2 relative rounded-lg md:rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-video z-10">
-            {slides && slides.length > 0 ? (
-                <div class="swiper acuario-componente-3-swiper w-full h-full absolute inset-0">
-                    <div class="swiper-wrapper h-full">
-                        {slides.map((slide) => {
-                            const youtubeId = slide.youtube_url ? getYoutubeId(slide.youtube_url) : null;
-                            const bgUrl = getStrapiUrl(slide.fondo);
-                            const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
-                            const altText = slide.fondo?.alternativeText || "Acuario Media";
-                            const isBgVideo = !youtubeId && isVideo(bgUrl);
+            <div class="w-full md:w-1/2 relative rounded-lg md:rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-video z-10">
+                {slides && slides.length > 0 ? (
+                    <div class="swiper acuario-componente-3-swiper w-full h-full absolute inset-0">
+                        <div class="swiper-wrapper h-full">
+                            {slides.map((slide) => {
+                                const youtubeId = slide.youtube_url ? getYoutubeId(slide.youtube_url) : null;
+                                const bgUrl = getStrapiUrl(slide.fondo);
+                                const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
+                                const altText = slide.fondo?.alternativeText || "Acuario Media";
+                                const isBgVideo = !youtubeId && isVideo(bgUrl);
 
-                            return (
-                                <div class="swiper-slide w-full h-full relative bg-black">
-                                    {youtubeId ? (
-                                        <iframe
-                                            src={`https://www.youtube.com/embed/${youtubeId}`}
-                                            title={slide.texto_principal || "YouTube video"}
-                                            class="absolute inset-0 w-full h-full"
-                                            frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowfullscreen
-                                        />
-                                    ) : isBgVideo ? (
-                                        <video
-                                            src={bgUrl}
-                                            autoplay
-                                            loop
-                                            muted
-                                            playsinline
-                                            class="absolute inset-0 w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <>
-                                            <img
-                                                src={bgMobileUrl}
-                                                alt={altText}
-                                                class="md:hidden absolute inset-0 w-full h-full object-cover"
+                                return (
+                                    <div class="swiper-slide w-full h-full relative bg-black">
+                                        {youtubeId ? (
+                                            <iframe
+                                                src={`https://www.youtube.com/embed/${youtubeId}`}
+                                                title={slide.texto_principal || "YouTube video"}
+                                                class="absolute inset-0 w-full h-full"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowfullscreen
                                             />
-                                            <img
+                                        ) : isBgVideo ? (
+                                            <video
                                                 src={bgUrl}
-                                                alt={altText}
-                                                class="hidden md:block absolute inset-0 w-full h-full object-cover"
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
+                                                class="absolute inset-0 w-full h-full object-cover"
                                             />
-                                        </>
-                                    )}
-                                </div>
-                            );
-                        })}
+                                        ) : (
+                                            <>
+                                                <img
+                                                    src={bgMobileUrl}
+                                                    alt={altText}
+                                                    class="md:hidden absolute inset-0 w-full h-full object-cover"
+                                                />
+                                                <img
+                                                    src={bgUrl}
+                                                    alt={altText}
+                                                    class="hidden md:block absolute inset-0 w-full h-full object-cover"
+                                                />
+                                            </>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        {slides.length > 1 && (
+                            <div class="swiper-pagination"></div>
+                        )}
                     </div>
-                    {slides.length > 1 && (
-                        <div class="swiper-pagination"></div>
-                    )}
-                </div>
-            ) : (
-                <div class="w-full h-full flex items-center justify-center bg-black/20">
-                    <p class="text-white/50 font-[family-name:var(--font-secundaria)]">No media found</p>
-                </div>
-            )}
-        </div>
-        
+                ) : (
+                    <div class="w-full h-full flex items-center justify-center bg-black/20">
+                        <p class="text-white/50 font-[family-name:var(--font-secundaria)]">No media found</p>
+                    </div>
+                )}
+            </div>
+        )}
     </div>
 </section>
 
