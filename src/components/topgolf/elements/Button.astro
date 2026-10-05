@@ -7,6 +7,10 @@ export interface Boton {
     tipo: 'version_1' | 'version_2'| 'version_3'| 'version_4'| 'version_5'| 'version_6' | 'version_7';
     label?: string;
     label_color?: string;
+    is_dynamic: boolean;
+    id_boton: string;
+    data_producto_id: string;
+    data_vendedor_id: string;
 }
 
 export interface Props {
@@ -24,6 +28,9 @@ const {
     {botones.map(boton => (
         <div class="hover:cursor-pointer">
             <a
+                id={boton.is_dynamic ? boton.id_boton : ''}
+                data-producto_id={boton.is_dynamic ? boton.data_producto_id : ''}
+                data-vendedor_id={boton.is_dynamic ? boton.data_vendedor_id : ''}
                 href={formatUrl(boton.url)}
                 class:list={[
                     'transform rounded-full font-bold uppercase transition-all hover:scale-105 font-(family-name:--font-shields-sans-bold)',
@@ -39,6 +46,7 @@ const {
                         'border-2 border-[var(--brand-interactive-base)] text-[var(--brand-interactive-base)] hover:text-[var(--brand-interactive-base)]':  boton.tipo === 'version_5',
                         'border-2 border-[var(--neutral-text-inverted)] text-[var(--neutral-text-inverted)] hover:text-[var(--neutral-text-inverted)]':  boton.tipo === 'version_6',
                         'bg-red-700 text-white hover:text-(--neutral-text-inverted)':  boton.tipo === 'version_7',
+                        'dynamic_btn': boton.is_dynamic
                     }
                 ]}
                 set:html={boton.texto}

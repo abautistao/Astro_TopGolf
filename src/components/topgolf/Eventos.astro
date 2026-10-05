@@ -1,24 +1,44 @@
 ---
 // src/components/blu/ContainerBackgroundHome_Blu.astro
-import { formatUrl } from "../../lib/strapi.js";
-import Component_40_TGM from "./Component_40.astro";
+import { formatUrl, stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
 import Modal_TGM from "./Modal.astro";
 import ArrowIcon from "../../assets/down-arrow-circle-cobalt.svg?raw"
 import CalendarIcon from "../../assets/calendar-days.svg?raw"
+import ButtonGroup from "./elements/Button.astro";
+import type { Boton } from "./elements/Button.astro";
+import { Image } from "astro:assets";
+interface CardGalleryItem {
+    descripcion: any;
+}
 
+interface CardGallery {
+    header_label: string;
+    header_label_color: string;
+    header_title: string;
+    header_title_color: string;
+    header_descripcion: any;
+    gallery: any[];
+    price: string;
+    text_saving: any[];
+    CardGalleryItem: CardGalleryItem[];
+    Boton: Boton[];
+}
 interface Props {
     // Componentes individuales como campos de Strapi
     Componente_40?: any[];
     Modal?: any;
     padding_top?: string;
+    CardGallery: CardGallery[]
+
 }
 
 const {    
     Modal,
-    Componente_40,
     padding_top,
+    CardGallery
 } = Astro.props;
 
+console.log(Modal)
 const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIcon)}")`;
 const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(CalendarIcon)}")`;
 ---
@@ -74,10 +94,70 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     </div>
 
     <div class="w-full flex">
-        <div id="packages">
-            {Componente_40 && Componente_40.map(comp => (
-                <Component_40_TGM {...comp} />
-            ))}
+        <div class="container mx-auto px-6! lg:px-0">
+            <div id="packages" class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10">
+                {CardGallery.length && CardGallery.map((card, index) => (
+                    <!-- Card -->
+                    <div class="flex flex-col bg-(--neutral-background-subtle) shadow-sm rounded-3xl font-(family-name:--font-shields-sans-regular)!">
+                        <div class="rounded-t-3xl py-3 px-4 bg-(--surface-brand-primary) text-(--accent-highlight-secondary)">
+                            <p class="text-base text-muted-foreground-1 mb-0">
+                                {card.header_label}
+                            </p>
+                            <h3 class="mb-0 font-(family-name:--font-shields-sans-bold)!">
+                                {card.header_title}
+                            </h3>
+                            <div class="rich-text-card italic" set:html={stringifyRichText(card.header_descripcion)}></div>
+                        </div>
+                        <div id=`slider-cards-${index}` class="splide">
+                            <div class="splide__arrows splide__arrows--ltr">
+                                <button
+                                    class="splide__arrow splide__arrow--prev"
+                                    type="button"
+                                    aria-label="Previous slide"
+                                    aria-controls="splide01-track"
+                                >
+                                    
+                                    <i class="fa-solid fa-chevron-left fa-md font-bold"></i>
+                                </button>
+                                <button
+                                    class="splide__arrow splide__arrow--next"
+                                    type="button"
+                                    aria-label="Next slide"
+                                    aria-controls="splide01-track"
+                                >
+                                    <i class="fa-solid fa-chevron-right fa-md font-bold"></i>
+                                </button>
+                            </div>
+                            <div class="splide__track">
+                                    <div class="splide__list">
+                                        {card.gallery.map(promo => (
+                                            <Image class="splide__slide" src={getStrapiUrl(promo)} inferSize={true} alt="Galeria Evento"/>
+                                        ))}
+
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 text-(--neutral-background-strong)">
+                            <h4 class="font-(family-name:--font-shields-sans-bold)!">
+                                Desde {card.price}
+                            </h4>
+                            <div class="bg-[#E3F4F4] text-[#0B4F51] font-(family-name:--font-shields-sans-bold)! py-2 px-3 mb-3 rounded-xl inline-block">
+                                <div class="rich-text-card text-xs" set:html={stringifyRichText(card.text_saving)}></div>
+                            </div>
+                            {card.CardGalleryItem.map(item => (
+                                <div class="flex gap-4 items-start">
+                                    <i class="fas fa-circle-check text-(--feedback-positive-base)"></i>
+                                    <div class="rich-text-card" set:html={stringifyRichText(item.descripcion)}></div>
+                                </div>
+                            ))}
+
+                            <ButtonGroup botones={[card.Boton]} clase="mt-5"/>
+                        </div>
+                    </div>
+                    <!-- End Card -->
+                ))}
+            </div>
         </div>
         {Modal && <Modal_TGM {...Modal}>
             <div class="bg-white sticky top-10 lg:top-5 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
@@ -116,7 +196,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
         <slot />
     </div>
 </section>
-<style define:vars={{ padding_top, arrowDataUri, calendarDataUri }}>
+<style define:vars={{ padding_top, calendarDataUri, arrowDataUri }}>
     #form-calendar, #form-players {
         border: 3px solid var(--brand-interactive-base) !important;
     }
@@ -132,16 +212,20 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     }
 
     :global(.flatpickr-calendar) {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
   
 
-  .datepicker-input.neon, .flatpickr-input.neon {
-    background: var(--calendarDataUri) no-repeat right 10px center;
-    background-color: transparent;
-    background-size: 16px 16px;
-    background-position: left 12px center;
-}
+    .datepicker-input.neon, .flatpickr-input.neon {
+        background: var(--calendarDataUri) no-repeat right 10px center;
+        background-color: transparent;
+        background-size: 16px 16px;
+        background-position: left 12px center;
+    }
+
+    .rich-text-card :global(p) {
+        margin-bottom: 0;
+    }
 
 .select-container select.neon {
     background: var(--arrowDataUri) no-repeat right 10px center;
@@ -160,14 +244,33 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
   import flatpickr from "flatpickr";
   import 'flatpickr/dist/flatpickr.min.css';
   import { Spanish } from "flatpickr/dist/l10n/es.js"; // Importar idioma español
+  import '@splidejs/splide/css';
+  import Splide from '@splidejs/splide';
 
-  // Función de inicialización para soportar View Transitions de Astro 5
-  function initDatePickers() {
+  document.addEventListener('DOMContentLoaded', () => {
+    new Splide( '#slider-cards-0', {
+        pagination: false,
+        autoplay: true, 
+        rewind: true
+    } ).mount();
+
+    new Splide( '#slider-cards-1', {
+        pagination: false,
+        autoplay: true, 
+        rewind: true
+    } ).mount();
+
+    new Splide( '#slider-cards-2', {
+        pagination: false,
+        autoplay: true, 
+        rewind: true
+    } ).mount();
+
+    function initDatePickers() {
     const inputs = document.querySelectorAll('.flatpickr-input');
 
     inputs.forEach((input) => {
       // Leemos los datos que Astro inyectó en el HTML
-        console.log("inicializar")
       flatpickr(input as HTMLInputElement, {
         locale: Spanish,
         dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
@@ -192,12 +295,13 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     let pluginIdValue;
     // Función para alternar el estado del modal
     const toggleModal = () => {
-        modal?.classList.toggle('hidden')
         backdrop?.classList.toggle('hidden')
+        modal?.classList.toggle('hidden')
     };
 
     dynamicBtn.forEach(function(dBtn) {
         dBtn.addEventListener('click', function(btn) {
+            console.log(modal)
             
             pluginIdValue = btn.currentTarget?.dataset.vendedor_id;
             btn.preventDefault()
@@ -227,6 +331,5 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             }
         }));
     })
-    
-
+  })
 </script>

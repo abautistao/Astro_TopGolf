@@ -17,6 +17,10 @@ interface Props {
     nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     image_decoration: any;
     show_banner_bottom: any;
+    label: string;
+    label_color: string;
+    label_background: string;
+    Boton: Boton[]
 }
 
 const {
@@ -29,7 +33,11 @@ const {
     background_color,
     nivel_heading_titulo,
     image_decoration,
-    show_banner_bottom
+    show_banner_bottom,
+    label,
+    label_color,
+    label_background,
+    Boton
 } = Astro.props;
 
 const image_desktop = getStrapiUrl(imagen);
@@ -72,27 +80,42 @@ const colorStrong = !show_banner_bottom ? '#00FFFF' : '#2afd94';
         <div
             class="self-center md:w-4/5 z-10"
         >
+            {label && (
+                <span
+                    style={{ color: label_color, background: label_background }} 
+                    class="bg-(--accent-highlight-secondary) text-(--surface-brand-primary) font-bold! text-lg! px-3! py-1! mb-4! inline-block! font-(family-name:--font-shields-sans-bold)!"
+                    class:list={[{
+                        'p-0': label_background
+                    }]}
+                    >
+                    {label}
+                </span>
+            )}
             <!-- Título Secundario -->
             <HeadingTagTitulo
                 style={{ color: color_texto_titulo }}
-                class="text-3xl md:text-5xl font-medium tracking-wider uppercase mb-3 font-(family-name:--font-shields-sans-regular) text-center md:text-left"
+                class="text-3xl! md:text-5xl! font-medium! tracking-wider uppercase! mb-3! font-(family-name:--font-shields-sans-regular)! text-center! md:text-left!"
             >
-                <span style={{ color: color_texto_titulo}} class="block leading-none text-accent-mint">{titulo}</span>
-                <span style={{ color: color_texto_subtitulo }}class="block leading-none tracking-wide font-(family-name:--font-shields-sans-bold)">
+                <span style={{ color: color_texto_titulo}} class="block! leading-none text-accent-mint">{titulo}</span>
+                <span style={{ color: color_texto_subtitulo }}class="block! leading-none tracking-wide font-(family-name:--font-shields-sans-bold)!">
                     {subtitulo}
                 </span>
             </HeadingTagTitulo>
 
             <!-- Párrafo Descriptivo -->
             <div
-                class="text-base text-center md:text-left md:text-lg font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular)"
+                class="text-base text-center! md:text-left! md:text-lg! font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-shields-sans-regular) my-8"
             >
                 <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
             </div>
+
+            {Boton.length && (
+                <ButtonGroup botones={[...Boton]}/>
+            )}
         </div>
 
          <!-- SECCIÓN IMAGEN (Izquierda en Desktop / Arriba en Mobile) -->
-        <div class="w-full sm:w-3/4 md:w-full mx-auto md:mt-8">
+        <div class="w-full sm:w-3/4 md:w-full mx-auto">
             <div
                 class="relative w-full h-64 md:h-100 overflow-hidden bg-gray-900 shadow-2xl z-10"
             >
