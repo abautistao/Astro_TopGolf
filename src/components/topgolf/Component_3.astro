@@ -102,12 +102,15 @@ const HeadingTag = getHeadingTag(nivel_heading);
             set:html={contentHtml ||
               "<p>Aquí en Topgolf, no hay presión para tener un buen swing de golf o sumar muchos puntos. <strong>Se trata de que todos se diviertan.</strong></p><p>Reúne todo esto en un mismo lugar y lo pasarás genial.</p>"}
           />
-          <div class="mt-5">
-          <ButtonGroup
-            botones={componentButtons}
-            clase="flex flex-col items-start"
-          />
-        </div>
+
+          {Boton && (
+            <div class="mt-5">
+              <ButtonGroup
+                botones={componentButtons}
+                clase="flex flex-col items-start"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -27,15 +27,18 @@ export interface Package {
     Boton: Boton[];
     nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     nivel_heading_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    tag_background: string;
+    tag_text_color: string;
 }
 
 export interface Props {
     paquetes: Package[];
     titulo: string;
     nivel_heading_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    columns: string;
 }
 
-const { paquetes, nivel_heading_tag, titulo } = Astro.props;
+const { paquetes, nivel_heading_tag, titulo, columns } = Astro.props;
 
 const placeholderButton: Boton[] = [
     {
@@ -61,6 +64,8 @@ const placeholderPackages: Package[] = [
         texto_boton: "¡RESERVA EN LÍNEA!",
         url_boton: "#",
         Boton: placeholderButton,
+        tag_background: "#050786",
+        tag_text_color: "#00FFFF",
     },
 ];
 
@@ -68,9 +73,10 @@ const packagesToRender =
     paquetes && paquetes.length > 0 ? paquetes : placeholderPackages;
 
 const HeadingTag = getHeadingTag(nivel_heading_tag);
+const cols = columns ? columns : 3;
 ---
 
-<section class="w-full bg-(--neutral-text-inverted) py-10 sm:py-14">
+<section class="w-full bg-(--neutral-text-inverted) py-10 sm:py-14 lg:pt-0">
     <div
         style="font-family: var(--font-shields-sans-regular);"
         class="container mx-auto px-4"
@@ -81,7 +87,7 @@ const HeadingTag = getHeadingTag(nivel_heading_tag);
             {titulo}
         </HeadingTag>
 
-        <div class="flex flex-wrap justify-center gap-8 sm:py-4 max-w-7xl mx-auto">
+        <div class=`grid grid-cols-1 lg:grid-cols-${cols} justify-center gap-8 sm:py-4 max-w-7xl mx-auto`>
             {
                 packagesToRender.map((pkg) => {
                     const contentHtml = stringifyRichText(pkg.descripcion);
@@ -108,8 +114,11 @@ const HeadingTag = getHeadingTag(nivel_heading_tag);
                     const HeadingTagTitulo = getHeadingTag(pkg.nivel_heading_titulo);
                     const HeadingTagSubtitulo = getHeadingTag(pkg.nivel_heading_subtitulo);
 
+                    const tagBg = pkg.tag_background ? pkg.tag_background : "#050786";
+                    const tagTextColor= pkg.tag_text_color ? pkg.tag_text_color : "#00FFFF";
+
                     return (
-                        <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center md:w-[calc(50%-2rem)] lg:w-[calc(33.333%-2rem)]">
+                        <div class="bg-[var(--neutral-background-subtle)] shadow-sm overflow-hidden flex flex-col text-center">
                             <div class="relative">
                                 <Image
                                     src={imageUrl}
@@ -118,7 +127,9 @@ const HeadingTag = getHeadingTag(nivel_heading_tag);
                                     inferSize={true}
                                 />
                                 <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                                    <span class="whitespace-nowrap font-(family-name:--font-shields-sans-bold) bg-[var(--surface-brand-primary)] text-[var(--accent-highlight-secondary)] font-semibold tracking-wider px-4 py-2 uppercase text-[13px]">
+                                    <span
+                                        style={{ color: tagTextColor, background: tagBg }} 
+                                        class="whitespace-nowrap font-(family-name:--font-shields-sans-bold) font-semibold tracking-wider px-4 py-2 uppercase text-[13px]">
                                         {pkg.tag}
                                     </span>
                                 </div>
