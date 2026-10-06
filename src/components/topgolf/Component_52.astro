@@ -109,7 +109,7 @@ const colorStrong = !show_banner_bottom ? '#00FFFF' : '#2afd94';
                 <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
             </div>
 
-            {Boton.length && (
+            {Boton && Boton.length && (
                 <ButtonGroup botones={[...Boton]}/>
             )}
         </div>

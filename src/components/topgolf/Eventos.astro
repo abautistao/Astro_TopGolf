@@ -22,6 +22,9 @@ interface CardGallery {
     text_saving: any[];
     CardGalleryItem: CardGalleryItem[];
     Boton: Boton[];
+    label_ver_mas: string;
+    label_ver_menos: string;
+    ver_mas_contenido: string;
 }
 interface Props {
     // Componentes individuales como campos de Strapi
@@ -93,9 +96,9 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
         </form>
     </div>
 
-    <div class="w-full flex">
+    <div class="w-full">
         <div class="container mx-auto px-6! lg:px-0">
-            <div id="packages" class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10">
+            <div id="packages" class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10 items-start">
                 {CardGallery.length && CardGallery.map((card, index) => (
                     <!-- Card -->
                     <div class="flex flex-col bg-(--neutral-background-subtle) shadow-sm rounded-3xl font-(family-name:--font-shields-sans-regular)!">
@@ -145,14 +148,32 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                             <div class="bg-[#E3F4F4] text-[#0B4F51] font-(family-name:--font-shields-sans-bold)! py-2 px-3 mb-3 rounded-xl inline-block">
                                 <div class="rich-text-card text-xs" set:html={stringifyRichText(card.text_saving)}></div>
                             </div>
-                            {card.CardGalleryItem.map(item => (
-                                <div class="flex gap-4 items-start">
-                                    <i class="fas fa-circle-check text-(--feedback-positive-base)"></i>
-                                    <div class="rich-text-card" set:html={stringifyRichText(item.descripcion)}></div>
-                                </div>
-                            ))}
 
-                            <ButtonGroup botones={[card.Boton]} clase="mt-5"/>
+                            {card.CardGalleryItem.length && (
+                                <div class="mb-6">
+                                    {card.CardGalleryItem.map(item => (
+                                        <div class="flex gap-4 items-start">
+                                            <i class="fas fa-circle-check text-(--feedback-positive-base)"></i>
+                                            <div class="rich-text-card" set:html={stringifyRichText(item.descripcion)}></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {card.ver_mas_contenido && (
+                                <div class="menu border-t border-[#E3EAF0] flex flex-col mt-6 gap-3 py-2">
+                                    <button class="menu-toggle bg-none border-none min-h-11! flex items-center justify-between w-full font-base font-bold text-[#0B7A7C] cursor-pointer font-(family-name:--font-shields-sans-bold)! focus:outline-none!">
+                                        <span class="btn-text">{card.label_ver_mas}</span>
+                                        <span class="icon" aria-hidden="true">+</span>
+                                    </button>
+    
+                                    <div id="menu-fiesta" class="text-sm hidden">
+                                        <div class="menu-fiesta" set:html={stringifyRichText(card.ver_mas_contenido)}></div> 
+                                    </div>
+                                </div>
+                            )}
+
+                            <ButtonGroup botones={[card.Boton]} clase="w-full"/>
                         </div>
                     </div>
                     <!-- End Card -->
@@ -227,16 +248,27 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
         margin-bottom: 0;
     }
 
-.select-container select.neon {
-    background: var(--arrowDataUri) no-repeat right 10px center;
-    background-color: transparent;
-    background-size: 16px 16px;
-    background-position: left 12px center;
-}
+    .select-container select.neon {
+        background: var(--arrowDataUri) no-repeat right 10px center;
+        background-color: transparent;
+        background-size: 16px 16px;
+        background-position: left 12px center;
+    }
 
-@media (max-width: 480px) {
-    
-}
+    .menu-fiesta :global(ul) {
+        padding-left: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 14px;
+        margin: 0;
+        list-style-type: disc;
+        line-height: 1.45;
+    }
+
+    .menu-fiesta :global(p) {
+        margin-top: 30px;
+    }
 </style>
 
 <script>
@@ -267,22 +299,22 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     } ).mount();
 
     function initDatePickers() {
-    const inputs = document.querySelectorAll('.flatpickr-input');
+        const inputs = document.querySelectorAll('.flatpickr-input');
 
-    inputs.forEach((input) => {
-      // Leemos los datos que Astro inyectó en el HTML
-      flatpickr(input as HTMLInputElement, {
-        locale: Spanish,
-        dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
-        altFormat: "Y-m-d", // Ej: Octubre 25, 2024
-        minDate: "today",    // Opcional: no permitir fechas pasadas
-        defaultDate: 'today',
-      });
-    });
-  }
+        inputs.forEach((input) => {
+        // Leemos los datos que Astro inyectó en el HTML
+        flatpickr(input as HTMLInputElement, {
+            locale: Spanish,
+            dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
+            altFormat: "Y-m-d", // Ej: Octubre 25, 2024
+            minDate: "today",    // Opcional: no permitir fechas pasadas
+            defaultDate: 'today',
+        });
+        });
+    }
 
-  // Ejecutar al cargar
-  initDatePickers();
+    // Ejecutar al cargar
+    initDatePickers();
     const dynamicBtn = document.querySelectorAll('.dynamic_btn');
     const modal = document.getElementById('vmg');
     const date = document.getElementById('date');
@@ -290,6 +322,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     const backdrop = document.getElementById(`backdrop-vmg`);
 
     const paxModal = document.getElementById('pax_modal');
+    const buttonMenu = document.querySelectorAll('.menu-toggle')
 
 
     let pluginIdValue;
@@ -330,6 +363,24 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                 pax: paxModal.value
             }
         }));
+    })
+
+    buttonMenu.forEach(bMenu => {
+        bMenu?.addEventListener('click', function(e){
+            e.preventDefault()
+            
+            const menu = bMenu.nextElementSibling;
+            const btnText = bMenu.querySelector('.btn-text');
+            const btnIcon = bMenu.querySelector('.icon');
+
+            // Alterna la visibilidad del menú
+            menu?.classList.toggle('hidden');
+
+            // Actualiza texto e ícono sin destruir la estructura HTML
+            const isHidden = menu?.classList.contains('hidden');
+            if (btnText) btnText.textContent = isHidden ? 'Ver Menú completo' : 'Ocultar menú';
+            if (btnIcon) btnIcon.textContent = isHidden ? '+' : '−';
+        })
     })
   })
 </script>
