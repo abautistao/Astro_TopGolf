@@ -25,6 +25,9 @@ interface CardGallery {
     label_ver_mas: string;
     label_ver_menos: string;
     ver_mas_contenido: string;
+    badge_texto: string;
+    badge_texto_color: string;
+    badge_texto_fondo: string;
 }
 interface Props {
     // Componentes individuales como campos de Strapi
@@ -32,13 +35,17 @@ interface Props {
     Modal?: any;
     padding_top?: string;
     CardGallery: CardGallery[]
+    titulo: string;
+    descripcion: any;
 
 }
 
 const {    
     Modal,
     padding_top,
-    CardGallery
+    CardGallery,
+    titulo,
+    descripcion
 } = Astro.props;
 
 console.log(Modal)
@@ -46,63 +53,98 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
 const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(CalendarIcon)}")`;
 ---
 
-<section id="container-widget-background" class="relative max-w-270 mx-auto">
-    {/* --- RENDERIZADO DE COMPONENTES POR SLOTS --- */}
-    <div
-        class:list={[
-            'sticky top-0 block py-8 z-40 bg-white px-10 lg:px-0',
-        ]}
-    >
-        <form class="pav-widget w-full flex lg:flex-row! flex-wrap md:justify-center" method="get" action="">
-            <div id="form-calendar" class="flex-1 md:flex-none lg:rounded-l-lg lg:rounded-r-none! border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
-                <label class="mb-0!">
-                    <div role="application" class="datecalendar">
-                        <div role="button" aria-label="Spacer" class="hidden">
-                            <input tabindex="-1"/>
-                        </div>
-                            
-                        <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
-                            <input id="date" class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
-                        </div> 
-                    </div>
-                </label>
+<section class="beneficios bg-[#F4F8F9] py-8 lg:py-0">
+    <div class="container mx-auto px-6! lg:px-0!">
+        <div class="lg:-mt-12 rounded-[20px] px-9 py-8 grid grid-cols-1 lg:grid-cols-4 gap-7 bg-white relative">
+            <div class="beneficio">
+                <i class="fa-regular fa-circle-check text-[#0B7A7C] mb-2"></i>
+                <h3 class="font-(family-name:--font-shields-sans-bold)! text-xl">
+                    No necesitas saber jugar
+                </h3>
+                <p class="font-(family-name:--font-shields-sans-regular)!">Juegos para todos los niveles y edades. Diversión desde el primer tiro.</p>
             </div>
-            <div id="form-players" class="flex-1 md:flex-none lg:rounded-r-lg lg:rounded-l-none! border border-l-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
-                <label class="mb-0!">
-                    <span class="select-container">
-                        <select id="pax" name="pax" class="focus:outline-none appearance-none! pl-2.5 pl-10 py-4! lg:py-6! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
-                            <option value="7">7 jugadores</option>
-                            <option value="8">8 jugadores</option>
-                            <option value="9">9 jugadores</option>
-                            <option value="10">10 jugadores</option>
-                            <option value="11">11 jugadores</option>
-                            <option value="12">12 jugadores</option>
-                            <option value="13">13 jugadores</option>
-                            <option value="14">14 jugadores</option>
-                            <option value="15">15 jugadores</option>
-                            <option value="16">16 jugadores</option>
-                            <option value="17">17 jugadores</option>
-                            <option value="18">18 jugadores</option>
-                            <option value="19">19 jugadores</option>
-                            <option value="20">20 jugadores</option>
-                            <option value="21">21 jugadores</option>
-                            <option value="22">22 jugadores</option>
-                            <option value="23">23 jugadores</option>
-                            <option value="24">24 jugadores</option>
-                        </select>
-                    </span>
-                </label>
+            <div class="beneficio">
+                <i class="fa-solid fa-golf-ball-tee text-[#0B7A7C] mb-2"></i>
+                <h3 class="font-(family-name:--font-shields-sans-bold)! text-xl">Bahías juntas</h3>
+                <p class="font-(family-name:--font-shields-sans-regular)!">Tu grupo juega lado a lado, sin separarse en toda la visita.</p>
             </div>
-        </form>
+            <div class="beneficio">
+                <i class="fa-solid fa-bowl-food text-[#0B7A7C] mb-2"></i>
+                <h3 class="font-(family-name:--font-shields-sans-bold)! text-xl">Comida servida en tu bahía</h3>
+                <p class="font-(family-name:--font-shields-sans-regular)!">Montaje tipo catering con porciones calculadas por invitado.</p>
+            </div>
+            <div class="beneficio">
+                <i class="fa-solid fa-dollar-sign text-[#0B7A7C] mb-2"></i>
+                <h3 class="font-(family-name:--font-shields-sans-bold)! text-xl">Precio claro, todo incluido</h3>
+                <p class="font-(family-name:--font-shields-sans-regular)!">IVA y servicio incluidos. Ahorra reservando en línea.</p>
+            </div>
+        </div>
     </div>
-
+</section>
+<section id="container-widget-background" class="relative bg-[#F4F8F9]">
     <div class="w-full">
-        <div class="container mx-auto px-6! lg:px-0">
+        <div class="container mx-auto px-6! lg:px-0 lg:py-6">
+            {titulo && (
+                <h2 class="text-5xl font-(family-name:--font-tee-line-bold-italic) text-center! mb-6!">{titulo}</h2>
+            )}
+
+            {descripcion && (
+                <div class="rich-text-cards text-center! text-base font-(family-name:--font-shields-sans-regular)!" set:html={stringifyRichText(descripcion)}></div>
+            )}
+
+            <div class="sticky top-0 block py-8 z-40 bg-[#F4F8F9] px-10 lg:px-0">
+                <form class="pav-widget w-full flex lg:flex-row! flex-wrap md:justify-center" method="get" action="">
+                    <div id="form-calendar" class="flex-1 md:flex-none lg:rounded-l-lg lg:rounded-r-none! border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+                        <label class="mb-0!">
+                            <div role="application" class="datecalendar">
+                                <div role="button" aria-label="Spacer" class="hidden">
+                                    <input tabindex="-1"/>
+                                </div>
+                                    
+                                <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
+                                    <input id="date" class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
+                                </div> 
+                            </div>
+                        </label>
+                    </div>
+                    <div id="form-players" class="flex-1 md:flex-none lg:rounded-r-lg lg:rounded-l-none! border border-l-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+                        <label class="mb-0!">
+                            <span class="select-container">
+                                <select id="pax" name="pax" class="focus:outline-none appearance-none! pl-2.5 pl-10 py-4! lg:py-6! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
+                                    <option value="7">7 jugadores</option>
+                                    <option value="8">8 jugadores</option>
+                                    <option value="9">9 jugadores</option>
+                                    <option value="10">10 jugadores</option>
+                                    <option value="11">11 jugadores</option>
+                                    <option value="12">12 jugadores</option>
+                                    <option value="13">13 jugadores</option>
+                                    <option value="14">14 jugadores</option>
+                                    <option value="15">15 jugadores</option>
+                                    <option value="16">16 jugadores</option>
+                                    <option value="17">17 jugadores</option>
+                                    <option value="18">18 jugadores</option>
+                                    <option value="19">19 jugadores</option>
+                                    <option value="20">20 jugadores</option>
+                                    <option value="21">21 jugadores</option>
+                                    <option value="22">22 jugadores</option>
+                                    <option value="23">23 jugadores</option>
+                                    <option value="24">24 jugadores</option>
+                                </select>
+                            </span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+
             <div id="packages" class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10 items-start">
                 {CardGallery.length && CardGallery.map((card, index) => (
                     <!-- Card -->
                     <div class="flex flex-col bg-(--neutral-background-subtle) shadow-sm rounded-3xl font-(family-name:--font-shields-sans-regular)!">
-                        <div class="rounded-t-3xl py-3 px-4 bg-(--surface-brand-primary) text-(--accent-highlight-secondary)">
+                        <div class="rounded-t-3xl py-3 px-4 bg-(--surface-brand-primary) text-(--accent-highlight-secondary) relative">
+                            {card.badge_texto && (
+                                <span class="absolute top-3 right-4 rounded-md bg-(--accent-highlight-primary) text-(--neutral-background-strong) text-sm px-2 py-1 font-(family-name:--font-shields-sans-bold)!">{card.badge_texto}</span>
+                            )}
+
                             <p class="text-base text-muted-foreground-1 mb-0">
                                 {card.header_label}
                             </p>
@@ -143,7 +185,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
 
                         <div class="p-4 text-(--neutral-background-strong)">
                             <h4 class="font-(family-name:--font-shields-sans-bold)!">
-                                Desde {card.price}
+                                Desde {card.price} <span class="text-sm text-gray-500">por bahía</span>
                             </h4>
                             <div class="bg-[#E3F4F4] text-[#0B4F51] font-(family-name:--font-shields-sans-bold)! py-2 px-3 mb-3 rounded-xl inline-block">
                                 <div class="rich-text-card text-xs" set:html={stringifyRichText(card.text_saving)}></div>
@@ -269,6 +311,10 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     .menu-fiesta :global(p) {
         margin-top: 30px;
     }
+
+    .rich-text-cards :global(strong) {
+        font-family: var(--font-shields-sans-bold);
+    }
 </style>
 
 <script>
@@ -326,6 +372,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
 
 
     let pluginIdValue;
+    let pluginValue;
     // Función para alternar el estado del modal
     const toggleModal = () => {
         backdrop?.classList.toggle('hidden')
@@ -334,7 +381,6 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
 
     dynamicBtn.forEach(function(dBtn) {
         dBtn.addEventListener('click', function(btn) {
-            console.log(modal)
             
             pluginIdValue = btn.currentTarget?.dataset.vendedor_id;
             btn.preventDefault()
@@ -342,7 +388,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             paxModal.value = pax.value
             window.dispatchEvent(new CustomEvent('update-booking-plugin', {
                 detail: { 
-                    pluginId: 42,
+                    pluginId: pluginIdValue == 14106 ? 42 : 44,
                     vendedorId: pluginIdValue,
                     date: date.value,
                     pax: pax.value
@@ -357,7 +403,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
         
         window.dispatchEvent(new CustomEvent('update-booking-plugin', {
             detail: { 
-                pluginId: 42,
+                pluginId: pluginIdValue == 14106 ? 42 : 44,
                 vendedorId: pluginIdValue,
                 date: date.value,
                 pax: paxModal.value
