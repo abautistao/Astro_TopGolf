@@ -28,6 +28,7 @@ interface CardGallery {
     badge_texto: string;
     badge_texto_color: string;
     badge_texto_fondo: string;
+    label_price: string;
 }
 interface Props {
     // Componentes individuales como campos de Strapi
@@ -92,45 +93,6 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
                 <div class="rich-text-cards text-center! text-base font-(family-name:--font-shields-sans-regular)!" set:html={stringifyRichText(descripcion)}></div>
             )}
 
-            <div class="sticky top-0 block py-8 z-40 bg-[#F4F8F9] px-10 lg:px-0">
-                <form class="pav-widget w-full flex lg:flex-row! flex-wrap md:justify-center" method="get" action="">
-                    <div id="form-calendar" class="flex-1 md:flex-none lg:rounded-l-lg lg:rounded-r-none! border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
-                        <label class="mb-0!">
-                            <div role="application" class="datecalendar">
-                                <div role="button" aria-label="Spacer" class="hidden">
-                                    <input tabindex="-1"/>
-                                </div>
-                                    
-                                <div class="button" role="button" aria-label="Date picker" tabindex="0" aria-expanded="false">
-                                    <input id="date" class="focus:outline-none flatpickr-input appearance-none! min-w-27.5 sm:min-w-40! md:min-w-0! w-full! px-2.5! py-4! lg:py-6! pl-10! mb-0! rounded-full! cursor-pointer bg-transparent neon border-none font-shield-condensed lg:font-shield text-gray-500 md:text-lg!" name="reservacion_fecha" id="date" tabindex="-1"/>
-                                </div> 
-                            </div>
-                        </label>
-                    </div>
-                    <div id="form-players" class="flex-1 md:flex-none lg:rounded-r-lg lg:rounded-l-none! border border-l-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
-                        <label class="mb-0!">
-                            <span class="select-container">
-                                <select id="pax" name="pax" class="focus:outline-none appearance-none! pl-2.5 pl-10 py-4! lg:py-6! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
-                                    <option value="12">12 jugadores</option>
-                                    <option value="13">13 jugadores</option>
-                                    <option value="14">14 jugadores</option>
-                                    <option value="15">15 jugadores</option>
-                                    <option value="16">16 jugadores</option>
-                                    <option value="17">17 jugadores</option>
-                                    <option value="18">18 jugadores</option>
-                                    <option value="19">19 jugadores</option>
-                                    <option value="20">20 jugadores</option>
-                                    <option value="21">21 jugadores</option>
-                                    <option value="22">22 jugadores</option>
-                                    <option value="23">23 jugadores</option>
-                                    <option value="24">24 jugadores</option>
-                                </select>
-                            </span>
-                        </label>
-                    </div>
-                </form>
-            </div>
-
             <div id="packages" class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10 items-start">
                 {CardGallery.length && CardGallery.map((card, index) => (
                     <!-- Card -->
@@ -180,7 +142,7 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
 
                         <div class="p-4 text-(--neutral-background-strong)">
                             <h4 class="font-(family-name:--font-shields-sans-bold)!">
-                                Desde {card.price} <span class="text-sm text-gray-500">por bahía</span>
+                                {card.price} <span class="text-sm text-gray-500">{card.label_price}</span>
                             </h4>
                             <div class="bg-[#E3F4F4] text-[#0B4F51] font-(family-name:--font-shields-sans-bold)! py-2 px-3 mb-3 rounded-xl inline-block">
                                 <div class="rich-text-card text-xs" set:html={stringifyRichText(card.text_saving)}></div>
@@ -334,27 +296,9 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
         rewind: true
     } ).mount();
 
-    function initDatePickers() {
-        const inputs = document.querySelectorAll('.flatpickr-input');
-
-        inputs.forEach((input) => {
-        // Leemos los datos que Astro inyectó en el HTML
-        flatpickr(input as HTMLInputElement, {
-            locale: Spanish,
-            dateFormat: "Y-m-d", // Formato amigable para Strapi (YYYY-MM-DD)
-            altFormat: "Y-m-d", // Ej: Octubre 25, 2024
-            minDate: "today",    // Opcional: no permitir fechas pasadas
-            defaultDate: 'today',
-        });
-        });
-    }
-
     // Ejecutar al cargar
-    initDatePickers();
     const dynamicBtn = document.querySelectorAll('.dynamic_btn');
     const modal = document.getElementById('vmg');
-    const date = document.getElementById('date');
-    const pax = document.getElementById('pax');
     const backdrop = document.getElementById(`backdrop-vmg`);
 
     const paxModal = document.getElementById('pax_modal');
@@ -362,7 +306,8 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
 
 
     let pluginIdValue;
-    let pluginValue;
+    let productoId;
+
     // Función para alternar el estado del modal
     const toggleModal = () => {
         backdrop?.classList.toggle('hidden')
@@ -373,15 +318,14 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
         dBtn.addEventListener('click', function(btn) {
             
             pluginIdValue = btn.currentTarget?.dataset.vendedor_id;
+            productoId = btn.currentTarget?.dataset.producto_id;
             btn.preventDefault()
             
-            paxModal.value = pax.value
             window.dispatchEvent(new CustomEvent('update-booking-plugin', {
                 detail: { 
                     pluginId: pluginIdValue == 14106 ? 42 : 44,
                     vendedorId: pluginIdValue,
-                    date: date.value,
-                    pax: pax.value
+                    pax: 12
                 }
             }));
             toggleModal()
@@ -395,12 +339,10 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             detail: { 
                 pluginId: pluginIdValue == 14106 ? 42 : 44,
                 vendedorId: pluginIdValue,
-                date: date.value,
                 pax: paxModal.value
             }
         }));
     })
-
     buttonMenu.forEach(bMenu => {
         bMenu?.addEventListener('click', function(e){
             e.preventDefault()

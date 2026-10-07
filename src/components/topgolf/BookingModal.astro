@@ -43,7 +43,7 @@ for (const [key, value] of Object.entries(rawParams)) {
         var paramsVMG = paramsLimpios;
 
         // Función reutilizable para recargar el plugin con un nuevo ID
-        function cargarPlugin(pluginId, vendedorId, date, pax) {
+        function cargarPlugin(pluginId, vendedorId, date, pax, producto_id) {
             if (!pluginId) return;
 
             // Muestra un estado de carga mientras hace el request (opcional)
@@ -58,6 +58,7 @@ for (const [key, value] of Object.entries(rawParams)) {
                     'vendedor_id': vendedorId,
                     'reservacion_fecha': date,
                     'pax': pax,
+                    'producto_id': producto_id
                 };
                 
                 const urlParams = new URLSearchParams(window.location.search);
@@ -86,8 +87,9 @@ for (const [key, value] of Object.entries(rawParams)) {
                 $('#vendedor_id').val(e.detail.vendedorId);
                 $('#reservacion_fecha').val(e.detail.date);
                 $('#pax_min').val(e.detail.pax);
+                $('#producto_id').val(e.detail.producto_id);
                 // Re-ejecutamos la carga con el nuevo ID
-                cargarPlugin(e.detail.pluginId,e.detail.vendedorId,e.detail.date,e.detail.pax);
+                cargarPlugin(e.detail.pluginId,e.detail.vendedorId,e.detail.date,e.detail.pax,e.producto_id);
             }
         });
 
