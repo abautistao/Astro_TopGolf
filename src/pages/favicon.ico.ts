@@ -7,7 +7,7 @@ export const GET: APIRoute = async () => {
 
   return new Response(faviconUrl, {
     headers: {
-      'Content-Type': 'image/x-icon',
+      'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });
