@@ -180,12 +180,31 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             </div>
         </div>
         {Modal && <Modal_TGM {...Modal}>
-            <div class="bg-white sticky top-10 lg:top-5 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
+            <div id="pax-gc" class="bg-white hidden sticky top-10 lg:top-5 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
                 <form class="pav-widget w-full flex flex-wrap justify-center mb-6" method="get" action="">
                     <div id="form-players-modal" class=" md:flex-none rounded-lg border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
                         <label class="mb-0!">
                             <span class="select-container">
-                                <select id="pax_modal" name="pax" class="focus:outline-none appearance-none! pl-10 py-4! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
+                                <select id="pax_modal_gc" name="pax" class="focus:outline-none appearance-none! pl-10 py-4! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
+                                    <option value="12">12 jugadores</option>
+                                    <option value="13">13 jugadores</option>
+                                    <option value="14">14 jugadores</option>
+                                    <option value="15">15 jugadores</option>
+                                    <option value="16">16 jugadores</option>
+                                    <option value="17">17 jugadores</option>
+                                    <option value="18">18 jugadores</option>
+                                </select>
+                            </span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div id="pax-ps" class="bg-white hidden sticky top-10 lg:top-5 z-99999 py-0 lg:py-6 mb-6 lg:mb-0 mx-auto lg:px-0 md:pt-5!">
+                <form class="pav-widget w-full flex flex-wrap justify-center mb-6" method="get" action="">
+                    <div id="form-players-modal" class=" md:flex-none rounded-lg border border-(--brand-interactive-base)! hover:border-white hover:border-opacity-70 relative">
+                        <label class="mb-0!">
+                            <span class="select-container">
+                                <select id="pax_modal_ps" name="pax" class="focus:outline-none appearance-none! pl-10 py-4! pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] bg-transparent text-gray-500! border-0! neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-lg!">
                                     <option value="12">12 jugadores</option>
                                     <option value="13">13 jugadores</option>
                                     <option value="14">14 jugadores</option>
@@ -301,9 +320,13 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
     const modal = document.getElementById('vmg');
     const backdrop = document.getElementById(`backdrop-vmg`);
 
-    const paxModal = document.getElementById('pax_modal');
+    const paxModalGC = document.getElementById('pax_modal_gc');
+    const paxModalPS = document.getElementById('pax_modal_ps');
     const buttonMenu = document.querySelectorAll('.menu-toggle')
 
+    const paxGC = document.getElementById('pax-gc');
+    const paxPS = document.getElementById('pax-ps');
+    
 
     let pluginIdValue;
     let productoId;
@@ -319,30 +342,55 @@ const calendarDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(Calen
             
             pluginIdValue = btn.currentTarget?.dataset.vendedor_id;
             productoId = btn.currentTarget?.dataset.producto_id;
+
+            paxGC?.classList.add('hidden')
+            paxPS?.classList.add('hidden')
+
+            if(paxGC && paxPS) {
+                if(pluginIdValue == 14106) {
+                    paxGC.classList.toggle('hidden')
+                } else {
+                    paxPS.classList.toggle('hidden')
+                }
+            }
+
             btn.preventDefault()
             
             window.dispatchEvent(new CustomEvent('update-booking-plugin', {
                 detail: { 
                     pluginId: pluginIdValue == 14106 ? 42 : 44,
                     vendedorId: pluginIdValue,
-                    pax: paxModal.value
+                    pax: pluginIdValue == 14106 ? paxModalGC.value : paxModalPS.value,
                 }
             }));
             toggleModal()
         })
     })
 
-    paxModal?.addEventListener('change', function(paxM) {
+    paxModalGC?.addEventListener('change', function(paxM) {
         paxM.preventDefault()
         
         window.dispatchEvent(new CustomEvent('update-booking-plugin', {
             detail: { 
                 pluginId: pluginIdValue == 14106 ? 42 : 44,
                 vendedorId: pluginIdValue,
-                pax: paxModal.value
+                pax: paxModalGC.value
             }
         }));
     })
+
+    paxModalPS?.addEventListener('change', function(paxM) {
+        paxM.preventDefault()
+        
+        window.dispatchEvent(new CustomEvent('update-booking-plugin', {
+            detail: { 
+                pluginId: pluginIdValue == 14106 ? 42 : 44,
+                vendedorId: pluginIdValue,
+                pax: paxModalPS.value
+            }
+        }));
+    })
+
     buttonMenu.forEach(bMenu => {
         bMenu?.addEventListener('click', function(e){
             e.preventDefault()
