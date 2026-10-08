@@ -17,6 +17,7 @@ export interface Props {
     color_boton?: string;
     color_texto?: string;
     icono_descarga?: boolean;
+    link?: string;
 }
 
 const {
@@ -26,6 +27,7 @@ const {
     color_boton,
     color_texto,
     icono_descarga = true,
+    link
 } = Astro.props;
 
 const fileUrl = archivo ? getStrapiUrl(archivo) : null;
@@ -44,10 +46,10 @@ const finalText = color_texto || "var(--surface-brand-primary)";
     style={`background-color: ${finalSectionBg};`}
 >
     <div class="container! mx-auto! px-6! md:px-12! flex! justify-center!">
-        {fileUrl ? (
+        {link ? (
             <a
-                href={fileUrl}
-                download={downloadName}
+                href={link}
+                target="_blank"
                 class="inline-flex! items-center! gap-4! px-sm! md:px-10! py-4! md:py-sm! rounded-2xl! transition-transform hover:scale-[1.02] active:scale-[0.99] shadow-md font-[family-name:var(--font-principal)]! font-bold! uppercase! text-[16px] md:text-[20px]! tracking-wide"
                 style={`background-color: ${finalBtnBg} !important; color: ${finalText} !important;`}
             >
