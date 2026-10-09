@@ -12,6 +12,9 @@ export interface Props {
     color_boton?: string;
     texto_boton?: string;
     url_post?: string;
+    accion?: "post" | "whatsapp";
+    whatsapp_numero?: string;
+    whatsapp_mensaje?: string;
     texto_envia_correo?: string;
     texto_privacidad?: string;
     ocultar_labels?: boolean;
@@ -44,6 +47,9 @@ const {
     color_boton,
     texto_boton = "ENVIAR",
     url_post,
+    accion,
+    whatsapp_numero,
+    whatsapp_mensaje,
     texto_envia_correo,
     texto_privacidad,
     ocultar_labels = false,
@@ -61,6 +67,19 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 const finalBg = color_fondo || "var(--surface-brand-secondary)";
 const finalFg = color_texto || "var(--neutral-text-inverted)";
 const finalBtnBg = color_boton || "var(--brand-interactive-base)";
+
+// Cualquier valor distinto de "whatsapp" (incluido null en contenido ya publicado
+// que nunca tuvo el atributo) conserva el POST existente.
+const modoEnvio = accion === "whatsapp" ? "whatsapp" : "post";
+
+// Mapa name -> label de campo. El mensaje de WhatsApp necesita la etiqueta
+// legible, pero los <label> no se renderizan cuando ocultar_labels está activo,
+// por eso se serializa aquí en vez de leerse del DOM.
+const etiquetasCampos: Record<string, string> = {};
+for (const campo of campos) {
+    if (campo && campo.name && campo.label) etiquetasCampos[campo.name] = campo.label;
+}
+const etiquetasJson = JSON.stringify(etiquetasCampos);
 
 const parseOpts = (raw: any): Array<{ value: string; label: string }> => {
     let v = raw;
@@ -120,6 +139,10 @@ const baseLabel =
             class="flex! flex-wrap! gap-3! md:gap-4! mb-6!"
             data-form-c16
             data-url-post={url_post || ""}
+            data-accion={modoEnvio}
+            data-whatsapp-numero={whatsapp_numero || ""}
+            data-whatsapp-mensaje={whatsapp_mensaje || ""}
+            data-etiquetas={etiquetasJson}
         >
             {campos.map((campo) => {
                 const w = widthClass(campo.ancho);
@@ -272,6 +295,33 @@ const baseLabel =
 </style>
 
 <script>
+    // Flechas (no `function`) a propósito: TypeScript descarta el
+    // estrechamiento de null dentro de declaraciones function izadas
+    // (ts(18047)) aunque haya un guard inmediatamente antes.
+    const c16Etiquetas = (form: HTMLFormElement): Record<string, string> => {
+        try {
+            const parsed = JSON.parse(form.dataset.etiquetas || "{}");
+            return parsed && typeof parsed === "object" ? parsed : {};
+        } catch {
+            return {};
+        }
+    };
+
+    const c16MensajeWhatsApp = (form: HTMLFormElement, intro: string): string => {
+        const etiquetas = c16Etiquetas(form);
+        const lineas: string[] = [];
+        const encabezado = (intro || "").trim();
+        if (encabezado) lineas.push(encabezado);
+        new FormData(form).forEach((valor, key) => {
+            if (typeof valor !== "string") return;
+            const texto = valor.trim();
+            if (!texto) return;
+            const etiqueta = (etiquetas[key] || "").trim();
+            lineas.push(`${etiqueta || key}: ${texto}`);
+        });
+        return lineas.join("\n");
+    };
+
     function initC16Forms() {
         document.querySelectorAll<HTMLFormElement>('form[data-form-c16]').forEach((form) => {
             form.addEventListener('submit', async (e) => {
@@ -280,6 +330,7 @@ const baseLabel =
                 const booking = document.querySelector("#booking-container-acuario");
                 const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
                 const url = (form.dataset.urlPost || '').trim();
+                const modo = (form.dataset.accion || 'post').trim().toLowerCase();
                 
                 if (submitBtn) {
                     submitBtn.disabled = true;
@@ -290,6 +341,33 @@ const baseLabel =
 
                 submitBtn.disabled = true;
                 try {
+                    if (modo === 'whatsapp') {
+                        const numero = (form.dataset.whatsappNumero || '').replace(/\D/g, '');
+                        if (!numero) {
+                            if (feedback) {
+                                feedback.textContent = "FALTA EL NÚMERO DE WHATSAPP PARA ENVIAR LA SOLICITUD.";
+                                feedback.classList.remove("hidden");
+                                feedback.classList.add("bg-red-100", "text-red-800");
+                            }
+                            return;
+                        }
+                        const mensaje = c16MensajeWhatsApp(form, form.dataset.whatsappMensaje || '');
+                        window.open(
+                            `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`,
+                            '_blank',
+                            'noopener,noreferrer'
+                        );
+
+                        if (feedback) {
+                            feedback.textContent = "GRACIAS! SE ABRIÓ WHATSAPP CON TU SOLICITUD LISTA.";
+                            feedback.classList.remove("hidden");
+                            feedback.classList.add("bg-green-100", "text-green-800");
+                        }
+
+                        form.reset();
+                        return;
+                    }
+
                     const res = await fetch(url, {
                         method: 'POST',
                         // NO agregues 'Content-Type', fetch lo configura automáticamente al pasar FormData

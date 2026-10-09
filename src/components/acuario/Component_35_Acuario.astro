@@ -1,0 +1,340 @@
+---
+// Bloque de vinculación con la NEM para el tema Acuario (componente-35-acuario).
+// Replica `landing-sealand/visitas-escolares/index.html:116-148` (#nem).
+//
+// La sección del origen es clara (`.section` a secas), con tarjetas de campo
+// blancas y un módulo de fases en degradado azul marino. Ninguno de esos colores
+// se copia: las tarjetas se derivan de las variables de superficie y el módulo de
+// fases se construye con color-mix() sobre variables de tema.
+//
+// A diferencia de componente-34, NINGÚN repeatable de este bloque lleva media:
+// `campos`, `fases`, `fases[].aprendizajes` y `fases[].productos` son sólo texto,
+// y las dos descargas son campos planos top-level (los cubre `populate=*` de la
+// consulta base). Por eso este bloque no necesita entrada en el deep-populate
+// de strapi.js.
+import { stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    campos?: any[];
+    fases?: any[];
+    descarga_vinculacion?: any;
+    descarga_vinculacion_texto?: string;
+    descarga_proyecto?: any;
+    descarga_proyecto_texto?: string;
+}
+
+const {
+    eyebrow,
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    campos = [],
+    fases = [],
+    descarga_vinculacion,
+    descarga_vinculacion_texto,
+    descarga_proyecto,
+    descarga_proyecto_texto,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+// Prefijo para los ids de la lista de pestañas. Se deriva del título del bloque
+// para que dos instancias de componente-35 en la misma página no compartan ids
+// (los ids se necesitan para aria-controls / aria-labelledby).
+const idBase = `c35-${(titulo || "nem").toString().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "nem"}`;
+
+// Descargas: patrón de Component_20_Acuario.astro (media + <a download> nativo).
+// Si el editor no subió el archivo, el botón no se renderiza en lugar de
+// quedar como un ancla muerta.
+const descargas = [
+    { archivo: descarga_vinculacion, texto: descarga_vinculacion_texto },
+    { archivo: descarga_proyecto, texto: descarga_proyecto_texto },
+]
+    .map((d) => ({ ...d, url: getStrapiUrl(d.archivo) }))
+    .filter((d) => Boolean(d.url));
+
+const listaCampos = campos.filter((c) => c?.numero || c?.titulo || c?.descripcion);
+const listaFases = fases.filter((f) => f?.fase || f?.nivel || f?.titulo || f?.descripcion);
+
+// Los repeatables de texto llegan como `any` desde Strapi; este helper los
+// normaliza a arreglo y descarta los ítems sin texto, para que una fase con la
+// lista vacía no deje un encabezado de sección sin contenido debajo.
+const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) => i?.texto) : []);
+---
+
+<section class="c35-section w-full py-[68px] lg:py-[82px] xl:py-[104px]">
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        {/* Encabezado de dos columnas, igual que .section-heading del origen. */}
+        {(eyebrow || titulo || descripcion) && (
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.72fr] gap-[18px] lg:gap-[70px] items-end mb-[36px] lg:mb-[56px]">
+                <div>
+                    {eyebrow && (
+                        <p class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em] text-[var(--accent-highlight-primary)] mb-4">
+                            {eyebrow}
+                        </p>
+                    )}
+
+                    {titulo && (
+                        <TitleTag class="c35-title font-[family-name:var(--font-principal)] font-bold">
+                            {titulo}
+                        </TitleTag>
+                    )}
+                </div>
+
+                {descripcion && (
+                    <div
+                        class="c35-muted font-[family-name:var(--font-secundaria)] font-normal text-[17px] mb-1 [&>p]:mb-0"
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+            </div>
+        )}
+
+        {/* Rejilla de campos de formación: 4 columnas, 2 en tablet, 1 en móvil. */}
+        {listaCampos.length > 0 && (
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-[26px]">
+                {listaCampos.map((c) => (
+                    <article class="c35-card p-7 rounded-[22px] min-h-[230px]">
+                        {c.numero && (
+                            <span class="c35-card-numero font-[family-name:var(--font-principal)] font-bold">{c.numero}</span>
+                        )}
+
+                        {c.titulo && (
+                            <h3 class="c35-card-titulo font-[family-name:var(--font-principal)] font-bold text-[20px] mt-7 mb-3">
+                                {c.titulo}
+                            </h3>
+                        )}
+
+                        {c.descripcion && (
+                            <p class="c35-muted font-[family-name:var(--font-secundaria)] text-[14px] leading-relaxed mb-0">{c.descripcion}</p>
+                        )}
+                    </article>
+                ))}
+            </div>
+        )}
+
+        {/* Módulo de fases y descargas. Alpine resuelve el estado `activa` con un
+           índice; cada panel se renderiza en el servidor y sólo se muestra el
+           activo. Se usa `x-data` en todo el archivo, sin scripts ad hoc,
+           siguiendo el precedente de Component_17_Acuario.astro.
+
+           Las descargas viven DENTRO del módulo, como en el origen
+           (index.html:142-145): la segunda es un botón de sólo filete con texto
+           claro y necesita el degradado oscuro para tener contraste. Si el
+           editor no subió archivos, no se renderiza ningún botón. */}
+        {(listaFases.length > 0 || descargas.length > 0) && (
+            <div class="c35-module rounded-[24px] lg:rounded-[32px] p-[26px] lg:p-[42px]" x-data="{ activa: 0 }">
+                {listaFases.length > 0 && (
+                    <div class="c35-tabs flex flex-wrap gap-2 mb-[30px]" role="tablist" aria-label="Fases educativas">
+                        {listaFases.map((f, i) => (
+                            <button
+                                type="button"
+                                role="tab"
+                                id={`${idBase}-tab-${i}`}
+                                class="c35-tab rounded-full px-4 py-[10px] font-[family-name:var(--font-principal)] font-bold text-[16px] cursor-pointer transition-colors"
+                                x-on:click={`activa = ${i}`}
+                                x-bind:class={`activa === ${i} ? 'c35-tab-active' : ''`}
+                                x-bind:aria-selected={`activa === ${i} ? 'true' : 'false'`}
+                                aria-selected={i === 0 ? "true" : "false"}
+                                aria-controls={`${idBase}-panel-${i}`}
+                            >
+                                {f.fase ? `Fase ${f.fase}` : `Fase ${i + 1}`}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {listaFases.map((f, i) => {
+                    const aprendizajes = textos(f.aprendizajes);
+                    const productos = textos(f.productos);
+                    return (
+                        <div
+                            id={`${idBase}-panel-${i}`}
+                            class="c35-phase grid grid-cols-1 lg:grid-cols-[0.72fr_1.28fr] gap-[42px] min-h-[220px] py-6 pb-8 outline-none"
+                            role="tabpanel"
+                            aria-labelledby={`${idBase}-tab-${i}`}
+                            tabindex="0"
+                            aria-live="polite"
+                            x-show={`activa === ${i}`}
+                            x-cloak={i === 0 ? undefined : true}
+                        >
+                            <div>
+                                {f.nivel && (
+                                    <span class="c35-nivel font-[family-name:var(--font-principal)] text-[13px] font-bold uppercase tracking-[0.12em]">{f.nivel}</span>
+                                )}
+
+                                {f.titulo && (
+                                    <h3 class="c35-phase-title font-[family-name:var(--font-principal)] font-bold text-[34px] my-[10px]">{f.titulo}</h3>
+                                )}
+
+                                {f.descripcion && (
+                                    <p class="c35-phase-muted font-[family-name:var(--font-secundaria)] text-[16px] mb-0">{f.descripcion}</p>
+                                )}
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-[26px]">
+                                {aprendizajes.length > 0 && (
+                                    <div class="c35-detail border-l pl-[22px]">
+                                        <h4 class="c35-detail-titulo font-[family-name:var(--font-secundaria)] text-[14px] font-bold mb-[10px]">
+                                            Aprendizajes y propósitos
+                                        </h4>
+                                        {/* Un solo aprendizaje se renderiza como
+                                            párrafo (así lo hace el origen); con
+                                            varios, lista con viñetas. */}
+                                        {aprendizajes.length === 1 ? (
+                                            <p class="c35-detail-texto font-[family-name:var(--font-secundaria)] text-[15px] mb-0">{aprendizajes[0].texto}</p>
+                                        ) : (
+                                            <ul class="c35-detail-texto list-disc pl-5 m-0">
+                                                {aprendizajes.map((a) => (
+                                                    <li class="my-[6px]">{a.texto}</li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                )}
+
+                                {productos.length > 0 && (
+                                    <div class="c35-detail border-l pl-[22px]">
+                                        <h4 class="c35-detail-titulo font-[family-name:var(--font-secundaria)] text-[14px] font-bold mb-[10px]">
+                                            Productos sugeridos
+                                        </h4>
+                                        {productos.length === 1 ? (
+                                            <p class="c35-detail-texto font-[family-name:var(--font-secundaria)] text-[15px] mb-0">{productos[0].texto}</p>
+                                        ) : (
+                                            <ul class="c35-detail-texto list-disc pl-5 m-0">
+                                                {productos.map((p) => (
+                                                    <li class="my-[6px]">{p.texto}</li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+
+                {descargas.length > 0 && (
+                    <div class="c35-downloads flex flex-col sm:flex-row flex-wrap gap-3">
+                        {descargas.map((d, i) => (
+                            <a
+                                href={d.url}
+                                download={d.archivo?.name || undefined}
+                                class="c35-download inline-flex justify-center items-center min-h-[52px] py-[13px] px-[22px] rounded-full border font-[family-name:var(--font-principal)] font-bold text-[14px] transition-transform hover:-translate-y-0.5"
+                            >
+                                {d.texto || `Descargar documento ${i + 1}`}
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    /* La sección del origen es clara; --neutral-background-subtle es la variable
+       del tema para fondos claros, así que la franja no depende de un blanco
+       fijo. El texto principal cae a --surface-brand-primary implícitamente vía
+       Layout.astro; el secundario se atenúa con color-mix(). */
+    .c35-section {
+        background-color: var(--neutral-background-subtle);
+        color: var(--surface-brand-primary);
+    }
+
+    .c35-muted {
+        color: color-mix(in srgb, var(--surface-brand-primary) 70%, transparent);
+    }
+
+    /* Escala no-role del origen: h2 es `clamp(34px, 4.2vw, 58px)` y en móvil
+        baja a 36px. Se conserva el clamp; la familia sale de --font-principal. */
+    .c35-title {
+        font-size: clamp(34px, 4.2vw, 58px);
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+    }
+
+    /* Tarjeta blanca con filete (--line en el origen): se sube hacia el blanco
+       del tema mezclando texto invertido con el fondo claro de sección, y el
+       borde es la marca de primario diluida. */
+    .c35-card {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 70%, var(--neutral-background-subtle));
+        border: 1px solid color-mix(in srgb, var(--surface-brand-primary) 12%, transparent);
+    }
+
+    .c35-card-numero {
+        color: var(--accent-highlight-primary);
+    }
+
+    /* Degradado del módulo de fases (135deg de navy a navy-2 en el origen),
+        reconstruido con las variables de superficie del tema. */
+    .c35-module {
+        background-image: linear-gradient(
+            135deg,
+            var(--surface-brand-primary),
+            color-mix(in srgb, var(--surface-brand-secondary) 60%, var(--surface-brand-primary))
+        );
+        color: var(--neutral-text-inverted);
+        box-shadow: 0 24px 70px color-mix(in srgb, var(--surface-brand-primary) 20%, transparent);
+    }
+
+    /* Pestaña en reposo: sólo filete translúcido. La activa invierte a fondo
+        claro con texto de marca, igual que `.phase-tab.active` del origen. */
+    .c35-tab {
+        background-color: transparent;
+        border: 1px solid color-mix(in srgb, var(--neutral-text-inverted) 20%, transparent);
+        color: color-mix(in srgb, var(--neutral-text-inverted) 72%, transparent);
+    }
+
+    .c35-tab-active {
+        background-color: var(--neutral-text-inverted);
+        border-color: var(--neutral-text-inverted);
+        color: var(--surface-brand-primary);
+    }
+
+    .c35-nivel {
+        color: var(--accent-highlight-tertiary);
+    }
+
+    .c35-phase-muted {
+        color: color-mix(in srgb, var(--neutral-text-inverted) 70%, transparent);
+    }
+
+    .c35-detail {
+        border-left-color: color-mix(in srgb, var(--neutral-text-inverted) 18%, transparent);
+    }
+
+    .c35-detail-titulo {
+        color: var(--accent-highlight-secondary);
+    }
+
+    .c35-detail-texto {
+        color: color-mix(in srgb, var(--neutral-text-inverted) 80%, transparent);
+    }
+
+    /* Botones de descarga: la primera es sólida (`.button-light`) y la segunda
+        sólo con filete (`.button-outline-light`). La differentiation viene de un
+        modificador aplicado por nth-child, no de un color hardcodeado. */
+    .c35-download {
+        background-color: var(--neutral-text-inverted);
+        border-color: var(--neutral-text-inverted);
+        color: var(--surface-brand-primary);
+    }
+
+    .c35-downloads .c35-download:nth-child(n + 2) {
+        background-color: transparent;
+        border-color: color-mix(in srgb, var(--neutral-text-inverted) 42%, transparent);
+        color: var(--neutral-text-inverted);
+    }
+
+    /* Sin Alpine los paneles arrancan visibles (no queremos un bloque vacío si
+        el JS no carga); con Alpine, x-cloak los esconde hasta que la pestaña
+        activa esté definida. El primer panel nunca lleva x-cloak. */
+    [x-cloak] {
+        display: none !important;
+    }
+</style>

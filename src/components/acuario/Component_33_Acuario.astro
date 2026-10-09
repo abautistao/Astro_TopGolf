@@ -1,0 +1,132 @@
+---
+// Franja introductoria de dos columnas para el tema Acuario (componente-33-acuario).
+// Replica `landing-sealand/visitas-escolares/index.html:71-83` (.intro-strip).
+//
+// Fondo claro por defecto, así que el texto NO puede usar --neutral-text-inverted.
+// No existe una variable --neutral-text-primary en el tema: la convención de los
+// componentes claros del repo (p. ej. Component_15_Acuario) es teñir el texto con
+// --surface-brand-primary, y aquí además se baja la opacidad con color-mix() para
+// reproducir el tono "muted" del origen sin inventar una variable nueva ni un hex.
+import { stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    parrafo?: any;
+    boton?: any;
+    imagen?: any;
+    texto_alt_imagen?: string;
+    color_fondo?: string;
+    color_eyebrow_override?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    eyebrow,
+    titulo,
+    htmlTag = "h2",
+    parrafo,
+    boton,
+    imagen,
+    texto_alt_imagen,
+    color_fondo,
+    color_eyebrow_override,
+    color_titulo_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+// Strapi entrega `repeatable: false` como objeto plano o envuelto en un arreglo
+// según la forma del response; normalizamos igual que componente-3-acuario.
+const btn = Array.isArray(boton) ? boton[0] : boton;
+
+// Media plano (campo de primer nivel del bloque), no dentro de un repeatable:
+// getStrapiUrl lo resuelve sin necesitar una entrada en el deep-populate de strapi.js.
+const imageUrl = getStrapiUrl(imagen);
+
+// Cascada: el override del editor (hex del color picker) gana; si no hay, la
+// variable de tema definida en setup-site.
+const finalBg = color_fondo || "var(--neutral-background-subtle)";
+const eyebrowColor = color_eyebrow_override || "var(--brand-interactive-base)";
+const titleColor = color_titulo_override || "var(--surface-brand-primary)";
+const textColor = color_texto_override || "var(--surface-brand-primary)";
+---
+
+<section
+    class="w-full py-16 md:py-[92px]"
+    style={`background-color: ${finalBg};`}
+>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div class="grid gap-[30px] lg:grid-cols-[0.85fr_1.15fr] lg:gap-[58px] items-center">
+            <div>
+                {eyebrow && (
+                    <p class="mb-4 font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em]" style={`color: ${eyebrowColor};`}>
+                        {eyebrow}
+                    </p>
+                )}
+
+                {titulo && (
+                    <TitleTag
+                        class="intro-title font-[family-name:var(--font-principal)] font-bold"
+                        style={`color: ${titleColor};`}
+                    >
+                        {titulo}
+                    </TitleTag>
+                )}
+
+                {parrafo && (
+                    <div
+                        class="mt-6 mb-[30px] font-[family-name:var(--font-secundaria)] font-normal text-[18px] leading-relaxed [&>p]:mb-0"
+                        style={`color: color-mix(in srgb, ${textColor} 78%, transparent);`}
+                        set:html={stringifyRichText(parrafo)}
+                    />
+                )}
+
+                {btn?.texto && (
+                    <a
+                        href={btn.url || "#"}
+                        class="btn-primary inline-flex items-center justify-center min-h-[52px] px-[22px] py-[13px] rounded-full border border-transparent font-[family-name:var(--font-principal)] font-bold text-[14px] transition-transform hover:-translate-y-0.5"
+                    >
+                        {btn.texto}
+                    </a>
+                )}
+            </div>
+
+            {imageUrl && (
+                <div class="intro-image">
+                    <img
+                        src={imageUrl}
+                        alt={texto_alt_imagen || ""}
+                        loading="lazy"
+                        class="w-full aspect-[4/3] lg:aspect-[16/9] object-cover rounded-[32px]"
+                    />
+                </div>
+            )}
+        </div>
+    </div>
+</section>
+
+<style>
+    .btn-primary {
+        background-color: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        box-shadow: 0 12px 26px color-mix(in srgb, var(--surface-brand-primary) 20%, transparent);
+    }
+
+    /* La imagen lleva la sombra suave del origen (--shadow), expresada sobre
+       --surface-brand-primary para no fijarla a un color literal. */
+    .intro-image img {
+        box-shadow: 0 24px 70px color-mix(in srgb, var(--surface-brand-primary) 14%, transparent);
+    }
+
+    /* Escala no-role del origen: conserva el clamp en vez de los 32px del rol
+       Título. La familia siempre viene de --font-principal. */
+    .intro-title {
+        font-size: clamp(36px, 4.2vw, 58px);
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+    }
+</style>

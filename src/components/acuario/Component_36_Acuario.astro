@@ -1,0 +1,289 @@
+---
+// Kit para docentes para el tema Acuario (componente-36-acuario).
+// Replica `landing-sealand/visitas-escolares/index.html:150-183` (#documentos).
+//
+// La sección del origen es `.section-soft`: fondo claro tipo ice y tarjetas
+// blancas con filete. Ninguno de esos colores se copia: la superficie clara sale
+// de --neutral-background-subtle y las tarjetas se derivan mezclando
+// --neutral-text-inverted con ese fondo, el mismo truco de `.c35-card`.
+//
+// ATENCIÓN — repeatable con media anidada: `documentos[].archivo` y
+// `materiales[].archivo` viven un nivel dentro de un repeatable, y el
+// `populate=*` de Strapi 5 no recursa ahí. Por eso este bloque sí necesita
+// entrada en el deep-populate de strapi.js: populate + merge en getPageBySlug y
+// getExperienciaBySlug, sólo populate en getPaseBySlug (que hace una sola
+// petición y no tiene fase de merge).
+import { stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    documentos?: any[];
+    titulo_materiales?: string;
+    htmlTag_materiales?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion_materiales?: any;
+    materiales?: any[];
+    texto_privacidad?: string;
+    color_eyebrow_override?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    color_fondo,
+    eyebrow,
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    documentos = [],
+    titulo_materiales,
+    htmlTag_materiales = "h3",
+    descripcion_materiales,
+    materiales = [],
+    texto_privacidad,
+    color_eyebrow_override,
+    color_titulo_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+// El sub-bloque de materiales tiene su propio campo htmlTag en el schema:
+// comparten la variable de tema de la tipografía pero son textos independientes.
+const MaterialsTitleTag = htmlTag_materiales as any;
+
+// Cascada: el override del editor (hex del color picker) gana; si no hay, la
+// variable de tema definida en setup-site. Esta sección es clara, así que el
+// texto por defecto NO puede ser --neutral-text-inverted: se tiñe con
+// --surface-brand-primary, igual que componente-33 y componente-35.
+const sectionBg = color_fondo || "var(--neutral-background-subtle)";
+const eyebrowColor = color_eyebrow_override || "var(--accent-highlight-primary)";
+const titleColor = color_titulo_override || "var(--surface-brand-primary)";
+const textColor = color_texto_override || "var(--surface-brand-primary)";
+
+// Patrón de descarga de Component_20_Acuario.astro, extendido a un repeatable:
+// getStrapiUrl resuelve la URL y `downloadName` replica su fallback al nombre
+// del archivo dentro de la ruta. Un documento sin archivo subido se descarta en
+// vez de quedar como un ancla muerta, igual que hace Component_35 con sus dos
+// descargas planas.
+const listaDocumentos = documentos
+    .map((d) => ({
+        ...d,
+        url: getStrapiUrl(d?.archivo),
+        downloadName: d?.archivo?.name || (d?.archivo?.url ? d.archivo.url.split("/").pop() : undefined),
+    }))
+    .filter((d) => Boolean(d.url));
+
+// Los materiales del origen son enlaces que abren en pestaña nueva, no
+// descargas; por eso no llevan atributo `download` ni campo de interruptor.
+const listaMateriales = materiales
+    .map((m) => ({ ...m, url: getStrapiUrl(m?.archivo) }))
+    .filter((m) => Boolean(m.url));
+
+// Extensión ↗ del badge de cada material, igual que el <b>PDF ↗</b> del origen.
+const arrowMaterial = "↗";
+---
+
+<section class="w-full py-[68px] lg:py-[82px] xl:py-[104px]" style={`background-color: ${sectionBg};`}>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        {/* Encabezado de dos columnas alineadas al borde inferior, igual que
+            .section-heading del origen. */}
+        {(eyebrow || titulo || descripcion) && (
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.72fr] gap-[18px] lg:gap-[70px] items-end mb-[36px] lg:mb-[56px]">
+                <div>
+                    {eyebrow && (
+                        <p class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em] mb-4" style={`color: ${eyebrowColor};`}>
+                            {eyebrow}
+                        </p>
+                    )}
+
+                    {titulo && (
+                        <TitleTag class="c36-title font-[family-name:var(--font-principal)] font-bold" style={`color: ${titleColor};`}>
+                            {titulo}
+                        </TitleTag>
+                    )}
+                </div>
+
+                {descripcion && (
+                    <div
+                        class="c36-muted font-[family-name:var(--font-secundaria)] font-normal text-[17px] mb-1 [&>p]:mb-0"
+                        style={`color: color-mix(in srgb, ${textColor} 78%, transparent);`}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+            </div>
+        )}
+
+        {/* Rejilla de documentos: 3 columnas en escritorio, 2 en tablet, 1 en
+            móvil, con 18px de separación en los tres cortes. */}
+        {listaDocumentos.length > 0 && (
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+                {listaDocumentos.map((d) => (
+                    <a
+                        href={d.url}
+                        download={d.abrir_en_pestana_nueva ? undefined : d.downloadName}
+                        target={d.abrir_en_pestana_nueva ? "_blank" : undefined}
+                        rel={d.abrir_en_pestana_nueva ? "noopener noreferrer" : undefined}
+                        class="c36-card flex flex-col min-h-[245px] p-[28px] rounded-[22px] transition-transform duration-200 hover:-translate-y-[5px]"
+                    >
+                        {d.tipo_documento && <span class="c36-doc-type w-fit px-[9px] py-[6px] rounded-[8px] font-[family-name:var(--font-secundaria)] text-[10px] font-bold tracking-[0.08em]">{d.tipo_documento}</span>}
+
+                        {d.titulo && (
+                            <h3 class="c36-card-titulo font-[family-name:var(--font-principal)] font-bold text-[20px] mt-[22px] mb-[10px]">
+                                {d.titulo}
+                            </h3>
+                        )}
+
+                        {d.descripcion && (
+                            <p class="c36-card-muted font-[family-name:var(--font-secundaria)] font-normal text-[14px] leading-relaxed mb-0">
+                                {d.descripcion}
+                            </p>
+                        )}
+
+                        {/* El "Descargar ↓" va anclado al fondo de la tarjeta
+                            (margin-top:auto en el origen), de modo que las
+                            descripciones de longitudes distintas alinean igual. */}
+                        <b class="c36-card-cta font-[family-name:var(--font-secundaria)] font-bold text-[13px] mt-auto pt-[18px]">
+                            {d.texto_boton || "Descargar"} ↓
+                        </b>
+                    </a>
+                ))}
+            </div>
+        )}
+
+        {/* Bloque de material didáctico: inverso del anterior (copy a la
+            izquierda, enlaces a la derecha) sobre una superficie oscura, tal
+            cual .materials-block del origen. Es la única zona oscura de esta
+            sección y por eso no consulta los overrides de la sección clara. */}
+        {(titulo_materiales || descripcion_materiales || listaMateriales.length > 0) && (
+            <div class="c36-materials mt-[22px] p-[28px] md:p-[38px] rounded-[28px] grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-[30px] items-center">
+                {/* El sub-bloque de materiales NO reutiliza el antetítulo del
+                    bloque: el origen rotula este módulo con su propio eyebrow
+                    ("Material didáctico") y el schema no expone un campo para
+                    él, así que el módulo arranca directamente con su título. */}
+                <div>
+                    {titulo_materiales && (
+                        <MaterialsTitleTag class="font-[family-name:var(--font-principal)] font-bold text-[30px] mb-[12px]">
+                            {titulo_materiales}
+                        </MaterialsTitleTag>
+                    )}
+
+                    {descripcion_materiales && (
+                        <div
+                            class="c36-materials-muted font-[family-name:var(--font-secundaria)] font-normal text-[15px] m-0 [&>p]:mb-0 [&>p:last-child]:mb-0"
+                            set:html={stringifyRichText(descripcion_materiales)}
+                        />
+                    )}
+                </div>
+
+                {listaMateriales.length > 0 && (
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-[10px]">
+                        {listaMateriales.map((m) => (
+                            <a
+                                href={m.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="c36-material-link flex justify-between items-center gap-[18px] px-4 py-[14px] rounded-[14px] font-[family-name:var(--font-secundaria)] text-[13px] font-bold transition-colors"
+                            >
+                                <span>{m.titulo || "Material"}</span>
+                                <b class="c36-material-tag font-bold">{m.archivo?.ext?.toUpperCase() || "PDF"} {arrowMaterial}</b>
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+        )}
+
+        {/* Aviso de privacidad opcional, centrado y muy tenue. */}
+        {texto_privacidad && (
+            <p class="c36-privacy font-[family-name:var(--font-secundaria)] text-[11px] text-center mt-[10px] mb-0">
+                {texto_privacidad}
+            </p>
+        )}
+    </div>
+</section>
+
+<style>
+    /* Tarjeta blanca con filete (--line en el origen): se sube hacia el blanco
+       del tema mezclando texto invertido con el fondo claro de sección. */
+    .c36-card {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 70%, var(--neutral-background-subtle));
+        border: 1px solid color-mix(in srgb, var(--surface-brand-primary) 12%, transparent);
+    }
+
+    .c36-card:hover {
+        border-color: transparent;
+        box-shadow: 0 24px 70px color-mix(in srgb, var(--surface-brand-primary) 14%, transparent);
+    }
+
+    /* Escala no-role del origen: h2 es `clamp(34px, 4.2vw, 58px)`, deliberadamente
+       por encima de los 32px del role scale. Se conserva el clamp; la familia
+       siempre viene de --font-principal. */
+    .c36-title {
+        font-size: clamp(34px, 4.2vw, 58px);
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+    }
+
+    .c36-muted,
+    .c36-card-muted {
+        color: color-mix(in srgb, var(--surface-brand-primary) 70%, transparent);
+    }
+
+    .c36-card-titulo,
+    .c36-card-cta {
+        color: var(--surface-brand-primary);
+    }
+
+    /* Badge de formato (`#e6f8fa` sobre `--teal-dark` en el origen). NO se
+       asigna un color por tipo: en el origen hay UNA sola regla `.doc-type`
+       (styles.css:117) que aplica a DOCX, PPTX y PDF por igual, así que
+       inventar un color por formato sería una diferencia visual que la fuente
+       no tiene. La enumeración del schema sirve para el badge y para el
+       filtrado editorial, no para el color. */
+    .c36-doc-type {
+        background-color: color-mix(in srgb, var(--accent-highlight-primary) 20%, transparent);
+        color: color-mix(in srgb, var(--accent-highlight-primary) 55%, var(--surface-brand-primary));
+    }
+
+    /* Bloque de materiales: navy del origen reconstruido con las variables de
+       superficie del tema, con la misma sombra que usa el módulo de fases. */
+    .c36-materials {
+        background-image: linear-gradient(
+            135deg,
+            var(--surface-brand-primary),
+            color-mix(in srgb, var(--surface-brand-secondary) 60%, var(--surface-brand-primary))
+        );
+        color: var(--neutral-text-inverted);
+        box-shadow: 0 24px 70px color-mix(in srgb, var(--surface-brand-primary) 20%, transparent);
+    }
+
+    .c36-materials-muted {
+        color: color-mix(in srgb, var(--neutral-text-inverted) 70%, transparent);
+    }
+
+    /* Cristal de los enlaces: relleno y borde translúcidos derivados del color
+       de texto, igual que los rgba(255,255,255,…) del origen. */
+    .c36-material-link {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 8%, transparent);
+        border: 1px solid color-mix(in srgb, var(--neutral-text-inverted) 12%, transparent);
+        color: var(--neutral-text-inverted);
+    }
+
+    .c36-material-link:hover {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 16%, transparent);
+        border-color: color-mix(in srgb, var(--neutral-text-inverted) 28%, transparent);
+    }
+
+    /* Etiqueta de formato del material (#9ee8ee en el origen): es el acento
+       sutil sobre oscuro, que en el tema es --accent-highlight-tertiary. */
+    .c36-material-tag {
+        color: var(--accent-highlight-tertiary);
+    }
+
+    .c36-privacy {
+        color: color-mix(in srgb, var(--surface-brand-primary) 62%, transparent);
+    }
+</style>

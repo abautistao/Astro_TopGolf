@@ -36,7 +36,7 @@ export async function getPageBySlug(slug, locale = 'en') {
   if (!page || !page.ContenidoPagina) return page;
 
   // 2. Fetch deep populated data for specific complex components
-  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*`;
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-34-acuario][populate][galeria][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-36-acuario][populate][documentos][populate][archivo][populate]=*&populate[ContenidoPagina][on][secciones.componente-36-acuario][populate][materiales][populate][archivo][populate]=*`;
   const deepDataResponse = await fetchAPI(`/paginas?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
@@ -90,6 +90,34 @@ export async function getPageBySlug(slug, locale = 'en') {
           return { ...component, cards: deepCards };
         }
         return component;
+      }
+      // COMPONENTE 34: la galería lleva media anidada, sólo viene poblada en la
+      // segunda pasada. Se usa la variante defensiva (componente-19) porque un
+      // arreglo profundo vacío no debe borrar los pies de imagen que sí trajo
+      // el populate superficial.
+      if (component.__component === 'secciones.componente-34-acuario') {
+        const deepGaleria = deepComponent.galeria;
+        if (Array.isArray(deepGaleria) && deepGaleria.length > 0) {
+          return { ...component, galeria: deepGaleria };
+        }
+        return component;
+      }
+      // COMPONENTE 36: `documentos` y `materiales` llevan media anidada, sólo
+      // llega poblada en la segunda pasada. Variante defensiva (componente-19):
+      // un arreglo profundo vacío no debe borrar los títulos y descripciones que
+      // sí trajo el populate superficial. Se evalúan por separado para que un
+      // repetible vacío en uno no arrastre al otro.
+      if (component.__component === 'secciones.componente-36-acuario') {
+        const deepDocumentos = deepComponent.documentos;
+        const deepMateriales = deepComponent.materiales;
+        const merged = { ...component };
+        if (Array.isArray(deepDocumentos) && deepDocumentos.length > 0) {
+          merged.documentos = deepDocumentos;
+        }
+        if (Array.isArray(deepMateriales) && deepMateriales.length > 0) {
+          merged.materiales = deepMateriales;
+        }
+        return merged;
       }
       return component;
     });
@@ -247,7 +275,17 @@ export async function getPaseBySlug(slug, locale = 'en') {
     `populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*`,
     `populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*`,
     `populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*`,
-    `populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*`
+    `populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*`,
+
+    // COMPONENTE 34: la galería es un repeatable con media anidada (galeria[].imagen)
+    `populate[ContenidoPagina][on][secciones.componente-34-acuario][populate][galeria][populate][imagen][populate]=*`,
+
+    // COMPONENTE 36: los dos repeatables llevan media anidada
+    // (documentos[].archivo y materiales[].archivo). Este fetcher hace UNA sola
+    // petición cuyo query ya trae ambos niveles, sin fase de merge, así que la
+    // entrada de populate es suficiente. Un merge aquí sería código muerto.
+    `populate[ContenidoPagina][on][secciones.componente-36-acuario][populate][documentos][populate][archivo][populate]=*`,
+    `populate[ContenidoPagina][on][secciones.componente-36-acuario][populate][materiales][populate][archivo][populate]=*`
   ].join('&');
 
   const pagesResponse = await fetchAPI(`/pases?${query}`);
@@ -272,7 +310,7 @@ export async function getExperienciaBySlug(slug, locale = 'en') {
 
   if (!page || !page.ContenidoPagina) return page;
 
-  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][elementos_lista][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-10-acuario][populate][acordeones][populate]=*&populate[ContenidoPagina][on][secciones.componente-11-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-14-acuario][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-22-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-22-acuario][populate][imagen_fondo][populate]=*`;
+  const deepQuery = `populate[ContenidoPagina][on][secciones.componente-1-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][slides][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][imagen_decorativa][populate]=*&populate[ContenidoPagina][on][secciones.componente-3-acuario][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][tarjetas][populate][boton][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-4-acuario][populate][icono_decorativo_hover][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-5-acuario][populate][imagen_decorativa_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][elementos_lista][populate]=*&populate[ContenidoPagina][on][secciones.componente-9-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-10-acuario][populate][acordeones][populate]=*&populate[ContenidoPagina][on][secciones.componente-11-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-12-acuario][populate][tarjetas][populate][icono][populate]=*&populate[ContenidoPagina][on][secciones.componente-13-acuario][populate][galeria][populate]=*&populate[ContenidoPagina][on][secciones.componente-14-acuario][populate]=*&populate[ContenidoPagina][on][secciones.componente-15-acuario][populate][bloques_contenido][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-19-acuario][populate][cards][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-22-acuario][populate][tarjetas][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-22-acuario][populate][imagen_fondo][populate]=*&populate[ContenidoPagina][on][secciones.componente-34-acuario][populate][galeria][populate][imagen][populate]=*&populate[ContenidoPagina][on][secciones.componente-36-acuario][populate][documentos][populate][archivo][populate]=*&populate[ContenidoPagina][on][secciones.componente-36-acuario][populate][materiales][populate][archivo][populate]=*`;
   const deepDataResponse = await fetchAPI(`/experiencias?filters[slug][$eq]=${slug}&locale=${locale}&${deepQuery}&pagination[pageSize]=100`);
   const deepPage = deepDataResponse?.[0];
 
@@ -298,6 +336,32 @@ export async function getExperienciaBySlug(slug, locale = 'en') {
         return component;
       }
       if (component.__component === 'secciones.componente-22-acuario') return { ...component, tarjetas: deepComponent.tarjetas, imagen_fondo: deepComponent.imagen_fondo };
+      // COMPONENTE 34: la galería lleva media anidada, sólo viene poblada en la
+      // segunda pasada. Variante defensiva (componente-19) para no perder los
+      // pies de imagen si la segunda pasada devuelve el arreglo vacío.
+      if (component.__component === 'secciones.componente-34-acuario') {
+        const deepGaleria = deepComponent.galeria;
+        if (Array.isArray(deepGaleria) && deepGaleria.length > 0) {
+          return { ...component, galeria: deepGaleria };
+        }
+        return component;
+      }
+      // COMPONENTE 36: `documentos` y `materiales` llevan media anidada, sólo
+      // llega poblada en la segunda pasada. Variante defensiva (componente-19)
+      // por cada repetible, para no perder títulos ni etiquetas si la segunda
+      // pasada devuelve alguno de los dos arreglos vacío.
+      if (component.__component === 'secciones.componente-36-acuario') {
+        const deepDocumentos = deepComponent.documentos;
+        const deepMateriales = deepComponent.materiales;
+        const merged = { ...component };
+        if (Array.isArray(deepDocumentos) && deepDocumentos.length > 0) {
+          merged.documentos = deepDocumentos;
+        }
+        if (Array.isArray(deepMateriales) && deepMateriales.length > 0) {
+          merged.materiales = deepMateriales;
+        }
+        return merged;
+      }
       return component;
     });
   }

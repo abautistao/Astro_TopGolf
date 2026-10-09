@@ -1,0 +1,778 @@
+---
+// Paquetes escolares + simulador de cotización para el tema Acuario
+// (componente-37-acuario).
+// Replica `landing-sealand/visitas-escolares/index.html:185-241` (#cotizador)
+// y reproduce la aritmética de `app.js:106-164` sin mover NINGUNA constante al
+// código: valor_cortesia, cada_cuantas_cortesias, personas_maximas y
+// whatsapp_numero son campos editables del schema.
+//
+// ATENCIÓN — repeatable SIN media: `paquetes` y `reglas` son sólo escalares y no
+// hay media top-level, así que este bloque NO necesita entrada en el
+// deep-populate de strapi.js (mismo criterio que componente-32 y componente-35:
+// `populate[ContenidoPagina][populate]=*` ya devuelve los components anidados,
+// incluso a dos niveles como fase-nem-acuario → aprendizajes).
+//
+// Comportamiento de cliente: script propio (precedente de Component_16), no
+// Alpine. La aritmética es lo delicado del bloque y dentro de un `<script>` la
+// función queda tipada y verificable por `astro check`; en `x-data` tendría que
+// viajar como cadena sin tipos ni validación. SeInstancia una vez por bloque
+// con `[data-c37-cotizador]`, así que dos componente-37 en la misma página no
+// comparten estado (mismo criterio que el `idBase` de Component_35).
+import { stringifyRichText } from "../../lib/strapi.js";
+
+type ReglaCortesia = "general" | "solo_entrada_general" | "ninguna";
+
+export interface Props {
+    color_fondo?: string;
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    paquetes?: any[];
+    reglas?: any[];
+    titulo_simulador?: string;
+    htmlTag_simulador?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion_simulador?: any;
+    valor_cortesia?: number;
+    cada_cuantas_cortesias?: number;
+    personas_maximas?: number;
+    whatsapp_numero?: string;
+    texto_boton?: string;
+    texto_aviso_legal?: string;
+    color_eyebrow_override?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    color_fondo,
+    eyebrow,
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    paquetes = [],
+    reglas = [],
+    titulo_simulador,
+    htmlTag_simulador = "h3",
+    descripcion_simulador,
+    valor_cortesia = 250,
+    cada_cuantas_cortesias = 20,
+    personas_maximas = 1000,
+    whatsapp_numero,
+    texto_boton = "Enviar estimado por WhatsApp",
+    texto_aviso_legal,
+    color_eyebrow_override,
+    color_titulo_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+// El panel del simulador tiene su propio campo htmlTag en el schema: comparte
+// la variable de tema de la tipografía pero es un texto independiente.
+const SimuladorTitleTag = htmlTag_simulador as any;
+
+// Cascada: el override del editor (hex del color picker) gana; si no hay, la
+// variable de tema definida en setup-site. La sección es clara, así que el
+// texto por defecto se tiñe con --surface-brand-primary, igual que componente-33,
+// componente-35 y componente-36.
+const eyebrowColor = color_eyebrow_override || "var(--accent-highlight-primary)";
+const titleColor = color_titulo_override || "var(--surface-brand-primary)";
+const textColor = color_texto_override || "var(--surface-brand-primary)";
+
+// Prefijo para los ids del simulador, derivado del título del bloque, para que
+// dos instancias de componente-37 en la misma página no compartan ids.
+const idBase = `c37-${(titulo || "cotizador").toString().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "cotizador"}`;
+
+// app.js:64 — mismo formateador que el origen, sin decimales.
+const money = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 });
+const formatMoney = (value: number) => money.format(value);
+
+// Mismo normalizador que el del script de cliente, para que el primer render
+// (servidor) coincida con el recálculo (navegador) y no haya un salto visible.
+const normalizarPrecio = (value: unknown) => Math.max(0, Math.round(Number(value) || 0));
+
+const listaPaquetes = paquetes
+    .filter((p: any) => p && (p.nombre || p.precio))
+    .map((p: any) => ({
+        nombre: String(p.nombre || "Paquete"),
+        precio: normalizarPrecio(p.precio),
+        incluye: String(p.incluye || ""),
+        regla_cortesia: (p.regla_cortesia || "general") as ReglaCortesia,
+        destacado: Boolean(p.destacado),
+    }));
+
+const listaReglas = reglas.filter((r: any) => r && r.texto);
+
+// app.js:11,20,27,35 — el texto de cortesía de cada tarjeta se DERIVA de la
+// enumeración y del divisor del bloque, en vez de ser un campo de texto libre:
+// así no puede quedar desincronizado si el editor cambia `cada_cuantas_cortesias`.
+const textoCortesia = (regla: ReglaCortesia) => {
+    if (regla === "ninguna") return "Se paga en cada lugar la parte correspondiente.";
+    if (regla === "solo_entrada_general") {
+        return `La cortesía 1 × ${cada_cuantas_cortesias} aplica únicamente sobre el valor de la Entrada General.`;
+    }
+    return `1 cortesía por cada ${cada_cuantas_cortesias} personas pagadas.`;
+};
+
+// Sin número de WhatsApp el botón de envío queda deshabilitado, pero el
+// simulador sigue calculando: `whatsapp_numero` no es un campo requerido y el
+// bloque debe degradar sin cajas rotas. El botón sin número explica por qué
+// está bloqueado (ver `botonWhatsapp.title` en el script).
+const numeroWhatsapp = String(whatsapp_numero || "").replace(/\D/g, "");
+const haySimulador = listaPaquetes.length > 0;
+---
+
+<section
+    class={`w-full py-[68px] lg:py-[82px] xl:py-[104px] ${color_fondo ? "" : "c37-seccion"}`}
+    style={color_fondo ? `background-color: ${color_fondo};` : undefined}
+    data-c37-cotizador
+    data-c37-paquetes={JSON.stringify(listaPaquetes)}
+    data-c37-valor-cortesia={valor_cortesia}
+    data-c37-cada-cuantas-cortesias={cada_cuantas_cortesias}
+    data-c37-personas-maximas={personas_maximas}
+    data-c37-whatsapp={numeroWhatsapp}
+>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        {/* Encabezado de dos columnas alineadas al borde inferior, igual que
+            .section-heading del origen (index.html:187-193). */}
+        {(eyebrow || titulo || descripcion) && (
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.72fr] gap-[18px] lg:gap-[70px] items-end mb-[36px] lg:mb-[56px]">
+                <div>
+                    {eyebrow && (
+                        <p class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em] mb-4" style={`color: ${eyebrowColor};`}>
+                            {eyebrow}
+                        </p>
+                    )}
+
+                    {titulo && (
+                        <TitleTag class="c37-titulo font-[family-name:var(--font-principal)] font-bold" style={`color: ${titleColor};`}>
+                            {titulo}
+                        </TitleTag>
+                    )}
+                </div>
+
+                {descripcion && (
+                    <div
+                        class="c37-apagado font-[family-name:var(--font-secundaria)] font-normal text-[17px] mb-1 [&>p]:mb-0"
+                        style={`color: color-mix(in srgb, ${textColor} 78%, transparent);`}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+            </div>
+        )}
+
+        {/* Rejilla de paquetes: 3 columnas en escritorio (styles.css:129),
+            2 en tablet y 1 en móvil, con 18px de separación en los tres cortes. */}
+        {listaPaquetes.length > 0 && (
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] mb-[32px]">
+                {listaPaquetes.map((p, indice) => (
+                    <article
+                        class={`c37-tarjeta flex flex-col min-h-[330px] p-[26px] rounded-[24px] transition-transform duration-200 hover:-translate-y-[5px] ${p.destacado ? "c37-tarjeta-destacada" : ""}`}
+                    >
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="c37-precio font-[family-name:var(--font-principal)]">
+                                {formatMoney(p.precio)} <small class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold tracking-normal">por persona</small>
+                            </div>
+                            {p.destacado && (
+                                <span class="c37-insignia w-fit shrink-0 px-[9px] py-[6px] rounded-[999px] font-[family-name:var(--font-secundaria)] text-[10px] font-bold uppercase tracking-[0.08em]">
+                                    Más sencillo
+                                </span>
+                            )}
+                        </div>
+
+                        <h3 class="c37-tarjeta-titulo font-[family-name:var(--font-principal)] font-bold text-[22px] mt-[22px] mb-[10px]">
+                            {p.nombre}
+                        </h3>
+
+                        {p.incluye && (
+                            <p class="c37-tarjeta-apagado font-[family-name:var(--font-secundaria)] font-normal text-[14px] leading-relaxed mb-0">
+                                {p.incluye}
+                            </p>
+                        )}
+
+                        {/* La nota de cortesía va anclada al fondo de la tarjeta
+                            (margin-top:auto en styles.css:140), de modo que las
+                            descripciones de longitudes distintas alinean igual. */}
+                        <div class="c37-tarjeta-cortesia font-[family-name:var(--font-secundaria)] text-[12px] font-bold mt-auto pt-[16px]">
+                            {textoCortesia(p.regla_cortesia)}
+                        </div>
+
+                        {/* app.js:82-92 — el botón selecciona el paquete, recalcula
+                            y trae el simulador a la vista. */}
+                        <button
+                            type="button"
+                            data-c37-seleccionar={indice}
+                            class="c37-tarjeta-cta font-[family-name:var(--font-secundaria)] font-bold text-[13px] mt-[14px] mb-0 p-0 bg-transparent border-0 text-left cursor-pointer"
+                        >
+                            Calcular este paquete →
+                        </button>
+                    </article>
+                ))}
+            </div>
+        )}
+
+        {/* .quote-layout del origen: panel oscuro a la izquierda con las reglas
+            y tarjeta clara de cotización a la derecha (index.html:197-239). */}
+        {haySimulador && (
+            <div class="c37-panel grid grid-cols-1 lg:grid-cols-[0.78fr_1.22fr] rounded-[34px] overflow-hidden">
+                <div class="p-[26px] lg:p-[46px]">
+                    {/* El panel del simulador NO reutiliza el antetítulo del
+                        bloque, igual que hace componente-36 con su módulo de
+                        materiales: el origen lo rotula con su propio eyebrow
+                        ("Simulador de cotización") y el schema no lo expone. */}
+                    {titulo_simulador && (
+                        <SimuladorTitleTag class="c37-panel-titulo font-[family-name:var(--font-principal)] font-bold text-[30px] lg:text-[38px] mb-[18px]">
+                            {titulo_simulador}
+                        </SimuladorTitleTag>
+                    )}
+
+                    {descripcion_simulador && (
+                        <div
+                            class="c37-panel-apagado font-[family-name:var(--font-secundaria)] font-normal mb-0 [&>p]:mb-0 [&>p:last-child]:mb-0"
+                            set:html={stringifyRichText(descripcion_simulador)}
+                        />
+                    )}
+
+                    {listaReglas.length > 0 && (
+                        <ul class="c37-reglas font-[family-name:var(--font-secundaria)] font-normal pl-5 mt-[28px] mb-0">
+                            {listaReglas.map((r: any) => (
+                                <li class="my-[10px]">{r.texto}</li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                <div class="c37-tarjeta-cotizacion p-[26px] lg:p-[36px]">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-[16px] mb-[16px]">
+                        <label class="c37-etiqueta font-[family-name:var(--font-secundaria)] text-[13px] font-bold grid gap-[7px]" for={`${idBase}-paquete`}>
+                            Paquete
+                            <select id={`${idBase}-paquete`} data-c37-paquete class="c37-campo font-[family-name:var(--font-secundaria)]">
+                                {listaPaquetes.map((p, indice) => (
+                                    <option value={indice}>{p.nombre} — {formatMoney(p.precio)}</option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <label class="c37-etiqueta font-[family-name:var(--font-secundaria)] text-[13px] font-bold grid gap-[7px]" for={`${idBase}-pagadas`}>
+                            Personas pagadas
+                            <input
+                                id={`${idBase}-pagadas`}
+                                data-c37-pagadas
+                                type="number"
+                                min={1}
+                                max={personas_maximas}
+                                value={20}
+                                inputmode="numeric"
+                                class="c37-campo font-[family-name:var(--font-secundaria)]"
+                            />
+                        </label>
+
+                        <label class="c37-etiqueta font-[family-name:var(--font-secundaria)] text-[13px] font-bold grid gap-[7px]" for={`${idBase}-cortesias`}>
+                            Cortesías a utilizar
+                            <input
+                                id={`${idBase}-cortesias`}
+                                data-c37-cortesias
+                                type="number"
+                                min={0}
+                                value={1}
+                                inputmode="numeric"
+                                class="c37-campo font-[family-name:var(--font-secundaria)]"
+                            />
+                            <small class="c37-ayuda font-[family-name:var(--font-secundaria)] text-[12px] font-normal" data-c37-ayuda>
+                                Máximo estimado: 1
+                            </small>
+                        </label>
+
+                        <label class="c37-etiqueta font-[family-name:var(--font-secundaria)] text-[13px] font-bold grid gap-[7px]" for={`${idBase}-fecha`}>
+                            Fecha tentativa
+                            <input
+                                id={`${idBase}-fecha`}
+                                data-c37-fecha
+                                type="date"
+                                class="c37-campo font-[family-name:var(--font-secundaria)]"
+                            />
+                        </label>
+                    </div>
+
+                    {/* aria-live del origen (index.html:228): el resumen se
+                        recalcula en vivo mientras el usuario escribe. */}
+                    <div class="c37-resumen mt-[24px] mb-[16px]" aria-live="polite">
+                        <div class="c37-resumen-fila">
+                            <span>Precio por persona</span>
+                            <strong data-c37-salida="unidad"></strong>
+                        </div>
+                        <div class="c37-resumen-fila">
+                            <span>Total de asistentes</span>
+                            <strong data-c37-salida="asistentes"></strong>
+                        </div>
+                        <div class="c37-resumen-fila">
+                            <span>Valor antes de cortesías</span>
+                            <strong data-c37-salida="regular"></strong>
+                        </div>
+                        <div class="c37-resumen-fila">
+                            <span>Beneficio por cortesías</span>
+                            <strong data-c37-salida="beneficio"></strong>
+                        </div>
+                        <div class="c37-resumen-fila c37-resumen-total">
+                            <span>Total estimado</span>
+                            <strong data-c37-salida="total"></strong>
+                        </div>
+                    </div>
+
+                    <p class="c37-nota font-[family-name:var(--font-secundaria)] text-[13px] mt-0 mb-[16px]" data-c37-salida="nota"></p>
+
+                    <button type="button" data-c37-whatsapp class="c37-boton w-full font-[family-name:var(--font-secundaria)] font-bold text-[14px] min-h-[52px] py-[13px] px-[22px] rounded-[999px] border-0 cursor-pointer">
+                        {texto_boton}
+                    </button>
+
+                    {texto_aviso_legal && (
+                        <p class="c37-aviso font-[family-name:var(--font-secundaria)] text-[11px] text-center mt-[10px] mb-0">
+                            {texto_aviso_legal}
+                        </p>
+                    )}
+                </div>
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    /* Fondo de la sección: el degradado blanco → hielo del origen
+       (styles.css:128) resuelto mezclando el texto invertido con el fondo
+       claro de tema. Si el editor pone color_fondo, gana su color plano. */
+    .c37-seccion {
+        background-image: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--neutral-text-inverted) 55%, var(--neutral-background-subtle)),
+            var(--neutral-background-subtle)
+        );
+    }
+
+    /* Escala no-role del origen: h2 es `clamp(34px, 4.2vw, 58px)`, deliberadamente
+       por encima de los 32px del role scale. Se conserva el clamp; la familia
+       siempre viene de --font-principal. */
+    .c37-titulo {
+        font-size: clamp(34px, 4.2vw, 58px);
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+    }
+
+    .c37-apagado {
+        color: color-mix(in srgb, var(--surface-brand-primary) 70%, transparent);
+    }
+
+    /* Tarjeta blanca con filete (styles.css:130): mismo recipe que .c36-card. */
+    .c37-tarjeta {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 70%, var(--neutral-background-subtle));
+        border: 1px solid color-mix(in srgb, var(--surface-brand-primary) 12%, transparent);
+        box-shadow: 0 16px 45px color-mix(in srgb, var(--surface-brand-primary) 6%, transparent);
+    }
+
+    .c37-tarjeta:hover {
+        box-shadow: 0 24px 70px color-mix(in srgb, var(--surface-brand-primary) 14%, transparent);
+    }
+
+    /* Paquete destacado (styles.css:132): el origen sólo cambia filete y
+       sombra, nunca el texto. */
+    .c37-tarjeta-destacada {
+        border-color: color-mix(in srgb, var(--accent-highlight-primary) 45%, transparent);
+        box-shadow: 0 20px 55px color-mix(in srgb, var(--accent-highlight-primary) 14%, transparent);
+    }
+
+    /* `.package-price` del origen es 34px (styles.css:134), fuera del role
+       scale: se conserva a propósito. */
+    .c37-precio {
+        font-size: 34px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        color: var(--surface-brand-primary);
+    }
+
+    .c37-tarjeta-titulo,
+    .c37-tarjeta-cta {
+        color: var(--surface-brand-primary);
+    }
+
+    .c37-tarjeta-apagado {
+        color: color-mix(in srgb, var(--surface-brand-primary) 70%, transparent);
+    }
+
+    .c37-tarjeta-cortesia {
+        color: color-mix(in srgb, var(--accent-highlight-primary) 55%, var(--surface-brand-primary));
+        border-top: 1px solid color-mix(in srgb, var(--surface-brand-primary) 12%, transparent);
+    }
+
+    /* Badge "Más sencillo" (styles.css:136): relleno y texto derivados del
+       acento de tema, igual que .c36-doc-type. */
+    .c37-insignia {
+        background-color: color-mix(in srgb, var(--accent-highlight-primary) 20%, transparent);
+        color: color-mix(in srgb, var(--accent-highlight-primary) 55%, var(--surface-brand-primary));
+    }
+
+    /* .quote-layout (styles.css:142): el navy degradado del origen se
+       reconstruye con las variables de superficie, mismo recipe que
+       .c36-materials. */
+    .c37-panel {
+        background-image: linear-gradient(
+            145deg,
+            var(--surface-brand-primary),
+            color-mix(in srgb, var(--surface-brand-secondary) 60%, var(--surface-brand-primary))
+        );
+        color: var(--neutral-text-inverted);
+        box-shadow: 0 30px 80px color-mix(in srgb, var(--surface-brand-primary) 22%, transparent);
+    }
+
+    .c37-panel-titulo {
+        color: var(--neutral-text-inverted);
+        line-height: 1.1;
+        letter-spacing: -0.035em;
+    }
+
+    .c37-panel-apagado,
+    .c37-reglas {
+        color: color-mix(in srgb, var(--neutral-text-inverted) 72%, transparent);
+    }
+
+    /* .quote-card (styles.css:148): superficie clara sobre el panel oscuro. */
+    .c37-tarjeta-cotizacion {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 70%, var(--neutral-background-subtle));
+        color: var(--surface-brand-primary);
+    }
+
+    .c37-etiqueta {
+        color: color-mix(in srgb, var(--surface-brand-primary) 82%, transparent);
+    }
+
+    /* inputs/select del origen (styles.css:152): borde y fondo derivados de la
+       superficie en vez de `#cfdbe3` / `#fff`. */
+    .c37-campo {
+        width: 100%;
+        min-width: 0;
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 70%, var(--neutral-background-subtle));
+        border: 1px solid color-mix(in srgb, var(--surface-brand-primary) 14%, transparent);
+        border-radius: 14px;
+        padding: 13px 14px;
+        color: var(--surface-brand-primary);
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .c37-campo:focus {
+        border-color: var(--brand-interactive-base);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-interactive-base) 25%, transparent);
+    }
+
+    /* El campo se bloquea cuando el paquete no registra cortesías. */
+    .c37-campo:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    .c37-ayuda {
+        color: color-mix(in srgb, var(--surface-brand-primary) 62%, transparent);
+    }
+
+    .c37-resumen {
+        border: 1px solid color-mix(in srgb, var(--surface-brand-primary) 12%, transparent);
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .c37-resumen-fila {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px 16px;
+        border-bottom: 1px solid color-mix(in srgb, var(--surface-brand-primary) 12%, transparent);
+    }
+
+    .c37-resumen-fila:last-child {
+        border-bottom: 0;
+    }
+
+    .c37-resumen-fila span {
+        color: color-mix(in srgb, var(--surface-brand-primary) 70%, transparent);
+        font-size: 14px;
+    }
+
+    .c37-resumen-fila strong {
+        color: var(--surface-brand-primary);
+        font-family: var(--font-principal);
+    }
+
+    /* Fila de total (styles.css:161-163): fondo ice y cifra destacada. */
+    .c37-resumen-total {
+        background-color: color-mix(in srgb, var(--accent-highlight-primary) 12%, transparent);
+        padding: 18px 16px;
+    }
+
+    .c37-resumen-total span {
+        color: var(--surface-brand-primary);
+        font-weight: 900;
+    }
+
+    /* El total se baja de tono mezclando el acento con la superficie primaria
+       para que conserve la identidad del highlight y siga siendo legible sobre
+       la tarjeta clara, sin depender del valor concreto del acento del tema. */
+    .c37-resumen-total strong {
+        font-size: 28px;
+        color: color-mix(in srgb, var(--accent-highlight-primary) 70%, var(--surface-brand-primary));
+    }
+
+    /* .quote-note (styles.css:164): filete de acento sobre fondo casi blanco. */
+    .c37-nota {
+        background-color: color-mix(in srgb, var(--surface-brand-primary) 4%, transparent);
+        border-left: 4px solid var(--accent-highlight-primary);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: color-mix(in srgb, var(--surface-brand-primary) 78%, transparent);
+    }
+
+    /* .button.button-accent (styles.css:59): el amarillo de acento del origen
+       es --brand-interactive-base en el tema (ver AGENTS.md: CTAs). */
+    .c37-boton {
+        background-color: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        box-shadow: 0 12px 30px color-mix(in srgb, var(--brand-interactive-base) 22%, transparent);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .c37-boton:hover {
+        transform: translateY(-2px);
+    }
+
+    /* .privacy-note (styles.css:165): mismo tratamiento tenue que .c36-privacy. */
+    .c37-aviso {
+        color: color-mix(in srgb, var(--surface-brand-primary) 62%, transparent);
+    }
+</style>
+
+<script>
+    // Aritmética del simulador. Réplica de `app.js:106-138` con las constantes
+    // leídas desde los campos editables del bloque en vez de los literales 250 /
+    // 20 / 1000 del origen. Probada contra los seis paquetes reales de app.js.
+    type Regla = "general" | "solo_entrada_general" | "ninguna";
+
+    interface PaqueteCotizador {
+        nombre: string;
+        precio: number;
+        incluye: string;
+        regla_cortesia: Regla;
+        destacado: boolean;
+    }
+
+    interface ReglasCotizador {
+        valor_cortesia: number;
+        cada_cuantas_cortesias: number;
+        personas_maximas: number;
+        whatsapp_numero: string;
+    }
+
+    interface Cotizacion {
+        paquete: PaqueteCotizador;
+        paid: number;
+        maxComps: number;
+        comps: number;
+        attendees: number;
+        valorRegular: number;
+        descuento: number;
+        total: number;
+    }
+
+    const dinero = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 });
+    const formatearMoneda = (valor: number) => dinero.format(valor);
+
+    function calcularCotizacion(
+        paquete: PaqueteCotizador,
+        pagadasRaw: string | number,
+        cortesiasRaw: string | number,
+        reglas: ReglasCotizador,
+    ): Cotizacion {
+        const valorCortesia = reglas.valor_cortesia;
+        const cadaCuantas = reglas.cada_cuantas_cortesias;
+        const maxPersonas = reglas.personas_maximas;
+
+        // app.js:108 — `Number(v) || 1`: un campo vacío o no numérico vale 1, no NaN.
+        const pagadasSolicitadas = Number(pagadasRaw) || 1;
+        const paid = Math.max(1, Math.min(maxPersonas, pagadasSolicitadas));
+
+        // app.js:109
+        const maxComps = paquete.regla_cortesia === "ninguna" ? 0 : Math.floor(paid / cadaCuantas);
+
+        // app.js:114 — `Number(v) || 0` convierte vacío/NaN en 0 antes de acotar.
+        const cortesiasSolicitadas = Number(cortesiasRaw) || 0;
+        const comps = Math.max(0, Math.min(maxComps, cortesiasSolicitadas));
+
+        const attendees = paid + comps;
+        const valorRegular = attendees * paquete.precio;
+        // app.js:118 — el beneficio usa SIEMPRE el valor plano de la Entrada
+        // General, incluso en los paquetes de 290 y 390. NO es
+        // `precio - valor_cortesia`: ese complemento sólo aparece en el texto de
+        // la nota. Cambiar esta línea rompe la paridad con el origen.
+        const porCortesia = paquete.regla_cortesia === "ninguna" ? 0 : valorCortesia;
+        const descuento = comps * porCortesia;
+        const total = valorRegular - descuento;
+
+        return { paquete, paid, maxComps, comps, attendees, valorRegular, descuento, total };
+    }
+
+    // app.js:143-146 — `T12:00:00` evita que el navegador salte de día por la
+    // zona horaria al formatear.
+    function formatearFecha(valor: string): string {
+        if (!valor) return "Por definir";
+        return new Intl.DateTimeFormat("es-MX", { dateStyle: "long" }).format(new Date(`${valor}T12:00:00`));
+    }
+
+    function initSimuladoresCotizador(): void {
+        const secciones = document.querySelectorAll<HTMLElement>("[data-c37-cotizador]");
+
+        secciones.forEach((seccion: HTMLElement) => {
+            // `astro:page-load` puede volver a disparar el init sobre el mismo
+            // DOM: sin este guardia los listeners quedarían duplicados.
+            if (seccion.dataset.c37Iniciado === "true") return;
+            seccion.dataset.c37Iniciado = "true";
+
+            let paquetes: PaqueteCotizador[] = [];
+            try {
+                paquetes = JSON.parse(seccion.dataset.c37Paquetes || "[]") as PaqueteCotizador[];
+            } catch {
+                paquetes = [];
+            }
+            if (paquetes.length === 0) return;
+
+            const reglas: ReglasCotizador = {
+                valor_cortesia: Number(seccion.dataset.c37ValorCortesia) || 250,
+                cada_cuantas_cortesias: Number(seccion.dataset.c37CadaCuantasCortesias) || 20,
+                personas_maximas: Number(seccion.dataset.c37PersonasMaximas) || 1000,
+                whatsapp_numero: seccion.dataset.c37Whatsapp || "",
+            };
+
+            const selPaquete = seccion.querySelector<HTMLSelectElement>("[data-c37-paquete]");
+            const inputPagadas = seccion.querySelector<HTMLInputElement>("[data-c37-pagadas]");
+            const inputCortesias = seccion.querySelector<HTMLInputElement>("[data-c37-cortesias]");
+            const inputFecha = seccion.querySelector<HTMLInputElement>("[data-c37-fecha]");
+            const ayuda = seccion.querySelector<HTMLElement>("[data-c37-ayuda]");
+            const botonWhatsapp = seccion.querySelector<HTMLButtonElement>("[data-c37-whatsapp]");
+            const panel = seccion.querySelector<HTMLElement>(".c37-panel");
+            if (!selPaquete || !inputPagadas || !inputCortesias || !botonWhatsapp) return;
+
+            const salida = (clave: string): HTMLElement | null => seccion.querySelector<HTMLElement>(`[data-c37-salida="${clave}"]`);
+
+            // app.js:203-206 — la fecha tentativa no puede ser anterior a hoy.
+            if (inputFecha) {
+                const hoy = new Date();
+                hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset());
+                inputFecha.min = hoy.toISOString().split("T")[0];
+            }
+
+            const paqueteActual = (): PaqueteCotizador => {
+                const indice = Number(selPaquete.value);
+                return paquetes[indice] || paquetes[0];
+            };
+
+            // `reiniciarCortesias` replica el parámetro homónimo de updateQuote:
+            // al cambiar de paquete o de personas pagadas, el campo de cortesías
+            // se reescribe al máximo disponible en vez de conservar un valor que
+            // ya no aplica.
+            //
+            // Arrow function y NO `function`: TypeScript descarta el estrechamiento
+            // del guard de arriba dentro de una declaración de función (se ieleva
+            // al inicio del bloque y podría ejecutarse antes del guard) y reporta
+            // ts(18047) en cada acceso. Con `const` el estrechamiento se conserva.
+            const actualizar = (reiniciarCortesias: boolean): Cotizacion => {
+                const paquete = paqueteActual();
+                const previa = calcularCotizacion(paquete, inputPagadas.value, inputCortesias.value, reglas);
+                const debeReiniciar = reiniciarCortesias || Number(inputCortesias.value) > previa.maxComps;
+                const cotizacion = debeReiniciar
+                    ? calcularCotizacion(paquete, inputPagadas.value, previa.maxComps, reglas)
+                    : previa;
+
+                // El número que se muestra SIEMPRE es el número que se calculó.
+                inputCortesias.value = String(cotizacion.comps);
+                inputCortesias.max = String(cotizacion.maxComps);
+                inputCortesias.disabled = cotizacion.maxComps === 0;
+
+                salida("unidad")!.textContent = formatearMoneda(cotizacion.paquete.precio);
+                salida("asistentes")!.textContent = String(cotizacion.attendees);
+                salida("regular")!.textContent = formatearMoneda(cotizacion.valorRegular);
+                // app.js:125 — el signo menos es U+2212, no un guion.
+                salida("beneficio")!.textContent = cotizacion.descuento
+                    ? `−${formatearMoneda(cotizacion.descuento)}`
+                    : formatearMoneda(0);
+                salida("total")!.textContent = formatearMoneda(cotizacion.total);
+
+                if (ayuda) {
+                    ayuda.textContent = cotizacion.maxComps
+                        ? `Máximo estimado: ${cotizacion.maxComps}`
+                        : "Este paquete no registra cortesías en el simulador.";
+                }
+
+                // app.js:129-135
+                let nota = cotizacion.paquete.incluye;
+                if (cotizacion.paquete.regla_cortesia === "solo_entrada_general" && cotizacion.comps) {
+                    const complemento = cotizacion.paquete.precio - reglas.valor_cortesia;
+                    nota += ` Para ${cotizacion.comps} cortesía${cotizacion.comps === 1 ? "" : "s"}, el cálculo conserva el complemento de ${formatearMoneda(complemento)} por persona y descuenta únicamente ${formatearMoneda(reglas.valor_cortesia)} de Entrada General.`;
+                }
+                if (cotizacion.paquete.regla_cortesia === "ninguna") {
+                    nota += " El pago se realiza en cada establecimiento por la parte correspondiente.";
+                }
+                salida("nota")!.textContent = nota;
+
+                return cotizacion;
+            };
+
+            // app.js:140-141. El <select> usa `change` en vez de `input`: es el
+            // evento canónico del desplegable y produce el mismo comportamiento.
+            selPaquete.addEventListener("change", () => actualizar(true));
+            inputPagadas.addEventListener("input", () => actualizar(true));
+            inputCortesias.addEventListener("input", () => actualizar(false));
+
+            // app.js:86-92 — el botón de la tarjeta selecciona el paquete,
+            // recalcula y centra el simulador.
+            seccion.querySelectorAll<HTMLButtonElement>("[data-c37-seleccionar]").forEach((boton: HTMLButtonElement) => {
+                boton.addEventListener("click", () => {
+                    selPaquete.value = boton.dataset.c37Seleccionar || "0";
+                    actualizar(true);
+                    panel?.scrollIntoView({ behavior: "smooth", block: "center" });
+                });
+            });
+
+            if (!reglas.whatsapp_numero) {
+                botonWhatsapp.disabled = true;
+                botonWhatsapp.title = "Configura el número de WhatsApp del bloque para enviar el estimado.";
+            }
+
+            // app.js:148-163 — cero llamadas de red: sólo se arma el enlace wa.me
+            // con el estimado ya calculado.
+            botonWhatsapp.addEventListener("click", () => {
+                if (!reglas.whatsapp_numero) return;
+                const resultado = actualizar(false);
+                const mensaje = [
+                    "Hola, realicé una estimación para una visita escolar al Acuario Inbursa.",
+                    "",
+                    `Paquete: ${resultado.paquete.nombre}`,
+                    `Precio por persona: ${formatearMoneda(resultado.paquete.precio)}`,
+                    `Personas pagadas: ${resultado.paid}`,
+                    `Cortesías estimadas: ${resultado.comps}`,
+                    `Total de asistentes: ${resultado.attendees}`,
+                    `Fecha tentativa: ${formatearFecha(inputFecha ? inputFecha.value : "")}`,
+                    `Total estimado: ${formatearMoneda(resultado.total)}`,
+                    "",
+                    "Solicito confirmar disponibilidad, cortesías, precio final y proceso de reservación.",
+                ].join("\n");
+                window.open(
+                    `https://wa.me/${reglas.whatsapp_numero}?text=${encodeURIComponent(mensaje)}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                );
+            });
+
+            // app.js:275 — estado inicial al cargar.
+            actualizar(true);
+        });
+    }
+
+    initSimuladoresCotizador();
+    document.addEventListener("astro:page-load", initSimuladoresCotizador);
+</script>

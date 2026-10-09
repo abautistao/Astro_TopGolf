@@ -1,0 +1,266 @@
+---
+// Hero de página completa para el tema Acuario (componente-32-acuario).
+// Replica `landing-sealand/visitas-escolares/index.html:39-69` (.hero).
+//
+// La paleta del origen (--navy, --teal, --accent…) NO es la identidad de Acuario
+// Inbursa: aquí todo color sale de las variables semánticas que Layout.astro
+// inyecta desde setup-site. Los degradados y las capas translúcidas se
+// construyen con color-mix() sobre esas variables, nunca con hex literals.
+import { stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    imagen_fondo?: any;
+    texto_alt_imagen?: string;
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    boton_principal?: any;
+    boton_secundario?: any;
+    datos?: any[];
+    panel_tag?: string;
+    panel_titulo?: string;
+    panel_htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    panel_puntos?: any[];
+    panel_enlace_texto?: string;
+    panel_enlace_url?: string;
+    color_sombrado_override?: string;
+    color_eyebrow_override?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    imagen_fondo,
+    texto_alt_imagen,
+    eyebrow,
+    titulo,
+    htmlTag = "h1",
+    descripcion,
+    boton_principal,
+    boton_secundario,
+    datos = [],
+    panel_tag,
+    panel_titulo,
+    panel_htmlTag = "h2",
+    panel_puntos = [],
+    panel_enlace_texto,
+    panel_enlace_url,
+    color_sombrado_override,
+    color_eyebrow_override,
+    color_titulo_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+const PanelTag = panel_htmlTag as any;
+
+// Strapi entrega `repeatable: false` como objeto plano o envuelto en un arreglo
+// según la forma del response; normalizamos igual que componente-3-acuario.
+const normalizeBoton = (boton?: any) => (Array.isArray(boton) ? boton[0] : boton);
+const btnPrincipal = normalizeBoton(boton_principal);
+const btnSecundario = normalizeBoton(boton_secundario);
+
+// Media plano: getStrapiUrl devuelve null si el editor no subió imagen, y en ese
+// caso el slot se omite (no queda un <img> roto). Media dentro de un repeatable sí
+// necesitaría deep-populate en strapi.js; aquí es un campo plano, no hace falta.
+const bgUrl = getStrapiUrl(imagen_fondo);
+
+// Cascada: el override del editor (hex del color picker) gana; si no hay, la
+// variable de tema definida en setup-site.
+const scrimBase = color_sombrado_override || "var(--surface-brand-primary)";
+const eyebrowColor = color_eyebrow_override || "var(--accent-highlight-tertiary)";
+const titleColor = color_titulo_override || "var(--neutral-text-inverted)";
+const textColor = color_texto_override || "var(--neutral-text-inverted)";
+
+// El panel lateral sólo aparece si hay algo real que mostrar; si el editor lo deja
+// vacío no queda una caja de cristal huérfana.
+const puntos = panel_puntos.filter((p) => p?.texto);
+const mostrarPanel = Boolean(panel_tag || panel_titulo || puntos.length || panel_enlace_texto);
+---
+
+<section
+    class="hero relative w-full overflow-hidden flex items-center text-[color:var(--neutral-text-inverted)] min-h-[640px] md:min-h-[860px]"
+    style={`--scrim: ${scrimBase};${bgUrl ? "" : `background-color: ${scrimBase};`}`}
+>
+    {bgUrl && (
+        <img
+            src={bgUrl}
+            alt={texto_alt_imagen || ""}
+            class="hero-bg absolute inset-0 w-full h-full object-cover object-center"
+        />
+    )}
+    {/* El velo sólo se pinta si hay foto detrás; sin foto, el fondo es liso. */}
+    {bgUrl && <div class="hero-overlay absolute inset-0" aria-hidden="true" />}
+
+    <div class="container relative z-[2] mx-auto px-4 md:px-6 max-w-7xl">
+        <div class="grid gap-9 lg:grid-cols-[1.2fr_0.62fr] lg:gap-[70px] items-center py-14 md:py-16 lg:py-[58px]">
+            <div class="max-w-[760px]">
+                {eyebrow && (
+                    <p class="hero-eyebrow font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em] mb-4" style={`color: ${eyebrowColor};`}>
+                        {eyebrow}
+                    </p>
+                )}
+
+                {titulo && (
+                    <TitleTag class="hero-title font-[family-name:var(--font-principal)] font-bold mb-[26px]" style={`color: ${titleColor};`}>
+                        {titulo}
+                    </TitleTag>
+                )}
+
+                {descripcion && (
+                    <div
+                        class="hero-lead font-[family-name:var(--font-secundaria)] font-normal text-[17px] md:text-[20px] max-w-[690px] [&>p]:mb-0"
+                        style={`color: color-mix(in srgb, ${textColor} 84%, transparent);`}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+
+                {(btnPrincipal || btnSecundario) && (
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-[14px] mt-[34px] mb-10">
+                        {btnPrincipal?.texto && (
+                            <a
+                                href={btnPrincipal.url || "#"}
+                                class="btn-principal inline-flex items-center justify-center min-h-[52px] px-[22px] py-[13px] rounded-full border border-transparent font-[family-name:var(--font-principal)] font-bold text-[14px] transition-transform hover:-translate-y-0.5"
+                            >
+                                {btnPrincipal.texto}
+                            </a>
+                        )}
+                        {btnSecundario?.texto && (
+                            <a
+                                href={btnSecundario.url || "#"}
+                                class="btn-secundario inline-flex items-center justify-center min-h-[52px] px-[22px] py-[13px] rounded-full border font-[family-name:var(--font-principal)] font-bold text-[14px] transition-transform hover:-translate-y-0.5"
+                            >
+                                {btnSecundario.texto}
+                            </a>
+                        )}
+                    </div>
+                )}
+
+                {datos.length > 0 && (
+                    <div class="flex flex-wrap gap-6 md:gap-[42px]">
+                        {datos.filter((d) => d?.valor || d?.etiqueta).map((d) => (
+                            <div class="grid">
+                                {d.valor && (
+                                    <strong class="font-[family-name:var(--font-principal)] font-bold text-[29px] tracking-[-0.03em]" style={`color: ${titleColor};`}>
+                                        {d.valor}
+                                    </strong>
+                                )}
+                                {d.etiqueta && (
+                                    <span class="hero-fact-label font-[family-name:var(--font-secundaria)] text-[13px]" style={`color: color-mix(in srgb, ${textColor} 72%, transparent);`}>
+                                        {d.etiqueta}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {mostrarPanel && (
+                <aside class="hero-panel rounded-[32px] p-6 md:p-[34px] max-w-[680px]">
+                    {panel_tag && (
+                        <span class="panel-tag inline-flex rounded-full px-[11px] py-[7px] text-[11px] font-bold tracking-[0.08em] uppercase">
+                            {panel_tag}
+                        </span>
+                    )}
+
+                    {panel_titulo && (
+                        <PanelTag class="panel-title font-[family-name:var(--font-principal)] font-bold text-[30px] tracking-[-0.03em] mt-5 mb-[18px]">
+                            {panel_titulo}
+                        </PanelTag>
+                    )}
+
+                    {puntos.length > 0 && (
+                        <ul class="list-disc pl-5 m-0">
+                            {puntos.map((p) => (
+                                <li class="my-[10px]" style={`color: color-mix(in srgb, ${textColor} 82%, transparent);`}>
+                                    {p.texto}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    {panel_enlace_texto && (
+                        <a href={panel_enlace_url || "#"} class="panel-link inline-flex items-center gap-1 mt-6 font-[family-name:var(--font-principal)] font-bold">
+                            {panel_enlace_texto}
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    )}
+                </aside>
+            )}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Velo en dos capas sobre la foto: un barrido horizontal (fuerte a la
+       izquierda, que es donde va el texto) + un degradado vertical suave.
+       Los porcentajes replican el .hero-overlay del origen; el color base es
+       --surface-brand-primary, mezclado con transparent. */
+    .hero-overlay {
+        background-image:
+            linear-gradient(
+                90deg,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 92%, transparent) 0%,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 72%, transparent) 48%,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 25%, transparent) 100%
+            ),
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 5%, transparent),
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 48%, transparent)
+            );
+    }
+
+    /* El origen baja el velo a un solo plano en móvil para que la foto respire. */
+    @media (max-width: 1023px) {
+        .hero-overlay {
+            background-image: linear-gradient(
+                90deg,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 92%, transparent),
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 65%, transparent)
+            );
+        }
+    }
+
+    .btn-principal {
+        background-color: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        box-shadow: 0 12px 30px color-mix(in srgb, var(--brand-interactive-base) 22%, transparent);
+    }
+
+    .btn-secundario {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 12%, transparent);
+        border-color: color-mix(in srgb, var(--neutral-text-inverted) 35%, transparent);
+        color: var(--neutral-text-inverted);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Cristal del panel lateral: relleno translúcido + borde tenue + drop shadow
+       suave, los tres derivados de variables de tema. */
+    .hero-panel {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 11%, transparent);
+        border: 1px solid color-mix(in srgb, var(--neutral-text-inverted) 20%, transparent);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 30px 80px color-mix(in srgb, var(--neutral-background-strong) 25%, transparent);
+    }
+
+    .panel-tag {
+        background-color: color-mix(in srgb, var(--accent-highlight-tertiary) 16%, transparent);
+        color: var(--accent-highlight-tertiary);
+    }
+
+    .panel-link {
+        color: var(--neutral-text-inverted);
+    }
+
+    /* Escala no-role del origen: el hero es deliberadamente full-bleed, así que
+       conserva el clamp en vez de la escala de 32px. La familia siempre viene
+       de --font-principal (nunca un font-family hardcodeado). */
+    .hero-title {
+        font-size: clamp(46px, 6.2vw, 82px);
+        line-height: 1.02;
+        letter-spacing: -0.055em;
+    }
+</style>
