@@ -1,0 +1,100 @@
+---
+// src/pages/[location]/index.astro
+// ==========================================================================================
+// Per-location (sede) home page.
+//
+// Emits one static path per entry of SEDES, so a single build produces:
+//   /monterrey/  /guadalajara/  /leon/
+//
+// It sits next to the pre-existing `[lang]/` and root catch-all routes and does
+// not modify any of them. Content comes exclusively from local fixtures
+// (src/config/spike-data.js) - this route never talks to Strapi or the network.
+// ==========================================================================================
+import Layout from "../../layouts/Layout.astro";
+import RenderBlocks from "../../components/RenderBlocks.astro";
+import { SEDES, getSede } from "../../config/sedes.js";
+import { getSedeHome, sedeBlogPath } from "../../config/spike-data.js";
+
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+// One entry per sede: { location: "monterrey" }, { location: "guadalajara" }, ...
+export function getStaticPaths() {
+    return SEDES.map((sede) => ({
+        params: { location: sede.slug },
+    }));
+}
+
+const { location } = Astro.params;
+const sede = getSede(location);
+
+// Defensive only: getStaticPaths() above can never emit an unknown slug, so this
+// branch exists for the dev server / future on-demand rendering.
+if (!sede) {
+    Astro.response.status = 404;
+}
+
+const pagina = sede ? getSedeHome(sede.slug) : null;
+const { titulo, ContenidoPagina, SEO } = pagina || {};
+
+// Non-null projections, so the template never has to narrow `sede` again.
+const sedeSlug = sede?.slug ?? "";
+---
+
+<Layout seo={SEO} lang={defaultLocale} title={titulo} alternateLinks={{}}>
+    <!-- Sede switcher: absolute links, active sede highlighted -->
+    <nav
+        aria-label="Selector de sede"
+        data-sede-switcher
+        class="border-b border-[var(--accent-highlight-primary)] bg-[var(--neutral-background-strong)]"
+    >
+        <ul
+            class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-center gap-x-2 gap-y-1 px-6 py-3 md:gap-x-4"
+        >
+            {
+                SEDES.map((item) => {
+                    const isActive = sedeSlug === item.slug;
+                    return (
+                        <li>
+                            <a
+                                href={`/${item.slug}/`}
+                                aria-current={isActive ? "page" : undefined}
+                                data-sede-link={item.slug}
+                                class:list={[
+                                    "inline-block rounded-full px-4 py-2 font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase transition-colors",
+                                    isActive
+                                        ? "bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]"
+                                        : "text-[var(--neutral-text-inverted)] hover:bg-[var(--accent-highlight-tertiary)]",
+                                ]}
+                            >
+                                {item.nombre}
+                            </a>
+                        </li>
+                    );
+                })
+            }
+        </ul>
+    </nav>
+
+    <main class="mx-auto container-full" data-sede-home={sedeSlug}>
+        <RenderBlocks blocks={ContenidoPagina || []} />
+
+        <section class="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
+            <h1
+                class="font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--surface-brand-primary)]"
+            >
+                {titulo}
+            </h1>
+            <p
+                class="mt-2 font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)]"
+            >
+                {sede?.claim} - {sede?.estado}
+            </p>
+            <a
+                href={sedeSlug ? sedeBlogPath(sedeSlug) : "/"}
+                class="mt-6 inline-block rounded-full bg-[var(--brand-interactive-base)] px-8 py-3 font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase text-[var(--surface-brand-primary)]"
+            >
+                Blog de la sede
+            </a>
+        </section>
+    </main>
+</Layout>

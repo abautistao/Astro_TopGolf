@@ -1,0 +1,121 @@
+---
+// src/pages/[location]/blog/index.astro
+// ==========================================================================================
+// Per-location (sede) blog index.
+//
+// Emits one static path per entry of SEDES:
+//   /monterrey/blog/  /guadalajara/blog/  /leon/blog/
+//
+// Every post link is absolute (`/{sede}/blog/{slug}/`) so the sede stays in the
+// path no matter how deep the user is. Content is local fixtures only.
+// ==========================================================================================
+import Layout from "../../../layouts/Layout.astro";
+import { SEDES, getSede } from "../../../config/sedes.js";
+import { getSedePosts, sedePostPath, formatPostDate } from "../../../config/spike-data.js";
+
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+export function getStaticPaths() {
+    return SEDES.map((sede) => ({
+        params: { location: sede.slug },
+    }));
+}
+
+const { location } = Astro.params;
+const sede = getSede(location);
+
+if (!sede) {
+    Astro.response.status = 404;
+}
+
+// Non-null projections, so the template never has to narrow `sede` again.
+const sedeSlug = sede?.slug ?? "";
+const sedeNombre = sede?.nombre ?? "";
+
+// Only this sede's posts. The shared `horario-verano` slug is intentionally
+// reachable under two sedes: the routes are isolated by `[location]`, not by slug.
+const posts = getSedePosts(sedeSlug);
+
+const SEO = sede
+    ? {
+          metaTitle: `Blog de ${sedeNombre} | Acuario Inbursa`,
+          metaDescription: `Noticias y avisos de la sede ${sedeNombre} en ${sede.estado}.`,
+          canonicalURL: `/${sedeSlug}/blog/`,
+      }
+    : undefined;
+---
+
+<Layout seo={SEO} lang={defaultLocale} title={sede ? `Blog de ${sedeNombre}` : "Sede no encontrada"} alternateLinks={{}}>
+    <main class="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24" data-sede-blog={sedeSlug}>
+        <p
+            class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal uppercase text-[var(--accent-highlight-primary)]"
+        >
+            {sede?.estado}
+        </p>
+        <h1
+            class="mt-2 font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--surface-brand-primary)]"
+        >
+            Blog de {sedeNombre}
+        </h1>
+
+        <nav aria-label="Selector de sede" class="mt-6">
+            <ul class="flex flex-wrap items-center gap-2">
+                {
+                    SEDES.map((item) => {
+                        const isActive = sedeSlug === item.slug;
+                        return (
+                            <li>
+                                <a
+                                    href={`/${item.slug}/blog/`}
+                                    aria-current={isActive ? "page" : undefined}
+                                    class:list={[
+                                        "inline-block rounded-full px-4 py-1 font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase",
+                                        isActive
+                                            ? "bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]"
+                                            : "text-[var(--surface-brand-primary)] underline",
+                                    ]}
+                                >
+                                    {item.nombre}
+                                </a>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </nav>
+
+        {
+            posts.length === 0 ? (
+                <p class="mt-12 font-[family-name:var(--font-secundaria)] text-[16px] text-[var(--surface-brand-primary)]">
+                    Esta sede todavia no tiene publicaciones.
+                </p>
+            ) : (
+                <ul class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {posts.map((post) => (
+                        <li class="flex flex-col border-t border-[var(--accent-highlight-primary)] pt-4">
+                            <time
+                                datetime={post.fecha}
+                                class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)]"
+                            >
+                                {formatPostDate(post.fecha)}
+                            </time>
+                            <h2 class="mt-2 font-[family-name:var(--font-principal)] text-[20px] font-medium text-[var(--surface-brand-primary)]">
+                                <a href={sedePostPath(sedeSlug, post.slug)}>{post.titulo}</a>
+                            </h2>
+                            <p class="mt-2 font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)]">
+                                {post.resumen}
+                            </p>
+                        </li>
+                    ))}
+                </ul>
+            )
+        }
+
+        <a
+            href={sedeSlug ? `/${sedeSlug}/` : "/"}
+            class="mt-16 inline-block rounded-full bg-[var(--brand-interactive-base)] px-8 py-3 font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase text-[var(--surface-brand-primary)]"
+        >
+            Volver a {sedeNombre}
+        </a>
+    </main>
+</Layout>

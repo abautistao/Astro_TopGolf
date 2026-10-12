@@ -1,0 +1,133 @@
+---
+// src/pages/[location]/blog/[...slug].astro
+// ==========================================================================================
+// Per-location (sede) blog post.
+//
+// CRITICAL PART OF THE SPIKE: getStaticPaths() returns the CARTESIAN PRODUCT
+// sede x posts. A slug is NOT unique across sedes, so the pair
+// (location, slug) is the identity of a post:
+//
+//   for each sede -> for each of that sede's posts -> { location, slug }
+//
+// This is what keeps /monterrey/blog/horario-verano/ and
+// /guadalajara/blog/horario-verano/ two different pages.
+//
+// Content is local fixtures only; this route never talks to Strapi.
+// ==========================================================================================
+import Layout from "../../../layouts/Layout.astro";
+import { SEDES, getSede } from "../../../config/sedes.js";
+import { getSedePosts, sedePostPath, sedeBlogPath, formatPostDate } from "../../../config/spike-data.js";
+
+const defaultLocale = import.meta.env.PUBLIC_DEFAULT_LOCALE || "en";
+
+// Cartesian product: sede x that sede's posts. The (location, slug) pair is the
+// identity of a post, which is why the same slug may repeat across sedes.
+export function getStaticPaths() {
+    const paths = [];
+
+    for (const sede of SEDES) {
+        for (const post of getSedePosts(sede.slug)) {
+            paths.push({
+                params: {
+                    location: sede.slug,
+                    slug: post.slug,
+                },
+            });
+        }
+    }
+
+    return paths;
+}
+
+const { location, slug } = Astro.params;
+const sede = getSede(location);
+
+// Non-null projections, so the template never has to narrow `sede` again.
+const sedeSlug = sede?.slug ?? "";
+const sedeNombre = sede?.nombre ?? "";
+
+// Look the post up INSIDE this sede only. A post slug that exists for another
+// sede resolves to `undefined` here, which is the isolation guarantee.
+const posts = getSedePosts(sedeSlug);
+const post = posts.find((item) => item.slug === slug);
+
+if (!post) {
+    Astro.response.status = 404;
+}
+
+const SEO =
+    sede && post
+        ? {
+              metaTitle: `${post.titulo} | ${sedeNombre} | Acuario Inbursa`,
+              metaDescription: post.resumen,
+              canonicalURL: sedePostPath(sedeSlug, post.slug),
+          }
+        : undefined;
+---
+
+<Layout
+    seo={SEO}
+    lang={defaultLocale}
+    title={post ? post.titulo : "Publicación no encontrada"}
+    alternateLinks={{}}
+>
+    <main class="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24" data-sede-post={sedeSlug} data-post-slug={post?.slug}>
+        {
+            post ? (
+                <article class="max-w-3xl">
+                    <p class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal uppercase text-[var(--accent-highlight-primary)]">
+                        <a href={sedeBlogPath(sedeSlug)}>Blog de {sedeNombre}</a>
+                    </p>
+
+                    <h1 class="mt-2 font-[family-name:var(--font-principal)] text-[32px] font-bold text-[var(--surface-brand-primary)]">
+                        {post.titulo}
+                    </h1>
+
+                    <time
+                        datetime={post.fecha}
+                        class="mt-4 block font-[family-name:var(--font-secundaria)] text-[16px] font-normal text-[var(--surface-brand-primary)]"
+                    >
+                        {formatPostDate(post.fecha)}
+                    </time>
+
+                    {/* The spike fixture only carries a plain-text `resumen`;
+                        a production post would dispatch a ContenidoPagina
+                        array through RenderBlocks here instead. */}
+                    <p class="mt-8 font-[family-name:var(--font-secundaria)] text-[16px] font-normal leading-relaxed text-[var(--surface-brand-primary)]">
+                        {post.resumen}
+                    </p>
+                </article>
+            ) : (
+                <p class="font-[family-name:var(--font-secundaria)] text-[16px] text-[var(--surface-brand-primary)]">
+                    Publicacion no encontrada para esta sede.
+                </p>
+            )
+        }
+
+        <nav aria-label="Selector de sede" class="mt-16">
+            <ul class="flex flex-wrap items-center gap-2">
+                {
+                    SEDES.map((item) => {
+                        const isActive = sedeSlug === item.slug;
+                        return (
+                            <li>
+                                <a
+                                    href={sedeBlogPath(item.slug)}
+                                    aria-current={isActive ? "page" : undefined}
+                                    class:list={[
+                                        "inline-block rounded-full px-4 py-1 font-[family-name:var(--font-principal)] text-[16px] font-bold uppercase",
+                                        isActive
+                                            ? "bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]"
+                                            : "text-[var(--surface-brand-primary)] underline",
+                                    ]}
+                                >
+                                    {item.nombre}
+                                </a>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </nav>
+    </main>
+</Layout>
