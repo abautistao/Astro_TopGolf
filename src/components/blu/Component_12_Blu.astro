@@ -183,7 +183,12 @@ const t = {
                                 {t.label_contacto}
                             </h3>
                             <div class="space-y-1 text-white/80">
-                                <p>{t.label_phone}: <a href=`tel:${telefono_contacto}` class="underline decoration-[#75C5DB]">{telefono_contacto}</a></p>
+                                <div class="flex flex-col lg:flex-row gap-0 lg:gap-4">
+                                    <p class="flex flex-col lg:flex-row gap-2">{t.label_phone}: <a href=`tel:${telefono_contacto}` class="underline decoration-[#75C5DB]">{telefono_contacto}</a></p>
+                                    
+                                    <a href=`tel:5589009979` class="underline decoration-[#75C5DB] lg:border-l :border-l-white lg:pl-6">52 5589009979</a>
+
+                                </div>
                                 <p>Email: <a href=`mailto:${email_contacto}` class="underline decoration-[#75C5DB]">{email_contacto}</a></p>
                             </div>
                         </div>
