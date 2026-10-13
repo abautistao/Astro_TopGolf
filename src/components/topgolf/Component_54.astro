@@ -159,23 +159,22 @@ function initAccordions() {
     const accordionHeaders = document.querySelectorAll('.accordion-header');
 
     // Abrir el primer acordeón por defecto
-    if (accordionHeaders.length > 0) {
-        const firstHeader = accordionHeaders[0];
-        const firstItem = firstHeader.closest('.accordion-item');
-        const firstBody = firstItem?.querySelector('.accordion-body');
-        const firstIcon = firstItem?.querySelector('.accordion-icon');
+    // if (accordionHeaders.length > 0) {
+    //     const firstHeader = accordionHeaders[0];
+    //     const firstItem = firstHeader.closest('.accordion-item');
+    //     const firstBody = firstItem?.querySelector('.accordion-body');
+    //     const firstIcon = firstItem?.querySelector('.accordion-icon');
 
-        firstHeader.setAttribute('aria-expanded', 'true');
-        if (firstBody) firstBody.style.maxHeight = firstBody.scrollHeight + 'px';
-        if (firstIcon) {
-            if (firstIcon.querySelector('.fa-circle-plus')) {
-                firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-circle-plus', 'fa-circle-minus');
-            } else if (firstIcon.querySelector('.fa-plus')) {
-                firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-plus', 'fa-minus');
-            }
-            firstIcon.style.transform = 'rotate(180deg)';
-        }
-    }
+    //     if (firstBody) firstBody.style.maxHeight = '0px';
+    //     if (firstIcon) {
+    //         if (firstIcon.querySelector('.fa-circle-plus')) {
+    //             firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-circle-plus', 'fa-circle-minus');
+    //         } else if (firstIcon.querySelector('.fa-plus')) {
+    //             firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-plus', 'fa-minus');
+    //         }
+    //         firstIcon.style.transform = 'rotate(180deg)';
+    //     }
+    // }
 
     accordionHeaders.forEach(header => {
             // Remove previous event listeners to avoid duplicates if re-init occurs
