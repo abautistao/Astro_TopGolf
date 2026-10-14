@@ -10,7 +10,7 @@ const arrowDataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(ArrowIco
 const { url_submit } = Astro.props;
 ---
 
-<form class="pav-widget w-full flex flex-wrap md:justify-center gap-2 sm:gap-y-4 mt-1 mb-3" method="get" action={formatUrl(url_submit)}>
+<form data-default-url={formatUrl(url_submit)} id="form-booking-home" class="pav-widget w-full flex flex-wrap md:justify-center gap-2 sm:gap-y-4 mt-1 mb-3" method="get">
     <div class="flex-1 md:flex-none rounded md:rounded-full border border-(--accent-highlight-secondary) border-opacity-50 hover:border-white hover:border-opacity-70 relative">
     <label>
         <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Fecha</div>
@@ -27,13 +27,14 @@ const { url_submit } = Astro.props;
         <label>
             <div class="label-text absolute z-10 -top-3 left-1.5 md:left-3.5 uppercase font-(family-name:--font-shields-sans-semibold-condensed) lg:font-shield-black text-xxs md:text-md text-[var(--accent-highlight-secondary)] tracking-wide px-1.5 bg-[var(--surface-brand-secondary)] inline-block">Jugadores</div>
             <span class="select-container">
-                <select name="pax_min" class="!appearance-none pl-2.5 md:pl-5 py-2 pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] h-12 md:h-10 lg:h-12 bg-transparent text-white border-0 neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-sm leading-none">
+                <select id="select-pax" name="pax_min" class="!appearance-none pl-2.5 md:pl-5 py-2 pr-7 cursor-pointer w-full min-w-16 md:min-w-24 lg:min-w-[7.5rem] h-12 md:h-10 lg:h-12 bg-transparent text-white border-0 neon rounded md:rounded-full mb-0 font-shield-condensed lg:font-shield md:text-sm leading-none">
                     <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4"="">4</option>
                     <option value="5">5</option>
                     <option value="6">6</option>
+                    <option value="7">7+</option>
                 </select>
             </span>
         </label>
@@ -56,6 +57,36 @@ const { url_submit } = Astro.props;
   import { Spanish } from "flatpickr/dist/l10n/es.js"; // Importar idioma español
 
   // Función de inicialización para soportar View Transitions de Astro 5
+  const form = document.getElementById('form-booking-home') as HTMLFormElement | null;
+  const selectPax = document.getElementById('select-pax') as HTMLSelectElement | null;
+
+  if (form && selectPax) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevenimos el envío nativo
+
+        // Obtener las URLs desde los data attributes del formulario
+        const urlStandard = '/reservar/';
+        const urlGroups = '/paquetes-sociales/';
+
+        // Evaluar la cantidad seleccionada
+        const paxValue = parseInt(selectPax.value, 10);
+        
+        // Determinar cuál landing usar
+        const targetUrlPath = (paxValue >= 7) ? urlGroups : urlStandard;
+
+        // Recopilar todos los parámetros del formulario (fecha, pax_min, etc.)
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams(formData as any);
+
+        // Construir la URL completa manteniendo los query params
+        const redirectUrl = new URL(targetUrlPath, window.location.origin);
+        redirectUrl.search = searchParams.toString();
+
+        // Redirigir al usuario
+        window.location.href = redirectUrl.toString();
+      });
+    }
+
   function initDatePickers() {
     const inputs = document.querySelectorAll('.flatpickr-input');
 
