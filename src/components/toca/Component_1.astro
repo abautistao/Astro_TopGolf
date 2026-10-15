@@ -10,6 +10,7 @@ interface Props {
     titulo: string;
     descripcion: string;
     imagen: any;
+    imagen_mobile: any;
     social: any;
     boton: Boton | null;
 }
@@ -19,6 +20,7 @@ const {
     titulo,
     descripcion = "Descripcion de Ejemplo",
     imagen,
+    imagen_mobile,
     social = [
         {
             name: "Boton",
@@ -32,6 +34,7 @@ const {
 const tituloMostrar = titulo || "TÍTULO DE EJEMPLO";
 
 const strapiImageUrl = getStrapiUrl(imagen);
+const strapiImageUrlMobile = getStrapiUrl(imagen_mobile);
 const descripcionHtml = stringifyRichText(descripcion);
 
 // --- LÓGICA DE DETECCIÓN DE VIDEO ---
@@ -39,6 +42,7 @@ const descripcionHtml = stringifyRichText(descripcion);
 const mime = imagen?.data?.attributes?.mime || "";
 const ext = imagen?.data?.attributes?.ext || "";
 const isVideo = mime.startsWith("video/") || ext === ".mp4" || strapiImageUrl?.endsWith(".mp4");
+const isVideoMobile = mime.startsWith("video/") || ext === ".mp4" || strapiImageUrl?.endsWith(".mp4");
 
 const altText =
     imagen?.data?.attributes?.alternativeText ||
@@ -143,7 +147,7 @@ const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.5;
         <div
             class="w-full lg:w-[80%] h-[400px] lg:h-full relative flex items-center justify-center p-0 lg:pt-15 lg:pb-15 lg:pr-15 lg:pl-0 z-10"
         >
-            <div class="w-full h-full z-0 relative image-anim opacity-0">
+            <div class="w-full h-full z-0 relative image-anim opacity-0 hidden lg:block">
                 {/* LOGICA CONDICIONAL: VIDEO VS IMAGEN */}
                 {isVideo ? (
                     <video
@@ -164,6 +168,17 @@ const delayDescripcion = startDelay + (palabras.length * wordInterval) + 0.5;
                         loading="eager"
                     />
                 )}
+            </div>
+
+            <div class="w-full h-full z-0 relative image-anim opacity-0 block lg:hidden">
+                <video
+                    src="https://cms.tocasocial.com.mx/uploads/TOCA_HOME_OCTUBRE_03ab1ccb57.mp4"
+                    class="w-full h-full object-cover object-center"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                ></video>
             </div>
         </div>
     </div>
