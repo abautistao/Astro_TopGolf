@@ -22,7 +22,7 @@ const config = {
   build: {
     // 'auto' permite que archivos pequeños se inyecten y los grandes (como el CSS de 77KB) 
     // se sirvan desde /_astro/* aprovechando el Cache-Control inmutable de Cloudflare
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'always'
   },
   image: {
     domains: ['localhost', '127.0.0.1'],
