@@ -546,6 +546,61 @@ const haySimulador = listaPaquetes.length > 0;
     .c37-aviso {
         color: color-mix(in srgb, var(--surface-brand-primary) 62%, transparent);
     }
+
+    /* --- Motion layer (T5). Decision 3 + the Astro scoping trap. ---
+       *
+       * Purely additive: nothing above this comment is touched, so the quote
+       * arithmetic in the `<script>` below stays byte-identical.
+       *
+       * WHY `:global()`: Astro puts its scope attribute on every compound, so a
+       * plain `[data-motion="ready"] .c37-tarjeta` compiles to
+       * `[data-astro-cid-x][data-motion=ready] .c37-tarjeta[data-astro-cid-x]`
+       * and demands that ONE element carry both attributes — but `data-motion` is
+       * written on <html>, which never gets a cid. It compiles and never matches.
+       * `:global()` leaves the guard unscoped while `.c37-tarjeta` stays scoped to
+       * this component.
+       *
+       * WHAT this is for: `.c37-tarjeta` carries Tailwind's `transition-transform`,
+       * and a CSS transition applies to the inline `transform` GSAP writes on
+       * every frame of the reveal just as readily as to the Tailwind one. The
+       * browser then interpolates between GSAP's per-frame writes, so the card
+       * eases ~200ms behind its own tween: the double-easing artifact
+       * `Component_34` already identified and solved for `.c34-figure-img`.
+       *
+       * WHY this drops only `transform` from the list and does NOT repeat
+       * `transition: none` the way `.c34-figure-img` does — because these cards
+       * have a Tailwind hover lift that `.c34-figure-img` does not (there the
+       * zoom is a GSAP tween, so the stylesheet transition is dead weight under
+       * motion). Verified against the installed Tailwind v4.2.1 compiler, which
+       * emits:
+       *   .transition-transform  { transition-property: transform, translate, scale, rotate; }
+       *   .-translate-y-\[5px\] { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
+       * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
+       * property, not on `transform`, so it composes with GSAP's inline
+       * transform instead of competing for it — the lift survives either way.
+       * (2) `transition-property` lists `translate` too, so `transition: none`
+       * would also delete the lift's easing and turn a 200ms hover into an
+       * instant snap. Listing Tailwind's own set minus `transform` removes the
+       * double-eased channel and leaves the hover exactly as it was, duration and
+       * timing-function included, because this rule overrides one longhand and
+       * inherits the rest of the shorthand from `.transition-transform`.
+       *
+       * WHY under the guard: with JS off, reduced motion on, or before the
+       * helper initializes, `data-motion` is never written, no inline transform
+       * exists to double-ease, and the cards render and hover exactly as the
+       * pre-motion build did.
+       *
+       * Two near-neighbours are deliberately NOT in this list.
+       * `.c37-tarjeta-cotizacion` is a DIFFERENT class token on the quote card
+       * inside `.c37-panel`, and the motion script never registers a trigger for
+       * `.c37-panel` or anything under it (see the WHY in its `<script>`), so
+       * there is no inline transform here to double-ease. `.c37-boton` keeps its
+       * hand-written `transition: transform 0.2s ease, …` because it is inside
+       * that same un-animated panel: GSAP never writes its transform, and its
+       * `:hover { transform: translateY(-2px) }` is the whole affordance. */
+    :global([data-motion="ready"]) .c37-tarjeta {
+        transition-property: translate, scale, rotate;
+    }
 </style>
 
 <script>
@@ -775,4 +830,154 @@ const haySimulador = listaPaquetes.length > 0;
 
     initSimuladoresCotizador();
     document.addEventListener("astro:page-load", initSimuladoresCotizador);
+</script>
+
+<script>
+    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * Simulador de cotización motion (T5) — the only work unit in this feature
+     * whose block also owns business logic, so this is a NEW, separate
+     * `<script>` block rather than an edit to the arithmetic one above it.
+     *
+     * WHY a separate block and not a few appended lines: that block is the quote
+     * arithmetic, proven by a 70-assertion run against `app.js`. A motion change
+     * that reordered its reads and writes, rewrote an input before re-reading it
+     * or disabled a control would be a shipping defect, not a style regression,
+     * so the motion layer lives in a file region of its own that a future diff
+     * can be pointed at. Both blocks are plain (not `is:inline`) module scripts,
+     * so Vite bundles them and `astro check` type-checks each independently, and
+     * they run in document order — the arithmetic initializes first, then motion.
+     * Neither block reads a global the other writes, so that order carries no
+     * coupling.
+     *
+     * WHY the anchor is `[data-c37-cotizador]` and not `.c37-seccion`: the
+     * section class is CONDITIONAL — the `<section>` carries
+     * `${color_fondo ? "" : "c37-seccion"}` — so it is absent whenever the editor
+     * sets a background colour, and a query built on it would silently find
+     * nothing on exactly the pages that have one. `data-c37-cotizador` is
+     * unconditional on the same `<section>` and is already this file's own
+     * instance key: the arithmetic script scopes itself to it so two
+     * componente-37 blocks on one page do not share state. This script reuses
+     * that key and resolves every query from the matched element, so a page with
+     * two blocks initializes each one on its own subtree and no query can reach
+     * across into the sibling. `.c37-seccion` must NOT be made unconditional to
+     * make the selector easier: it carries the `linear-gradient(...)` at the top
+     * of the `<style>`, so forcing it on would override the editor's flat colour
+     * — a visible regression traded for a nicer selector. No class was added to
+     * or removed from the `<section>`.
+     *
+     * WHY there is no hidden-state CSS anywhere in this block: `revealSection` /
+     * `revealStagger` build `gsap.from()` tweens, which read the element's CURRENT
+     * computed value as the tween's END state when the tween is created. A
+     * stylesheet rule that pre-hid an element under `[data-motion="ready"]`
+     * would be read as that destination, the tween would animate `opacity: 0 → 0`,
+     * and the block would stay invisible forever. The hidden start state comes
+     * from the tween, which is what keeps decision 3 honest here: no JS, no
+     * readiness attribute, no inline style, no hidden content.
+     *
+     * WHY the simulator panel is deliberately NOT animated — `.c37-panel` and
+     * everything inside it (the package `<select>`, the "personas pagadas" and
+     * "cortesías a utilizar" inputs, the date field and the WhatsApp button) is
+     * left exactly where the stylesheet puts it. This is decision 5, and this
+     * block is the reason the rule exists: a transform on any ancestor of a
+     * focused control moves the input out from under the pointer mid-gesture and
+     * desyncs what the reader sees from what the arithmetic is actually doing,
+     * and those numbers are the block's whole reason to exist. It is also the
+     * same discipline `Component_34` applied to its `<video>`: a reveal writes
+     * `opacity: 0` inline the moment the script runs, so leaving the controls
+     * out is what guarantees that a JS failure, a reduced-motion pass or a
+     * trigger that never fires still leaves every input visible, focusable and
+     * usable. The block gets its movement from the heading and the package cards
+     * above the panel instead.
+     *
+     * WHY there is no `parallaxLayer` anywhere in this block: this is the densest
+     * interactive block on the page, and a scrubbed layer is the one thing the
+     * helper can do to an element while the reader is operating it. The whole
+     * point of its `allowInteractive` refusal is that a caller must state
+     * explicitly that a layer really is inert decoration; nothing here is.
+     */
+    function setupCotizadorMotion() {
+        // Every query below resolves from this block's own `[data-c37-cotizador]`
+        // root and is scoped by the `c37-` prefix, so nothing here can reach a
+        // sibling block on the same page (components 32-38 all render together).
+        document.querySelectorAll<HTMLElement>("[data-c37-cotizador]").forEach((seccion: HTMLElement) => {
+            // The eyebrow/title/description group settles as one object. The
+            // description column is a direct child of the two-column heading
+            // grid, so its parent IS the heading group; the title is the fallback
+            // anchor for the (rarer) block configured with no description, whose
+            // parent is only the title column. `.c37-apagado` is unique in this
+            // block — the cards use `c37-tarjeta-apagado` and the simulator panel
+            // uses `c37-panel-apagado` — so this lookup cannot land on the wrong
+            // element.
+            const descripcion = seccion.querySelector<HTMLElement>(".c37-apagado");
+            const titulo = seccion.querySelector<HTMLElement>(".c37-titulo");
+            const encabezado = (descripcion ?? titulo)?.parentElement ?? null;
+
+            if (encabezado) {
+                revealSection(encabezado, {
+                    y: 32,
+                    duration: 0.75,
+                    ease: "power3.out",
+                });
+            }
+
+            // The package cards are the clearest stagger available on this block:
+            // uniform, side by side and display-only, and the only thing a reader
+            // can do inside one is press "Calcular este paquete", which a
+            // fire-once reveal that has finished long before the card is readable
+            // cannot interfere with. Same values as the document cards in
+            // `Component_36`, which carry the same Tailwind `transition-transform`
+            // hover lift, so the two blocks read at the same tempo. `.c37-tarjeta`
+            // is the card class; `.c37-tarjeta-cotizacion` is a DIFFERENT class
+            // token on the quote card inside the panel, so this selector cannot
+            // reach into the simulator.
+            const primeraTarjeta = seccion.querySelector<HTMLElement>(".c37-tarjeta");
+            const filaPaquetes = primeraTarjeta?.parentElement ?? null;
+
+            if (filaPaquetes) {
+                revealStagger(filaPaquetes, {
+                    selector: ".c37-tarjeta",
+                    stagger: 0.11,
+                    y: 32,
+                    duration: 0.7,
+                    ease: "power3.out",
+                });
+            }
+
+            // Nothing is registered for `.c37-panel` or anything inside it — see
+            // the WHY above. This is the deliberate absence, not an oversight.
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupCotizadorMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    //
+    // One ordering note this component does not share with 34/35/36: because the
+    // arithmetic block is earlier in the file, its `astro:page-load` listener is
+    // registered BEFORE the helper's, not after. That is harmless — the only
+    // order that matters is the helper's teardown running before the triggers are
+    // rebuilt, and it still does, because this module (and therefore the helper's
+    // listener) evaluates after the arithmetic block.
+    let initialLoadSeen = false;
+    document.addEventListener("astro:page-load", () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== "complete";
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupCotizadorMotion();
+    });
 </script>

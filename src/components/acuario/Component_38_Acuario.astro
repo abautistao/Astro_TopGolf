@@ -144,3 +144,102 @@ const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion)
         color: var(--neutral-text-inverted);
     }
 </style>
+
+<script>
+    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * Process steps motion (T3) — decision 5: fire-once, no `scrub`, so nothing
+     * keeps transforming the cards while the reader is scanning them.
+     *
+     * WHY the script adds no selector class and changes no markup: unlike the
+     * other blocks, this one already names every element motion needs with a
+     * `c38-` prefix (`c38-title`, `c38-muted`, `c38-step`), so the anchors
+     * cannot match anything outside this component even though they are looked
+     * up from the document. `closest('section')` then walks up to this block's
+     * own root and every later query is resolved from there.
+     *
+     * WHY there is no hidden-state CSS for the reveals: `revealSection` /
+     * `revealStagger` are built on `gsap.from()`, which reads the element's
+     * CURRENT value as the tween's END state when the tween is created. A
+     * stylesheet rule that pre-hid an element under `[data-motion="ready"]`
+     * would be read as the destination and the tween would animate
+     * `opacity: 0 → 0`, stranding the block invisible forever. The hidden state
+     * comes from the tween instead, which is also what makes decision 3 hold:
+     * no JS, no readiness attribute, no inline style, no hidden content.
+     */
+    function setupProcessMotion() {
+        // De-duplicated root discovery: a block configured with only one of the
+        // three anchors still gets its root exactly once, so no ScrollTrigger is
+        // ever registered twice over the same elements.
+        const sections = new Set<Element>();
+
+        document.querySelectorAll('.c38-title, .c38-muted, .c38-step').forEach((node) => {
+            const section = node.closest('section');
+            if (section) {
+                sections.add(section);
+            }
+        });
+
+        sections.forEach((section) => {
+            // The description column is a direct child of the two-column heading
+            // grid, so its parent IS the heading group; the title's own column is
+            // the fallback anchor for the (rarer) block configured with no
+            // description at all.
+            const description = section.querySelector('.c38-muted');
+            const title = section.querySelector('.c38-title');
+            const heading = (description ?? title)?.parentElement ?? null;
+
+            if (heading) {
+                revealSection(heading, {
+                    y: 30,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Four cards in a single row: the cleanest stagger on the page. Even
+            // per-item offset (`staggerFrom` left at GSAP's 'start', the same
+            // `stagger` for every neighbour) so the sequence reads as a deliberate
+            // left-to-right count rather than an arbitrary cascade, and the whole
+            // run lands inside roughly a second.
+            const firstStep = section.querySelector('.c38-step');
+            const stepsList = firstStep?.parentElement ?? null;
+
+            if (stepsList) {
+                revealStagger(stepsList, {
+                    selector: '.c38-step',
+                    stagger: 0.12,
+                    staggerFrom: 'start',
+                    y: 34,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupProcessMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupProcessMotion();
+    });
+</script>

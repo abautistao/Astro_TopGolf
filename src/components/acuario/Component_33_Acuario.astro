@@ -56,12 +56,17 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
 ---
 
 <section
-    class="w-full py-16 md:py-[92px]"
+    class="c33-section w-full py-16 md:py-[92px]"
     style={`background-color: ${finalBg};`}
 >
     <div class="container mx-auto px-4 md:px-6 max-w-7xl">
         <div class="grid gap-[30px] lg:grid-cols-[0.85fr_1.15fr] lg:gap-[58px] items-center">
-            <div>
+            {/* `c33-copy` / `c33-figure` son el único ancla de motion del bloque:
+                las clases del origen (.intro-image, .btn-primary) no llevan
+                prefijo de componente y podrían tocar otro bloque de la misma
+                página. No cambian el layout, sólo dan un asidero con prefijo
+                `c33-` al script de abajo. */}
+            <div class="c33-copy">
                 {eyebrow && (
                     <p class="mb-4 font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em]" style={`color: ${eyebrowColor};`}>
                         {eyebrow}
@@ -96,7 +101,7 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
             </div>
 
             {imageUrl && (
-                <div class="intro-image">
+                <div class="intro-image c33-figure">
                     <img
                         src={imageUrl}
                         alt={texto_alt_imagen || ""}
@@ -130,3 +135,77 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
         letter-spacing: -0.045em;
     }
 </style>
+
+<script>
+    import { initMotion, revealSection } from "../../scripts/motion";
+
+    /*
+     * Intro motion (T3) — decision 5: fire-once, no `scrub`. The band is below
+     * the fold, so both columns may reveal on scroll and are then left alone.
+     *
+     * WHY there is no `:global([data-motion="ready"])` hidden-state rule for
+     * these two elements (unlike the `scale` rule the hero needs for its
+     * parallax): `revealSection` is built on `gsap.from()`, which records the
+     * element's CURRENT value as the tween's END state the moment the tween is
+     * created. A stylesheet rule that pre-hid the element under the readiness
+     * guard would therefore be read as the destination, and the tween would
+     * animate `opacity: 0 → 0` — the block would stay invisible forever. The
+     * hidden state has to come from the tween itself, which is also what keeps
+     * decision 3 honest: with JS off, with reduced motion on, or if the helper
+     * refuses to initialize, no inline style is ever written and both columns
+     * render exactly as the stylesheet leaves them.
+     */
+    function setupIntroMotion() {
+        // Every query resolves from this block's own `.c33-section` root and is
+        // scoped by the `c33-` prefix, so nothing here can reach a sibling
+        // block on the same page (components 32-38 all render together).
+        document.querySelectorAll('.c33-section').forEach((section) => {
+            // Eyebrow, title, paragraph and CTA settle as ONE group: they are
+            // read as a single sentence, so splitting them would fight the copy.
+            const copy = section.querySelector('.c33-copy');
+            if (copy) {
+                revealSection(copy, {
+                    y: 34,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // The photo takes the longer travel and starts a beat later, so the
+            // two columns settle independently instead of arriving as one block.
+            const figure = section.querySelector('.c33-figure');
+            if (figure) {
+                revealSection(figure, {
+                    y: 56,
+                    duration: 0.9,
+                    ease: 'power3.out',
+                    delay: 0.08,
+                });
+            }
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupIntroMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupIntroMotion();
+    });
+</script>

@@ -25,9 +25,14 @@
     "alpinejs": "^3.15.2",
     "astro": "^5.12.9",
     "flatpickr": "^4.6.13",
+    "gsap": "^3.15.0",
     "lottie-web": "^5.13.0",
     "resend": "^6.5.2",
     "swiper": "^11.2.10",
     "tailwindcss": "^4.1.11"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
   }
 }

@@ -263,4 +263,120 @@ const mostrarPanel = Boolean(panel_tag || panel_titulo || puntos.length || panel
         line-height: 1.02;
         letter-spacing: -0.055em;
     }
+
+    /* --- Motion layer (T2). Decision 4: the hero is the LCP-critical block. ---
+       *
+       * WHY `:global()`: Astro scopes a selector by putting its scope attribute
+       * on every compound, so a plain `[data-motion="ready"] .hero-bg` compiles
+       * to `[data-astro-cid-x][data-motion=ready] .hero-bg[data-astro-cid-x]` and
+       * demands that ONE element carry both attributes — but `data-motion` lives
+       * on <html>, which never gets a cid. `:global()` leaves the guard unscoped
+       * while `.hero-bg` stays scoped to this component.
+       *
+       * WHY a stylesheet rule and not an inline style: the helper tears its
+       * triggers down with `gsap.set(targets, { clearProps: 'all' })` on
+       * `.hero-bg`, and `clearProps: 'all'` empties `style.cssText`, wiping any
+       * inline scale set from script. A stylesheet rule survives that.
+       *
+       * WHY the `scale` property and not `transform`: `transform` belongs to GSAP
+       * here — it writes the yPercent `translate3d` — and an inline transform
+       * would outrank this stylesheet rule. The independent `scale` property does
+       * not: GSAP folds it into the transform it already owns the first time it
+       * parses the element (CSSPlugin "accommodate independent transforms by
+       * combining them into normal ones"), so the scale ends up inside the very
+       * tween the parallax writes, instead of surviving as a bare inline style.
+       *
+       * WHY 1.22 with `distance: 8`: the photo has no bleed of its own, so any
+       * vertical travel would uncover the top or bottom edge of the
+       * `overflow-hidden` hero. A 1.22 scale about the centre leaves
+       * (1.22 - 1) / 2 = 11% of headroom on each side, and `distance: 8` is 8%
+       * of the image height, so 3% of headroom survives at either end of the
+       * scrub — before GSAP's fold, the worst case would still be covered at
+       * 11% - 8 * 1.22 = 1.2%.
+       *
+       * Residual: `clearProps: 'all'` also writes an inline `scale: none`, which
+       * would outrank this rule if triggers were torn down and rebuilt while the
+       * guard stayed set — reachable only if SPA navigation is ever enabled. Left
+       * undefended on purpose: `!important` would win that cascade, but GSAP would
+       * then fold the same scale in a second time and double-scale the photo.
+       *
+       * WHY under the guard: with JS off (or reduced motion on) `data-motion` is
+       * never written, the scale stays at 1 and the hero renders exactly as
+       * before.
+       */
+    :global([data-motion="ready"]) .hero-bg {
+        scale: 1.22;
+    }
 </style>
+
+<script>
+    import { initMotion, parallaxLayer } from "../../scripts/motion";
+
+    /*
+     * Hero motion (T2) — decision 4: this is the LCP-critical block, so the
+     * surface here is deliberately tiny: exactly two elements move, and neither
+     * ever gets an opacity ramp.
+     *
+     * `.hero-title`, `.hero-lead`, `.btn-principal` and `.btn-secundario` are NOT
+     * animated and never get a hidden start state: they have to be in the first
+     * painted frame, because an `opacity: 0` start on above-the-fold text delays
+     * Largest Contentful Paint. That is the entire reason there is no
+     * `revealSection` call anywhere below.
+     */
+    function setupHeroMotion() {
+        // `.hero-bg` is the prime LCP candidate of this block, and that is exactly
+        // why its transform is the only thing that moves: no opacity is ever
+        // written on it, so the photo paints at full strength on the first frame
+        // while it drifts behind the copy. `distance: 8` is a percentage of the
+        // image's own height, applied as yPercent inside the `overflow-hidden`
+        // hero; the stylesheet pairs it with `scale: 1.22` so the travel can never
+        // uncover the edge of the container.
+        document.querySelectorAll('.hero-bg').forEach((layer) => {
+            parallaxLayer(layer, { distance: 8 });
+        });
+
+        // The glass panel drifts against the background at half the travel, to
+        // build depth. `distance: -4` is the helper's own direction flip (it
+        // tweens yPercent from `-distance` to `distance`), so the panel rises
+        // while the background sinks.
+        // `trigger` is the `<section class="hero">`: without it the helper would
+        // default to the panel's parent — the grid cell — and the two layers
+        // would drift out of sync.
+        // `allowInteractive` is an explicit opt-in because the panel does hold a
+        // focusable element (`.panel-link`). It is safe here: the link is a static
+        // anchor with no value to desync, hit-testing follows the transform, and
+        // the whole card moves together with its own content. Decision 5's hazard
+        // (componente-37's sliders and live arithmetic) does not apply here.
+        document.querySelectorAll('.hero-panel').forEach((panel) => {
+            parallaxLayer(panel, {
+                distance: -4,
+                trigger: panel.closest('.hero') ?? panel,
+                allowInteractive: true,
+            });
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupHeroMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so this
+    // never fires — it exists so the hero cannot silently go static if SPA mode is
+    // ever enabled. The first-event guard mirrors the helper's own: Astro also
+    // dispatches `astro:page-load` on the initial load, and re-registering there
+    // would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupHeroMotion();
+    });
+</script>

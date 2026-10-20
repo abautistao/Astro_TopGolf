@@ -204,6 +204,23 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
         transition: transform 0.5s ease;
     }
 
+    /* THE HOVER ZOOM, but only on the paths where the script does not run. This
+       rule is the no-JS and reduced-motion fallback and nothing else.
+
+       WHY it stays after the script took the zoom over: `initMotion()` returns
+       before writing `data-motion="ready"` when the reader asked for reduced
+       motion, and with JS off the module never loads at all. On both paths the
+       script writes no inline transform, this rule is the only thing zooming the
+       photo, and the 0.5s ease above is what eases it, so the affordance the
+       block had before the motion layer survives intact.
+
+       WHY it cannot be the hover zoom under motion: GSAP's inline `transform` is
+       the same property and outranks it. That is the regression this rule used to
+       suffer from: the scrubbed parallax wrote `transform` and silently killed the
+       zoom. The script now hands this exact zoom to a GSAP tween writing the
+       `scale` channel, which composes with the parallax's `yPercent` in one
+       matrix, so the two no longer compete for `transform`. This rule is never in
+       effect while that tween exists. */
     .c34-figure:hover .c34-figure-img {
         transform: scale(1.04);
     }
@@ -255,4 +272,274 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
             grid-column: auto;
         }
     }
+
+    /* --- Motion layer (T3). Decision 3 + the Astro scoping trap. ---
+       *
+       * WHY `:global()`: Astro puts its scope attribute on every compound, so a
+       * plain `[data-motion="ready"] .c34-figure-img` compiles to
+       * `[data-astro-cid-x][data-motion=ready] .c34-figure-img[data-astro-cid-x]`
+       * and demands that ONE element carry both attributes — but `data-motion`
+       * is written on <html>, which never gets a cid. It compiles and never
+       * matches. `:global()` leaves the guard unscoped while `.c34-figure-img`
+       * stays scoped to this component.
+       *
+       * WHAT is left here, and why the headroom scale moved into the script: the
+       * `scale: 1.16` headroom used to live in this rule so it would survive the
+       * helper's `clearProps: 'all'` teardown. It no longer needs to. Making GSAP
+       * the single owner of this element's transform means the headroom is a
+       * `scale` value inside the very matrix GSAP already writes, and the teardown
+       * already covers it, because `.c34-figure-img` is one of the helper's own
+       * tracked targets: `killOwnedTriggers()` clears exactly the elements the
+       * parallax registered, so the scale drops back to 1 together with the
+       * parallax, and `setupExperienceMotion()` puts it back on re-init.
+       *
+       * WHY 1.16 with `distance: 6` (unchanged, now set from the script):
+       * `.c34-figure-img` is `w-full h-full object-cover` inside an
+       * `overflow-hidden` figure, so it fills its box exactly and any vertical
+       * travel would uncover the top or bottom edge. A 1.16 scale about the centre
+       * leaves (1.16 - 1) / 2 = 8% of headroom per side, and `distance: 6` is 6%
+       * of the image height, so headroom survives at either end of the scrub
+       * (worst case 6 * 1.16 = 6.96%).
+       *
+       * WHY `transition: none` and why it is still a stylesheet rule:
+       * `.c34-figure-img` carries `transition: transform 0.5s ease` for the no-JS
+       * hover zoom above, and a CSS transition applies to the inline transform
+       * GSAP writes on every scrub frame as well, which would smear the parallax
+       * half a second behind the scroll position and double-ease the hover tween.
+       * A stylesheet declaration is the only place this can live: `clearProps:
+       * 'all'` empties `style.cssText`, so an inline `style.transition` would not
+       * survive the teardown.
+       *
+       * WHY under the guard: with JS off, reduced motion on, or before the
+       * helper initializes, `data-motion` is never written, no inline transform
+       * exists to transition, and the gallery renders and behaves exactly as the
+       * pre-motion build: original transition, original hover zoom, no scale. */
+    :global([data-motion="ready"]) .c34-figure-img {
+        transition: none;
+    }
 </style>
+
+<script>
+    import { gsap } from "gsap";
+    import { initMotion, parallaxLayer, prefersReducedMotion, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * The headroom the parallax needs to avoid uncovering the edge of its
+     * `overflow-hidden` figure, and the zoom the pre-motion stylesheet applied on
+     * hover. Both are ratios against the image's own box, so multiplying them is
+     * exactly "4% bigger than it was" — the same visual result the CSS
+     * `transform: scale(1.04)` gave before, without a second owner of `transform`.
+     */
+    const HEADROOM_SCALE = 1.16;
+    const HOVER_ZOOM = 1.04;
+    const HOVER_DURATION = 0.5;
+
+    /*
+     * Experience band motion (T3) — decision 5: fire-once reveals everywhere,
+     * `scrub` only on the decorative gallery images.
+     *
+     * WHY this is the one component that imports GSAP directly: `motion.ts` owns
+     * scroll-trigger lifecycle, but it cannot own an affordance the reader starts
+     * with the pointer. The hover zoom is not a scroll animation and must keep
+     * working under reduced motion (it is direct manipulation the user initiated,
+     * not autonomous movement), so it cannot be one of the helper's reveal
+     * triggers either. Everything scroll-driven still goes through the helper.
+     *
+     * WHY there is no hidden-state CSS for the reveals: `revealSection` /
+     * `revealStagger` are built on `gsap.from()`, which reads the element's
+     * CURRENT value as the tween's END state when the tween is created. A
+     * stylesheet rule that pre-hid an element under `[data-motion="ready"]`
+     * would be read as the destination and the tween would animate
+     * `opacity: 0 → 0`, stranding the block invisible forever. The hidden state
+     * comes from the tween instead, which is also what makes decision 3 hold:
+     * no JS, no readiness attribute, no inline style, no hidden content.
+     *
+     * WHY `.c34-video-shell` and `.c34-video` are deliberately NOT animated: a
+     * reveal writes `opacity: 0` inline the moment the script runs, and the
+     * `<video controls>` is the one element in this block whose loss the reader
+     * cannot recover from by scrolling on. Leaving it out is what guarantees
+     * that a JS failure, reduced motion, or a trigger that never fires still
+     * leaves the video visible and playable. The band gets its movement from
+     * the chips, the gallery and the parallax instead.
+     */
+    function setupExperienceMotion() {
+        // The helper's own switch is `prefersReducedMotion() || !initialized`, and
+        // `initMotion()` (called first, on every path) only sets `initialized`
+        // when reduced motion is off — so the negation of the same check is
+        // exactly when the helper's triggers are live. The direct GSAP calls
+        // below ride the same switch instead of inventing a second one.
+        const reduced = prefersReducedMotion();
+
+        // Every query resolves from this block's own `.c34-section` root and is
+        // scoped by the `c34-` prefix, so nothing here can reach a sibling block
+        // on the same page (components 32-38 all render together).
+        document.querySelectorAll('.c34-section').forEach((section) => {
+            // The two-column heading settles as one block...
+            const heading = section.querySelector('.c34-heading');
+            if (heading) {
+                revealSection(heading, {
+                    y: 32,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // ...then the chips cascade down the narrow column. `selector` picks
+            // the chips out of their own container so the stagger sequences the
+            // chips, not the glass panel behind them.
+            const chips = section.querySelector('.c34-chips');
+            if (chips) {
+                revealStagger(chips, {
+                    selector: '.c34-chip',
+                    stagger: 0.07,
+                    y: 16,
+                    duration: 0.55,
+                });
+            }
+
+            const gallery = section.querySelector('.c34-gallery');
+            if (!gallery) {
+                return;
+            }
+
+            // The gallery is the clearest stagger on the page: each figure rises
+            // into its clipped box, so nothing that overflows is ever visible
+            // mid-flight.
+            revealStagger(gallery, {
+                selector: '.c34-figure',
+                stagger: 0.1,
+                y: 34,
+                duration: 0.7,
+                ease: 'power3.out',
+            });
+
+            // Continuous drift behind the reveal. `distance: 6` is 6% of each
+            // image's own height, and the headroom scale below is what keeps that
+            // travel from uncovering the top or bottom edge of its
+            // `overflow-hidden` figure. `trigger: gallery` overrides the helper's
+            // default (the layer's own parent, a 260px row) so the whole set of
+            // figures shares one long scrub range instead of six jittery short
+            // ones.
+            section.querySelectorAll<HTMLElement>('.c34-figure').forEach((figure) => {
+                const layer = figure.querySelector<HTMLElement>('.c34-figure-img');
+                if (!layer) {
+                    return;
+                }
+
+                if (reduced) {
+                    // Reduced motion: no parallax, so no headroom is needed, and
+                    // no inline transform exists — which leaves the stylesheet's
+                    // `:hover` zoom and its 0.5s transition as the whole
+                    // affordance, exactly as before the motion layer.
+                    return;
+                }
+
+                // ONE owner for the whole transform, written as two channels of
+                // the same matrix: GSAP holds `scale` (the headroom, and the
+                // hover zoom) and `yPercent` (the parallax). The headroom used to
+                // be a stylesheet `scale` property, which was a second owner and
+                // is now inside this transform where the `clearProps: 'all'`
+                // teardown already reaches it.
+                gsap.set(layer, { scale: HEADROOM_SCALE });
+
+                parallaxLayer(layer, {
+                    distance: 6,
+                    trigger: gallery,
+                });
+
+                // Decision 7: this function runs again on a client-side
+                // navigation, and the re-run must not stack a second pair of
+                // listeners on the same figure. The flag lives on the element and
+                // is untouched by `clearProps`, which only empties `style`.
+                if (figure.dataset.c34HoverBound === 'true') {
+                    return;
+                }
+
+                figure.dataset.c34HoverBound = 'true';
+
+                let zoomTween: ReturnType<typeof gsap.to> | null = null;
+
+                // WHY these two handlers re-read `prefersReducedMotion()` at event
+                // time instead of reusing the `reduced` value captured above: the
+                // helper watches `(prefers-reduced-motion: reduce)` and, when the
+                // reader flips it mid-session, kills every trigger it owns and runs
+                // `clearProps: 'all'` on the parallax targets — which strips the
+                // inline `transform` these handlers write AND removes
+                // `data-motion`, handing the zoom back to the stylesheet's `:hover`
+                // rule and its 0.5s transition. These listeners survive that
+                // teardown, because they are plain `addEventListener` calls and not
+                // helper-owned triggers. Without the live check, the very next hover
+                // would put `scale(1.2064)` back inline and re-violate the
+                // preference the reader just asked for, and `mouseleave` would then
+                // leave the image parked at the 1.16 headroom. Reading the query per
+                // event makes the handlers self-cancelling the instant the
+                // preference takes effect, with no second watcher that would have to
+                // be torn down in step with the helper's. A zoom already in flight
+                // when the switch flips runs out its `HOVER_DURATION` and is killed
+                // on the next pointer event; after that nothing writes.
+                figure.addEventListener('mouseenter', () => {
+                    if (prefersReducedMotion()) {
+                        // Reduced motion is on: the stylesheet's own `:hover` zoom
+                        // is the whole affordance now, and it is the only thing
+                        // allowed to touch `transform` on this element.
+                        zoomTween?.kill();
+                        return;
+                    }
+
+                    // Killing the previous tween instead of passing `overwrite`:
+                    // an overwrite on this target would also reach the parallax,
+                    // which is a different property but the same element, and the
+                    // zoom is not allowed to be able to kill the drift.
+                    zoomTween?.kill();
+                    zoomTween = gsap.to(layer, {
+                        scale: HEADROOM_SCALE * HOVER_ZOOM,
+                        duration: HOVER_DURATION,
+                        ease: 'power2.out',
+                    });
+                });
+
+                figure.addEventListener('mouseleave', () => {
+                    // Same live check. Under reduced motion GSAP must not ease
+                    // `scale` back down either: the teardown just handed this
+                    // element back to the stylesheet's `:hover` rule, and a tween
+                    // writing the same property would fight it.
+                    if (prefersReducedMotion()) {
+                        zoomTween?.kill();
+                        return;
+                    }
+
+                    zoomTween?.kill();
+                    zoomTween = gsap.to(layer, {
+                        scale: HEADROOM_SCALE,
+                        duration: HOVER_DURATION,
+                        ease: 'power2.out',
+                    });
+                });
+            });
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupExperienceMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupExperienceMotion();
+    });
+</script>

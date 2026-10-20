@@ -337,4 +337,200 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
     [x-cloak] {
         display: none !important;
     }
+
+    /* --- Motion layer (T4). Decision 3 + the Astro scoping trap. ---
+       *
+       * WHY `:global()`: Astro puts its scope attribute on every compound, so a
+       * plain `[data-motion="ready"] .c35-download` compiles to
+       * `[data-astro-cid-x][data-motion=ready] .c35-download[data-astro-cid-x]`
+       * and demands that ONE element carry both attributes — but `data-motion`
+       * is written on <html>, which never gets a cid. It compiles and never
+       * matches. `:global()` leaves the guard unscoped while `.c35-download`
+       * stays scoped to this component.
+       *
+       * WHAT this is for: the downloads carry Tailwind's `transition-transform`,
+       * and a CSS transition applies to the inline `transform` GSAP writes on
+       * every frame of the reveal just as readily as to the Tailwind one. The
+       * browser then interpolates between GSAP's per-frame writes, so the whole
+       * reveal eases ~150-200ms behind its own tween: the double-easing artifact
+       * `Component_34` already identified and solved for `.c34-figure-img`.
+       *
+       * WHY this drops only `transform` from the list and does NOT repeat
+       * `transition: none` the way `.c34-figure-img` does — because these
+       * buttons have a Tailwind hover lift that `.c34-figure-img` does not
+       * (there, the zoom is a GSAP tween and the stylesheet transition is dead
+       * weight under motion). Verified against the installed Tailwind v4.2.1
+       * compiler, which emits:
+       *   .transition-transform { transition-property: transform, translate, scale, rotate; }
+       *   .-translate-y-0.5       { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
+       * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
+       * property, not on `transform`, so it composes with GSAP's inline
+       * transform instead of competing for it — the lift survives either way.
+       * (2) `transition-property` lists `translate` too, so `transition: none`
+       * would also delete the lift's easing and turn a 150ms hover into an
+       * instant snap. Listing Tailwind's own set minus `transform` removes the
+       * double-eased channel and leaves the hover exactly as it was, duration
+       * and timing-function included, because this rule overrides one longhand
+       * and inherits the rest of the shorthand from `.transition-transform`.
+       *
+       * WHY under the guard: with JS off, reduced motion on, or before the
+       * helper initializes, `data-motion` is never written, no inline transform
+       * exists to double-ease, and the buttons render and hover exactly as the
+       * pre-motion build did. */
+    :global([data-motion="ready"]) .c35-download {
+        transition-property: translate, scale, rotate;
+    }
 </style>
+
+<script>
+    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * NEM block motion (T4) — decision 5 bites harder here than anywhere else on
+     * the page: `.c35-module` contains the phase tablist, the panels Alpine
+     * swaps and the two download buttons, so this block IS the interactive
+     * zone. There is no `parallaxLayer` anywhere in this script, on purpose.
+     * Every reveal below is a `gsap.from()` behind a `once: true` ScrollTrigger,
+     * so the block is entered once and then left alone: no transform is ever
+     * rewritten while the reader is pointing at a tab or clicking a download.
+     *
+     * WHY there is no hidden-state CSS for any of these elements:
+     * `revealSection` / `revealStagger` are built on `gsap.from()`, which reads
+     * the element's CURRENT value as the tween's END state when the tween is
+     * created. A stylesheet rule that pre-hid an element under the readiness
+     * guard would be read as the destination and the tween would animate
+     * `opacity: 0 → 0`, stranding the block invisible forever. The hidden state
+     * comes from the tween instead, which is also what keeps decision 3 honest:
+     * no JS, no readiness attribute, no inline style, no hidden content.
+     *
+     * WHY the script adds no selector class and touches no markup: every anchor
+     * it needs already carries a `c35-` prefix, and each query is resolved from
+     * this block's own `.c35-section` root, so nothing here can reach a sibling
+     * block on the same page (components 32-38 all render together).
+     */
+    function setupNemMotion() {
+        document.querySelectorAll('.c35-section').forEach((section) => {
+            // Heading group. `.c35-muted` is NOT a safe anchor on its own: the
+            // field cards reuse it for their body copy, so the description is
+            // only the heading's when it is not inside a card. The title's own
+            // column is the fallback for the (rarer) block configured with no
+            // description, and it needs one extra hop — the title sits inside
+            // the left column of the two-column grid, so the grid is its
+            // grandparent. Resolving this through `.c35-muted` alone would have
+            // put a trigger on a card that the stagger below also animates.
+            const headingDescription =
+                Array.from(section.querySelectorAll('.c35-muted')).find((node) => !node.closest('.c35-card')) ?? null;
+            const title = section.querySelector('.c35-title');
+            const heading = headingDescription?.parentElement ?? title?.parentElement?.parentElement ?? null;
+
+            // Eyebrow, title and paragraph settle as ONE group: they read as a
+            // single sentence, so splitting them would fight the copy.
+            if (heading) {
+                revealSection(heading, {
+                    y: 30,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Four training-field cards in a single row. Even per-item offset
+            // (`staggerFrom` left at GSAP's 'start') so the sequence reads as a
+            // deliberate left-to-right count rather than an arbitrary cascade.
+            const firstCard = section.querySelector('.c35-card');
+            const cardsRow = firstCard?.parentElement ?? null;
+
+            if (cardsRow) {
+                revealStagger(cardsRow, {
+                    selector: '.c35-card',
+                    stagger: 0.09,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // WHY `.c35-module` is NOT revealed — this is the P1 repair, and the
+            // absence is the point, not an oversight.
+            //
+            // `revealSection` / `revealStagger` build `gsap.from()` tweens, and
+            // `gsap.from()` renders its START values immediately, so merely
+            // REGISTERING a trigger on this container writes `opacity: 0` inline
+            // at page load, before the reader has scrolled anywhere. That is safe
+            // only for as long as the trigger is guaranteed to fire. If it never
+            // does — an anchor jump that lands the panel below the `top 85%` start
+            // line, an unexpected restored scroll position, a teardown that runs
+            // between registration and the first scroll event — the `opacity: 0`
+            // simply stays. And `.c35-module` is not display-only: it holds the
+            // `role="tablist"` phase tabs, each one a focusable `<button>`, plus
+            // the `x-show` panel. A stranded reveal there does not look like a
+            // missed animation, it looks like invisible-but-still-focusable tab
+            // controls sitting in the accessibility tree, which is a WCAG failure
+            // rather than a taste call.
+            //
+            // WHY dropping it beats retargeting it: every element between the tab
+            // strip and the section root is an ANCESTOR of the tab strip, so there
+            // is no non-interactive wrapper inside `.c35-module` to hand the
+            // reveal to, and moving it up to `.c35-section` would re-introduce the
+            // same hazard one level higher. The block keeps its movement from the
+            // two targets that are genuinely display-only — the heading group and
+            // the `.c35-card` stagger — and the dark panel arrives with the
+            // stylesheet, which is the same behaviour every no-JS and
+            // reduced-motion reader already gets.
+            //
+            // This is the same discipline `Component_34` applied to its
+            // `<video controls>` and `Component_37` to `.c37-panel`: leave
+            // anything holding a focusable control exactly where the stylesheet
+            // puts it.
+
+            // The two downloads get their own, later beat, so they read as the
+            // block's exit point rather than arriving with the frame. They sit on
+            // `.c35-module`'s dark gradient, and the second one is an outline
+            // button, so this is transform-only motion: nothing here changes the
+            // background it is drawn on. The opacity ramp is also the shortest on
+            // the page (0.45s, 0.07s apart) so the outline never sits long at low
+            // opacity against the navy.
+            //
+            // Their own Tailwind hover lift survives GSAP owning `transform`,
+            // because Tailwind v4's `-translate-y-*` sets the standalone
+            // `translate` property, which composes with `transform` instead of
+            // competing for it. (That is exactly the trap the component-34
+            // stylesheet hover rule fell into by writing `transform` directly.)
+            const firstDownload = section.querySelector('.c35-download');
+            const downloadsRow = firstDownload?.parentElement ?? null;
+
+            if (downloadsRow) {
+                revealStagger(downloadsRow, {
+                    selector: '.c35-download',
+                    stagger: 0.07,
+                    y: 14,
+                    duration: 0.45,
+                    ease: 'power2.out',
+                });
+            }
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupNemMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupNemMotion();
+    });
+</script>

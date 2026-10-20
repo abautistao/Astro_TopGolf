@@ -86,7 +86,7 @@ const listaMateriales = materiales
 const arrowMaterial = "↗";
 ---
 
-<section class="w-full py-[68px] lg:py-[82px] xl:py-[104px]" style={`background-color: ${sectionBg};`}>
+<section class="c36-section w-full py-[68px] lg:py-[82px] xl:py-[104px]" style={`background-color: ${sectionBg};`}>
     <div class="container mx-auto px-4 md:px-6 max-w-7xl">
         {/* Encabezado de dos columnas alineadas al borde inferior, igual que
             .section-heading del origen. */}
@@ -286,4 +286,179 @@ const arrowMaterial = "↗";
     .c36-privacy {
         color: color-mix(in srgb, var(--surface-brand-primary) 62%, transparent);
     }
+
+    /* --- Motion layer (T4). Decision 3 + the Astro scoping trap. ---
+       *
+       * WHY `:global()`: Astro puts its scope attribute on every compound, so a
+       * plain `[data-motion="ready"] .c36-card` compiles to
+       * `[data-astro-cid-x][data-motion=ready] .c36-card[data-astro-cid-x]` and
+       * demands that ONE element carry both attributes — but `data-motion` is
+       * written on <html>, which never gets a cid. It compiles and never
+       * matches. `:global()` leaves the guard unscoped while `.c36-card` stays
+       * scoped to this component.
+       *
+       * WHAT this is for: `.c36-card` carries Tailwind's `transition-transform`,
+       * and a CSS transition applies to the inline `transform` GSAP writes on
+       * every frame of the reveal just as readily as to the Tailwind one. The
+       * browser then interpolates between GSAP's per-frame writes, so the card
+       * eases ~200ms behind its own tween: the double-easing artifact
+       * `Component_34` already identified and solved for `.c34-figure-img`.
+       *
+       * WHY this drops only `transform` from the list and does NOT repeat
+       * `transition: none` the way `.c34-figure-img` does — because these cards
+       * have a Tailwind hover lift that `.c34-figure-img` does not (there the
+       * zoom is a GSAP tween, so the stylesheet transition is dead weight under
+       * motion). Verified against the installed Tailwind v4.2.1 compiler, which
+       * emits:
+       *   .transition-transform  { transition-property: transform, translate, scale, rotate; }
+       *   .-translate-y-\[5px\] { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
+       * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
+       * property, not on `transform`, so it composes with GSAP's inline
+       * transform instead of competing for it — the lift survives either way.
+       * (2) `transition-property` lists `translate` too, so `transition: none`
+       * would also delete the lift's easing and turn a 200ms hover into an
+       * instant snap. Listing Tailwind's own set minus `transform` removes the
+       * double-eased channel and leaves the hover exactly as it was, duration and
+       * timing-function included, because this rule overrides one longhand and
+       * inherits the rest of the shorthand from `.transition-transform`.
+       *
+       * WHY under the guard: with JS off, reduced motion on, or before the
+       * helper initializes, `data-motion` is never written, no inline transform
+       * exists to double-ease, and the cards render and hover exactly as the
+       * pre-motion build did.
+       *
+       * `.c36-material-link` is deliberately NOT in this list: it carries
+       * `transition-colors`, and `color` is not a property GSAP ever writes here,
+       * so it has nothing to double-ease. */
+    :global([data-motion="ready"]) .c36-card {
+        transition-property: translate, scale, rotate;
+    }
 </style>
+
+<script>
+    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * Teacher kit motion (T4) — decision 5: fire-once, no `scrub`. This block has
+     * no scrubbed layer either: every link in it is a document download the
+     * reader can hit while it is still moving, so nothing is allowed to keep
+     * transforming while they do.
+     *
+     * WHY the root carries a new `c36-section` class and nothing else: every
+     * other anchor the script needs already had a `c36-` prefix, but the `<section>`
+     * itself was bare Tailwind, and the alternative — `closest('section')` from a
+     * `c36-` anchor — would find the same section twice on a page with two
+     * `c36-` blocks and would silently double-register every trigger. The class
+     * is a motion anchor in the same sense as `c33-copy` / `c33-figure` in
+     * componente-33: it changes no layout, no copy, no colour, and it declares
+     * no CSS of its own.
+     *
+     * WHY there is no hidden-state CSS: `revealSection` / `revealStagger` are
+     * built on `gsap.from()`, which reads the element's CURRENT value as the
+     * tween's END state when the tween is created. A stylesheet rule that
+     * pre-hid an element under `[data-motion="ready"]` would be read as the
+     * destination and the tween would animate `opacity: 0 → 0`, stranding the
+     * block invisible forever. The hidden state comes from the tween instead,
+     * which is also what keeps decision 3 honest: no JS, no readiness
+     * attribute, no inline style, no hidden content.
+     *
+     * WHY `.c36-privacy` is left alone: like the `<video>` in componente-34, it
+     * is a line whose loss the reader cannot recover by scrolling on, and it is
+     * the smallest thing on the block. Skipping it costs nothing visually.
+     */
+    function setupKitMotion() {
+        // Every query resolves from this block's own `.c36-section` root, so
+        // nothing here can reach a sibling block on the same page (components
+        // 32-38 all render together).
+        document.querySelectorAll('.c36-section').forEach((section) => {
+            // The description column is a direct child of the two-column heading
+            // grid, so its parent IS the heading group; the title's own column is
+            // the fallback anchor for the (rarer) block configured with no
+            // description at all. `.c36-muted` is unique here — the cards use
+            // `c36-card-muted` and the materials block `c36-materials-muted` —
+            // so this lookup cannot land on the wrong block.
+            const description = section.querySelector('.c36-muted');
+            const title = section.querySelector('.c36-title');
+            const heading = (description ?? title)?.parentElement ?? null;
+
+            if (heading) {
+                revealSection(heading, {
+                    y: 32,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Three document cards in a row, visually uniform, so this is the
+            // strongest stagger on the page: even per-item offset and a longer
+            // gap than the smaller chip-style sequences, because these cards are
+            // the block's primary content and deserve to be read one at a time.
+            const firstCard = section.querySelector('.c36-card');
+            const cardsRow = firstCard?.parentElement ?? null;
+
+            if (cardsRow) {
+                revealStagger(cardsRow, {
+                    selector: '.c36-card',
+                    stagger: 0.11,
+                    y: 32,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // The materials block is the section's one dark surface, so it gets
+            // the same treatment as the phase module in componente-35: the panel
+            // rises as one object and the links inside it get their own, later
+            // beat. Transform-only — the navy gradient is painted on the panel,
+            // not on the links, so no motion here can carry a light-background
+            // link onto a dark one or the reverse.
+            const materials = section.querySelector('.c36-materials');
+            if (!materials) {
+                return;
+            }
+
+            revealSection(materials, {
+                y: 36,
+                duration: 0.8,
+                ease: 'power3.out',
+            });
+
+            const firstLink = section.querySelector('.c36-material-link');
+            const linksRow = firstLink?.parentElement ?? null;
+
+            if (linksRow) {
+                revealStagger(linksRow, {
+                    selector: '.c36-material-link',
+                    stagger: 0.07,
+                    y: 14,
+                    duration: 0.5,
+                    ease: 'power2.out',
+                });
+            }
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupKitMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupKitMotion();
+    });
+</script>
