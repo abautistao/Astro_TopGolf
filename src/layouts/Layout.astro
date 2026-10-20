@@ -128,6 +128,29 @@ const seoProps = seo || defaultSeo;
             alternateLinks={alternateLinks}
             class="fixed hidden bottom-20 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"
         />
+
+        <!-- INICIO: Píxel de Pinterest diferido -->
+        <script is:inline>
+          const initPinterest = () => {
+            !function(e){if(!window.pintrk){window.pintrk = function () {
+            window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
+            n=window.pintrk;n.queue=[],n.version="3.0";var
+            t=document.createElement("script");t.async=!0,t.src=e;var
+            r=document.getElementsByTagName("script")[0];
+            r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+
+            pintrk('load', '2612914785193');
+            pintrk('page');
+          };
+
+          // Se inicializa en reposo para no competir con el CSS ni el LCP
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(initPinterest);
+          } else {
+            window.addEventListener('load', () => setTimeout(initPinterest, 2000));
+          }
+        </script>
+        <!-- FIN: Píxel de Pinterest -->
     </body>
 </html>
 
