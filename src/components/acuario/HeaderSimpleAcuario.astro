@@ -19,8 +19,9 @@
 // The previously-existing flex-row 2-column layout (col1 social + col2 logo)
 // has been replaced by this 2-row stacked layout per design. Mobile + desktop
 // menus, dropdowns, mobile overlay, hamburger button and any related
-// `<script>` were never part of this variant and remain absent. CSS variables
-// drive every color and font — no hex literals.
+// `<script>` were never part of this variant and remain absent: the only
+// script here is the motion layer (T2), which only reveals blocks.
+// CSS variables drive every color and font — no hex literals.
 //
 // Schema compatibility (`backend/src/components/header/header-simple-acuario.json`):
 //   - logo, logo_mobile : RENDERED in fila 2 (centered, both viewports).
@@ -97,7 +98,7 @@ void _links;
 void _ctaButtonRaw;
 ---
 
-<header class="w-full relative z-50 flex flex-col">
+<header class="acuario-header-simple w-full relative z-50 flex flex-col">
     {/*
         FILA 1 — social icons band (desktop only).
         Replicates the original Acuario top bar's dark col1 wrapper but
@@ -109,7 +110,7 @@ void _ctaButtonRaw;
         visual as `Header.astro` with no social configured.
     */}
     <div class="hidden! md:flex! bg-(--custom-color-01)! items-center! justify-between! px-8! w-full! min-h-[60px]! font-bold!">
-        <div class="flex items-center justify-center gap-6">
+        <div class="acuario-header-simple-block flex items-center justify-center gap-6">
             <div class="text-white! text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
                 <i class="fas fa-phone-alt"></i> <span>+ (52) 55 4438 6978</span>
             </div>
@@ -117,7 +118,7 @@ void _ctaButtonRaw;
                 <i class="far fa-clock"></i> <span>Lun - Dom 10:00 -18:00</span>
             </div>
         </div>
-        <div class="flex! items-center! gap-5! text-white!">
+        <div class="acuario-header-simple-block flex! items-center! gap-5! text-white!">
             {social.map((item: any) => (
                 <a
                     href={item.url}
@@ -152,7 +153,7 @@ void _ctaButtonRaw;
                     alt="Acuario"
                     width={250}
                     height={100}
-                    class="hidden md:block h-full w-auto object-contain mx-auto max-w-[80px]"
+                    class="acuario-header-simple-block hidden md:block h-full w-auto object-contain mx-auto max-w-[80px]"
                 />
             )}
             {logoMobileUrl && (
@@ -161,9 +162,56 @@ void _ctaButtonRaw;
                     alt="Acuario"
                     width={200}
                     height={80}
-                    class="block md:hidden h-full w-auto object-contain py-1 mx-auto max-w-[80px]"
+                    class="acuario-header-simple-block block md:hidden h-full w-auto object-contain py-1 mx-auto max-w-[80px]"
                 />
             )}
         </a>
     </div>
 </header>
+
+<script>
+    import { initMotion, revealStagger } from "../../scripts/motion";
+
+    /* ================================================================
+     * Capa de movimiento del header simple (T2).
+     *
+     * Esta variante no tiene menú, ni CTA, ni hamburguesa: sólo la banda
+     * de redes/horario (escritorio) y el logo centrado. La entrada es una
+     * única animación de carga — el header está por encima del pliegue, así
+     * que un reveal por scroll no tendría sentido.
+     *
+     * QUÉ se anima: los dos bloques de la banda superior (información y
+     * redes) y los dos logos (imágenes, nunca el `<a>` del logo: es
+     * focusable y un `gsap.from()` sobre él lo dejaría invisible pero
+     * tabulable, S13).
+     * ================================================================ */
+    function setupAcuarioHeaderSimpleMotion() {
+        document.querySelectorAll('.acuario-header-simple').forEach((header) => {
+            revealStagger(header, {
+                selector: '.acuario-header-simple-block',
+                stagger: 0.07,
+                y: 12,
+                duration: 0.5,
+                ease: 'power2.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupAcuarioHeaderSimpleMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupAcuarioHeaderSimpleMotion();
+    });
+</script>

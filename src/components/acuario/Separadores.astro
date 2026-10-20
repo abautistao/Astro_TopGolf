@@ -7,7 +7,7 @@ const startColor = color_inicio || 'var(--surface-brand-primary)';
 const endColor = color_final || 'var(--accent-highlight-primary)';
 ---
 
-<div class="w-full overflow-hidden leading-none relative z-10" style={`background-color: ${startColor};`}>
+<div class="acuario-separador w-full overflow-hidden leading-none relative z-10" style={`background-color: ${startColor};`}>
     
     {tipo === 'tipo_1' && (
         <svg class="block w-full h-[60px] md:h-[120px] lg:h-[180px]" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,3 +25,58 @@ const endColor = color_final || 'var(--accent-highlight-primary)';
     )}
 
 </div>
+
+<script>
+    import { initMotion, revealSection } from "../../scripts/motion";
+
+    /* ================================================================
+     * Capa de motion del separador (T2).
+     *
+     * El separador es decorativo: entra una sola vez, con un fade corto y
+     * un desplazamiento horizontal mínimo, cuando llega al viewport. Es
+     * chrome, no contenido, así que el viaje es pequeño a propósito — no
+     * debe robarle la atención a la sección de arriba.
+     *
+     * POR QUÉ se anima el `<svg>` y no el contenedor: el contenedor tiene
+     * `overflow-hidden`, así que un movimiento vertical de la onda dejaría
+     * un hueco arriba o abajo. El svg se mueve DENTRO del recorte, así que
+     * lo que se ve es un barrido horizontal y la geometría no cambia.
+     *
+     * `y: 0` es obligatorio: el default del helper (`y: 24`) movería la
+     * onda verticalmente y abriría un hueco en el recorte.
+     * ================================================================ */
+    function setupAcuarioSeparadorMotion() {
+        document.querySelectorAll('.acuario-separador').forEach((separador) => {
+            const svg = separador.querySelector('svg');
+
+            if (!svg) {
+                return;
+            }
+
+            revealSection(svg, {
+                x: 22,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupAcuarioSeparadorMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupAcuarioSeparadorMotion();
+    });
+</script>

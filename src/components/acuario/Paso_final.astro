@@ -44,15 +44,15 @@ const {
             />
         </div>
 
-        <div id="fail" class="text-center font-[family-name:var(--font-principal)] hidden">
-            <h2 style={{color: color_titulo_fail}} class="font-bold lg:text-3xl mb-4">{titulo_fail}</h2>
+        <div id="fail" class="paso-final-bloque text-center font-[family-name:var(--font-principal)] hidden">
+            <h2 style={{color: color_titulo_fail}} class="paso-final-titulo font-bold lg:text-3xl mb-4">{titulo_fail}</h2>
             <div class="text-[#15468F]" set:html={stringifyRichText(descripcion_fail)}></div>
             <div class="text-[#15468F]" id="fail-message"></div>
             <a class="underline text-[#15468F]" href={url_link_label_fail}>{link_label_fail}</a>
         </div>
 
-        <div id="success" class="text-center font-[family-name:var(--font-principal)] hidden">
-            <h2 style={{color: color_titulo_success}} class="font-bold lg:text-4xl mb-4">{titulo_success}</h2>
+        <div id="success" class="paso-final-bloque text-center font-[family-name:var(--font-principal)] hidden">
+            <h2 style={{color: color_titulo_success}} class="paso-final-titulo font-bold lg:text-4xl mb-4">{titulo_success}</h2>
             <h3 class="text-[#15468F] mb-5">Tu número de reservación es el: <span class="font-bold" id="success-message"></span></h3>
             <div class="text-[#15468F]" set:html={stringifyRichText(descripcion_success)}></div>
             <a class="underline text-[#15468F]" href={url_link_label_success}>{link_label_success}</a>
@@ -61,6 +61,8 @@ const {
 </section>
 
 <script>
+    import { initMotion, splitReveal, revealStagger } from "../../scripts/motion";
+
     // Función para obtener el valor de un parámetro de la URL
     function getParameterByName(name) {
       name = name.replace(/[\[\]]/g, "\\$&");
@@ -136,4 +138,78 @@ const {
     } else {
       console.error('No reservation_id found in URL or event already executed');
     }
+
+    /* ================================================================
+     * Capa de movimiento del paso final (T2).
+     *
+     * Este bloque trae DOS títulos (el de error y el de éxito) y DOS bloques
+     * (el de error y el de éxito). Sólo uno de los dos bloques queda
+     * visible: el script de arriba alterna la clase `hidden` según el
+     * parámetro `status` de la URL, así que la animación se registra sobre
+     * el bloque que realmente se ve y el que sigue oculto no se toca.
+     *
+     * QUÉ se anima:
+     * - Los títulos con `splitReveal`: se arman por palabras. Están por
+     *   debajo del pliegue, así que no hay riesgo de LCP.
+     * - El resto del bloque con `revealStagger`: descripción, mensaje y
+     *   enlace entran en cascada. El selector `:scope > :not(h2)` deja fuera
+     *   el título, que ya lo anima `splitReveal` — dos dueños sobre el mismo
+     *   elemento sería una pelea por el mismo transform.
+     *
+     * El enlace (`<a>`) nunca es objetivo: es focusable y un `gsap.from()`
+     * que no dispara lo dejaría invisible pero tabulable (S13). El helper
+     * lo excluye siempre por su cuenta.
+     * ================================================================ */
+    function setupPasoFinalMotion() {
+        document.querySelectorAll('.paso-final-bloque').forEach((bloque) => {
+            const visible = !bloque.classList.contains('hidden');
+
+            // Un bloque oculto no se anima: escribirle `opacity: 0` a sus
+            // hijos sería dejar contenido invisible a la espera de un
+            // trigger que quizá nunca dispare.
+            if (!visible) {
+                return;
+            }
+
+            const titulo = bloque.querySelector('.paso-final-titulo');
+
+            // `splitReveal` es inocuo con un título vacío (el helper
+            // revierte el split si no encuentra partes).
+            if (titulo) {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 26,
+                    duration: 0.75,
+                    stagger: 0.04,
+                    ease: 'power3.out',
+                });
+            }
+
+            revealStagger(bloque, {
+                selector: ':scope > :not(h2)',
+                stagger: 0.07,
+                y: 16,
+                duration: 0.55,
+                ease: 'power2.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupPasoFinalMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupPasoFinalMotion();
+    });
 </script>
