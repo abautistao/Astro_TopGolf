@@ -22,10 +22,13 @@ const {
 } = Astro.props;
 
 const TitleTag = etiqueta_titulo;
+
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8).
+const tituloPartible = etiqueta_titulo !== "h1";
 ---
 
 <section 
-    class="w-full py-16 md:py-24 relative overflow-hidden bg-[#EAF5FC] z-10"
+    class="c6-section w-full py-16 md:py-24 relative overflow-hidden bg-[#EAF5FC] z-10"
     style={color_fondo ? `background-color: ${color_fondo}` : ""}
 >
     <!-- Fondo decorativo predeterminado (Peces, burbujas y algas) si no hay imagen de fondo cargada -->
@@ -78,7 +81,7 @@ const TitleTag = etiqueta_titulo;
         <img 
             src={getStrapiUrl(imagen_decorativa_fondo)} 
             alt="Fondo decorativo" 
-            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 opacity-80"
+            class="c6-bg absolute inset-0 w-full h-full object-cover pointer-events-none z-0 opacity-80"
         />
     )}
 
@@ -87,7 +90,10 @@ const TitleTag = etiqueta_titulo;
         <!-- Header de la sección (Centrado) -->
         {titulo && (
             <div class="mb-12 text-center">
-                <TitleTag class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[44px] font-bold leading-tight uppercase tracking-wide">
+                <TitleTag
+                    class="c6-title font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[44px] font-bold leading-tight uppercase tracking-wide"
+                    data-split={tituloPartible ? "on" : "off"}
+                >
                     {titulo}
                 </TitleTag>
             </div>
@@ -97,11 +103,17 @@ const TitleTag = etiqueta_titulo;
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
             
             <!-- Columna 1: Tarjeta Principal (Ocupa 5/12 en desktop) -->
-            <div class="lg:col-span-5 flex">
+            <div class="c6-lead-col lg:col-span-5 flex">
                 {tarjeta_principal && (
+                    /* Envoltorio de motion: la tarjeta es un `<a>` y un reveal
+                       sobre un control focusable lo dejaría invisible y
+                       tabulable (S13). Reproduce exactamente la caja
+                       anterior: mismo ancho (100%) y la tarjeta estirada a lo
+                       alto de la columna. */
+                    <div class="c6-lead-wrap w-full flex">
                     <a 
                         href={tarjeta_principal.url || "#"} 
-                        class="flex flex-col w-full bg-[#2BBDF4] rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
+                        class="c6-card flex flex-col w-full bg-[#2BBDF4] rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
                     >
                         <!-- Imagen (Top) -->
                         <div class="aspect-[16/11] w-full overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)]">
@@ -109,7 +121,7 @@ const TitleTag = etiqueta_titulo;
                                 <img 
                                     src={getStrapiUrl(tarjeta_principal.imagen)} 
                                     alt={tarjeta_principal.titulo} 
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                    class="c6-card-img w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
                                 />
                             )}
                         </div>
@@ -145,17 +157,22 @@ const TitleTag = etiqueta_titulo;
                             </div>
                         </div>
                     </a>
+                    </div>
                 )}
             </div>
 
             <!-- Columna 2: Tarjetas Secundarias y Botón (Ocupa 7/12 en desktop) -->
             <div class="lg:col-span-7 flex flex-col gap-6">
                 <!-- Lista de tarjetas secundarias (Horizontal en desktop) -->
-                <div class="flex flex-col gap-6">
+                <div class="c6-list flex flex-col gap-6">
                     {tarjetas_secundarias && tarjetas_secundarias.map((card) => (
+                        /* Envoltorio de motion (mismo motivo que el de la
+                           tarjeta principal): el `<a>` no puede ser el objetivo
+                           de un reveal. */
+                        <div class="c6-sec-wrap">
                         <a 
                             href={card.url || "#"} 
-                            class="group flex flex-col md:flex-row bg-[#2BBDF4] rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 gap-6 w-full items-stretch"
+                            class="c6-card group flex flex-col md:flex-row bg-[#2BBDF4] rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 gap-6 w-full items-stretch"
                         >
                             <!-- Imagen (Izquierda en desktop, Arriba en mobile) -->
                             <div class="w-full md:w-[42%] aspect-[4/3] md:aspect-[4/3] md:min-h-[190px] rounded-[20px] overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)] shrink-0">
@@ -163,7 +180,7 @@ const TitleTag = etiqueta_titulo;
                                     <img 
                                         src={getStrapiUrl(card.imagen)} 
                                         alt={card.titulo} 
-                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                        class="c6-card-img w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
                                     />
                                 )}
                             </div>
@@ -195,6 +212,7 @@ const TitleTag = etiqueta_titulo;
                                 </div>
                             </div>
                         </a>
+                        </div>
                     ))}
                 </div>
 
@@ -214,3 +232,148 @@ const TitleTag = etiqueta_titulo;
         </div>
     </div>
 </section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Tailwind v4 escribe `transition-property: transform, translate, scale,
+     * rotate` en `transition-transform` y `transition-property: all` en
+     * `transition-all`. Con GSAP escribiendo un `transform` inline en el mismo
+     * elemento, la transición interpola frame a frame las escrituras de GSAP y
+     * la tarjeta se retrasa ~300ms respecto a su propia animación (doble
+     * easing). Bajo el guard de motion se deja la lista sin el canal
+     * `transform`: GSAP queda como único dueño de ese `transform` y la
+     * elevación del hover (`hover:-translate-y-1`, que escribe la propiedad
+     * independiente `translate`) conserva su easing.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro, así que la forma sin `:global()`
+     * compila a un selector que jamás hace match.
+     */
+    :global([data-motion="ready"]) .c6-card {
+        transition-property: translate, scale, rotate;
+    }
+
+    :global([data-motion="ready"]) .c6-card-img {
+        transition-property: translate, scale, rotate;
+    }
+
+    /* Holgura para el parallax del fondo: el viaje vertical del `yPercent`
+     * descubriría el borde de la foto si la imagen midiese exactamente lo que
+     * su caja. Un `scale` de 1.22 deja 11% de aire arriba y abajo, y el
+     * recorrido es del 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     */
+    :global([data-motion="ready"]) .c6-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento del bloque de noticias (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c6-lead-wrap` / `.c6-sec-wrap` → el reveal (opacidad + viaje).
+     *   - `.c6-card`                        → `hoverDepth` (inclinación + lift).
+     *   - `.c6-card-img`                   → `zoomImage` (zoom por scroll).
+     *   - `.c6-bg`                         → `parallaxLayer` (fondo).
+     *
+     * El reveal nunca apunta a la tarjeta: es un `<a>` y un `gsap.from()` sobre
+     * un control focusable lo deja invisible y tabulable si su trigger no
+     * dispara (S13). De ahí el envoltorio `<div>` de cada tarjeta.
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c6-section').forEach((section) => {
+            // El título se arma palabra por palabra, salvo que sea un `h1`
+            // (LCP, S8).
+            const title = section.querySelector('.c6-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // La tarjeta principal y la lista de secundarias son dos rejillas
+            // distintas: cada una se revela con su propio trigger, para que la
+            // secuencia arranque cuando cada columna entra en pantalla.
+            const leadCol = section.querySelector('.c6-lead-col');
+            if (leadCol) {
+                revealStagger(leadCol, {
+                    selector: '.c6-lead-wrap',
+                    stagger: 0.12,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            const list = section.querySelector('.c6-list');
+            if (list) {
+                revealStagger(list, {
+                    selector: '.c6-sec-wrap',
+                    stagger: 0.1,
+                    y: 26,
+                    duration: 0.65,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper la registra dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`. El `lift` sustituye al
+            // `hover:-translate-y-1` de Tailwind, que GSAP desactiva al tomar
+            // el `transform` de la tarjeta.
+            section.querySelectorAll('.c6-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 6, lift: -4 });
+            });
+
+            // Zoom por scroll de la foto, dentro de su caja `overflow-hidden`.
+            section.querySelectorAll('.c6-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo decorativo se desplaza despacio. `distance: 8` es un
+            // porcentaje de la altura de la foto y el `scale: 1.22` del
+            // `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c6-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, y siempre por debajo del contenido (que va en
+            // `z-10`), así que nunca tapan texto ni capturan un clic.
+            ambientBubbles(section, { count: 8, maxOnMobile: 4 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

@@ -38,10 +38,13 @@ const renderMarkdown = (text) => {
 // para no pisar los CSS variables definidos en el class
 const titleColorStyle = color_titulo_override ? `color: ${color_titulo_override}` : undefined;
 const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined;
+
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8).
+const tituloPartible = etiqueta_titulo !== "h1";
 ---
 
 <section 
-    class="w-full py-12 md:py-16 relative overflow-hidden z-10"
+    class="c7-section w-full py-12 md:py-16 relative overflow-hidden z-10"
     style={color_fondo ? `background-color: ${color_fondo}` : "background-color: #EAF5FC"}
 >
     <!-- Imagen de fondo decorativa si se carga desde Strapi -->
@@ -49,7 +52,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
         <img 
             src={getStrapiUrl(imagen_fondo)} 
             alt="Fondo de sección" 
-            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+            class="c7-bg absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
         />
     )}
 
@@ -62,8 +65,9 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
         <div class="mb-10 text-center">
             {titulo && (
                 <TitleTag
-                    class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
+                    class="c7-title font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
                     style={titleColorStyle}
+                    data-split={tituloPartible ? "on" : "off"}
                 >
                     {titulo}
                 </TitleTag>
@@ -79,7 +83,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
         </div>
 
         <!-- Grid de Tarjetas de Entradas/Paquetes -->
-        <div class="flex flex-col gap-6 md:gap-8">
+        <div class="c7-list flex flex-col gap-6 md:gap-8">
             {tarjetas && tarjetas.map((tarjeta) => {
                 const tarjetaTituloStyle = tarjeta.color_titulo_override ? `color: ${tarjeta.color_titulo_override}` : undefined;
                 const tarjetaPrecioLabelStyle = tarjeta.color_precio_label_override ? `color: ${tarjeta.color_precio_label_override}` : undefined;
@@ -92,7 +96,10 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                 const destacadoFondoStyle = tarjeta.color_fondo_destacado_override ? `background-color: ${tarjeta.color_fondo_destacado_override}` : undefined;
 
                 return (
-                <div class="relative w-full">
+                /* Este `<div>` es el ancla de motion del ítem: no es focusable
+                   y contiene el botón de compra, así que el reveal lo可以做 sin
+                   dejar controles invisibles ni tabulables (S13). */
+                <div class="c7-item relative w-full">
                     
                     <!-- Decoración "EL MÁS POPULAR" (Banner Superior) -->
                     {tarjeta.es_destacado && (
@@ -127,7 +134,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
 
                     <!-- Contenedor Principal de la Tarjeta Blanca -->
                     <!-- Si tiene destacado, añadimos paddingTop para que no se pegue al banner azul -->
-                    <div class={`w-full bg-white rounded-[24px] shadow-xl overflow-hidden flex flex-col md:flex-row items-stretch relative z-10 ${tarjeta.es_destacado ? "pt-4 md:pt-6" : ""}`}>
+                    <div class={`c7-card w-full bg-white rounded-[24px] shadow-xl overflow-hidden flex flex-col md:flex-row items-stretch relative z-10 ${tarjeta.es_destacado ? "pt-4 md:pt-6" : ""}`}>
                         
                         <!-- Columna Izquierda: Imagen del Paquete -->
                         <div class="w-full aspect-[16/10] md:aspect-auto md:w-[40%] lg:w-[35%] shrink-0 p-3 md:p-4 relative overflow-hidden">
@@ -136,7 +143,7 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
                                     <img 
                                         src={getStrapiUrl(tarjeta.imagen)} 
                                         alt={tarjeta.titulo} 
-                                        class="w-full h-full object-cover absolute inset-0"
+                                        class="c7-card-img w-full h-full object-cover absolute inset-0"
                                     />
                                 ) : (
                                     <div class="w-full h-full bg-gray-200 animate-pulse absolute inset-0"></div>
@@ -299,3 +306,113 @@ const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_
 
     </div>
 </section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Holgura para el parallax del fondo: el `yPercent` delHelper descubriría
+     * el borde de la foto si la imagen midiese exactamente lo que su caja. Un
+     * `scale` de 1.22 deja 11% de aire arriba y abajo, y el recorrido es del
+     * 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro.
+     */
+    :global([data-motion="ready"]) .c7-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento de la rejilla de entradas/paquetes (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c7-item`     → el reveal (opacidad + viaje vertical).
+     *   - `.c7-card`     → `hoverDepth` (inclinación + elevación).
+     *   - `.c7-card-img` → `zoomImage` (zoom por scroll).
+     *   - `.c7-bg`       → `parallaxLayer` (fondo de la sección).
+     *
+     * El reveal apunta al ítem (`<div>`), nunca al botón de compra: un
+     * `gsap.from()` sobre un control focusable lo deja invisible y tabulable
+     * si su trigger no dispara (S13).
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c7-section').forEach((section) => {
+            // El título se arma palabra por palabra, salvo que sea un `h1`
+            // (LCP, S8).
+            const title = section.querySelector('.c7-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // Cada paquete entra uno detrás de otro.
+            const list = section.querySelector('.c7-list');
+            if (list) {
+                revealStagger(list, {
+                    selector: '.c7-item',
+                    stagger: 0.12,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper la registra dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`. La tarjeta es muy
+            // apaisada, así que la inclinación es discreta.
+            section.querySelectorAll('.c7-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 4, lift: -6 });
+            });
+
+            // Zoom por scroll de la foto, dentro de su caja `overflow-hidden`.
+            section.querySelectorAll('.c7-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo de la sección se desplaza despacio; el `scale: 1.22`
+            // del `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c7-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, siempre por debajo del contenido (`z-10`).
+            ambientBubbles(section, { count: 7, maxOnMobile: 4 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>
