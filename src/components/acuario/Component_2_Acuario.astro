@@ -17,7 +17,7 @@ const fondoStyle = color_fondo_override ? `background-color: ${color_fondo_overr
     <div class="w-full max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 px-6 md:px-12">
         
         <!-- Text Container -->
-        <div class="flex flex-col md:flex-row items-center justify-center text-center md:text-left text-[var(--surface-brand-primary)]">
+        <div class="c2-texto flex flex-col md:flex-row items-center justify-center text-center md:text-left text-[var(--surface-brand-primary)]">
             {texto_resaltado && (
                 <h2
                     class="font-[family-name:var(--font-principal)] text-[24px] md:text-[32px] font-bold uppercase md:mr-2"
@@ -52,3 +52,58 @@ const fondoStyle = color_fondo_override ? `background-color: ${color_fondo_overr
         
     </div>
 </section>
+
+<script>
+    import { initMotion, revealStagger } from "../../scripts/motion";
+
+    /*
+     * Motion de la barra de aviso (T3) — bloque cortísimo, arriba del pliegue.
+     *
+     * La receta es una sola entrada muy corta: un desplazamiento de 6px que
+     * dura 0.4s. Sin fundido desde `opacity: 0`, porque esta barra vive
+     * siempre arriba del pliegue y su texto tiene que estar pintado en el
+     * primer frame (S8: nada de estado inicial invisible sobre texto
+     * above-the-fold). Con `opacityFrom: 1` el helper sólo mueve el texto:
+     * se pinta opaco desde el principio y aun así se mueve.
+     *
+     * El botón de la barra no se toca: dentro vive el enlace enfocable y
+     * S13 prohíbe revelar un contenedor interactivo como un todo.
+     */
+    function setupAnnouncementMotion() {
+        document.querySelectorAll('.c2-texto').forEach((texto) => {
+            revealStagger(texto, {
+                selector: 'h2, p',
+                opacityFrom: 1,
+                y: 6,
+                duration: 0.4,
+                stagger: 0.06,
+                ease: 'power2.out',
+            });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupAnnouncementMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que la
+    // barra no se quede estática si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupAnnouncementMotion();
+    });
+</script>

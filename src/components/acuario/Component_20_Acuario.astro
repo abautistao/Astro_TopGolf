@@ -50,12 +50,12 @@ const finalText = color_texto || "var(--surface-brand-primary)";
             <a
                 href={link}
                 target="_blank"
-                class="inline-flex! items-center! gap-4! px-sm! md:px-10! py-4! md:py-sm! rounded-2xl! transition-transform hover:scale-[1.02] active:scale-[0.99] shadow-md font-[family-name:var(--font-principal)]! font-bold! uppercase! text-[16px] md:text-[20px]! tracking-wide"
+                class="c20-cta inline-flex! items-center! gap-4! px-sm! md:px-10! py-4! md:py-sm! rounded-2xl! transition-transform hover:scale-[1.02] active:scale-[0.99] shadow-md font-[family-name:var(--font-principal)]! font-bold! uppercase! text-[16px] md:text-[20px]! tracking-wide"
                 style={`background-color: ${finalBtnBg} !important; color: ${finalText} !important;`}
             >
                 {icono_descarga && (
                     <span
-                        class="inline-flex! items-center! justify-center! w-9! h-9! md:w-10! md:h-10! rounded-full! border-2! shrink-0!"
+                        class="c20-icon inline-flex! items-center! justify-center! w-9! h-9! md:w-10! md:h-10! rounded-full! border-2! shrink-0!"
                         style={`border-color: ${finalText} !important; color: ${finalText} !important;`}
                         aria-hidden="true"
                     >
@@ -75,10 +75,110 @@ const finalText = color_texto || "var(--surface-brand-primary)";
                         </svg>
                     </span>
                 )}
-                <span>{texto}</span>
+                <span class="c20-label">{texto}</span>
             </a>
         ) : (
             <p class="text-center! text-sm! opacity-70!">Falta subir el archivo a descargar.</p>
         )}
     </div>
 </section>
+
+<style>
+    /* Capa de motion (T3) — el canal `transform` fuera de la transición.
+     *
+     * Tailwind v4 escribe `transition-property: transform, translate, scale,
+     * rotate`. Cuando GSAP es dueño del transform del botón (aquí lo es:
+     * `hoverDepth` inclina y levanta la tarjeta) la transición interpola cada
+     * escritura por frame de GSAP: doble easing, el botón se ve laggy.
+     *
+     * Se conserva la lista `translate, scale, rotate` porque son los canales
+     * independientes que usa Tailwind (`hover:-translate-y-*` escribe la
+     * propiedad `translate`, no `transform`). `transition: none` mataría también
+     * el easing de esos canales.
+     *
+     * WHY `:global()`: `data-motion` vive en `<html>`, que no tiene scope id
+     * de Astro; la forma sin `:global()` compilaría a un selector que exige un
+     * mismo elemento con los dos atributos y no matchearía nunca.
+     */
+    :global([data-motion="ready"]) .c20-cta {
+        transition-property: translate, scale, rotate;
+    }
+</style>
+
+<script>
+    import { initMotion, revealSection, hoverDepth } from "../../scripts/motion";
+
+    /*
+     * Motion del botón de descarga (T3) — un bloque corto con un solo CTA.
+     *
+     * La entrada NO depende del scroll: el trigger es el propio botón, así que
+     * si ya está en pantalla al cargar, la entrada se dispara igual (y si
+     * quedara más abajo, se dispara al entrar en pantalla, que es lo que
+     * corresponde).
+     *
+     * - El icono es decorativo (`aria-hidden`), así que puede aparecer con
+     *   fundido: es la pieza que "salta" y da vida al bloque.
+     * - La etiqueta es el texto del enlace: entra desplazándose, nunca con un
+     *   fundido desde `opacity: 0`, para que el botón nunca se vea vacío ni
+     *   quede enfocable con su texto invisible.
+     * - El `<a>` en sí no se revela nunca: es enfocable y el helper excluye
+     *   siempre los elementos enfocables (S13).
+     */
+    function setupCtaMotion() {
+        document.querySelectorAll('.c20-cta').forEach((cta) => {
+            const icono = cta.querySelector('.c20-icon');
+            const etiqueta = cta.querySelector('.c20-label');
+
+            if (icono) {
+                revealSection(icono, { y: 10, duration: 0.45, ease: 'power2.out' });
+            }
+
+            if (etiqueta) {
+                revealSection(etiqueta, {
+                    opacityFrom: 1,
+                    y: 10,
+                    duration: 0.45,
+                    delay: 0.08,
+                    ease: 'power2.out',
+                });
+            }
+
+            // Profundidad con el puntero: sólo en escritorio (el helper lo
+            // mete en un `gsap.matchMedia()` de `(hover: hover) and (pointer:
+            // fine)`), así que en móvil el botón se queda como lo dibuja el
+            // marcado.
+            //
+            // GSAP queda como único dueño del transform de este elemento, y
+            // por eso el `hover:scale-[1.02]` de Tailwind deja de aplicar
+            // (GSAP escribe `scale: none` inline al tomar el transform). El
+            // hover lo pone GSAP: misma escala (1.02) más inclinación y
+            // elevación.
+            hoverDepth(cta, { maxTilt: 6, lift: -6, scale: 1.02 });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupCtaMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // botón no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupCtaMotion();
+    });
+</script>
