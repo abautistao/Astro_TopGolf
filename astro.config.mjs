@@ -62,7 +62,6 @@ const config = {
             'connect.facebook.net',
             'analytics.tiktok.com',
             'googleads.g.doubleclick.net',
-            'ct.pinterest.com',
           ];
           
           if (proxiedHosts.includes(url.hostname)) {
