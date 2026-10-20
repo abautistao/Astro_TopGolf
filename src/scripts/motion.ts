@@ -799,6 +799,17 @@ export interface CountUpOptions {
     prefix?: string;
     /** Text written after the number. Default `''`. */
     suffix?: string;
+    /**
+     * Group the thousands with the locale's separator: `1234` becomes `1,234`.
+     *
+     * WHY: a price above a thousand renders as `1234` without it, which reads
+     * as a typo next to the other prices on the page. Off by default so the
+     * existing counters - step numbers, package figures - keep their exact
+     * authored form.
+     */
+    group?: boolean;
+    /** Locale used for the grouping. Default `'en-US'`. */
+    locale?: string;
     /** GSAP ease string. Default `'power2.out'`. */
     ease?: string;
     /** ScrollTrigger start string. Default `'top 85%'`. */
@@ -840,6 +851,19 @@ export function countUp(el: MotionTarget, opts: CountUpOptions = {}): void {
         const state = { value: from };
         let tween: ReturnType<typeof gsap.to> | null = null;
 
+        // The formatter is the same for the start value and every frame, so
+        // the number never changes shape mid-count.
+        const formatter = opts.group === true
+            ? new Intl.NumberFormat(opts.locale ?? 'en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals,
+            })
+            : null;
+        const format = (value: number): string =>
+            formatter === null
+                ? value.toFixed(decimals)
+                : formatter.format(value);
+
         const trigger = ScrollTrigger.create({
             trigger: target,
             start: opts.start ?? 'top 85%',
@@ -847,14 +871,14 @@ export function countUp(el: MotionTarget, opts: CountUpOptions = {}): void {
             onEnter: () => {
                 // Write the start value BEFORE the tween begins, so the number
                 // never flashes its final value for one frame.
-                target.textContent = `${prefix}${from.toFixed(decimals)}${suffix}`;
+                target.textContent = `${prefix}${format(from)}${suffix}`;
 
                 tween = gsap.to(state, {
                     value: to,
                     duration: opts.duration ?? 1.8,
                     ease: opts.ease ?? 'power2.out',
                     onUpdate: () => {
-                        target.textContent = `${prefix}${state.value.toFixed(decimals)}${suffix}`;
+                        target.textContent = `${prefix}${format(state.value)}${suffix}`;
                     },
                 });
             },
@@ -891,6 +915,17 @@ export interface SplitRevealOptions {
      * Default `true`.
      */
     mask?: boolean;
+    /**
+     * Allow splitting an `h1`.
+     *
+     * Default `false`, and the default is deliberate: an `h1` is the prime
+     * Largest Contentful Paint candidate, and `splitReveal` writes
+     * `opacity: 0` on the heading's parts at load, which delays the paint of
+     * the most important text on the page. Every caller that wanted a split
+     * heading had to hand-roll this guard, and the hand-rolled version was
+     * easy to get wrong.
+     */
+    allowH1?: boolean;
 }
 
 /** Split instances, so a re-registration never nests wrappers. */
@@ -912,6 +947,13 @@ export function splitReveal(el: MotionTarget, opts: SplitRevealOptions = {}): vo
     const targets = resolveTargets(el);
 
     for (const target of targets) {
+        // Decision 4 / S8: an `h1` is left exactly as the stylesheet draws it.
+        // Splitting it would write `opacity: 0` on its parts at load and delay
+        // the paint of the Largest Contentful Paint element.
+        if (target.tagName === 'H1' && opts.allowH1 !== true) {
+            continue;
+        }
+
         // Re-splitting an already-split element would nest wrappers and double
         // the travel, so the previous instance is undone first.
         splitInstances.get(target)?.revert();
