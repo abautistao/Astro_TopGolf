@@ -33,13 +33,13 @@ const isCarousel = totalTarjetas >= 3;
 ---
 
 <section
-    class="w-full py-12 md:py-20"
+    class="w-full py-12 md:py-20 c18-section"
     style={{ backgroundColor: color_fondo || "var(--surface-brand-primary)" }}
 >
     <div class="container mx-auto px-6 md:px-12 max-w-7xl">
         {isCarousel ? (
             <div class="relative w-full px-2 md:px-10">
-                <div class="overflow-hidden">
+                <div class="c18-frame overflow-hidden">
                     <div class="acuario-18-swiper w-full pb-4">
                         <div class="swiper-wrapper">
                             {tarjetasVisibles.map((tarjeta) => {
@@ -99,7 +99,7 @@ const isCarousel = totalTarjetas >= 3;
                 </button>
             </div>
         ) : (
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div class="c18-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {tarjetasVisibles.map((tarjeta) => {
                     const imgUrl = getStrapiUrl(tarjeta.imagen);
                     const btn = Array.isArray(tarjeta.boton) ? tarjeta.boton[0] : tarjeta.boton;
@@ -178,6 +178,7 @@ const isCarousel = totalTarjetas >= 3;
     import 'swiper/css';
     import 'swiper/css/navigation';
     import 'swiper/css/pagination';
+    import { initMotion, revealSection, hoverDepth } from "../../scripts/motion";
 
     function initC18Swiper() {
         const sliders = document.querySelectorAll('.acuario-18-swiper');
@@ -223,4 +224,117 @@ const isCarousel = totalTarjetas >= 3;
 
     document.addEventListener('DOMContentLoaded', initC18Swiper);
     document.addEventListener('astro:page-load', initC18Swiper);
+
+    /*
+     * Motion del bloque (T5) — tarjetas con overlay al pasar el puntero. El
+     * bloque tiene dos variantes (carrusel con tres o más tarjetas, o rejilla
+     * con menos de tres) y cada una recibe su propio tratamiento.
+     *
+     * Por qué NO se revela ninguna diapositiva: Swiper es dueño del transform de
+     * sus diapositivas, y una diapositiva en opacidad 0 se quedaría invisible
+     * hasta que el usuario la alcanzara con el dedo, sin que el ScrollTrigger
+     * volviera a evaluarla (la posición de un trigger no sigue el transform
+     * interno de Swiper). El carrusel entra como una sola pieza: se revela su
+     * marco y las tarjetas aparecen con él.
+     *
+     * Sobre el `:hover` de la tarjeta: el bloque NO tiene ninguna regla
+     * `:hover` en su `<style>`; el gesto vive en utilidades Tailwind del
+     * markup, y hay que separar quién es dueño de qué transform:
+     *
+     * - La TARJETA (`.acuario-hover-card`) no tenía ningún transform de hover:
+     *   su hover es el overlay (fundido de `bg-black/65` y de `opacity-0` a
+     *   `opacity-100`) y eso es opacidad, no transform. En la variante de
+     *   rejilla el `hoverDepth` pasa a ser el dueño del transform de la
+     *   tarjeta, que antes no tenía ninguno: no hay dos dueños del mismo
+     *   transform y no hay nada que quitar de la hoja de estilos. El overlay
+     *   queda intacto.
+     * - La IMAGEN (`.acuario-hover-card img`) conserva su `group-hover:scale-105`
+     *   porque es otro elemento y GSAP nunca la toca: Tailwind v4 escribe ese
+     *   zoom en la propiedad independiente `scale`, que compone con el
+     *   transform de la tarjeta.
+     *
+     * Por qué no hay CSS de estado inicial: `revealSection` se apoya en
+     * `gsap.from()`, que lee el valor ACTUAL del elemento como destino del tween
+     * en el momento de crearlo. Una regla de hoja de estilos que pre-ocultara
+     * el elemento bajo el guard `[data-motion="ready"]` sería leída como ese
+     * destino y el tween animaría `opacity: 0 → 0`, dejando el bloque invisible
+     * para siempre. El estado inicial lo pone el tween, que es lo que mantiene
+     * la decisión 3: sin JS, con movimiento reducido o si el helper no
+     * inicializa, no se escribe ningún estilo inline y el contenido se ve tal
+     * cual.
+     */
+    function setupComponente18Motion() {
+        // Cada consulta se resuelve desde la raíz `.c18-section` de ESTE bloque.
+        document.querySelectorAll('.c18-section').forEach((section) => {
+            // Variante de carrusel: el marco entra como una sola pieza.
+            const frame = section.querySelector('.c18-frame');
+            if (frame) {
+                revealSection(frame, {
+                    y: 30,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Variante de rejilla: la rejilla entra como una sola pieza. No se
+            // revelan las tarjetas una por una porque cada tarjeta contiene su
+            // propio enlace (S13).
+            const grid = section.querySelector('.c18-grid');
+            if (grid) {
+                revealSection(grid, {
+                    y: 30,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Profundidad con el puntero, sólo en escritorio (el helper lo
+            // mete en un `gsap.matchMedia()` de `(hover: hover) and (pointer:
+            // fine)`), así que en móvil no hace falta contraparte.
+            //
+            // Sólo en la variante de REJILLA: dentro del carrusel la tarjeta
+            // está pegada a los bordes de su diapositiva y tanto Swiper como el
+            // marco del carrusel recortan con `overflow: hidden`, así que
+            // cualquier ascenso o escala de la tarjeta quedaría cortada. En la
+            // rejilla no hay recorte y el efecto se ve completo.
+            //
+            // La variante se decide por la propia estructura del bloque (las
+            // tarjetas de la rejilla viven dentro de `.c18-grid`) y NO por la
+            // clase `swiper` que Swiper añade en tiempo de ejecución: este
+            // script corre antes que el `DOMContentLoaded` que inicializa
+            // Swiper, así que esa clase todavía no existe.
+            const cards = section.querySelectorAll('.c18-grid .acuario-hover-card');
+
+            if (cards.length > 0) {
+                hoverDepth(cards, {
+                    maxTilt: 4,
+                    lift: -6,
+                    scale: 1.02,
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que
+    // ningún trigger puede registrarse antes de esta llamada.
+    initMotion();
+    setupComponente18Motion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no
+    // registra ningún ClientRouter hoy, así que esto nunca se dispara; existe
+    // para que el bloque no se quede estático si algún día se activa el modo
+    // SPA.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupComponente18Motion();
+    });
 </script>

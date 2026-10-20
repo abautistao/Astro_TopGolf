@@ -34,16 +34,16 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
 ---
 
 <section 
-    class="w-full py-16 md:py-24 overflow-hidden relative" 
+    class="w-full py-16 md:py-24 overflow-hidden relative c4-section" 
     style={color_fondo ? `background-color: ${color_fondo}` : "background-color: #D1EAFA;"}
 >
     <!-- Elemento decorativo lateral (opcional según imagen) -->
     {imagen_decorativa_fondo ? (
-        <div class="absolute left-0 top-0 h-[52.5%] pointer-events-none hidden md:block w-32 md:w-48">
+        <div class="c4-deco absolute left-0 top-0 h-[52.5%] pointer-events-none hidden md:block w-32 md:w-48">
             <img src={getStrapiUrl(imagen_decorativa_fondo)} alt="Decoración de fondo" class="w-full h-full object-contain object-left" style="image-rendering: high-quality;" />
         </div>
     ) : (
-        <div class="absolute left-0 top-0 w-24 h-[52.5%] pointer-events-none hidden md:block">
+        <div class="c4-deco absolute left-0 top-0 w-24 h-[52.5%] pointer-events-none hidden md:block">
             <svg viewBox="0 0 100 800" class="w-full h-full" shape-rendering="geometricPrecision">
                 <path d="M20,0 Q60,200 10,400 T30,800" stroke="var(--accent-highlight-primary)" stroke-width="3" fill="none" stroke-dasharray="10 10" />
                 <circle cx="15" cy="50" r="15" fill="#FFD700" />
@@ -54,12 +54,12 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
     <div class="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
         <div class="text-center mb-12 md:mb-16">
             {titulo && (
-                <TitleTag class="font-[family-name:var(--font-principal)] text-[#003F7F] text-[32px] font-black uppercase leading-tight">
+                <TitleTag class="c4-title font-[family-name:var(--font-principal)] text-[#003F7F] text-[32px] font-black uppercase leading-tight">
                     {titulo}
                 </TitleTag>
             )}
             {subtitulo && (
-                <SubtitleTag class="font-[family-name:var(--font-secundaria)] text-[#005DA8] text-[26px] font-medium uppercase mt-2 block tracking-wider">
+                <SubtitleTag class="c4-subtitle font-[family-name:var(--font-secundaria)] text-[#005DA8] text-[26px] font-medium uppercase mt-2 block tracking-wider">
                     {subtitulo}
                 </SubtitleTag>
             )}
@@ -70,7 +70,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
                 {tarjetas.map((item) => (
                     <div class="swiper-slide h-auto group pb-10 pt-4 relative">
                         <div 
-                            class="relative z-10 rounded-[30px] overflow-visible flex flex-col h-full border-[7px] border-transparent group-hover:border-[var(--surface-brand-secondary)] transition-all duration-300 shadow-xl group-hover:shadow-2xl group-hover:-translate-y-2"
+                            class="c4-card relative z-10 rounded-[30px] overflow-visible flex flex-col h-full border-[7px] border-transparent group-hover:border-[var(--surface-brand-secondary)] transition-all duration-300 shadow-xl group-hover:shadow-2xl group-hover:-translate-y-2"
                             style={item.color_fondo_contenido ? `background-color: ${item.color_fondo_contenido}` : "background-color: #002A4E;"}
                         >
                             
@@ -220,6 +220,32 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
         transform: scale(1.3);
         background: #003F7F;
     }
+
+    /*
+     * Motion (T5) — GSAP escribe el `transform` de la tarjeta (el efecto de
+     * profundidad con el puntero) y la clase `transition-all` de Tailwind
+     * incluye ese canal: sin esta regla el navegador intentaría suavizar CADA
+     * frame que GSAP escribe y el resultado sería un transform rezagado cerca
+     * de 300 ms, es decir, una inclinación que persigue al puntero en vez de
+     * seguirlo.
+     *
+     * La lista conserva el easing de los otros dos cambios del hover
+     * (`border-color` y `box-shadow`) y sólo retira el canal `transform`, que a
+     * partir de ahora es de GSAP. `translate`, `scale` y `rotate` se quedan en
+     * la lista porque son las propiedades independientes que usa Tailwind v4.
+     *
+     * Por qué el guard es `:global([data-motion="ready"]) .c4-card` y no la
+     * forma desnuda: dentro de un `<style>` con scope de Astro, la forma
+     * desnuda compila a `[data-astro-cid-x][data-motion="ready"]
+     * .c4-card[data-astro-cid-x]`, que exige que UN mismo elemento tenga los
+     * dos atributos, pero `data-motion` vive en `<html>`, que no tiene scope
+     * id: compilaría limpio y no coincidiría nunca. Con JS apagado el
+     * atributo nunca se escribe y la tarjeta conserva su `transition-all`
+     * original.
+     */
+    :global([data-motion="ready"]) .c4-card {
+        transition-property: border-color, box-shadow, translate, scale, rotate;
+    }
 </style>
 
 <script>
@@ -227,6 +253,7 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
     import { Navigation, Pagination, Autoplay } from 'swiper/modules';
     import 'swiper/css';
     import 'swiper/css/pagination';
+    import { initMotion, revealSection, floatLoop, hoverDepth } from "../../scripts/motion";
 
     function initPreciosSwiper() {
         const sliders = document.querySelectorAll('.acuario-precios-swiper');
@@ -286,4 +313,132 @@ const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="curren
     }
 
     document.addEventListener('DOMContentLoaded', initPreciosSwiper);
+
+    /*
+     * Motion del bloque de precios (T5) — el bloque tiene tres situaciones y
+     * cada una recibe su propio tratamiento:
+     *
+     * 1. Con tres tarjetas o menos, en escritorio, el carrusel se desactiva y
+     *    las tarjetas se ven como una rejilla (`lg:!grid`); con más, es un
+     *    carrusel de verdad. La entrada y la profundidad se aplican al
+     *    CARRUSEL (`.acuario-precios-swiper`), que en los dos casos es el
+     *    contenedor de las tarjetas, así que el bloque se comporta igual en
+     *    ambas configuraciones.
+     *
+     * 2. Las diapositivas NO se revelan nunca: Swiper es dueño del transform de
+     *    sus diapositivas, y una diapositiva en opacidad 0 se quedaría
+     *    invisible hasta que el usuario la alcanzara con el dedo (la posición
+     *    de un ScrollTrigger no sigue el transform interno de Swiper). El
+     *    carrusel entra como una sola pieza.
+     *
+     * 3. El `hoverDepth` va sobre la TARJETA que vive dentro de la diapositiva,
+     *    nunca sobre la diapositiva, y nunca sobre el `.swiper` raíz.
+     *
+     * Por qué no hay CSS de estado inicial: `revealSection` y `floatLoop` se
+     * apoyan en `gsap.from()`, que lee el valor ACTUAL del elemento como destino
+     * del tween en el momento de crearlo. Una regla de hoja de estilos que
+     * pre-ocultara el elemento bajo el guard `[data-motion="ready"]` sería leída
+     * como ese destino y el tween animaría `opacity: 0 → 0`, dejando el bloque
+     * invisible para siempre. El estado inicial lo pone el tween, que es lo que
+     * mantiene la decisión 3: sin JS, con movimiento reducido o si el helper no
+     * inicializa, no se escribe ningún estilo inline y el contenido se ve tal
+     * cual.
+     */
+    function setupPreciosMotion() {
+        // Cada consulta se resuelve desde la raíz `.c4-section` de ESTE bloque.
+        document.querySelectorAll('.c4-section').forEach((section) => {
+            // Título. Si el editor eligió `h1` como etiqueta, NO se revela: un
+            // h1 puede ser el elemento LCP y la decisión 4 exige que el texto
+            // sobre el pliegue esté en el primer fotograma pintado.
+            const title = section.querySelector('.c4-title');
+            if (title && title.tagName !== 'H1') {
+                revealSection(title, {
+                    y: 28,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            const subtitle = section.querySelector('.c4-subtitle');
+            if (subtitle) {
+                revealSection(subtitle, {
+                    y: 18,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                    delay: 0.1,
+                });
+            }
+
+            // Ornamento lateral: flota despacio y sin parar. Es decorativo
+            // (`pointer-events-none`) y el bloque lo oculta en móvil, así que
+            // el flotado nunca estorba al contenido.
+            const deco = section.querySelector('.c4-deco');
+            if (deco) {
+                floatLoop(deco, {
+                    distance: 10,
+                    duration: 7,
+                });
+            }
+
+            // El carrusel (o la rejilla de tarjetas) entra como una sola pieza.
+            const swiper = section.querySelector('.acuario-precios-swiper');
+            if (swiper) {
+                revealSection(swiper, {
+                    y: 36,
+                    duration: 0.85,
+                    ease: 'power3.out',
+                    delay: 0.12,
+                });
+            }
+
+            // La tarjeta de cada diapositiva. `hoverDepth` es de escritorio
+            // únicamente (el helper lo mete en un `gsap.matchMedia()` de
+            // `(hover: hover) and (pointer: fine)`), así que en móvil no hace
+            // falta una contraparte.
+            //
+            // `maxTilt: 0` a propósito: la tarjeta está pegada a los bordes de
+            // su diapositiva y Swiper recorta con `overflow: hidden`, así que
+            // cualquier inclinación sacaría las esquinas de la tarjeta fuera
+            // del recorte. Lo que sí cabe es el ascenso, porque la diapositiva
+            // trae `pt-4 pb-10` de holgura vertical.
+            //
+            // Sobre el `group-hover:-translate-y-2` de Tailwind: GSAP es dueño
+            // del transform de la tarjeta y pone `translate: none` en línea al
+            // tomar possession de él, de modo que la utilidad de Tailwind
+            // queda anulada mientras el bloque está en pantalla (se recupera
+            // sola cuando el helper desmonta sus triggers). El ascenso lo
+            // aporta ahora el propio `hoverDepth`, así que el efecto pedido se
+            // conserva. El `group-hover:scale-110` de la IMAGEN sí sobrevive:
+            // la imagen es otro elemento y GSAP nunca la toca.
+            const cards = section.querySelectorAll('.c4-card');
+            hoverDepth(cards, {
+                maxTilt: 0,
+                lift: -8,
+                scale: 1.01,
+            });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que
+    // ningún trigger puede registrarse antes de esta llamada.
+    initMotion();
+    setupPreciosMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no
+    // registra ningún ClientRouter hoy, así que esto nunca se dispara; existe
+    // para que el bloque no se quede estático si algún día se activa el modo
+    // SPA.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupPreciosMotion();
+    });
 </script>
