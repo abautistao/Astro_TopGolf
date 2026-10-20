@@ -1346,6 +1346,16 @@ export function horizontalScroll(el: MotionTarget, opts: HorizontalScrollOptions
             const items = track.querySelectorAll<Element>(opts.itemSelector ?? '*');
             const itemWidth = opts.itemWidth;
 
+            // The track's position must be measured BEFORE the transform is
+            // applied, and relative to the DOCUMENT rather than the viewport:
+            // the helper travels the track until its RIGHT edge reaches the
+            // viewport's right edge, and a track that starts 128px to the right
+            // of the viewport has 128px less to travel than one that starts at
+            // x=0. Measuring `scrollWidth - innerWidth` alone leaves the last
+            // card clipped past the right edge.
+            const trackLeft = track.getBoundingClientRect().left + window.scrollX;
+            const originalStyle = track.getAttribute('style');
+
             // Grid → flex. The author still owns the spacing: a Tailwind
             // `gap-*` class works in flex exactly as it does in grid.
             gsap.set(track, { display: 'flex', flexWrap: 'nowrap' });
@@ -1354,12 +1364,23 @@ export function horizontalScroll(el: MotionTarget, opts: HorizontalScrollOptions
                 gsap.set(items, { flex: '0 0 auto', width: itemWidth });
             }
 
-            const distance = (): number => Math.max(0, track.scrollWidth - window.innerWidth);
+            const distance = (): number =>
+                Math.max(0, trackLeft + track.scrollWidth - window.innerWidth);
 
             // Nothing to travel means nothing to pin. A pinned section with a
             // zero-length scroll range misbehaves: the pin engages and the page
-            // never moves. Leave the original grid alone in that case.
+            // never moves.
+            //
+            // The layout is restored first: the track was already flipped to
+            // flex to be measurable, and a grid of three cards that fits the
+            // viewport must go back to being a grid rather than staying a row
+            // of 380px items.
             if (distance() <= 0) {
+                if (originalStyle === null) {
+                    track.removeAttribute('style');
+                } else {
+                    track.setAttribute('style', originalStyle);
+                }
                 continue;
             }
 
