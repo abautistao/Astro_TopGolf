@@ -58,7 +58,14 @@ const config = {
       config: {
         forward: ["dataLayer.push"],
         resolveUrl: function (url, location, type) {
-          if (type === 'script' && url.hostname === 'connect.facebook.net') {
+          const proxiedHosts = [
+            'connect.facebook.net',
+            'analytics.tiktok.com',
+            'googleads.g.doubleclick.net',
+            'ct.pinterest.com',
+          ];
+          
+          if (type === 'script' && proxiedHosts.includes(url.hostname)) {
             const proxyUrl = new URL('https://cdn.builder.io/api/v1/proxy-api');
             proxyUrl.searchParams.append('url', url.href);
             return proxyUrl;
