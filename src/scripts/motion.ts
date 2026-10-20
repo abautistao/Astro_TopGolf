@@ -20,6 +20,7 @@
 
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import SplitText from 'gsap/SplitText';
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                      */
@@ -146,8 +147,22 @@ export interface ParallaxOptions {
  * the inline styles GSAP added and leave the section visible.
  */
 interface OwnedTrigger {
-    trigger: ReturnType<typeof ScrollTrigger.create>;
+    /**
+     * `null` for primitives that own no ScrollTrigger (a repeating float, a
+     * bubble field). They still need teardown, so the record exists with a
+     * `restore` callback instead of a trigger.
+     */
+    trigger: ReturnType<typeof ScrollTrigger.create> | null;
     targets: Element[];
+    /**
+     * Optional teardown for state this module created outside the DOM.
+     *
+     * WHY: `clearProps` can only strip inline styles. Some primitives write
+     * things it cannot reach — `SplitText` replaces the element's inner HTML,
+     * `countUp` replaces `textContent`. Those need an explicit undo, or the
+     * teardown would leave a page half-split and half-counted.
+     */
+    restore?: () => void;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -165,6 +180,17 @@ const FOCUSABLE_SELECTOR =
 /** Decision 1: `registerPlugin` runs once per module instance, never per call. */
 let pluginRegistered = false;
 
+/**
+ * Decision 1: one `gsap.matchMedia()` context for the whole module.
+ *
+ * Desktop-only primitives (pointer tilt, horizontal scroll) live in a media
+ * context so their listeners and inline styles disappear the moment the
+ * viewport stops qualifying. The context is created lazily because
+ * `gsap.matchMedia()` touches the window, and this module is imported from
+ * server-rendered paths too.
+ */
+let mediaContext: ReturnType<typeof gsap.matchMedia> | null = null;
+
 /** Decision 1/3: every one of the seven component scripts calls `initMotion()`. */
 let initialized = false;
 
@@ -172,6 +198,9 @@ let initialized = false;
 let pageLoadObserved = false;
 
 let reducedMotionWatchBound = false;
+
+/** Whether the focus-rescue listener is already bound. */
+let focusRescueBound = false;
 
 const ownedTriggers: OwnedTrigger[] = [];
 
@@ -226,11 +255,15 @@ export function initMotion(): void {
     }
 
     if (!pluginRegistered) {
-        gsap.registerPlugin(ScrollTrigger);
+        // Decision 1: registration happens exactly once, here. `SplitText`
+        // became part of the free GSAP distribution in 3.13, so it needs no
+        // separate licence or import path.
+        gsap.registerPlugin(ScrollTrigger, SplitText);
         pluginRegistered = true;
     }
 
     bindReducedMotionWatch();
+    bindFocusRescue();
 
     if (typeof document !== 'undefined') {
         document.documentElement.setAttribute(READY_ATTRIBUTE, READY_VALUE);
@@ -279,6 +312,50 @@ function bindReducedMotionWatch(): void {
 /* -------------------------------------------------------------------------- */
 /* Decision 7 — cleanup                                                       */
 /* -------------------------------------------------------------------------- */
+/**
+ * S13 safety net: a control must never be invisible and still tabbable.
+ *
+ * A `gsap.from()` reveal writes `opacity: 0` on its target at load. If the
+ * target is a CONTAINER that holds links, buttons or inputs, then until the
+ * trigger fires those controls are transparent — and the keyboard can still
+ * reach them, because opacity does not remove an element from the tab order.
+ *
+ * The fix is not to forbid the pattern (it is the natural way to animate a
+ * whole column of links) but to make the failure self-healing: the moment
+ * something inside a hidden container receives focus, that container's hidden
+ * start state is cleared, so the focused control is visible exactly when the
+ * user needs to see it.
+ *
+ * Only an inline `opacity: 0` is cleared — that is precisely the state GSAP
+ * writes for a reveal's start, so an in-flight stagger is never disturbed.
+ */
+function bindFocusRescue(): void {
+    if (focusRescueBound || typeof document === 'undefined') {
+        return;
+    }
+
+    focusRescueBound = true;
+
+    document.addEventListener('focusin', (event) => {
+        const focused = event.target;
+
+        if (!(focused instanceof Element)) {
+            return;
+        }
+
+        let node = focused.parentElement;
+
+        while (node) {
+            const inlineOpacity = node.style.opacity;
+
+            if (inlineOpacity !== '' && Number(inlineOpacity) === 0) {
+                gsap.set(node, { clearProps: 'transform,opacity' });
+            }
+
+            node = node.parentElement;
+        }
+    });
+}
 
 /**
  * Strip the inline styles GSAP wrote and drop the triggers, leaving every
@@ -295,9 +372,25 @@ function killOwnedTriggers(): void {
             break;
         }
 
-        gsap.set(owned.targets, { clearProps: 'all' });
-        owned.trigger.kill();
+        // Restore first: `SplitText.revert()` and the counter's original text
+        // must be put back before the inline-style cleanup, so the cleanup
+        // lands on the original element rather than on a part that no longer
+        // exists in the DOM.
+        owned.restore?.();
+
+        // REPAIR (T1): `clearProps: 'all'` emptied `style.cssText`, which also
+        // wiped styles the AUTHOR wrote — most importantly the CMS colour
+        // overrides (`style="color: #..."`) that this codebase puts on every
+        // heading. Clearing only the two properties this module animates keeps
+        // the author's inline styles intact.
+        gsap.set(owned.targets, { clearProps: 'transform,opacity' });
+        owned.trigger?.kill();
     }
+
+    // Reverting the media context removes every desktop-only listener and
+    // restores the inline styles those primitives wrote (grid → flex, and so
+    // on). Without this the mobile layout would keep the desktop treatment.
+    mediaContext?.revert();
 }
 
 /**
@@ -426,8 +519,26 @@ function buildStagger(opts: StaggerOptions): number | MotionStaggerOptions {
 }
 
 /** Record a trigger so re-init and the reduced-motion watcher can undo it. */
-function trackTrigger(trigger: ReturnType<typeof ScrollTrigger.create>, targets: Element[]): void {
-    ownedTriggers.push({ trigger, targets });
+function trackTrigger(
+    trigger: ReturnType<typeof ScrollTrigger.create> | null,
+    targets: Element[],
+    restore?: () => void,
+): void {
+    ownedTriggers.push({ trigger, targets, restore });
+}
+
+/** The module's single media context, created on first desktop-only use. */
+function getMediaContext(): ReturnType<typeof gsap.matchMedia> {
+    if (!mediaContext) {
+        mediaContext = gsap.matchMedia();
+    }
+
+    return mediaContext;
+}
+
+/** Random float in `[min, max]`. Used only for decorative, non-deterministic motion. */
+function randomBetween(min: number, max: number): number {
+    return min + Math.random() * (max - min);
 }
 
 /**
@@ -610,5 +721,681 @@ export function parallaxLayer(el: MotionTarget, opts: ParallaxOptions = {}): voi
         });
 
         trackTrigger(trigger, [layer]);
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Decision 10 — the wider vocabulary                                         */
+/* -------------------------------------------------------------------------- */
+/*                                                                            */
+/* Everything above was built for seven blocks of one landing page. These     */
+/* eight primitives are what the whole Acuario theme composes from. They      */
+/* share the guarantees of the originals: no-ops under reduced motion,        */
+/* no-ops before `initMotion()`, transform/opacity only (plus `textContent`   */
+/* for the counter), and full teardown on re-init.                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Options for {@link countUp}.
+ */
+export interface CountUpOptions {
+    /** Target value. Falls back to the element's `data-count-to` attribute. */
+    to?: number;
+    /** Starting value. Default `0`. */
+    from?: number;
+    /** Seconds. Default `1.8`. */
+    duration?: number;
+    /** Decimal places. Default `0`. */
+    decimals?: number;
+    /** Text written before the number. Default `''`. */
+    prefix?: string;
+    /** Text written after the number. Default `''`. */
+    suffix?: string;
+    /** GSAP ease string. Default `'power2.out'`. */
+    ease?: string;
+    /** ScrollTrigger start string. Default `'top 85%'`. */
+    start?: string;
+}
+
+/**
+ * Count a number up from `from` to `to` when the element scrolls into view.
+ *
+ * WHY the count does not start at load: a counter that resets to zero at page
+ * load and only starts counting when it scrolls in is the standard pattern,
+ * but the reset itself is the hazard. This implementation leaves the authored
+ * text untouched until the trigger actually fires, so a number that never
+ * becomes visible still shows its real value — and the same holds under
+ * reduced motion and with JavaScript off.
+ *
+ * The authored markup MUST therefore contain the final value, not zero.
+ */
+export function countUp(el: MotionTarget, opts: CountUpOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const targets = resolveTargets(el);
+
+    for (const target of targets) {
+        const attributeValue = target.getAttribute('data-count-to');
+        const to = opts.to ?? (attributeValue !== null ? Number(attributeValue) : Number.NaN);
+
+        if (!Number.isFinite(to)) {
+            continue;
+        }
+
+        const from = opts.from ?? 0;
+        const decimals = opts.decimals ?? Number(target.getAttribute('data-count-decimals') ?? '0');
+        const prefix = opts.prefix ?? target.getAttribute('data-count-prefix') ?? '';
+        const suffix = opts.suffix ?? target.getAttribute('data-count-suffix') ?? '';
+        const originalText = target.textContent ?? '';
+        const state = { value: from };
+        let tween: ReturnType<typeof gsap.to> | null = null;
+
+        const trigger = ScrollTrigger.create({
+            trigger: target,
+            start: opts.start ?? 'top 85%',
+            once: true,
+            onEnter: () => {
+                // Write the start value BEFORE the tween begins, so the number
+                // never flashes its final value for one frame.
+                target.textContent = `${prefix}${from.toFixed(decimals)}${suffix}`;
+
+                tween = gsap.to(state, {
+                    value: to,
+                    duration: opts.duration ?? 1.8,
+                    ease: opts.ease ?? 'power2.out',
+                    onUpdate: () => {
+                        target.textContent = `${prefix}${state.value.toFixed(decimals)}${suffix}`;
+                    },
+                });
+            },
+        });
+
+        trackTrigger(trigger, [target], () => {
+            tween?.kill();
+            tween = null;
+            target.textContent = originalText;
+        });
+    }
+}
+
+/**
+ * Options for {@link splitReveal}.
+ */
+export interface SplitRevealOptions {
+    /** What to split into. Default `'words'`. */
+    type?: 'words' | 'lines' | 'chars';
+    /** Seconds per part. Default `0.8`. */
+    duration?: number;
+    /** Seconds between parts. Default `0.05`. */
+    stagger?: number;
+    /** Vertical travel in pixels. Default `30`. */
+    y?: number;
+    /** Starting rotation in degrees. Default `0`. */
+    rotate?: number;
+    /** GSAP ease string. Default `'power3.out'`. */
+    ease?: string;
+    /** ScrollTrigger start string. Default `'top 85%'`. */
+    start?: string;
+    /**
+     * Wrap each part in an overflow-hidden box so it rises out of a mask.
+     * Default `true`.
+     */
+    mask?: boolean;
+}
+
+/** Split instances, so a re-registration never nests wrappers. */
+const splitInstances = new WeakMap<Element, SplitText>();
+
+/**
+ * Split a heading into parts and assemble it as it enters the viewport.
+ *
+ * LCP WARNING: this writes `opacity: 0` on the heading's parts at load. Never
+ * use it on an above-the-fold `h1` — that is exactly the regression decision 4
+ * of the original helper exists to prevent. It is for section headings that
+ * live below the fold.
+ */
+export function splitReveal(el: MotionTarget, opts: SplitRevealOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const targets = resolveTargets(el);
+
+    for (const target of targets) {
+        // Re-splitting an already-split element would nest wrappers and double
+        // the travel, so the previous instance is undone first.
+        splitInstances.get(target)?.revert();
+        splitInstances.delete(target);
+
+        const type = opts.type ?? 'words';
+        // `mask` takes the same granularity as the split itself: a masked word
+        // rises out of its own box, a masked line out of its line box.
+        const mask = opts.mask === false ? undefined : type;
+        const split = SplitText.create(target, mask ? { type, mask } : { type });
+        const parts = type === 'lines' ? split.lines : type === 'chars' ? split.chars : split.words;
+
+        if (!parts || parts.length === 0) {
+            split.revert();
+            continue;
+        }
+
+        splitInstances.set(target, split);
+
+        const tween = gsap.from(parts, {
+            opacity: 0,
+            y: opts.y ?? 30,
+            rotate: opts.rotate ?? 0,
+            duration: opts.duration ?? 0.8,
+            ease: opts.ease ?? 'power3.out',
+            stagger: opts.stagger ?? 0.05,
+        });
+
+        const trigger = createRevealTrigger(tween, target, opts.start ?? 'top 85%');
+        trackTrigger(trigger, [target], () => {
+            split.revert();
+            splitInstances.delete(target);
+        });
+    }
+}
+
+/**
+ * Options for {@link zoomImage}.
+ */
+export interface ZoomImageOptions {
+    /** Starting scale. Default `1.08`. */
+    from?: number;
+    /** Ending scale. Default `1`. */
+    to?: number;
+    /** Seconds the zoom takes to cross its travel. Default `1`. */
+    duration?: number;
+    /** GSAP ease string. Default `'none'` (a scrubbed zoom must track the scroll). */
+    ease?: string;
+    /** ScrollTrigger start string. Default `'top bottom'`. */
+    start?: string;
+    /** ScrollTrigger end string. Default `'bottom top'`. */
+    end?: string;
+    /** Scrub smoothing in seconds. Default `true` (locked to scroll). */
+    scrub?: number | boolean;
+    /** Element whose scroll position drives the zoom. Defaults to the image's parent. */
+    trigger?: MotionTarget;
+}
+
+/**
+ * A slow, scroll-driven zoom on an image.
+ *
+ * The image's parent must clip (`overflow: hidden`), otherwise the zoom simply
+ * scales past the edge. GSAP owns the image's whole `transform` here: a
+ * stylesheet `:hover` scale on the same element would be a second owner of one
+ * transform, and the two would fight.
+ */
+export function zoomImage(el: MotionTarget, opts: ZoomImageOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const images = resolveTargets(el);
+
+    for (const image of images) {
+        const tween = gsap.fromTo(
+            image,
+            { scale: opts.from ?? 1.08 },
+            {
+                scale: opts.to ?? 1,
+                duration: opts.duration ?? 1,
+                ease: opts.ease ?? 'none',
+            },
+        );
+
+        const trigger = ScrollTrigger.create({
+            animation: tween,
+            trigger: resolveScrollTarget(image, opts.trigger),
+            start: opts.start ?? 'top bottom',
+            end: opts.end ?? 'bottom top',
+            scrub: opts.scrub ?? true,
+        });
+
+        trackTrigger(trigger, [image]);
+    }
+}
+
+/**
+ * Options for {@link hoverDepth}.
+ */
+export interface HoverDepthOptions {
+    /** Maximum tilt in degrees on each axis. Default `8`. */
+    maxTilt?: number;
+    /** Lift in pixels while hovered. Default `-6`. */
+    lift?: number;
+    /** Scale while hovered. Default `1.02`. */
+    scale?: number;
+    /** Seconds the pointer follows. Default `0.4`. */
+    duration?: number;
+    /** GSAP ease string. Default `'power2.out'`. */
+    ease?: string;
+    /** Perspective in pixels applied to the card. Default `900`. */
+    perspective?: number;
+}
+
+/**
+ * Pointer-driven tilt and lift on a card.
+ *
+ * DESKTOP ONLY, and deliberately so: the effect needs a hover-capable pointer.
+ * On touch it would fire on tap and leave the card tilted under the user's
+ * finger, which reads as a bug. The media context removes the listeners and
+ * restores the inline styles the moment the pointer stops qualifying, so the
+ * mobile layout is untouched.
+ *
+ * `prefersReducedMotion()` is re-read at event time, not at setup, so a
+ * mid-session change of the OS setting stops the effect immediately.
+ */
+export function hoverDepth(el: MotionTarget, opts: HoverDepthOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const cards = resolveTargets(el);
+
+    if (cards.length === 0) {
+        return;
+    }
+
+    const maxTilt = opts.maxTilt ?? 8;
+    const lift = opts.lift ?? -6;
+    const scale = opts.scale ?? 1.02;
+    const duration = opts.duration ?? 0.4;
+    const ease = opts.ease ?? 'power2.out';
+    const perspective = opts.perspective ?? 900;
+
+    getMediaContext().add('(hover: hover) and (pointer: fine)', () => {
+        for (const card of cards) {
+            // `pointermove` lives on the global event handlers map, which is
+            // only reachable through `HTMLElement`.
+            const target = card as HTMLElement;
+
+            gsap.set(target, { transformPerspective: perspective, transformOrigin: 'center' });
+
+            const rotateX = gsap.quickTo(target, 'rotationX', { duration, ease });
+            const rotateY = gsap.quickTo(target, 'rotationY', { duration, ease });
+            const moveY = gsap.quickTo(target, 'y', { duration, ease });
+            const moveScale = gsap.quickTo(target, 'scale', { duration, ease });
+
+            const onMove = (event: PointerEvent): void => {
+                if (prefersReducedMotion()) {
+                    return;
+                }
+
+                const rect = card.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) {
+                    return;
+                }
+
+                const offsetX = (event.clientX - rect.left) / rect.width - 0.5;
+                const offsetY = (event.clientY - rect.top) / rect.height - 0.5;
+
+                rotateY(offsetX * maxTilt * 2);
+                rotateX(-offsetY * maxTilt * 2);
+            };
+
+            const onEnter = (): void => {
+                if (prefersReducedMotion()) {
+                    return;
+                }
+                moveY(lift);
+                moveScale(scale);
+            };
+
+            const onLeave = (): void => {
+                rotateX(0);
+                rotateY(0);
+                moveY(0);
+                moveScale(1);
+            };
+
+            target.addEventListener('pointermove', onMove);
+            target.addEventListener('pointerenter', onEnter);
+            target.addEventListener('pointerleave', onLeave);
+
+            return (): void => {
+                target.removeEventListener('pointermove', onMove);
+                target.removeEventListener('pointerenter', onEnter);
+                target.removeEventListener('pointerleave', onLeave);
+            };
+        }
+
+        return undefined;
+    });
+}
+
+/**
+ * Options for {@link ambientBubbles}.
+ */
+export interface AmbientBubblesOptions {
+    /** Bubbles on a wide viewport. Default `10`. */
+    count?: number;
+    /** Hard cap on a narrow viewport. Default `5`. */
+    maxOnMobile?: number;
+    /** Smallest bubble diameter in pixels. Default `6`. */
+    minSize?: number;
+    /** Largest bubble diameter in pixels. Default `26`. */
+    maxSize?: number;
+    /** Seconds a bubble takes to rise. Default `14`. */
+    duration?: number;
+    /** Travel, as a percentage of the container's height. Default `120`. */
+    rise?: number;
+    /** Horizontal wander in pixels. Default `18`. */
+    drift?: number;
+    /** Bubble fill. Defaults to a translucent theme tint. */
+    color?: string;
+    /** Peak opacity. Default `0.35`. */
+    opacity?: number;
+}
+
+/**
+ * Drifting decorative bubbles inside a container.
+ *
+ * The bubbles are created here, not by a stylesheet, so they disappear with
+ * the rest of the motion layer when reduced motion is on — and so no global
+ * stylesheet has to be shipped to every other theme.
+ *
+ * The host must clip (`overflow: hidden`) for the bubbles to stay inside it.
+ * The bubbles are `pointer-events: none` and `aria-hidden`, so they can never
+ * intercept a click or reach a screen reader.
+ */
+export function ambientBubbles(container: MotionTarget, opts: AmbientBubblesOptions = {}): void {
+    if (motionDisabled() || typeof document === 'undefined') {
+        return;
+    }
+
+    const hosts = resolveTargets(container);
+
+    for (const host of hosts) {
+        // Re-registration would otherwise stack a second field of bubbles on
+        // top of the first one.
+        if (host.getAttribute('data-bubbles') === 'ready') {
+            continue;
+        }
+        host.setAttribute('data-bubbles', 'ready');
+
+        // The bubbles are absolutely positioned, so the host must be a
+        // containing block. Only set it when the author has not.
+        if (getComputedStyle(host).position === 'static') {
+            (host as HTMLElement).style.position = 'relative';
+        }
+
+        const requested = opts.count ?? 10;
+        const count = window.innerWidth < 768
+            ? Math.min(requested, opts.maxOnMobile ?? 5)
+            : requested;
+
+        const bubbles: HTMLElement[] = [];
+        const tweens: Array<ReturnType<typeof gsap.to>> = [];
+
+        for (let index = 0; index < count; index += 1) {
+            const size = randomBetween(opts.minSize ?? 6, opts.maxSize ?? 26);
+            const bubble = document.createElement('span');
+
+            bubble.setAttribute('aria-hidden', 'true');
+            bubble.dataset.bubble = 'true';
+            bubble.style.position = 'absolute';
+            bubble.style.left = `${randomBetween(2, 96)}%`;
+            bubble.style.bottom = '-12%';
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.borderRadius = '50%';
+            bubble.style.pointerEvents = 'none';
+            bubble.style.opacity = String(opts.opacity ?? 0.35);
+            bubble.style.backgroundColor = opts.color
+                ?? 'color-mix(in srgb, var(--accent-highlight-tertiary) 22%, transparent)';
+            bubble.style.border = '1px solid color-mix(in srgb, var(--neutral-text-inverted) 28%, transparent)';
+
+            host.appendChild(bubble);
+            bubbles.push(bubble);
+        }
+
+        const rise = opts.rise ?? 120;
+        const drift = opts.drift ?? 18;
+        const duration = opts.duration ?? 14;
+
+        for (const bubble of bubbles) {
+            // The rise is measured against the CONTAINER's height, not the
+            // bubble's own: `yPercent` would move a 20px bubble by 20% of 20px.
+            tweens.push(
+                gsap.to(bubble, {
+                    y: () => -(host.clientHeight * (rise / 100)),
+                    duration: duration * randomBetween(0.7, 1.3),
+                    repeat: -1,
+                    ease: 'none',
+                    delay: -randomBetween(0, duration),
+                }),
+            );
+
+            // A second tween on a DIFFERENT property — `x` against the first
+            // tween's `y` — so the two never fight over one transform channel.
+            tweens.push(
+                gsap.to(bubble, {
+                    x: randomBetween(-drift, drift),
+                    duration: duration * randomBetween(0.4, 0.8),
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut',
+                    delay: -randomBetween(0, duration),
+                }),
+            );
+        }
+
+        trackTrigger(null, [], () => {
+            for (const tween of tweens) {
+                tween.kill();
+            }
+            for (const bubble of bubbles) {
+                bubble.remove();
+            }
+            host.removeAttribute('data-bubbles');
+        });
+    }
+}
+
+/**
+ * Options for {@link horizontalScroll}.
+ */
+export interface HorizontalScrollOptions {
+    /**
+     * The row of items to translate. Defaults to the target's first element
+     * child.
+     */
+    track?: MotionTarget;
+    /**
+     * Selector picking the items inside the track. Default `'*'`.
+     */
+    itemSelector?: string;
+    /**
+     * Item width in pixels on the horizontal layout. Required when the track
+     * was a grid: grid children stretch, flex children do not.
+     */
+    itemWidth?: number;
+    /** GSAP ease string. Default `'none'`. */
+    ease?: string;
+    /** Seconds the translate takes to cross its travel. Default `1`. */
+    duration?: number;
+    /** ScrollTrigger start string. Default `'top top'`. */
+    start?: string;
+    /** ScrollTrigger end string. Defaults to the track's own overflow. */
+    end?: string;
+    /** Scrub smoothing in seconds. Default `1`. */
+    scrub?: number | boolean;
+    /** Pin the section while the track travels. Default `true`. */
+    pin?: boolean;
+    /** Viewport width from which the horizontal layout applies. Default `1024`. */
+    minWidth?: number;
+}
+
+/**
+ * Pin a section and travel its row of items sideways.
+ *
+ * DESKTOP ONLY. Below `minWidth` the row keeps its original grid layout, so
+ * the mobile page is exactly as it was — which is the right trade: a sideways
+ * section on a phone is a scroll trap, not a feature.
+ *
+ * The media context restores the grid when the viewport stops qualifying, so
+ * the two layouts cannot be mixed.
+ */
+export function horizontalScroll(el: MotionTarget, opts: HorizontalScrollOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const targets = resolveTargets(el);
+
+    if (targets.length === 0) {
+        return;
+    }
+
+    const minWidth = opts.minWidth ?? 1024;
+
+    getMediaContext().add(`(min-width: ${minWidth}px)`, () => {
+        for (const target of targets) {
+            const track = resolveTargets(opts.track)[0]
+                ?? (target.firstElementChild as Element | null);
+
+            if (!track) {
+                continue;
+            }
+
+            const items = track.querySelectorAll<Element>(opts.itemSelector ?? '*');
+            const itemWidth = opts.itemWidth;
+
+            // Grid → flex. The author still owns the spacing: a Tailwind
+            // `gap-*` class works in flex exactly as it does in grid.
+            gsap.set(track, { display: 'flex', flexWrap: 'nowrap' });
+
+            if (itemWidth !== undefined) {
+                gsap.set(items, { flex: '0 0 auto', width: itemWidth });
+            }
+
+            const distance = (): number => Math.max(0, track.scrollWidth - window.innerWidth);
+
+            const tween = gsap.to(track, {
+                x: () => -distance(),
+                duration: opts.duration ?? 1,
+                ease: opts.ease ?? 'none',
+            });
+
+            const trigger = ScrollTrigger.create({
+                animation: tween,
+                trigger: target,
+                start: opts.start ?? 'top top',
+                end: opts.end ?? (() => `+=${distance()}`),
+                scrub: opts.scrub ?? 1,
+                pin: opts.pin ?? true,
+                invalidateOnRefresh: true,
+            });
+
+            trackTrigger(trigger, [track]);
+        }
+
+        return undefined;
+    });
+}
+
+/**
+ * Options for {@link floatLoop}.
+ */
+export interface FloatLoopOptions {
+    /** Vertical travel in pixels. Default `10`. */
+    distance?: number;
+    /** Horizontal travel in pixels. Default `0`. */
+    x?: number;
+    /** Seconds per cycle. Default `4`. */
+    duration?: number;
+    /** Seconds before the loop starts. Default `0`. */
+    delay?: number;
+    /** GSAP ease string. Default `'sine.inOut'`. */
+    ease?: string;
+    /** Return to the start on every cycle. Default `true`. */
+    yoyo?: boolean;
+}
+
+/**
+ * A decorative element that floats gently and forever.
+ *
+ * For ornaments only — an illustration, a badge, a floating icon. It must not
+ * carry text the user needs to read, because it never stops moving.
+ */
+export function floatLoop(el: MotionTarget, opts: FloatLoopOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const targets = resolveTargets(el);
+
+    for (const target of targets) {
+        const tween = gsap.to(target, {
+            y: opts.distance ?? 10,
+            x: opts.x ?? 0,
+            duration: opts.duration ?? 4,
+            delay: opts.delay ?? 0,
+            ease: opts.ease ?? 'sine.inOut',
+            repeat: -1,
+            yoyo: opts.yoyo ?? true,
+        });
+
+        trackTrigger(null, [target], () => {
+            tween.kill();
+            gsap.set(target, { clearProps: 'transform' });
+        });
+    }
+}
+
+/**
+ * Options for {@link scrollProgress}.
+ */
+export interface ScrollProgressOptions {
+    /** Element whose scroll position drives the bar. Defaults to the bar's parent. */
+    trigger?: MotionTarget;
+    /** ScrollTrigger start string. Default `'top top'`. */
+    start?: string;
+    /** ScrollTrigger end string. Default `'bottom bottom'`. */
+    end?: string;
+    /** Scrub smoothing in seconds. Default `true` (locked to scroll). */
+    scrub?: number | boolean;
+}
+
+/**
+ * A bar whose width tracks the scroll progress of a section.
+ *
+ * The bar is scaled, not resized: `scaleX` with a left origin is a transform,
+ * so it costs nothing per frame. The bar must be visible in its resting state
+ * under reduced motion — the scale starts at zero only when motion runs.
+ */
+export function scrollProgress(el: MotionTarget, opts: ScrollProgressOptions = {}): void {
+    if (motionDisabled()) {
+        return;
+    }
+
+    const bars = resolveTargets(el);
+
+    for (const bar of bars) {
+        const tween = gsap.fromTo(
+            bar,
+            { scaleX: 0 },
+            {
+                scaleX: 1,
+                transformOrigin: 'left center',
+                duration: 1,
+                ease: 'none',
+            },
+        );
+
+        const trigger = ScrollTrigger.create({
+            animation: tween,
+            trigger: resolveScrollTarget(bar, opts.trigger),
+            start: opts.start ?? 'top top',
+            end: opts.end ?? 'bottom bottom',
+            scrub: opts.scrub ?? true,
+        });
+
+        trackTrigger(trigger, [bar]);
     }
 }
