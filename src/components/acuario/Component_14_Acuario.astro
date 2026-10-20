@@ -220,6 +220,34 @@ if (disposicion === "texto_izquierda") {
         width: 24px;
         border-radius: 5px;
     }
+
+    /*
+     * Holgura de la foto de cada slide.
+     *
+     * El parallax desplaza la imagen ±4% de su alto dentro del marco, y el marco
+     * recorta (`overflow: hidden`): sin esta holgura el recorrido destaparía el
+     * borde superior o inferior de la foto. La aritmética de la regla del
+     * helper pide `scale >= 1 + 2 * (distancia / 100)`, o sea 1.08 para una
+     * distancia de 4; aquí se usa 1.1 para dejar margen.
+     *
+     * WHY el guard `:global()`: dentro de un `<style>` con ámbito de Astro, la
+     * forma desnuda compila a `[data-astro-cid-x][data-motion="ready"] .cls`, que
+     * exige que UN elemento tenga los dos atributos, pero `data-motion` vive en
+     * `<html>`, que no tiene id de ámbito. Con `:global()` el guard queda sin
+     * ámbito y la regla sí compila y coincide.
+     *
+     * WHY una regla de hoja y no un estilo en línea: el helper limpia sus
+     * triggers con `clearProps` sobre `transform` y `opacity` solamente, pero
+     * una regla de hoja sobrevive al desmontaje y no compite con el transform que
+     * escribe GSAP (aquí la escala va en la propiedad `scale`, no en `transform`).
+     *
+     * WHY bajo el guard: sin JS, con movimiento reducido o si el helper no
+     * arranca, `data-motion` nunca se escribe, la foto se ve tal como estaba y
+     * el bloque no cambia de aspecto.
+     */
+    :global([data-motion="ready"]) :global(.acuario-14-swiper .swiper-slide img) {
+        scale: 1.1;
+    }
 </style>
 
 <script>
@@ -228,6 +256,7 @@ if (disposicion === "texto_izquierda") {
     import 'swiper/css';
     import 'swiper/css/pagination';
     import 'swiper/css/effect-fade';
+    import { initMotion, revealSection, parallaxLayer, ambientBubbles } from "../../scripts/motion";
 
     function initC14Swiper() {
         const sliders = document.querySelectorAll('.acuario-14-swiper');
@@ -244,5 +273,102 @@ if (disposicion === "texto_izquierda") {
         });
     }
 
-    document.addEventListener('DOMContentLoaded', initC14Swiper);
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. La profundidad se aplica a la FOTO de
+     * dentro del slide, nunca al slide, y tampoco hay un reveal por slide: un
+     * slide fuera de pantalla se quedaría en opacidad 0 hasta que el usuario lo
+     * desplace, y la posición de un ScrollTrigger no sigue el transform interno
+     * de Swiper.
+     */
+    function setupMotion() {
+        // La galería es el ancla del bloque. Si el bloque se configuró con una sola
+        // pieza de media (sin galería), esa caja hace de ancla y el bloque sigue
+        // teniendo movimiento. Cada sección se resuelve por separado, así que
+        // dos instancias del bloque en la misma página no se pisan.
+        const swipers = Array.from(document.querySelectorAll('.acuario-14-swiper'));
+        const mediaBoxes = Array.from(document.querySelectorAll('.min-h-\\[300px\\]'));
+
+        const secciones = new Set(
+            [...swipers, ...mediaBoxes]
+                .map((elemento) => elemento.closest('section'))
+                .filter((seccion): seccion is HTMLElement => seccion !== null),
+        );
+
+        for (const section of secciones) {
+            // Burbujas de ambiente sobre la sección. El contenedor de la sección
+            // tiene `z-10`, así que las burbujas quedan POR DEBAJO del contenido: no
+            // tapan el texto ni la foto. Además el helper las crea con
+            // `pointer-events: none` y `aria-hidden`, así que nunca capturan un clic.
+            ambientBubbles(section, {
+                count: 12,
+                maxOnMobile: 5,
+                duration: 16,
+                rise: 110,
+            });
+
+            const swiper = section.querySelector('.acuario-14-swiper');
+            const mediaBox = section.querySelector('.min-h-\\[300px\\]');
+
+            if (swiper) {
+                // La foto de cada slide se desplaza lentamente con el scroll. La
+                // holgura que necesita el recorrido la pone la regla de hoja
+                // `:global([data-motion="ready"] .acuario-14-swiper .swiper-slide img)`.
+                const images = Array.from(swiper.querySelectorAll('.swiper-slide img'));
+
+                parallaxLayer(images, {
+                    distance: 4,
+                });
+
+                // El contenedor del carrusel entra con el bloque. Aquí sí puede bajar
+                // la opacidad: dentro del carrusel no hay ningún control enfocable
+                // (los bullets de paginación de Swiper 11 son `span`).
+                revealSection(swiper, {
+                    y: 32,
+                    duration: 0.85,
+                    ease: 'power3.out',
+                });
+            } else if (mediaBox) {
+                revealSection(mediaBox, {
+                    y: 32,
+                    duration: 0.85,
+                    ease: 'power3.out',
+                });
+            }
+        }
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+
+    // Swiper primero: en modo `loop` clona los slides, y el movimiento tiene que
+    // alcanzarlos a todos. Por eso el setup del movimiento va después del
+    // arranque del carrusel.
+    document.addEventListener('DOMContentLoaded', () => {
+        initC14Swiper();
+        setupMotion();
+    });
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
 </script>
