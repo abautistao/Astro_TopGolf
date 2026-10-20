@@ -25,7 +25,7 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
 ---
 
 <section 
-    class="w-full py-10 md:py-14 relative overflow-hidden"
+    class="c12-section w-full py-10 md:py-14 relative overflow-hidden"
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -39,12 +39,12 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
         {(titulo || subtitulo) && (
             <div class="text-center mb-8 md:mb-10">
                 {titulo && (
-                    <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-1">
+                    <TitleTag class="c12-titulo font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-1">
                         {titulo}
                     </TitleTag>
                 )}
                 {subtitulo && (
-                    <p class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)]">
+                    <p class="c12-subtitulo font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)]">
                         {subtitulo}
                     </p>
                 )}
@@ -52,16 +52,16 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
         )}
 
         {/* Cuadrícula de Tarjetas */}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 lg:gap-8">
+        <div class="c12-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 lg:gap-8">
             {tarjetas.map((item) => (
-                <div class="flex flex-col items-center text-center group">
+                <div class="c12-card flex flex-col items-center text-center group">
                     {/* Icono SVG o Imagen */}
                     {item.icono && (
                         <div class="w-16 h-16 md:w-20 md:h-20 mb-2 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                             <img 
                                 src={getStrapiUrl(item.icono)} 
                                 alt={item.titulo || "Icono"} 
-                                class="w-full h-full object-contain"
+                                class="c12-icono w-full h-full object-contain"
                             />
                         </div>
                     )}
@@ -85,3 +85,116 @@ const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none
         </div>
     </div>
 </section>
+
+<script>
+    import { floatLoop, hoverDepth, initMotion, revealSection, revealStagger, splitReveal } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque (T7) — tres columnas con icono. La receta mezcla tres
+     * efectos porque el bloque tiene tres materiales distintos: un texto que
+     * se arma, una grilla que entra en cascada y un adorno que respira.
+     *
+     * Las anclas `c12-` son el único asidero del script: no cambian el
+     * layout, sólo dan un nombre estable a cada pieza.
+     *
+     * El `floatLoop` va sobre el `<img>` del icono y NO sobre el div que lo
+     * envuelve: ese div lleva el `group-hover:scale-110` de Tailwind, y dos
+     * dueños del mismo `transform` se pelean. El `scale` del hover vive en el
+     * div (propiedad `scale` independiente de Tailwind v4) y el `translate` del
+     * flotado vive en la imagen: cada uno en su elemento, sin conflicto.
+     */
+    function setupServiciosMotion() {
+        document.querySelectorAll('.c12-section').forEach((section) => {
+            // El título se arma por palabras. Si el editor lo dejó como `h1` no
+            // se parte: un `h1` es candidato a LCP y `splitReveal` escribe
+            // `opacity: 0` en cada parte al cargar.
+            const titulo = section.querySelector('.c12-titulo');
+
+            if (titulo && titulo.tagName !== 'H1') {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.8,
+                    stagger: 0.045,
+                });
+            }
+
+            // El subtítulo acompaña al título con un viaje corto.
+            const subtitulo = section.querySelector('.c12-subtitulo');
+
+            if (subtitulo) {
+                revealSection(subtitulo, {
+                    y: 14,
+                    duration: 0.6,
+                    delay: 0.1,
+                });
+            }
+
+            // Las tres columnas entran en cascada: es la parte que más se nota
+            // al entrar en la sección.
+            const grilla = section.querySelector('.c12-grid');
+
+            if (grilla) {
+                revealStagger(grilla, {
+                    selector: '.c12-card',
+                    y: 26,
+                    stagger: 0.12,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Profundidad con el puntero: sólo en escritorio (el helper lo
+            // encierra en su propio `matchMedia` de puntero fino). En móvil la
+            // columna conserva la entrada en cascada, así que el bloque nunca
+            // depende del hover para moverse.
+            section.querySelectorAll('.c12-card').forEach((tarjeta) => {
+                hoverDepth(tarjeta, {
+                    maxTilt: 6,
+                    lift: -8,
+                    scale: 1.02,
+                    duration: 0.45,
+                });
+            });
+
+            // Los iconos son adorno, no contenido: flotan suave y sin parar.
+            // El retraso y la duración cambian por icono para que no latan al
+            // mismo tiempo (y para que no se vean como un solo bloque).
+            section.querySelectorAll('.c12-icono').forEach((icono, index) => {
+                floatLoop(icono, {
+                    // Sube 8px: hacia abajo invadiría el título de la
+                    // tarjeta, que está a 8px de distancia.
+                    distance: -8,
+                    duration: 4.2 + index * 0.6,
+                    delay: index * 0.8,
+                    ease: 'sine.inOut',
+                });
+            });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupServiciosMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupServiciosMotion();
+    });
+</script>

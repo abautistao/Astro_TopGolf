@@ -8,7 +8,7 @@ const { url_mapa, altura = "450" } = Astro.props;
 const finalHeight = `${altura}px`;
 ---
 
-<section class="w-full">
+<section class="c26-mapa w-full">
     <iframe
         src={url_mapa}
         title="Mapa de ubicación"
@@ -19,3 +19,57 @@ const finalHeight = `${altura}px`;
         allowfullscreen
     ></iframe>
 </section>
+
+<script>
+    import { initMotion, revealSection } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque (T7) — un mapa embebido en un `iframe`.
+     *
+     * Dentro de un `iframe` no se puede animar nada: es otro documento, con su
+     * propio contexto de estilos y su propio hilo de render. La única pieza
+     * que se mueve es el contenedor del mapa, que se revela al entrar en
+     * pantalla. Nada más.
+     *
+     * El `iframe` es enfocable, así que la red de seguridad de S13 aplica: si
+     * el lector tabula hasta el mapa antes de que se dispare el trigger, el
+     * helper limpia el `opacity: 0` del contenedor y el mapa se ve igual.
+     *
+     * La clase `c26-mapa` es el único asidero del script: no cambia el layout,
+     * sólo da un nombre estable al bloque.
+     */
+    function setupMapaMotion() {
+        document.querySelectorAll('.c26-mapa').forEach((mapa) => {
+            revealSection(mapa, {
+                y: 26,
+                duration: 0.8,
+                ease: 'power3.out',
+            });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupMapaMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMapaMotion();
+    });
+</script>

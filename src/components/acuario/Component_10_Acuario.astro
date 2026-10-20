@@ -84,7 +84,7 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
 ---
 
 <section 
-    class="w-full py-7 relative overflow-hidden"
+    class="c10-section w-full py-7 relative overflow-hidden"
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -97,14 +97,14 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
         {/* Título Principal */}
         {titulo && (
             <div class="text-center mb-8 md:mb-10">
-                <TitleTag class={`font-[family-name:var(--font-principal)] text-[24px] md:text-[40px] font-black uppercase ${isFAQ ? 'text-white' : 'text-[var(--surface-brand-primary)]'}`}>
+                <TitleTag class={`c10-titulo font-[family-name:var(--font-principal)] text-[24px] md:text-[40px] font-black uppercase ${isFAQ ? 'text-white' : 'text-[var(--surface-brand-primary)]'}`}>
                     {titulo}
                 </TitleTag>
             </div>
         )}
 
         {/* Contenedor de Acordeones */}
-        <div class="flex flex-col w-full" id={componentId}>
+        <div class="c10-acordeones flex flex-col w-full" id={componentId}>
             {acordeones.map((item, index) => (
                 <div class={`accordion-item ${itemContainerClass}`}>
                     <button
@@ -155,6 +155,8 @@ const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
 </section>
 
 <script>
+    import { initMotion, revealStagger, splitReveal } from "../../scripts/motion";
+
 function initAccordions() {
     const accordionHeaders = document.querySelectorAll('.accordion-header');
 
@@ -239,4 +241,76 @@ function initAccordions() {
     document.addEventListener('DOMContentLoaded', initAccordions);
     // Para entornos con ViewTransitions (Astro SPA mode)
     document.addEventListener('astro:page-load', initAccordions);
+
+/*
+ * Motion del bloque (T7) — este bloque es un acordeón (título + lista de
+ * preguntas), así que la receta es la de los bloques "split": el título se
+ * arma por palabras y la lista entra escalonada.
+ *
+ * Las anclas `c10-` son el único asidero del script: no cambian el layout,
+ * sólo dan un nombre estable al título, al contenedor y a la lista. El
+ * contenedor de los ítems es `.c10-acordeones` y cada ítem es un
+ * `.accordion-item` (esa clase ya existía en el marcado).
+ *
+ * El título se revela con `splitReveal` porque es un encabezado de sección que
+ * vive por debajo del pliegue. Si el editor eligió `h1` para este bloque NO
+ * se parte: un `h1` es candidato a LCP y `splitReveal` escribe `opacity: 0` en
+ * cada parte al cargar, lo que retrasa el pintado del texto principal. En ese
+ * caso el título se deja exactamente como lo dibuja la hoja de estilos.
+ *
+ * Los ítems del acordeón SÍ se revelan: son wrappers no enfocables (el
+ * `<button>` vive dentro), y el helper trae la red de seguridad de S13 — al
+ * enfocar un control, limpia el `opacity: 0` de sus ancestros, de modo que
+ * un botón enfocable nunca queda invisible (defecto P1 reparado).
+ */
+function setupFaqMotion() {
+    document.querySelectorAll('.c10-section').forEach((section) => {
+        const titulo = section.querySelector('.c10-titulo');
+
+        if (titulo && titulo.tagName !== 'H1') {
+            splitReveal(titulo, {
+                type: 'words',
+                y: 26,
+                duration: 0.75,
+                stagger: 0.04,
+            });
+        }
+
+        const acordeones = section.querySelector('.c10-acordeones');
+
+        if (acordeones) {
+            revealStagger(acordeones, {
+                selector: '.accordion-item',
+                y: 18,
+                stagger: 0.09,
+                duration: 0.6,
+            });
+        }
+    });
+}
+
+// El orden importa: `motionDisabled()` depende de `initialized`, así que un
+// trigger registrado antes de `initMotion()` no haría nada.
+initMotion();
+setupFaqMotion();
+
+// Decisión 7, reflejada desde el helper: en una navegación del lado del
+// cliente el helper desmonta sus triggers y vuelve a armar el motion, así que
+// hay que registrar los triggers otra vez. `Layout.astro` no registra un
+// ClientRouter hoy, así que esto nunca se dispara; existe para que el bloque
+// no se quede estático si algún día se activa el modo SPA. El guardia de
+// primera carga es el mismo del helper: Astro también dispara
+// `astro:page-load` en la carga inicial y volver a registrar ahí dejaría dos
+// ScrollTrigger sobre los mismos elementos.
+let initialLoadSeen = false;
+document.addEventListener('astro:page-load', () => {
+    const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+    initialLoadSeen = true;
+
+    if (isInitialLoad) {
+        return;
+    }
+
+    setupFaqMotion();
+});
 </script>
