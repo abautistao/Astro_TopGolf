@@ -5,15 +5,12 @@ import Header from "../components/shared/SmartHeader.astro";
 import Footer from "../components/shared/SmartFooter.astro";
 import SEO from "../components/shared/SEO.astro";
 import LanguageSwitcher from "../components/shared/LanguageSwitcher.astro";
-// Importa las funciones para obtener datos de configuración y generar fuentes desde Strapi.
 import {
     getSiteSetup,
     generateFontFaces,
     getStrapiUrl,
 } from "../lib/strapi.js";
 
-// Obtiene los datos de configuración del sitio.
-// Obtiene los datos de configuración del sitio.
 const { lang: paramsLang } = Astro.params;
 const {
     lang: propsLang,
@@ -34,15 +31,18 @@ if (!isMultiLanguage) {
 
 const setupData = await getSiteSetup(locale);
 
-
+// Favicon dinámico con fallback
 const faviconUrl = setupData?.favicon
     ? getStrapiUrl(setupData.favicon)
     : "/favicon.svg";
 
-// Genera las declaraciones @font-face si los datos de tipografía existen.
+// Extraemos solo el ID para aligerar la carga de variables en cliente
+const gtmId = setupData?.google_tag_manager_id;
+
+// Tipografías dinámicas desde Strapi
 const fontStyles = setupData ? generateFontFaces(setupData.tipografias) : '';
 
-// Define variables CSS personalizadas y otros estilos basados en los datos de configuración.
+// Variables CSS
 const customStyles = setupData
     ? `
     :root {
@@ -67,7 +67,6 @@ const customStyles = setupData
 `
     : "";
 
-// Combina los estilos de fuente y los estilos personalizados en una sola cadena.
 const allStyles = fontStyles + customStyles;
 
 const defaultSeo = {
@@ -81,37 +80,49 @@ const seoProps = seo || defaultSeo;
 <!doctype html>
 <html lang={locale} class="scroll-smooth">
     <head>
-        { setupData?.google_tag_manager_id && (
-            <script is:inline>
-                window.dataLayer = window.dataLayer || [];
-            </script>
+        { gtmId && (
+            <>
+                <script is:inline>
+                    window.dataLayer = window.dataLayer || [];
+                </script>
 
-            <script define:vars={{ setupData }}>;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer',setupData.google_tag_manager_id);</script>
+                {/* Optimizado para Partytown (ejecución fuera del hilo principal) */}
+                <script type="text/partytown" is:inline define:vars={{ gtmId }}>
+                    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                    })(window,document,'script','dataLayer', gtmId);
+                </script>
+            </>
         )}
         
         <meta charset="UTF-8" />
-        <link rel="icon" href="/favicon.ico" sizes="any"/>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="generator" content={Astro.generator} />
     
         <SEO {...seoProps} />
 
-        <!-- Inyecta todos los estilos dinámicos en una etiqueta de estilo global. -->
+
+        <!-- Inyecta los estilos dinámicos de Strapi -->
         <style is:global set:html={allStyles}></style>
     </head>
     <body>
-        
-        {setupData?.google_tag_manager_id && (
-            <noscript><iframe src=`https://www.googletagmanager.com/ns.html?id=${setupData.google_tag_manager_id}`
-            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        { gtmId && (
+            <noscript>
+                <iframe 
+                    src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+                    height="0" 
+                    width="0" 
+                    style="display:none;visibility:hidden"
+                ></iframe>
+            </noscript>
         )}
         
         <Header locale={locale} alternateLinks={alternateLinks} simplified={headerSimplified} />
-        <!-- El contenido de la página se insertará aquí. -->
+        
         <slot />
+        
         <Footer locale={locale} hideTarjeta={hide_tarjeta_habiente}/>
         <LanguageSwitcher
             alternateLinks={alternateLinks}
@@ -121,7 +132,6 @@ const seoProps = seo || defaultSeo;
 </html>
 
 <style>
-    /* Estilos básicos para asegurar que el HTML y el body ocupen toda la pantalla. */
     html,
     body {
         margin: 0;

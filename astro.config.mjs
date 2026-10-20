@@ -16,11 +16,13 @@ const defaultLang = PUBLIC_DEFAULT_LOCALE || "en";
 
 /** @type {import('astro/config').AstroUserConfig} */
 const config = {
-  output: 'static', // Changed to server for SSR support with Cloudflare
+  output: 'static',
   adapter: cloudflare(),
-  site: PUBLIC_SITE_URL, // URL para pruebas locales.
+  site: PUBLIC_SITE_URL,
   build: {
-    inlineStylesheets: 'always'
+    // 'auto' permite que archivos pequeños se inyecten y los grandes (como el CSS de 77KB) 
+    // se sirvan desde /_astro/* aprovechando el Cache-Control inmutable de Cloudflare
+    inlineStylesheets: 'auto'
   },
   image: {
     domains: ['localhost', '127.0.0.1'],
@@ -33,17 +35,14 @@ const config = {
 
   i18n: {
     defaultLocale: defaultLang,
-    // Si no es multi-idioma, solo cargamos el default para que mapee la carpeta
     locales: isMultiLanguage ? ["es", "en"] : [defaultLang],
     routing: {
-      // ESTA ES LA CLAVE: 'false' hace que /es/ se convierta en /
       prefixDefaultLocale: false 
     }
   },
 
   integrations: [
     sitemap({
-      // Configuración para multiidioma
       i18n: isMultiLanguage ? {
         defaultLocale: defaultLang,
         locales: {
@@ -53,12 +52,11 @@ const config = {
       } : undefined,
     }),
     alpinejs({
-      entrypoint: '/src/entrypoint.js' // <--- Agrega esto
+      entrypoint: '/src/entrypoint.js'
     }),
     partytown({
       config: {
         forward: ["dataLayer.push"],
-        // ESTO ES LO QUE FALTA:
         resolveUrl: function (url, location, type) {
           if (type === 'script' && url.hostname === 'connect.facebook.net') {
             const proxyUrl = new URL('https://cdn.builder.io/api/v1/proxy-api');
@@ -70,8 +68,6 @@ const config = {
       },
     }),
   ],
-  
 };
 
-// https://astro.build/config
 export default defineConfig(config);
