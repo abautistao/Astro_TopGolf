@@ -65,7 +65,7 @@ const config = {
             'ct.pinterest.com',
           ];
           
-          if (type === 'script' && proxiedHosts.includes(url.hostname)) {
+          if (proxiedHosts.includes(url.hostname)) {
             const proxyUrl = new URL('https://cdn.builder.io/api/v1/proxy-api');
             proxyUrl.searchParams.append('url', url.href);
             return proxyUrl;
