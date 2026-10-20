@@ -80,6 +80,21 @@ export interface RevealOptions {
     delay?: number;
     /** ScrollTrigger start string. Default `'top 85%'`. */
     start?: string;
+    /**
+     * Skip any target that CONTAINS a focusable control.
+     *
+     * WHY this exists: a `gsap.from()` reveal writes `opacity: 0` on its target
+     * at load. If the target holds an input, that input is faded out until the
+     * trigger fires — and opacity does not remove it from the tab order, so the
+     * keyboard can reach a control the user cannot see. The helper's focus
+     * rescue makes that case self-healing, but it cannot heal it before the
+     * user has actually tabbed to it.
+     *
+     * A target that IS itself focusable (a link, a button) is ALWAYS excluded,
+     * with no option needed. This flag is for the harder case: a wrapper whose
+     * descendants are focusable.
+     */
+    skipFocusable?: boolean;
 }
 
 /**
@@ -498,6 +513,33 @@ function containsFocusable(element: Element): boolean {
     return element.querySelector(FOCUSABLE_SELECTOR) !== null;
 }
 
+/** True when the element itself can receive keyboard focus. */
+function isFocusable(element: Element): boolean {
+    return element.matches(FOCUSABLE_SELECTOR);
+}
+
+/**
+ * Remove the targets that must never carry a reveal's hidden start state.
+ *
+ * A focusable element is always removed: fading a link or a button out is
+ * never what the caller meant, and it strands the control. `skipFocusable`
+ * extends the same rule to a wrapper whose DESCENDANTS are focusable, which is
+ * the case that actually bites in a form.
+ */
+function withoutFocusable(targets: Element[], skipDescendants: boolean): Element[] {
+    return targets.filter((target) => {
+        if (isFocusable(target)) {
+            return false;
+        }
+
+        if (skipDescendants && containsFocusable(target)) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
 /** Element whose scroll position drives a parallax layer. */
 function resolveScrollTarget(layer: Element, trigger?: MotionTarget): Element {
     if (trigger !== undefined) {
@@ -597,9 +639,12 @@ export function revealSection(el: MotionTarget, opts: RevealOptions = {}): void 
     // Decision 4: with `protectLcp`, the section itself stays put and the motion
     // moves to its children — the hero text holds its final position while the
     // non-critical eyebrow, panel and badges settle in around it.
-    const animated = opts.protectLcp === true
-        ? withoutProtected(childrenOf(targets), protectedTargets)
-        : withoutProtected(targets, protectedTargets);
+    const animated = withoutFocusable(
+        opts.protectLcp === true
+            ? withoutProtected(childrenOf(targets), protectedTargets)
+            : withoutProtected(targets, protectedTargets),
+        opts.skipFocusable === true,
+    );
 
     if (animated.length === 0) {
         return;
@@ -646,7 +691,10 @@ export function revealStagger(el: MotionTarget, opts: StaggerOptions = {}): void
     }
 
     const protectedTargets = resolveTargets(opts.lcpSafe);
-    const animated = withoutProtected(childrenOf(targets, opts.selector), protectedTargets);
+    const animated = withoutFocusable(
+        withoutProtected(childrenOf(targets, opts.selector), protectedTargets),
+        opts.skipFocusable === true,
+    );
 
     if (animated.length === 0) {
         return;
@@ -968,7 +1016,21 @@ export interface HoverDepthOptions {
     maxTilt?: number;
     /** Lift in pixels while hovered. Default `-6`. */
     lift?: number;
-    /** Scale while hovered. Default `1.02`. */
+    /**
+     * Scale while hovered.
+     *
+     * OPTIONAL, and off by default. The scale channel is the one that cannot
+     * coexist with another owner of the same transform: `parallaxLayer` and
+     * `zoomImage` rely on a coverage scale (the `scale >= 1 + 2*(distance/100)`
+     * rule) that lives in the CSS `scale` property, and GSAP folds it into the
+     * matrix it caches. A `hoverDepth` that also writes `scale` overwrites that
+     * coverage on hover and resets it to 1 on leave, which uncovers the frame
+     * edge mid-scroll.
+     *
+     * Leaving it off makes `hoverDepth` a tilt-and-lift effect, which composes
+     * with a parallax or a zoom on the same element. Pass a value only when
+     * that element has no other scale owner.
+     */
     scale?: number;
     /** Seconds the pointer follows. Default `0.4`. */
     duration?: number;
@@ -1003,10 +1065,14 @@ export function hoverDepth(el: MotionTarget, opts: HoverDepthOptions = {}): void
 
     const maxTilt = opts.maxTilt ?? 8;
     const lift = opts.lift ?? -6;
-    const scale = opts.scale ?? 1.02;
     const duration = opts.duration ?? 0.4;
     const ease = opts.ease ?? 'power2.out';
     const perspective = opts.perspective ?? 900;
+
+    // The scale channel is opt-in (see `HoverDepthOptions.scale`). Without it
+    // the effect is a tilt and a lift, which composes with a parallax or a
+    // zoom on the same element.
+    const wantsScale = opts.scale !== undefined && opts.scale !== 1;
 
     getMediaContext().add('(hover: hover) and (pointer: fine)', () => {
         for (const card of cards) {
@@ -1019,7 +1085,9 @@ export function hoverDepth(el: MotionTarget, opts: HoverDepthOptions = {}): void
             const rotateX = gsap.quickTo(target, 'rotationX', { duration, ease });
             const rotateY = gsap.quickTo(target, 'rotationY', { duration, ease });
             const moveY = gsap.quickTo(target, 'y', { duration, ease });
-            const moveScale = gsap.quickTo(target, 'scale', { duration, ease });
+            const moveScale = wantsScale
+                ? gsap.quickTo(target, 'scale', { duration, ease })
+                : null;
 
             const onMove = (event: PointerEvent): void => {
                 if (prefersReducedMotion()) {
@@ -1043,14 +1111,14 @@ export function hoverDepth(el: MotionTarget, opts: HoverDepthOptions = {}): void
                     return;
                 }
                 moveY(lift);
-                moveScale(scale);
+                moveScale?.(opts.scale as number);
             };
 
             const onLeave = (): void => {
                 rotateX(0);
                 rotateY(0);
                 moveY(0);
-                moveScale(1);
+                moveScale?.(1);
             };
 
             target.addEventListener('pointermove', onMove);
@@ -1090,6 +1158,15 @@ export interface AmbientBubblesOptions {
     color?: string;
     /** Peak opacity. Default `0.35`. */
     opacity?: number;
+    /**
+     * Stacking order of the bubble field.
+     *
+     * WHY this exists: Swiper gives `.swiper-wrapper` a `z-index` of 1, so
+     * bubbles appended to a swiper root end up BEHIND the slides and are never
+     * seen. Inside a swiper you need a `zIndex` below the slides' own stacking
+     * context, and above the background.
+     */
+    zIndex?: number;
 }
 
 /**
@@ -1146,6 +1223,9 @@ export function ambientBubbles(container: MotionTarget, opts: AmbientBubblesOpti
             bubble.style.borderRadius = '50%';
             bubble.style.pointerEvents = 'none';
             bubble.style.opacity = String(opts.opacity ?? 0.35);
+            if (opts.zIndex !== undefined) {
+                bubble.style.zIndex = String(opts.zIndex);
+            }
             bubble.style.backgroundColor = opts.color
                 ?? 'color-mix(in srgb, var(--accent-highlight-tertiary) 22%, transparent)';
             bubble.style.border = '1px solid color-mix(in srgb, var(--neutral-text-inverted) 28%, transparent)';
@@ -1275,6 +1355,13 @@ export function horizontalScroll(el: MotionTarget, opts: HorizontalScrollOptions
             }
 
             const distance = (): number => Math.max(0, track.scrollWidth - window.innerWidth);
+
+            // Nothing to travel means nothing to pin. A pinned section with a
+            // zero-length scroll range misbehaves: the pin engages and the page
+            // never moves. Leave the original grid alone in that case.
+            if (distance() <= 0) {
+                continue;
+            }
 
             const tween = gsap.to(track, {
                 x: () => -distance(),
