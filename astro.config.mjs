@@ -62,6 +62,7 @@ const config = {
             'connect.facebook.net',
             'analytics.tiktok.com',
             'googleads.g.doubleclick.net',
+            'www.googletagmanager.com'
           ];
           
           if (proxiedHosts.includes(url.hostname)) {
