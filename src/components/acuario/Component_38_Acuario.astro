@@ -52,6 +52,17 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
 // descripcion). Se descartan los ítems vacíos para que un repeatable en blanco
 // no deje una rejilla de cajas huérfanas.
 const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion);
+
+// El número del paso es texto libre del editor (o el índice de la lista). Sólo
+// puede contar si el helper va a escribir EXACTAMENTE el mismo texto final: el
+// contador termina escribiendo `prefix + valor + suffix`, sin ceros a la
+// izquierda ni signo, así que "01" o "Paso 2" no son contables y se quedan
+// tal cual. El marcado trae siempre el valor final, de modo que sin motion (o
+// con movimiento reducido) el número se ve igual.
+const numeroContable = (valor: unknown): string | undefined => {
+    const texto = String(valor ?? '').trim();
+    return /^[1-9]\d*$/.test(texto) ? texto : undefined;
+};
 ---
 
 <section class="w-full py-[68px] lg:py-[82px] xl:py-[104px]" style={`background-color: ${sectionBg};`}>
@@ -87,11 +98,20 @@ const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion)
         {/* Rejilla de pasos: 4 columnas en escritorio, 2 en tablet, 1 en móvil. */}
         {listaPasos.length > 0 && (
             <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0">
-                {listaPasos.map((p, i) => (
+                {listaPasos.map((p, i) => {
+                    // El número que se pinta es el del editor o, si no lo hay,
+                    // el índice del paso. Es el mismo valor que cuenta el
+                    // motion layer, así que el texto final nunca cambia.
+                    const valorPaso = p.numero || i + 1;
+
+                    return (
                     <li class="c38-step p-[26px] rounded-[22px]">
-                        {(p.numero || i + 1) && (
-                            <span class="c38-step-numero grid place-items-center w-[38px] h-[38px] rounded-full font-[family-name:var(--font-principal)] font-bold">
-                                {p.numero || i + 1}
+                        {valorPaso && (
+                            <span
+                                class="c38-step-numero grid place-items-center w-[38px] h-[38px] rounded-full font-[family-name:var(--font-principal)] font-bold"
+                                data-count-to={numeroContable(valorPaso)}
+                            >
+                                {valorPaso}
                             </span>
                         )}
 
@@ -107,7 +127,8 @@ const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion)
                             </p>
                         )}
                     </li>
-                ))}
+                    );
+                })}
             </ol>
         )}
     </div>
@@ -146,7 +167,7 @@ const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion)
 </style>
 
 <script>
-    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+    import { initMotion, revealSection, revealStagger, splitReveal, countUp } from "../../scripts/motion";
 
     /*
      * Process steps motion (T3) — decision 5: fire-once, no `scrub`, so nothing
@@ -182,19 +203,45 @@ const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion)
         });
 
         sections.forEach((section) => {
-            // The description column is a direct child of the two-column heading
-            // grid, so its parent IS the heading group; the title's own column is
-            // the fallback anchor for the (rarer) block configured with no
-            // description at all.
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves its parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
             const description = section.querySelector('.c38-muted');
             const title = section.querySelector('.c38-title');
-            const heading = (description ?? title)?.parentElement ?? null;
 
-            if (heading) {
-                revealSection(heading, {
-                    y: 30,
+            if (title && title.tagName !== 'H1') {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
                     duration: 0.75,
-                    ease: 'power3.out',
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes.
+                    mask: false,
+                });
+            }
+
+            // The eyebrow is the first direct `<p>` of the title's column.
+            const eyebrow = title?.parentElement?.querySelector(':scope > p') ?? null;
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            if (description) {
+                revealSection(description, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.08,
                 });
             }
 
@@ -216,6 +263,12 @@ const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion)
                     ease: 'power3.out',
                 });
             }
+
+            // The step numbers count up from zero. Only the elements that carry
+            // `data-count-to` are counted (the helper reads the attribute), and
+            // the markup already shows the final number, so a step labelled
+            // "01" keeps its text and the counter simply skips it.
+            countUp(section.querySelectorAll('.c38-step-numero'));
         });
     }
 

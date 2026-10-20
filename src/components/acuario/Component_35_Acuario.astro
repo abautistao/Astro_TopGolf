@@ -64,6 +64,17 @@ const listaFases = fases.filter((f) => f?.fase || f?.nivel || f?.titulo || f?.de
 // normaliza a arreglo y descarta los ítems sin texto, para que una fase con la
 // lista vacía no deje un encabezado de sección sin contenido debajo.
 const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) => i?.texto) : []);
+
+// El número de campo (`c.numero`) es texto libre del editor. Sólo puede
+// contar si el helper va a escribir EXACTAMENTE el mismo texto final: el
+// contador termina escribiendo `prefix + valor + suffix`, sin ceros a la
+// izquierda ni signo, así que "01" o "+500" no son contables y se quedan tal
+// cual. El marcado trae siempre el valor final, de modo que sin motion (o con
+// movimiento reducido) el número se ve igual.
+const numeroContable = (valor: unknown): string | undefined => {
+    const texto = String(valor ?? '').trim();
+    return /^[1-9]\d*$/.test(texto) ? texto : undefined;
+};
 ---
 
 <section class="c35-section w-full py-[68px] lg:py-[82px] xl:py-[104px]">
@@ -100,7 +111,12 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
                 {listaCampos.map((c) => (
                     <article class="c35-card p-7 rounded-[22px] min-h-[230px]">
                         {c.numero && (
-                            <span class="c35-card-numero font-[family-name:var(--font-principal)] font-bold">{c.numero}</span>
+                            <span
+                                class="c35-card-numero font-[family-name:var(--font-principal)] font-bold"
+                                data-count-to={numeroContable(c.numero)}
+                            >
+                                {c.numero}
+                            </span>
                         )}
 
                         {c.titulo && (
@@ -364,14 +380,33 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
        *   .transition-transform { transition-property: transform, translate, scale, rotate; }
        *   .-translate-y-0.5       { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
        * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
-       * property, not on `transform`, so it composes with GSAP's inline
-       * transform instead of competing for it — the lift survives either way.
-       * (2) `transition-property` lists `translate` too, so `transition: none`
-       * would also delete the lift's easing and turn a 150ms hover into an
-       * instant snap. Listing Tailwind's own set minus `transform` removes the
-       * double-eased channel and leaves the hover exactly as it was, duration
-       * and timing-function included, because this rule overrides one longhand
-       * and inherits the rest of the shorthand from `.transition-transform`.
+       * property, not on `transform`, so it does not compete with GSAP's inline
+       * transform for the same channel. (2) `transition-property` lists
+       * `translate` too, so `transition: none` would also delete the lift's
+       * easing and turn a 150ms hover into an instant snap. Listing Tailwind's
+       * own set minus `transform` removes the double-eased channel and leaves
+       * the hover exactly as it was, duration and timing-function included,
+       * because this rule overrides one longhand and inherits the rest of the
+       * shorthand from `.transition-transform`.
+       *
+       * CORRECTION (L18, measured in Chromium 149): the previous version of
+       * this comment claimed that the Tailwind lift "survives GSAP owning the
+       * transform". That is FALSE. When GSAP takes the transform of an element
+       * it writes `translate: none; rotate: none; scale: none` inline, and an
+       * inline declaration outranks any class rule, so a `hover:-translate-y-*`
+       * on that same element stops applying altogether. The
+       * `transition-property` fix above is still needed and still correct — it
+       * stops CSS from interpolating GSAP's per-frame writes — but it never
+       * protected the lift. The rule that keeps a lift alive is ONE OWNER PER
+       * ELEMENT: the affordance has to be GSAP's own (`hoverDepth`'s `lift`) or
+       * it has to live on a child GSAP never touches.
+       *
+       * STATE OF THIS RULE TODAY: the download links are no longer transformed
+       * by GSAP at all — their reveal moved to the `.c35-downloads` row (see the
+       * script) — so there is no inline `transform` here to double-ease and the
+       * rule is left as a guard in case the block ever gives GSAP the button's
+       * transform again. The buttons' own Tailwind lift keeps working exactly
+       * as before, because it lives in the standalone `translate` property.
        *
        * WHY under the guard: with JS off, reduced motion on, or before the
        * helper initializes, `data-motion` is never written, no inline transform
@@ -383,10 +418,10 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
 </style>
 
 <script>
-    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+    import { initMotion, revealSection, splitReveal, countUp, hoverDepth } from "../../scripts/motion";
 
     /*
-     * NEM block motion (T4) — decision 5 bites harder here than anywhere else on
+     * NEM block motion (T9) — decision 5 bites harder here than anywhere else on
      * the page: `.c35-module` contains the phase tablist, the panels Alpine
      * swaps and the two download buttons, so this block IS the interactive
      * zone. There is no `parallaxLayer` anywhere in this script, on purpose.
@@ -394,14 +429,21 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
      * so the block is entered once and then left alone: no transform is ever
      * rewritten while the reader is pointing at a tab or clicking a download.
      *
+     * UN SOLO DUEÑO POR ELEMENTO: el transform de cada elemento pertenece a
+     * una sola cosa. El encabezado lo reparten el `splitReveal` del título y
+     * los revelados del antetítulo y de la descripción; la rejilla de
+     * tarjetas la sube el reveal y el transform de CADA tarjeta es del
+     * `hoverDepth`; y las descargas las mueve el reveal de su contenedor, no
+     * el de los enlaces.
+     *
      * WHY there is no hidden-state CSS for any of these elements:
-     * `revealSection` / `revealStagger` are built on `gsap.from()`, which reads
-     * the element's CURRENT value as the tween's END state when the tween is
-     * created. A stylesheet rule that pre-hid an element under the readiness
-     * guard would be read as the destination and the tween would animate
-     * `opacity: 0 → 0`, stranding the block invisible forever. The hidden state
-     * comes from the tween instead, which is also what keeps decision 3 honest:
-     * no JS, no readiness attribute, no inline style, no hidden content.
+     * `revealSection` is built on `gsap.from()`, which reads the element's
+     * CURRENT value as the tween's END state when the tween is created. A
+     * stylesheet rule that pre-hid an element under the readiness guard would
+     * be read as the destination and the tween would animate `opacity: 0 → 0`,
+     * stranding the block invisible forever. The hidden state comes from the
+     * tween instead, which is also what keeps decision 3 honest: no JS, no
+     * readiness attribute, no inline style, no hidden content.
      *
      * WHY the script adds no selector class and touches no markup: every anchor
      * it needs already carries a `c35-` prefix, and each query is resolved from
@@ -410,44 +452,85 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
      */
     function setupNemMotion() {
         document.querySelectorAll('.c35-section').forEach((section) => {
-            // Heading group. `.c35-muted` is NOT a safe anchor on its own: the
-            // field cards reuse it for their body copy, so the description is
-            // only the heading's when it is not inside a card. The title's own
-            // column is the fallback for the (rarer) block configured with no
-            // description, and it needs one extra hop — the title sits inside
-            // the left column of the two-column grid, so the grid is its
-            // grandparent. Resolving this through `.c35-muted` alone would have
-            // put a trigger on a card that the stagger below also animates.
-            const headingDescription =
-                Array.from(section.querySelectorAll('.c35-muted')).find((node) => !node.closest('.c35-card')) ?? null;
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves its parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
             const title = section.querySelector('.c35-title');
-            const heading = headingDescription?.parentElement ?? title?.parentElement?.parentElement ?? null;
 
-            // Eyebrow, title and paragraph settle as ONE group: they read as a
-            // single sentence, so splitting them would fight the copy.
-            if (heading) {
-                revealSection(heading, {
-                    y: 30,
+            if (title && title.tagName !== 'H1') {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
                     duration: 0.75,
-                    ease: 'power3.out',
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes por arriba y por abajo.
+                    mask: false,
                 });
             }
 
-            // Four training-field cards in a single row. Even per-item offset
-            // (`staggerFrom` left at GSAP's 'start') so the sequence reads as a
-            // deliberate left-to-right count rather than an arbitrary cascade.
+            // The eyebrow is the first direct `<p>` of the title's column.
+            const eyebrow = title?.parentElement?.querySelector(':scope > p') ?? null;
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            // `.c35-muted` is NOT a safe anchor on its own: the field cards
+            // reuse it for their body copy, so the description is only the
+            // heading's when it is not inside a card.
+            const description =
+                Array.from(section.querySelectorAll('.c35-muted')).find((node) => !node.closest('.c35-card')) ?? null;
+
+            if (description) {
+                revealSection(description, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.08,
+                });
+            }
+
+            // The four training-field cards. The reveal stays on the ROW — one
+            // object that rises as a block — and NOT on each card: `hoverDepth`
+            // is the owner of the card's transform, and a `gsap.from()` on the
+            // same card would be a second owner of one transform (L18). These
+            // cards are also read-only: no link and no button inside them, so
+            // the tilt can never desync the pointer from a control.
             const firstCard = section.querySelector('.c35-card');
             const cardsRow = firstCard?.parentElement ?? null;
 
             if (cardsRow) {
-                revealStagger(cardsRow, {
-                    selector: '.c35-card',
-                    stagger: 0.09,
+                revealSection(cardsRow, {
                     y: 30,
-                    duration: 0.7,
+                    duration: 0.75,
                     ease: 'power3.out',
                 });
+
+                // Pointer-driven depth, desktop only: the helper registers the
+                // effect inside a `gsap.matchMedia()` of `(hover: hover) and
+                // (pointer: fine)`, so on touch nothing is hooked up and the
+                // mobile layout is untouched.
+                hoverDepth(section.querySelectorAll('.c35-card'), {
+                    maxTilt: 6,
+                    lift: -6,
+                    scale: 1.02,
+                });
             }
+
+            // The field numbers count up only when the editor typed a plain
+            // integer: the helper writes `prefix + valor + suffix` at the end of
+            // the count, and the markup already carries the final value, so
+            // "01" or "+500" are simply skipped and keep their authored text.
+            countUp(section.querySelectorAll('.c35-card-numero'));
 
             // WHY `.c35-module` is NOT revealed — this is the P1 repair, and the
             // absence is the point, not an oversight.
@@ -472,8 +555,8 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
             // is no non-interactive wrapper inside `.c35-module` to hand the
             // reveal to, and moving it up to `.c35-section` would re-introduce the
             // same hazard one level higher. The block keeps its movement from the
-            // two targets that are genuinely display-only — the heading group and
-            // the `.c35-card` stagger — and the dark panel arrives with the
+            // targets that are genuinely display-only — the heading, the card
+            // grid and the downloads row — and the dark panel arrives with the
             // stylesheet, which is the same behaviour every no-JS and
             // reduced-motion reader already gets.
             //
@@ -486,24 +569,24 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
             // block's exit point rather than arriving with the frame. They sit on
             // `.c35-module`'s dark gradient, and the second one is an outline
             // button, so this is transform-only motion: nothing here changes the
-            // background it is drawn on. The opacity ramp is also the shortest on
-            // the page (0.45s, 0.07s apart) so the outline never sits long at low
-            // opacity against the navy.
+            // background it is drawn on.
             //
-            // Their own Tailwind hover lift survives GSAP owning `transform`,
-            // because Tailwind v4's `-translate-y-*` sets the standalone
-            // `translate` property, which composes with `transform` instead of
-            // competing for it. (That is exactly the trap the component-34
-            // stylesheet hover rule fell into by writing `transform` directly.)
+            // WHERE THE REVEAL NOW SITS: on the `.c35-downloads` ROW, not on the
+            // links. A `<a download>` is focusable, and a `gsap.from()` on a
+            // focusable control leaves it invisible AND tabbable if the trigger
+            // never fires (S13 — the defect class the previous feature left
+            // flagged here). The row is a plain `<div>` with no interaction of
+            // its own, and it is revealed with `opacityFrom: 1`, es decir, sólo
+            // transform: los enlaces de dentro NUNCA quedan en `opacity: 0`,
+            // se mueven pero no desaparecen.
             const firstDownload = section.querySelector('.c35-download');
             const downloadsRow = firstDownload?.parentElement ?? null;
 
             if (downloadsRow) {
-                revealStagger(downloadsRow, {
-                    selector: '.c35-download',
-                    stagger: 0.07,
-                    y: 14,
-                    duration: 0.45,
+                revealSection(downloadsRow, {
+                    opacityFrom: 1,
+                    y: 16,
+                    duration: 0.55,
                     ease: 'power2.out',
                 });
             }

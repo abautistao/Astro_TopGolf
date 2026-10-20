@@ -321,7 +321,7 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
 
 <script>
     import { gsap } from "gsap";
-    import { initMotion, parallaxLayer, prefersReducedMotion, revealSection, revealStagger } from "../../scripts/motion";
+    import { initMotion, parallaxLayer, prefersReducedMotion, revealSection, revealStagger, splitReveal } from "../../scripts/motion";
 
     /*
      * The headroom the parallax needs to avoid uncovering the edge of its
@@ -374,14 +374,52 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
         // scoped by the `c34-` prefix, so nothing here can reach a sibling block
         // on the same page (components 32-38 all render together).
         document.querySelectorAll('.c34-section').forEach((section) => {
-            // The two-column heading settles as one block...
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves the parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
             const heading = section.querySelector('.c34-heading');
             if (heading) {
-                revealSection(heading, {
-                    y: 32,
-                    duration: 0.75,
-                    ease: 'power3.out',
-                });
+                // The title sits in the FIRST column of the two-column heading
+                // grid; the description, when the editor filled it, is the
+                // second one.
+                const titleColumn = heading.querySelector(':scope > div');
+                const title = titleColumn?.querySelector('.c34-title') ?? null;
+
+                if (title && title.tagName !== 'H1') {
+                    splitReveal(title, {
+                        type: 'words',
+                        y: 26,
+                        duration: 0.75,
+                        stagger: 0.045,
+                        // Sin máscara: el interlineado del título es 1.08 y una
+                        // caja de recorte de SplitText cortaría las
+                        // ascendentes y las descendentes.
+                        mask: false,
+                    });
+                }
+
+                const eyebrow = titleColumn?.querySelector(':scope > p') ?? null;
+                if (eyebrow) {
+                    revealSection(eyebrow, {
+                        y: 18,
+                        duration: 0.65,
+                        ease: 'power2.out',
+                    });
+                }
+
+                const description = heading.children.length > 1 ? heading.children[1] : null;
+                if (description) {
+                    revealSection(description, {
+                        y: 22,
+                        duration: 0.7,
+                        ease: 'power2.out',
+                        delay: 0.08,
+                    });
+                }
             }
 
             // ...then the chips cascade down the narrow column. `selector` picks

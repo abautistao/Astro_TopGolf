@@ -122,8 +122,18 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
     }
 
     /* La imagen lleva la sombra suave del origen (--shadow), expresada sobre
-       --surface-brand-primary para no fijarla a un color literal. */
-    .intro-image img {
+       --surface-brand-primary para no fijarla a un color literal.
+       La sombra vive en el MARCO y no en la `<img>` porque el marco recorta
+       (ver abajo): dentro de un `overflow: hidden` la sombra de la imagen
+       quedaría recortada y se perdería. El resultado dibujado es el mismo. */
+    .intro-image {
+        /* La caja recorta a la foto: es lo que permite que el zoom por scroll
+           (`zoomImage`) escale la imagen sin que asome un borde por fuera del
+           marco. El radio repite el `rounded-[32px]` de la propia `<img>` para
+           que el recorte no convierta las esquinas redondeadas en rectas
+           durante el zoom. */
+        overflow: hidden;
+        border-radius: 32px;
         box-shadow: 0 24px 70px color-mix(in srgb, var(--surface-brand-primary) 14%, transparent);
     }
 
@@ -137,14 +147,24 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
 </style>
 
 <script>
-    import { initMotion, revealSection } from "../../scripts/motion";
+    import { initMotion, revealSection, splitReveal, zoomImage } from "../../scripts/motion";
 
     /*
-     * Intro motion (T3) — decision 5: fire-once, no `scrub`. The band is below
-     * the fold, so both columns may reveal on scroll and are then left alone.
+     * Intro motion (T9) — decision 5: fire-once, no `scrub` en los revelados.
+     * La banda está por debajo del pliegue, así que sus dos columnas pueden
+     * revelarse al hacer scroll y después se dejan quietas. El único `scrub`
+     * del bloque es el zoom de la foto, que es scroll puro y no compite con
+     * ningún control.
+     *
+     * POR QUÉ EL TEXTO NO SE REVELA COMO UN BLOQUE: dentro de `.c33-copy`
+     * viven el título, que `splitReveal` ya deja partido y en opacidad 0 al
+     * cargar, y el botón, que es focusable y por S13 no puede quedar
+     * invisible. Un fade en el contenedor taparía las palabras recién
+     * divididas, así que el antetítulo y el párrafo se revelan sueltos y el
+     * título se arma por partes.
      *
      * WHY there is no `:global([data-motion="ready"])` hidden-state rule for
-     * these two elements (unlike the `scale` rule the hero needs for its
+     * these elements (unlike the `scale` rule the hero needs for its
      * parallax): `revealSection` is built on `gsap.from()`, which records the
      * element's CURRENT value as the tween's END state the moment the tween is
      * created. A stylesheet rule that pre-hid the element under the readiness
@@ -160,14 +180,44 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
         // scoped by the `c33-` prefix, so nothing here can reach a sibling
         // block on the same page (components 32-38 all render together).
         document.querySelectorAll('.c33-section').forEach((section) => {
-            // Eyebrow, title, paragraph and CTA settle as ONE group: they are
-            // read as a single sentence, so splitting them would fight the copy.
             const copy = section.querySelector('.c33-copy');
-            if (copy) {
-                revealSection(copy, {
-                    y: 34,
+
+            // The title assembles word by word. NEVER when the editor left it
+            // as an `h1`: an `h1` can be the LCP element, and `splitReveal`
+            // writes `opacity: 0` on every part at load.
+            const title = copy?.querySelector('.intro-title') ?? null;
+            if (title && title.tagName !== 'H1') {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
                     duration: 0.75,
-                    ease: 'power3.out',
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes por arriba y por abajo.
+                    mask: false,
+                });
+            }
+
+            // The eyebrow is the first direct `<p>` of the copy column and the
+            // paragraph the first direct `<div>`; both are plain text, so they
+            // can be revealed on their own.
+            const eyebrow = copy?.querySelector(':scope > p') ?? null;
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            const paragraph = copy?.querySelector(':scope > div') ?? null;
+            if (paragraph) {
+                revealSection(paragraph, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.1,
                 });
             }
 
@@ -181,6 +231,19 @@ const textColor = color_texto_override || "var(--surface-brand-primary)";
                     ease: 'power3.out',
                     delay: 0.08,
                 });
+
+                // Slow scroll-driven zoom on the photo. `from: 1.05` starts the
+                // image slightly oversized and the scrub brings it back to 1;
+                // the clipping frame (`.intro-image`, `overflow: hidden`) keeps
+                // every edge covered the whole way.
+                const image = figure.querySelector('img');
+                if (image) {
+                    zoomImage(image, {
+                        from: 1.05,
+                        to: 1,
+                        duration: 1.2,
+                    });
+                }
             }
         });
     }

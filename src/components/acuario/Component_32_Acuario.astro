@@ -310,7 +310,7 @@ const mostrarPanel = Boolean(panel_tag || panel_titulo || puntos.length || panel
 </style>
 
 <script>
-    import { initMotion, parallaxLayer } from "../../scripts/motion";
+    import { initMotion, parallaxLayer, ambientBubbles } from "../../scripts/motion";
 
     /*
      * Hero motion (T2) — decision 4: this is the LCP-critical block, so the
@@ -333,6 +333,34 @@ const mostrarPanel = Boolean(panel_tag || panel_titulo || puntos.length || panel
         // uncover the edge of the container.
         document.querySelectorAll('.hero-bg').forEach((layer) => {
             parallaxLayer(layer, { distance: 8 });
+
+            // Burbujas de ambiente sobre la foto. El anfitrión es el
+            // `<section class="hero">` — el padre directo de la foto — porque
+            // es el único contenedor del bloque que recorta (`overflow-hidden`)
+            // y que es `relative`: las burbujas se quedan dentro del marco y
+            // no mueven nada del layout.
+            //
+            // POR QUÉ NO QUEDAN ENCIMA DEL TEXTO: el texto vive en `.container`,
+            // que lleva `z-[2]`, mientras que las burbujas se quedan en el
+            // nivel `auto` del propio `section`. El orden de pintado deja el
+            // texto por encima de ellas. Y las burbujas no capturan el puntero
+            // (`pointer-events: none`) ni llegan al árbol de accesibilidad
+            // (`aria-hidden`), así que son atmósfera, no contenido.
+            //
+            // Sólo hay burbujas si hay foto: sin imagen de fondo el velo es
+            // liso y no hay nada que habitar.
+            const host = layer.parentElement;
+            if (!host) {
+                return;
+            }
+
+            ambientBubbles(host, {
+                count: 10,
+                maxOnMobile: 5,
+                duration: 18,
+                rise: 110,
+                opacity: 0.28,
+            });
         });
 
         // The glass panel drifts against the background at half the travel, to

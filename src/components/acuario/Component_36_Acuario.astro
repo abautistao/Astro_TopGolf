@@ -313,14 +313,28 @@ const arrowMaterial = "↗";
        *   .transition-transform  { transition-property: transform, translate, scale, rotate; }
        *   .-translate-y-\[5px\] { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
        * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
-       * property, not on `transform`, so it composes with GSAP's inline
-       * transform instead of competing for it — the lift survives either way.
-       * (2) `transition-property` lists `translate` too, so `transition: none`
-       * would also delete the lift's easing and turn a 200ms hover into an
-       * instant snap. Listing Tailwind's own set minus `transform` removes the
-       * double-eased channel and leaves the hover exactly as it was, duration and
+       * property, not on `transform`, so it does not compete with GSAP's inline
+       * transform for the same channel. (2) `transition-property` lists
+       * `translate` too, so `transition: none` would also delete the lift's
+       * easing and turn a 200ms hover into an instant snap. Listing Tailwind's
+       * own set minus `transform` removes the double-eased channel and leaves the
+       * hover exactly as it was, duration and
        * timing-function included, because this rule overrides one longhand and
        * inherits the rest of the shorthand from `.transition-transform`.
+       *
+       * CORRECTION (L18, measured in Chromium 149): the previous version of
+       * this comment claimed that the Tailwind lift "survives GSAP owning the
+       * transform". That is FALSE. When GSAP takes the transform of an element
+       * it writes `translate: none; rotate: none; scale: none` inline, and an
+       * inline declaration outranks any class rule, so a `hover:-translate-y-*`
+       * on that same element stops applying altogether. The
+       * `transition-property` fix above is still needed and still correct — it
+       * stops CSS from interpolating GSAP's per-frame writes — but it never
+       * protected the lift. The rule that keeps a lift alive is ONE OWNER PER
+       * ELEMENT: the affordance has to be GSAP's own (`hoverDepth`'s `lift`) or
+       * it has to live on a child GSAP never touches. Since T9 the cards carry
+       * `hoverDepth`, so the elevation the reader sees is GSAP's own `lift`
+       * and Tailwind's `hover:-translate-y-[5px]` is inert on them.
        *
        * WHY under the guard: with JS off, reduced motion on, or before the
        * helper initializes, `data-motion` is never written, no inline transform
@@ -336,13 +350,19 @@ const arrowMaterial = "↗";
 </style>
 
 <script>
-    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+    import { initMotion, revealSection, splitReveal, hoverDepth } from "../../scripts/motion";
 
     /*
-     * Teacher kit motion (T4) — decision 5: fire-once, no `scrub`. This block has
+     * Teacher kit motion (T9) — decision 5: fire-once, no `scrub`. This block has
      * no scrubbed layer either: every link in it is a document download the
      * reader can hit while it is still moving, so nothing is allowed to keep
      * transforming while they do.
+     *
+     * UN SOLO DUEÑO POR ELEMENTO: el transform de cada elemento pertenece a
+     * una sola cosa. El encabezado lo reparten el `splitReveal` del título y
+     * los revelados del antetítulo y de la descripción; la rejilla de
+     * documentos la sube el reveal y el transform de CADA tarjeta es del
+     * `hoverDepth` (por eso el reveal ya no apunta tarjeta por tarjeta).
      *
      * WHY the root carries a new `c36-section` class and nothing else: every
      * other anchor the script needs already had a `c36-` prefix, but the `<section>`
@@ -353,14 +373,14 @@ const arrowMaterial = "↗";
      * componente-33: it changes no layout, no copy, no colour, and it declares
      * no CSS of its own.
      *
-     * WHY there is no hidden-state CSS: `revealSection` / `revealStagger` are
-     * built on `gsap.from()`, which reads the element's CURRENT value as the
-     * tween's END state when the tween is created. A stylesheet rule that
-     * pre-hid an element under `[data-motion="ready"]` would be read as the
-     * destination and the tween would animate `opacity: 0 → 0`, stranding the
-     * block invisible forever. The hidden state comes from the tween instead,
-     * which is also what keeps decision 3 honest: no JS, no readiness
-     * attribute, no inline style, no hidden content.
+     * WHY there is no hidden-state CSS: `revealSection` is built on
+     * `gsap.from()`, which reads the element's CURRENT value as the tween's END
+     * state when the tween is created. A stylesheet rule that pre-hid an
+     * element under `[data-motion="ready"]` would be read as the destination and
+     * the tween would animate `opacity: 0 → 0`, stranding the block invisible
+     * forever. The hidden state comes from the tween instead, which is what
+     * keeps decision 3 honest: no JS, no readiness attribute, no inline style,
+     * no hidden content.
      *
      * WHY `.c36-privacy` is left alone: like the `<video>` in componente-34, it
      * is a line whose loss the reader cannot recover by scrolling on, and it is
@@ -371,38 +391,78 @@ const arrowMaterial = "↗";
         // nothing here can reach a sibling block on the same page (components
         // 32-38 all render together).
         document.querySelectorAll('.c36-section').forEach((section) => {
-            // The description column is a direct child of the two-column heading
-            // grid, so its parent IS the heading group; the title's own column is
-            // the fallback anchor for the (rarer) block configured with no
-            // description at all. `.c36-muted` is unique here — the cards use
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves its parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
+            //
+            // `.c36-muted` is unique in this block — the cards use
             // `c36-card-muted` and the materials block `c36-materials-muted` —
-            // so this lookup cannot land on the wrong block.
+            // so this lookup cannot land on the wrong element.
             const description = section.querySelector('.c36-muted');
             const title = section.querySelector('.c36-title');
-            const heading = (description ?? title)?.parentElement ?? null;
 
-            if (heading) {
-                revealSection(heading, {
-                    y: 32,
+            if (title && title.tagName !== 'H1') {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
                     duration: 0.75,
-                    ease: 'power3.out',
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes.
+                    mask: false,
                 });
             }
 
-            // Three document cards in a row, visually uniform, so this is the
-            // strongest stagger on the page: even per-item offset and a longer
-            // gap than the smaller chip-style sequences, because these cards are
-            // the block's primary content and deserve to be read one at a time.
+            const eyebrow = title?.parentElement?.querySelector(':scope > p') ?? null;
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            if (description) {
+                revealSection(description, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.08,
+                });
+            }
+
+            // Three document cards in a row, visually uniform. The reveal stays
+            // on the ROW and not on each card: the card is an `<a>` (focusable,
+            // so a `gsap.from()` on it would leave it invisible AND tabbable if
+            // the trigger never fired — S13) and, on top of that, `hoverDepth` is
+            // the owner of the card's transform. The row is revealed with
+            // `opacityFrom: 1`, es decir, sólo transform: los enlaces de las
+            // tarjetas NUNCA quedan en `opacity: 0`.
             const firstCard = section.querySelector('.c36-card');
             const cardsRow = firstCard?.parentElement ?? null;
 
             if (cardsRow) {
-                revealStagger(cardsRow, {
-                    selector: '.c36-card',
-                    stagger: 0.11,
+                revealSection(cardsRow, {
+                    opacityFrom: 1,
                     y: 32,
-                    duration: 0.7,
+                    duration: 0.75,
                     ease: 'power3.out',
+                });
+
+                // Pointer-driven depth on the cards themselves, desktop only:
+                // the helper registers it inside a `gsap.matchMedia()` of
+                // `(hover: hover) and (pointer: fine)`. The card IS the link,
+                // so the whole hit area travels with the tilt and the pointer
+                // never loses the control it is over.
+                hoverDepth(section.querySelectorAll('.c36-card'), {
+                    maxTilt: 6,
+                    lift: -6,
+                    scale: 1.02,
                 });
             }
 
@@ -423,13 +483,15 @@ const arrowMaterial = "↗";
                 ease: 'power3.out',
             });
 
+            // The links row is a plain `<div>`; the links inside it are
+            // focusable, so the row's entrance is transform-only (`opacityFrom:
+            // 1`): los enlaces se mueven, pero nunca quedan transparentes.
             const firstLink = section.querySelector('.c36-material-link');
             const linksRow = firstLink?.parentElement ?? null;
 
             if (linksRow) {
-                revealStagger(linksRow, {
-                    selector: '.c36-material-link',
-                    stagger: 0.07,
+                revealSection(linksRow, {
+                    opacityFrom: 1,
                     y: 14,
                     duration: 0.5,
                     ease: 'power2.out',

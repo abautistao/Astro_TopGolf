@@ -87,6 +87,29 @@ const idBase = `c37-${(titulo || "cotizador").toString().toLowerCase().replace(/
 const money = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 });
 const formatMoney = (value: number) => money.format(value);
 
+// El contador del precio sólo puede activarse cuando el helper va a escribir
+// EXACTAMENTE el mismo texto que se ve sin motion: termina escribiendo
+// `prefix + valor + suffix`. `Intl` agrupa los miles con coma ("$1,200") y el
+// helper no agrupa, así que un precio de $1,000 o más se queda sin contador y
+// muestra siempre su valor final. El marcado trae siempre el valor final, de
+// modo que sin motion —o con movimiento reducido— el precio se ve igual.
+const precioContable = (precio: number): { valor: number; prefijo: string } | null => {
+    const texto = formatMoney(precio);
+    const partes = /^([^0-9]+)([0-9]+)$/.exec(texto);
+
+    if (!partes) {
+        return null;
+    }
+
+    const valor = Number(partes[2]);
+
+    if (!Number.isFinite(valor) || valor <= 0) {
+        return null;
+    }
+
+    return { valor, prefijo: partes[1] ?? '' };
+};
+
 // Mismo normalizador que el del script de cliente, para que el primer render
 // (servidor) coincida con el recálculo (navegador) y no haya un salto visible.
 const normalizarPrecio = (value: unknown) => Math.max(0, Math.round(Number(value) || 0));
@@ -165,13 +188,18 @@ const haySimulador = listaPaquetes.length > 0;
             2 en tablet y 1 en móvil, con 18px de separación en los tres cortes. */}
         {listaPaquetes.length > 0 && (
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] mb-[32px]">
-                {listaPaquetes.map((p, indice) => (
+                {listaPaquetes.map((p, indice) => {
+                    // El precio cuenta hacia arriba sólo cuando el helper puede
+                    // escribir el mismo texto final (ver `precioContable`).
+                    const contable = precioContable(p.precio);
+
+                    return (
                     <article
                         class={`c37-tarjeta flex flex-col min-h-[330px] p-[26px] rounded-[24px] transition-transform duration-200 hover:-translate-y-[5px] ${p.destacado ? "c37-tarjeta-destacada" : ""}`}
                     >
                         <div class="flex items-start justify-between gap-4">
                             <div class="c37-precio font-[family-name:var(--font-principal)]">
-                                {formatMoney(p.precio)} <small class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold tracking-normal">por persona</small>
+                                <span data-count-to={contable?.valor} data-count-prefix={contable?.prefijo}>{formatMoney(p.precio)}</span> <small class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold tracking-normal">por persona</small>
                             </div>
                             {p.destacado && (
                                 <span class="c37-insignia w-fit shrink-0 px-[9px] py-[6px] rounded-[999px] font-[family-name:var(--font-secundaria)] text-[10px] font-bold uppercase tracking-[0.08em]">
@@ -207,7 +235,8 @@ const haySimulador = listaPaquetes.length > 0;
                             Calcular este paquete →
                         </button>
                     </article>
-                ))}
+                    );
+                })}
             </div>
         )}
 
@@ -576,14 +605,28 @@ const haySimulador = listaPaquetes.length > 0;
        *   .transition-transform  { transition-property: transform, translate, scale, rotate; }
        *   .-translate-y-\[5px\] { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
        * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
-       * property, not on `transform`, so it composes with GSAP's inline
-       * transform instead of competing for it — the lift survives either way.
-       * (2) `transition-property` lists `translate` too, so `transition: none`
-       * would also delete the lift's easing and turn a 200ms hover into an
-       * instant snap. Listing Tailwind's own set minus `transform` removes the
-       * double-eased channel and leaves the hover exactly as it was, duration and
+       * property, not on `transform`, so it does not compete with GSAP's inline
+       * transform for the same channel. (2) `transition-property` lists
+       * `translate` too, so `transition: none` would also delete the lift's
+       * easing and turn a 200ms hover into an instant snap. Listing Tailwind's
+       * own set minus `transform` removes the double-eased channel and leaves the
+       * hover exactly as it was, duration and
        * timing-function included, because this rule overrides one longhand and
        * inherits the rest of the shorthand from `.transition-transform`.
+       *
+       * CORRECTION (L18, measured in Chromium 149): the previous version of
+       * this comment claimed that the Tailwind lift "survives GSAP owning the
+       * transform". That is FALSE. When GSAP takes the transform of an element
+       * it writes `translate: none; rotate: none; scale: none` inline, and an
+       * inline declaration outranks any class rule, so a `hover:-translate-y-*`
+       * on that same element stops applying altogether. The
+       * `transition-property` fix above is still needed and still correct — it
+       * stops CSS from interpolating GSAP's per-frame writes — but it never
+       * protected the lift. The rule that keeps a lift alive is ONE OWNER PER
+       * ELEMENT: the affordance has to be GSAP's own (`hoverDepth`'s `lift`) or
+       * it has to live on a child GSAP never touches. Since T9 the package
+       * cards carry `hoverDepth`, so the elevation the reader sees is GSAP's
+       * own `lift` and Tailwind's `hover:-translate-y-[5px]` is inert on them.
        *
        * WHY under the guard: with JS off, reduced motion on, or before the
        * helper initializes, `data-motion` is never written, no inline transform
@@ -833,7 +876,7 @@ const haySimulador = listaPaquetes.length > 0;
 </script>
 
 <script>
-    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+    import { initMotion, revealSection, splitReveal, countUp, hoverDepth } from "../../scripts/motion";
 
     /*
      * Simulador de cotización motion (T5) — the only work unit in this feature
@@ -902,48 +945,99 @@ const haySimulador = listaPaquetes.length > 0;
         // root and is scoped by the `c37-` prefix, so nothing here can reach a
         // sibling block on the same page (components 32-38 all render together).
         document.querySelectorAll<HTMLElement>("[data-c37-cotizador]").forEach((seccion: HTMLElement) => {
-            // The eyebrow/title/description group settles as one object. The
-            // description column is a direct child of the two-column heading
-            // grid, so its parent IS the heading group; the title is the fallback
-            // anchor for the (rarer) block configured with no description, whose
-            // parent is only the title column. `.c37-apagado` is unique in this
-            // block — the cards use `c37-tarjeta-apagado` and the simulator panel
-            // uses `c37-panel-apagado` — so this lookup cannot land on the wrong
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves its parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
+            //
+            // `.c37-apagado` is unique in this block — the cards use
+            // `c37-tarjeta-apagado` and the simulator panel uses
+            // `c37-panel-apagado` — so this lookup cannot land on the wrong
             // element.
             const descripcion = seccion.querySelector<HTMLElement>(".c37-apagado");
             const titulo = seccion.querySelector<HTMLElement>(".c37-titulo");
-            const encabezado = (descripcion ?? titulo)?.parentElement ?? null;
 
-            if (encabezado) {
-                revealSection(encabezado, {
-                    y: 32,
+            if (titulo && titulo.tagName !== 'H1') {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 26,
                     duration: 0.75,
-                    ease: "power3.out",
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes.
+                    mask: false,
                 });
             }
 
-            // The package cards are the clearest stagger available on this block:
-            // uniform, side by side and display-only, and the only thing a reader
-            // can do inside one is press "Calcular este paquete", which a
-            // fire-once reveal that has finished long before the card is readable
-            // cannot interfere with. Same values as the document cards in
-            // `Component_36`, which carry the same Tailwind `transition-transform`
-            // hover lift, so the two blocks read at the same tempo. `.c37-tarjeta`
-            // is the card class; `.c37-tarjeta-cotizacion` is a DIFFERENT class
-            // token on the quote card inside the panel, so this selector cannot
-            // reach into the simulator.
+            // The eyebrow is the first direct `<p>` of the title's column.
+            const antetitulo = titulo?.parentElement?.querySelector(':scope > p') ?? null;
+            if (antetitulo) {
+                revealSection(antetitulo, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            if (descripcion) {
+                revealSection(descripcion, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.08,
+                });
+            }
+
+            // The package cards. The reveal stays on the ROW and not on each
+            // card: `hoverDepth` is the owner of the card's transform, and a
+            // `gsap.from()` on the same card would be a second owner of one
+            // transform (L18). The row is revealed with `opacityFrom: 1`, es
+            // decir, sólo transform: el botón "Calcular este paquete" de cada
+            // tarjeta NUNCA queda en `opacity: 0`.
+            //
+            // `.c37-tarjeta` is the card class; `.c37-tarjeta-cotizacion` is a
+            // DIFFERENT class token on the quote card inside the panel, so this
+            // selector cannot reach into the simulator.
             const primeraTarjeta = seccion.querySelector<HTMLElement>(".c37-tarjeta");
             const filaPaquetes = primeraTarjeta?.parentElement ?? null;
 
             if (filaPaquetes) {
-                revealStagger(filaPaquetes, {
-                    selector: ".c37-tarjeta",
-                    stagger: 0.11,
+                revealSection(filaPaquetes, {
+                    opacityFrom: 1,
                     y: 32,
-                    duration: 0.7,
-                    ease: "power3.out",
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+
+                // Pointer-driven depth on the package cards, desktop only: the
+                // helper registers it inside a `gsap.matchMedia()` of
+                // `(hover: hover) and (pointer: fine)`.
+                //
+                // The tilt is deliberately gentle here (maxTilt 4, lift -4):
+                // these cards hold a button, and every pixel the card travels
+                // moves that button with it. A wide tilt would make the reader
+                // chase the control with the pointer.
+                //
+                // NADA del simulador se inclina: los campos, el desplegable, el
+                // precio y los totales de `.c37-panel` quedan intactos (ver el
+                // WHY de más arriba).
+                hoverDepth(seccion.querySelectorAll<HTMLElement>(".c37-tarjeta"), {
+                    maxTilt: 4,
+                    lift: -4,
+                    scale: 1.01,
                 });
             }
+
+            // The package prices count up from zero. Only the elements that
+            // carry `data-count-to` are counted (the helper reads the
+            // attribute); the markup already shows the final price, so a price
+            // the editor typed with a thousands separator keeps its text and
+            // the counter simply skips it.
+            countUp(seccion.querySelectorAll<HTMLElement>("[data-count-to]"));
 
             // Nothing is registered for `.c37-panel` or anything inside it — see
             // the WHY above. This is the deliberate absence, not an oversight.
