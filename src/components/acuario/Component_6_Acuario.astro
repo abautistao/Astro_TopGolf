@@ -1,5 +1,6 @@
 ---
 import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
 
 export interface Props {
     titulo?: string;
@@ -75,10 +76,12 @@ const TitleTag = etiqueta_titulo;
 
     <!-- Imagen de fondo decorativa si se carga desde Strapi -->
     {imagen_decorativa_fondo && (
-        <img 
-            src={getStrapiUrl(imagen_decorativa_fondo)} 
-            alt="Fondo decorativo" 
+        <Image
+            src={getStrapiUrl(imagen_decorativa_fondo)}
+            alt="Fondo decorativo"
             class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 opacity-80"
+            inferSize={true}
+            loading="lazy"
         />
     )}
 
@@ -106,10 +109,12 @@ const TitleTag = etiqueta_titulo;
                         <!-- Imagen (Top) -->
                         <div class="aspect-[16/11] w-full overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)]">
                             {tarjeta_principal.imagen && (
-                                <img 
-                                    src={getStrapiUrl(tarjeta_principal.imagen)} 
+                                <Image
+                                    src={getStrapiUrl(tarjeta_principal.imagen)}
                                     alt={tarjeta_principal.titulo} 
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                    inferSize={true}
+                                    loading="lazy"
                                 />
                             )}
                         </div>
@@ -160,10 +165,12 @@ const TitleTag = etiqueta_titulo;
                             <!-- Imagen (Izquierda en desktop, Arriba en mobile) -->
                             <div class="w-full md:w-[42%] aspect-[4/3] md:aspect-[4/3] md:min-h-[190px] rounded-[20px] overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)] shrink-0">
                                 {card.imagen && (
-                                    <img 
+                                    <Image
                                         src={getStrapiUrl(card.imagen)} 
-                                        alt={card.titulo} 
+                                        alt={card.titulo}
                                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                        inferSize={true}
+                                        loading="lazy"
                                     />
                                 )}
                             </div>

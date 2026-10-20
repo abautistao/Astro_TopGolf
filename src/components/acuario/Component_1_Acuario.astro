@@ -172,17 +172,23 @@ const sectionClass = isCompleta
                                         </a>
                                     ) : (
                                         <a href={link}>
-
-                                            <picture class="block! w-full!">
-                                                {hasMobileImage && (
-                                                    <source media="(max-width: 767px)" srcset={bgMobileUrl} />
-                                                )}
-                                                <img
-                                                    src={bgUrl}
+                                            {hasMobileImage && (
+                                                <Image
+                                                    src={bgMobileUrl}
                                                     alt={altText}
-                                                    class="block! w-full! h-auto! max-w-full!"
+                                                    class="w-full h-full object-cover object-center block lg:hidden"
+                                                    inferSize={true}
+                                                    loading="lazy"
                                                 />
-                                            </picture>
+                                            )}
+
+                                            <Image
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="w-full h-full object-cover object-center hidden lg:block"
+                                                inferSize={true}
+                                                loading="lazy"
+                                            />
                                         </a>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
@@ -205,16 +211,25 @@ const sectionClass = isCompleta
                                         </a>
                                     ) : (
                                         <a href={link}>
-                                            <picture class="absolute! inset-0! w-full! h-full! block!">
-                                                {hasMobileImage && (
-                                                    <source media="(max-width: 767px)" srcset={bgMobileUrl} />
-                                                )}
-                                                <img
-                                                    src={bgUrl}
+                                            
+                                            {hasMobileImage && (
+                                                <Image
+                                                    src={bgMobileUrl}
                                                     alt={altText}
-                                                    class="absolute! inset-0! w-full! h-full! object-cover!"
+                                                    class="absolute! inset-0! w-full! h-full! block! lg:hidden!"
+                                                    inferSize={true}
+                                                    loading="lazy"
                                                 />
-                                            </picture>
+                                            )}
+
+                                            <Image
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="absolute! inset-0! w-full! h-full! object-cover! block! lg:hidden!"
+                                                inferSize={true}
+                                                loading="lazy"
+                                            />
+                                            
                                         </a>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
