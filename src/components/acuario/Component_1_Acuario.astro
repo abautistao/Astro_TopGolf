@@ -107,7 +107,7 @@ const isCompleta = bannerMode === "completa";
 // para que la imagen dicte el alto del banner y nunca se recorte.
 const sectionClass = isCompleta
     ? "relative! z-10! w-screen! left-1/2! -ml-[50vw]! bg-[var(--surface-brand-primary)]!"
-    : "relative! z-10! w-screen left-1/2! -ml-[50vw]! aspect-[4/5]! md:aspect-auto! md:h-[680px]! flex! items-center! justify-center! overflow-hidden! bg-[var(--surface-brand-primary)]!";
+    : "relative! z-10! w-screen left-1/2! -ml-[50vw]! h-[450px] md:h-[680px]! flex! items-center! justify-center! overflow-hidden! bg-[var(--surface-brand-primary)]!";
 ---
 
 {/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
@@ -218,7 +218,7 @@ const sectionClass = isCompleta
                                                 <Image
                                                     src={bgMobileUrl}
                                                     alt={altText}
-                                                    class="absolute! inset-0! w-full! h-full! block! lg:hidden!"
+                                                    class="absolute! inset-0! w-full! h-full! object-cover! block! lg:hidden!"
                                                     inferSize={true}
                                                     loading="eager"
                                                     fetchpriority="high"
