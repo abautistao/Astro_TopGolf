@@ -67,7 +67,7 @@ const cells = [
 </section>
 
 <script>
-    import { initMotion, revealStagger, hoverDepth, zoomImage } from "../../scripts/motion";
+    import { initMotion, revealStagger, hoverDepth, zoomImage, horizontalScroll } from "../../scripts/motion";
 
     /*
      * Movimiento de la rejilla de imágenes (T4).
@@ -101,6 +101,34 @@ const cells = [
                     ease: 'power3.out',
                 });
             }
+
+            /* En escritorio la rejilla se convierte en una pista horizontal y
+               el bloque viaja de lado a lado mientras el scroll lo atraviesa.
+
+               Por qué aquí y no en otra rejilla: el helper mide si la pista
+               DESBORDA la ventana y, si no cabe, la deja como rejilla y no
+               clava nada. Una rejilla de 3 tarjetas de 380px cabe de sobra en
+               una pantalla de 1440px, así que el efecto nunca se habría
+               visto. Cuatro celdas de 560px miden 2312px: desbordan con
+               holgura y el viaje es real.
+
+               El helper lo hace dentro de un `gsap.matchMedia()`
+               `(min-width: 1024px)`, así que por debajo de ese ancho la
+               rejilla original vuelve intacta y nunca se mezclan los dos
+               layouts. `itemSelector` acota los elementos a los que el helper
+               da ancho (si no, los tomaría a todos los descendientes).
+
+               El helper recorta la pista mientras viaja (fija
+               \`overflow: hidden\` en la sección mientras la vista de
+               escritorio está activa, y lo devuelve a su valor original al
+               salir de ella), así que las celdas nunca salen por el borde
+               derecho de la pantalla ni ensanchan la página. */
+            horizontalScroll(section, {
+                track: grid,
+                itemSelector: '.c30-item',
+                itemWidth: 560,
+                minWidth: 1024,
+            });
 
             // La profundidad la aporta el puntero, sólo en escritorio: el
             // helper registra el efecto dentro de un `gsap.matchMedia()`

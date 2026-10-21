@@ -243,7 +243,7 @@ const tituloPartible = htmlTag !== "h1";
 </style>
 
 <script>
-    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles, horizontalScroll } from "../../scripts/motion";
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
 
     /*
      * Movimiento del bloque de promociones (T4).
@@ -253,7 +253,7 @@ const tituloPartible = htmlTag !== "h1";
      *   - `.c8-card`     → `hoverDepth` (inclinación + lift).
      *   - `.c8-card-img` → `zoomImage` (zoom por scroll).
      *   - `.c8-bg`       → `parallaxLayer` (fondo de la sección).
-     *   - `.c8-grid`     → `horizontalScroll` (pista horizontal en escritorio).
+     *   - `.c8-grid`     → `revealStagger` (los items entran escalonados).
      *
      * El reveal nunca apunta al botón de compra, que es focusable: un
      * `gsap.from()` sobre un control lo deja invisible y tabulable si su
@@ -286,21 +286,6 @@ const tituloPartible = htmlTag !== "h1";
                     y: 30,
                     duration: 0.7,
                     ease: 'power3.out',
-                });
-
-                /* En escritorio la rejilla se convierte en una pista
-                   horizontal. El helper lo hace dentro de un
-                   `gsap.matchMedia()` `(min-width: 1024px)`, así que por
-                   debajo de ese ancho la rejilla original vuelve intacta y
-                   nunca se mezclan los dos layouts. `itemWidth` replica el
-                   `max-w-[380px]` de las tarjetas y `itemSelector` acota los
-                   elementos a los que el helper da ancho (si no, los tomaría
-                   a todos los descendientes). */
-                horizontalScroll(section, {
-                    track: grid,
-                    itemSelector: '.c8-item',
-                    itemWidth: 380,
-                    minWidth: 1024,
                 });
             }
 

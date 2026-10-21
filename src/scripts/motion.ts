@@ -26,8 +26,15 @@ import SplitText from 'gsap/SplitText';
 /* Types                                                                      */
 /* -------------------------------------------------------------------------- */
 
-/** Anything this module knows how to resolve into a list of elements. */
-export type MotionTarget = Element | Element[] | NodeListOf<Element> | string;
+/**
+ * Anything this module knows how to resolve into a list of elements.
+ *
+ * `null` is part of the type on purpose: `element.querySelector(...)` returns
+ * `Element | null`, and every caller of these helpers has a query result to
+ * hand over. Accepting `null` here removes a narrowing dance from every call
+ * site, and the resolution below already treats it as "no targets".
+ */
+export type MotionTarget = Element | Element[] | NodeListOf<Element> | string | null;
 
 /** Starting element of a stagger, mirroring GSAP's distribute vocabulary. */
 export type MotionStaggerFrom = 'start' | 'center' | 'end' | 'edges' | 'random' | number;
@@ -1425,6 +1432,16 @@ export function horizontalScroll(el: MotionTarget, opts: HorizontalScrollOptions
                 }
                 continue;
             }
+
+            // The travelling track must be clipped, or its items spill out of
+            // the section and widen the whole page. The clip belongs to the
+            // helper rather than to the caller's markup: forgetting a utility
+            // class on the section is the easiest way to ship a horizontal
+            // scroll that breaks the page's width.
+            //
+            // GSAP's media context reverts this inline style when the viewport
+            // stops qualifying, so the original overflow comes back untouched.
+            gsap.set(target, { overflow: 'hidden' });
 
             const tween = gsap.to(track, {
                 x: () => -distance(),
