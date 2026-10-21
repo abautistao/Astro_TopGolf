@@ -591,6 +591,49 @@ function randomBetween(min: number, max: number): number {
 }
 
 /**
+ * The scroll position at which a reveal should start, CLAMPED so it can
+ * always be reached.
+ *
+ * WHY the clamp: a `top 85%` start means "the element's top reaches 85% of
+ * the viewport height". An element near the very bottom of the document may
+ * never be scrolled that far - the page simply ends before it gets there - so
+ * its trigger never fires and its content stays invisible for ever. That is
+ * the worst possible failure: content that is present in the HTML, reachable
+ * by keyboard, and invisible.
+ *
+ * Clamping the start to the maximum scrollable position makes every reveal
+ * reachable, and it changes nothing for the elements in the middle of a page:
+ * their desired start is well below the maximum, so the clamp does not apply.
+ *
+ * A start expressed as anything other than the default `top 85%` is passed
+ * through untouched - the caller asked for a specific behaviour.
+ */
+function reachableStart(trigger: Element, start: string): number | string {
+    if (start !== 'top 85%') {
+        return start;
+    }
+
+    const maxScroll = ScrollTrigger.maxScroll(window);
+    const elementTop = trigger.getBoundingClientRect().top + window.scrollY;
+    const desired = elementTop - window.innerHeight * 0.85;
+
+    if (desired <= maxScroll - 1) {
+        return desired;
+    }
+
+    // The 85% line is unreachable: the document ends before the element can
+    // be scrolled that far. Fall back to the point where the element's top
+    // reaches the BOTTOM of the viewport, which is the earliest moment the
+    // element is genuinely on screen - and which the page can always reach,
+    // with room to spare.
+    //
+    // The margin matters: a start that lands EXACTLY on the maximum scroll
+    // position is never crossed, so the trigger would never fire.
+    const fallback = elementTop - window.innerHeight;
+    return Math.min(fallback, Math.max(0, maxScroll - 1));
+}
+
+/**
  * Create the ScrollTrigger for a fire-once reveal (decision 5).
  *
  * `once: true` means ScrollTrigger fires exactly once and kills itself; combined
@@ -604,7 +647,7 @@ function createRevealTrigger(
     return ScrollTrigger.create({
         animation: tween,
         trigger,
-        start,
+        start: reachableStart(trigger, start),
         once: true,
     });
 }
@@ -873,7 +916,7 @@ export function countUp(el: MotionTarget, opts: CountUpOptions = {}): void {
 
         const trigger = ScrollTrigger.create({
             trigger: target,
-            start: opts.start ?? 'top 85%',
+            start: reachableStart(target, opts.start ?? 'top 85%'),
             once: true,
             onEnter: () => {
                 // Write the start value BEFORE the tween begins, so the number
