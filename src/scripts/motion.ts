@@ -286,6 +286,7 @@ export function initMotion(): void {
 
     bindReducedMotionWatch();
     bindFocusRescue();
+    scheduleRefresh();
 
     if (typeof document !== 'undefined') {
         document.documentElement.setAttribute(READY_ATTRIBUTE, READY_VALUE);
@@ -334,6 +335,42 @@ function bindReducedMotionWatch(): void {
 /* -------------------------------------------------------------------------- */
 /* Decision 7 — cleanup                                                       */
 /* -------------------------------------------------------------------------- */
+/**
+ * Refresh the triggers once the page has settled.
+ *
+ * WHY: a layout that changes AFTER the triggers are created invalidates their
+ * positions. An image without a reserved height changes the document height by
+ * hundreds of pixels when it loads, and a trigger computed against the old
+ * layout can end up past the end of the page - where it can never fire, and
+ * its content stays invisible for ever.
+ *
+ * Measured on a live page: a trigger's start was computed against a document
+ * 515px taller than the settled one, which put its start 121px PAST the
+ * maximum scroll position. The page could not scroll that far, so the reveal
+ * never happened.
+ *
+ * GSAP recomputes a function-based `start` on every refresh, so refreshing is
+ * enough: the reachability clamp is re-evaluated against the settled layout.
+ */
+function scheduleRefresh(): void {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return;
+    }
+
+    const refresh = (): void => ScrollTrigger.refresh();
+
+    if (document.readyState === 'complete') {
+        window.setTimeout(refresh, 300);
+        window.setTimeout(refresh, 1500);
+        return;
+    }
+
+    window.addEventListener('load', () => {
+        window.setTimeout(refresh, 300);
+        window.setTimeout(refresh, 1500);
+    }, { once: true });
+}
+
 /**
  * S13 safety net: a control must never be invisible and still tabbable.
  *
@@ -647,7 +684,12 @@ function createRevealTrigger(
     return ScrollTrigger.create({
         animation: tween,
         trigger,
-        start: reachableStart(trigger, start),
+        // The start is a FUNCTION, not a value: GSAP re-evaluates a
+        // function-based start on every refresh, and the clamp has to be
+        // re-evaluated too. A start computed once, against a layout that
+        // later changes, can end up past the end of the page - where it can
+        // never fire.
+        start: () => reachableStart(trigger, start),
         once: true,
     });
 }
@@ -916,7 +958,7 @@ export function countUp(el: MotionTarget, opts: CountUpOptions = {}): void {
 
         const trigger = ScrollTrigger.create({
             trigger: target,
-            start: reachableStart(target, opts.start ?? 'top 85%'),
+            start: () => reachableStart(target, opts.start ?? 'top 85%'),
             once: true,
             onEnter: () => {
                 // Write the start value BEFORE the tween begins, so the number
