@@ -132,7 +132,7 @@ const HeadingTagSubtitulo = getHeadingTag(nivel_heading_subtitulo);
 
       <!-- Texto descriptivo -->
       <div
-        class="text-gray-600 !mb-8 leading-relaxed text-sm md:text-base prose prose-sm max-w-none prose-p:!my-2"
+        class="text-gray-600 !mb-6 leading-relaxed text-sm md:text-base prose prose-sm max-w-none prose-p:!my-2"
       >
         <div set:html={descriptionHtml} />
       </div>
@@ -199,5 +199,9 @@ const HeadingTagSubtitulo = getHeadingTag(nivel_heading_subtitulo);
   /* Estilos específicos si son necesarios, pero estamos usando Tailwind directo como se solicitó */
   .prose :global(p) {
     margin-bottom: 0 !important;
+  }
+
+  .prose :global(strong) {
+    font-family: var(--font-shields-sans-black);
   }
 </style>

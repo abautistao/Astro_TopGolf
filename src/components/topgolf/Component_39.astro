@@ -57,11 +57,14 @@ const HeadingTag = getHeadingTag(nivel_heading);
   <div class="mt-10 flex flex-row items-center justify-center gap-4">
     <ButtonGroup botones={componentButtons} />
   </div>
-  <div
-    class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose strapi-rich-text2 px-3"
-  >
-    <div set:html={texto_finalHtml || "Lorem Ipsum"} />
-  </div>
+
+  {texto_final && (    
+    <div
+      class="mb-10 font-(family-name:--font-shields-sans-regular) text-xs font-normal mt-8 text-center text-[var(--neutral-background-strong)] max-w-6xl mx-auto prose strapi-rich-text2 px-3"
+    >
+      <div set:html={texto_finalHtml || "Lorem Ipsum"} />
+    </div>
+  )}
 </section>
 <style>
   .text-shadow-md {
