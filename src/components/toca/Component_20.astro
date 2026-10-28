@@ -200,6 +200,14 @@ const getOptions = (optionsStr?: string) => {
         <!-- Header -->
         {(subtitulo || titulo) && (
             <div class="text-center mb-12 lg:mb-16">
+                {titulo && (
+                    <h2
+                        class="text-[var(--accent-feedback-strong)]  text-xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-8"
+                    >
+                        {data.titulo}
+                    </h2>
+                )}
+
                 { description && (
                     <div
                         set:html={stringifyRichText(description)}
@@ -208,13 +216,6 @@ const getOptions = (optionsStr?: string) => {
                     </div>
                 ) }
                 
-                {titulo && (
-                    <h2
-                        class="text-[var(--accent-feedback-strong)]  text-xl lg:text-3xl font-bold uppercase font-(family-name:--font-titling-gothic-fb-extended-bold) mb-8"
-                    >
-                        {data.titulo}
-                    </h2>
-                )}
             </div>
         )} 
 

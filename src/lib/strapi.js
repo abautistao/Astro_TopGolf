@@ -226,3 +226,7 @@ export const getLocalizedUrl = (url, locale = 'en') => {
   return `/${locale}/${cleanPath}`;
 };
 
+export const getHeadingTag = (nivel) => {
+    const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+    return validTags.includes(nivel || "") ? nivel : "h1";
+};

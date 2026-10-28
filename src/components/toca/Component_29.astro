@@ -1,0 +1,208 @@
+---
+// src/components/BannerPromotional.astro
+import { Image } from "astro:assets";
+import { getStrapiUrl, stringifyRichText, getHeadingTag } from '../../lib/strapi.js';
+import type { Boton } from "./elements/Button.astro";
+import ButtonGroup from "./elements/Button.astro";
+
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    color_texto_titulo: string;
+    color_texto_subtitulo: string;
+    descripcion?: any;
+    imagen: any;
+    imagen_mobile: any;
+    background_color: string
+    nivel_heading_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    image_decoration: any;
+    show_banner_bottom: any;
+    label: string;
+    label_color: string;
+    label_background: string;
+    Boton: Boton[]
+}
+
+const {
+    titulo,
+    subtitulo,
+    color_texto_titulo,
+    color_texto_subtitulo,
+    descripcion,
+    imagen,
+    background_color,
+    nivel_heading_titulo,
+    image_decoration,
+    show_banner_bottom,
+    label,
+    label_color,
+    label_background,
+    Boton
+} = Astro.props;
+
+const image_desktop = getStrapiUrl(imagen);
+const imageDecoration = getStrapiUrl(image_decoration);
+
+const isVideo = (url: string | undefined | null) => {
+    if (!url) return false;
+    const cleanUrl = url.split("?")[0].toLowerCase();
+    return (
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm") ||
+        cleanUrl.endsWith(".ogg") ||
+        cleanUrl.endsWith(".mov")
+    );
+};
+
+const showVideo = isVideo(image_desktop);
+
+const HeadingTagTitulo = getHeadingTag(nivel_heading_titulo);
+const bg = background_color ? background_color : '#0004FF'
+const colorStrong = !show_banner_bottom ? '#00FFFF' : '#2afd94';
+---
+<div 
+    id="component-52-banner" 
+    class="content relative from-accent-pine to-brand-navy overflow-hidden pt-12 lg:pt-0"
+    >
+    {image_decoration && (
+        <Image
+            src={imageDecoration}
+            alt="foto"
+            class="w-full absolute inset-0 left-0"
+            inferSize={true}
+        />
+    )}
+
+    <div class="headerWrap relative py-6! px-6! lg:px-16! lg:py-20! grid grid-cols-1 md:grid-cols-[51%_49%] items-center gap-y-6">
+        
+        <!-- SECCIÓN TEXTO (Derecha en Desktop / Abajo en Mobile) -->
+        <div
+            class="self-center md:w-4/5 z-10"
+        >
+            {label && (
+                <span
+                    style={{ color: label_color, background: label_background }} 
+                    class="bg-(--accent-highlight-secondary) text-(--surface-brand-primary) font-bold! text-lg! px-3! py-1! mb-4! inline-block! font-(family-name:--font-shields-sans-bold)!"
+                    class:list={[{
+                        'p-0': label_background
+                    }]}
+                    >
+                    {label}
+                </span>
+            )}
+            <!-- Título Secundario -->
+            <HeadingTagTitulo
+                style={{ color: color_texto_titulo }}
+                class="font-medium! tracking-wider uppercase! mb-3! font-(family-name:--font-titling-gothic-fb-extended-bold)! text-center! md:text-left!"
+            >
+                <span style={{ color: color_texto_titulo}} class="block! leading-none text-accent-mint text-3xl! md:text-4xl! mb-4">{titulo}</span>
+                <span style={{ color: color_texto_subtitulo }}class="block! leading-none tracking-wide font-(family-name:--font-shields-sans-bold)!">
+                    {subtitulo}
+                </span>
+            </HeadingTagTitulo>
+
+            <!-- Párrafo Descriptivo -->
+            <div
+                class="text-base text-center! md:text-left! md:text-lg! font-light text-white leading-relaxed opacity-90 space-y-4 font-(family-name:--font-sharp-sans-medium) my-8"
+            >
+                <div class="strapi-rich-text" set:html={stringifyRichText(descripcion)} />
+            </div>
+
+            {Boton && Boton.length && (
+                <ButtonGroup botones={[...Boton]} clase="flex justify-center md:justify-start"/>
+            )}
+        </div>
+
+         <!-- SECCIÓN IMAGEN (Izquierda en Desktop / Arriba en Mobile) -->
+        <div class="w-full sm:w-3/4 md:w-full mx-auto">
+            <div
+                class="relative w-full h-64 md:h-100 overflow-hidden bg-gray-900 shadow-2xl z-10"
+            >
+                {showVideo ? (
+                <video
+                        src={image_desktop}
+                        loop
+                        playsinline
+                        preload="auto"
+                        controls
+                        class="absolute inset-0 w-full h-full object-cover"
+                    />
+                ) : (
+                    <Image
+                        src={image_desktop}
+                        alt="foto"
+                        class="w-full h-full object-cover object-center opacity-90 hover:scale-105 transition-transform duration-700"
+                        inferSize={true}
+                    />
+                )}
+            </div>
+        </div>
+
+        {show_banner_bottom && (
+            <div class="absolute inset-x-0 bottom-0 z-0 bg-[#2afd94] px-4 pb-4 pt-20 md:p-8 lg:px-16 -mt-20 -mx-4 md:m-0"></div>
+        )}
+    </div>
+    <!-- Contenido Flexible -->
+    
+</div>
+
+<section class="beneficios bg-[#0A0037] py-8">
+    <div class="container mx-auto px-6! lg:px-0!">
+        <h2 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-white text-lg lg:text-2xl flex flex-col">
+            <span>PRIMERO SE JUEGA.</span>
+            <span class="text-(--brand-interactive-base)">DESPUÉS SE CELEBRA.</span>
+        </h2>
+        <div class="py-8 grid grid-cols-1 lg:grid-cols-3 gap-7 text-white relative">
+            <div class="beneficio border-2 border-[#59FFC6] p-4">
+                <i class="fa-sharp fa-solid fa-futbol text-[#59FFC6] mb-2"></i>
+                <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-lg text-[#59FFC6]">
+                    2H
+                </h3>
+                <h4 class="font-(family-name:--font-sharp-sans-bold)! text-md">
+                    JUEGO EN LA FUTBOX
+                </h4>
+                <p class="font-(family-name:--font-shields-sans-regular)!">Juegos para todos los niveles y edades. Diversión desde el primer tiro.</p>
+            </div>
+            <div class="beneficio border-2 border-[#FA8CFF] p-4">
+                <i class="fa-solid fa-burger text-[#FA8CFF] mb-2"></i>
+                <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-lg">1</h3>
+                <h4 class="font-(family-name:--font-sharp-sans-bold)! text-md font-bold">
+                    PLATILLO A ELEGIR
+                </h4>
+                <p class="font-(family-name:--font-shields-sans-regular)!">Tu grupo juega lado a lado, sin separarse en toda la visita.</p>
+            </div>
+            <div class="beneficio border-2 border-[#eb3a56] p-4">
+                <i class="fa-solid fa-martini-glass text-[#eb3a56] mb-2"></i>
+                <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-lg">2</h3>
+                <h4 class="font-(family-name:--font-sharp-sans-bold)! text-md">
+                    BEBIDA
+                </h4>
+                <p class="font-(family-name:--font-shields-sans-regular)!">Montaje tipo catering con porciones calculadas por invitado.</p>
+            </div>
+        </div>
+
+        <div class="flex justify-center">
+            <a class="lg:max-w-1/4 font-(family-name:--font-titling-gothic-fb-extended-bold) blockmx-auto border-2 border-(--brand-interactive-base) font-bold! uppercase! tracking-tight leading-tight transition-all duration-200 whitespace-normal text-center! text-sm px-4! py-2! md:px-6! md:py-2! shadow-[3px_3px_0px_0px_black] md:shadow-[4px_4px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:md:translate-x-[1px] hover:md:translate-y-[1px] hover:md:shadow-[2px_2px_0px_0px_black]  text-(--brand-interactive-base)! hover:bg-(--brand-interactive-base)! hover:text-(--surface-brand-primary)!" href="#">DESCARGAR PDF</a>
+        </div>
+    </div>
+</section>
+
+<style define:vars={{ bg, colorStrong }}>
+    #component-52-banner {
+        background-color: var(--bg);
+    }
+    
+    /* Estilos para Rich Text */
+    .strapi-rich-text :global(p) {
+        margin-bottom: 1rem;
+    }
+    .strapi-rich-text :global(strong) {
+        font-weight: 700;
+        font-family: var(--font-shields-sans-semibold);
+        color: var(--colorStrong);
+    }
+
+    .strapi-rich-text :global(ul) {
+        
+    }
+</style>

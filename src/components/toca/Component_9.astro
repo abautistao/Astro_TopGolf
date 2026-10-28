@@ -119,12 +119,14 @@ const ProcessedTarjetas = rawData.slice(0, 3).map((card) => ({
                             <Fragment set:html={item.desc} />
                         </div>
 
-                        <a
-                            href={item.link}
-                            class="font-(family-name:--font-sharp-sans-medium) mt-auto text-[var(--surface-brand-secondary)] hover:text-[var(--accent-feedback-strong)] font-bold text-base transition-colors inline-block"
-                        >
-                            {item.label_link ? item.label_link : 'Leer más'}
-                        </a>
+                        {item.link && item.link != '#' && (
+                            <a
+                                href={item.link}
+                                class="font-(family-name:--font-sharp-sans-medium) mt-auto text-[var(--surface-brand-secondary)] hover:text-[var(--accent-feedback-strong)] font-bold text-base transition-colors inline-block"
+                            >
+                                {item.label_link ? item.label_link : 'Leer más'}
+                            </a>
+                        )}
                     </div>
                     </a>
                     
