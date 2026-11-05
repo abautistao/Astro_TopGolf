@@ -76,7 +76,7 @@ const {
     const reservacionId = getParameterByName('reservacion_id');
     const status = getParameterByName('status');
     const message = getParameterByName('message');
-    const urlFail = `/reservar/?funcion=pagos&reservacion_id=1AC-261105-003349023`
+    const urlFail = `/comprar/?funcion=pagos&reservacion_id=1AC-261105-003349023`
     if(status && status == "-1" ) {
         document.querySelector("#success")?.classList.toggle('hidden')
 
