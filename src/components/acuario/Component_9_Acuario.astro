@@ -74,7 +74,7 @@ const overlay = color_overlay ? color_overlay : 'transparent'
     id="component-9"
     class="w-full! py-12! md:py-20! relative! overflow-hidden!"
     style={{
-        backgroundColor: color_fondo || "#E8F6FD",
+        backgroundColor: color_fondo || "var(--surface-brand-primary)",
         backgroundImage: imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -89,7 +89,7 @@ const overlay = color_overlay ? color_overlay : 'transparent'
                 {/* Etiqueta Destacada (Listón) */}
                 {mostrar_tag_destacado && texto_tag_destacado && (
                     <div class="relative! mb-6!">
-                        <div class="bg-(--brand-interactive-base)! text-[#002A4E]! font-[family-name:var(--font-principal)]! font-bold! text-[18px]! md:text-[22px]! px-6! py-2! shadow-sm! inline-block!"
+                        <div class="bg-(--brand-interactive-base)! text-(--custom-color-01)! font-[family-name:var(--font-principal)]! font-bold! text-[18px]! md:text-[22px]! px-6! py-2! shadow-sm! inline-block!"
                              style="clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%); padding-right: 2.5rem;">
                             {texto_tag_destacado}
                         </div>
@@ -262,7 +262,7 @@ const overlay = color_overlay ? color_overlay : 'transparent'
     }
 
     .rich-text :global(h3) {
-        color: #66F179 !important;
+        color: var(--feedback-positive-base) !important;
         font-weight: bold;
         margin-bottom: 1rem;
     }

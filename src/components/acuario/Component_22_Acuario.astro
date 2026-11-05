@@ -120,7 +120,7 @@ const alignClass = (a?: "center" | "left" | "right") =>
                             {tarjeta.titulo && (
                                 <CardTag
                                     class="mt-5 font-[family-name:var(--font-principal)] text-[20px] md:text-[22px] font-bold uppercase leading-tight"
-                                    style={color_titulo ? { color: color_titulo } : { color: "var(--neutral-text-inverted, #ffffff)" }}
+                                    style={color_titulo ? { color: color_titulo } : { color: "var(--neutral-text-inverted)" }}
                                 >
                                     {tarjeta.titulo}
                                 </CardTag>
@@ -129,7 +129,7 @@ const alignClass = (a?: "center" | "left" | "right") =>
                             {tarjeta.subtitulo && (
                                 <span
                                     class="mt-1 font-[family-name:var(--font-secundaria)] text-[14px] md:text-[16px] font-normal leading-snug"
-                                    style={color_texto ? { color: color_texto } : { color: "var(--neutral-text-inverted, #ffffff)" }}
+                                    style={color_texto ? { color: color_texto } : { color: "var(--neutral-text-inverted)" }}
                                 >
                                     {tarjeta.subtitulo}
                                 </span>

@@ -29,7 +29,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
 ---
 
 <section 
-    class="c6-section w-full py-16 md:py-24 relative overflow-hidden bg-[#EAF5FC] z-10"
+    class="c6-section w-full py-16 md:py-24 relative overflow-hidden bg-(--surface-brand-primary) z-10"
     style={color_fondo ? `background-color: ${color_fondo}` : ""}
 >
     <!-- Fondo decorativo predeterminado (Peces, burbujas y algas) si no hay imagen de fondo cargada -->
@@ -37,39 +37,39 @@ const tituloPartible = etiqueta_titulo !== "h1";
         <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 opacity-40">
             <!-- Burbujas Bottom Left -->
             <div class="absolute bottom-10 left-10 flex flex-col gap-4 items-center">
-                <span class="w-3 h-3 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-60 animate-bounce"></span>
-                <span class="w-5 h-5 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-40 animate-pulse"></span>
-                <span class="w-2 h-2 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-70"></span>
+                <span class="w-3 h-3 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-60 animate-bounce"></span>
+                <span class="w-5 h-5 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-40 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-70"></span>
             </div>
             
             <!-- Burbujas Bottom Right -->
             <div class="absolute bottom-20 right-16 flex flex-col-reverse gap-3 items-center">
-                <span class="w-4 h-4 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-50 animate-pulse"></span>
-                <span class="w-6 h-6 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-30 animate-bounce"></span>
-                <span class="w-3 h-3 rounded-full border border-[var(--feedback-positive-base,#29c2fa)] opacity-60"></span>
+                <span class="w-4 h-4 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-50 animate-pulse"></span>
+                <span class="w-6 h-6 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-30 animate-bounce"></span>
+                <span class="w-3 h-3 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-60"></span>
             </div>
 
             <!-- Silueta Pez Top Left -->
-            <svg class="absolute top-10 left-[8%] w-32 h-auto text-[var(--feedback-positive-base,#29c2fa)]/30" viewBox="0 0 100 40" fill="currentColor">
+            <svg class="absolute top-10 left-[8%] w-32 h-auto text-(--feedback-positive-base,var(--accent-highlight-secondary))/30" viewBox="0 0 100 40" fill="currentColor">
                 <path d="M10,20 Q30,5 60,20 T90,20 Q80,25 70,20 Q60,35 40,20 Z" />
                 <path d="M90,20 L95,12 L92,20 L95,28 Z" />
             </svg>
 
             <!-- Silueta Pez Top Right -->
-            <svg class="absolute top-16 right-[12%] w-24 h-auto text-[var(--feedback-positive-base,#29c2fa)]/25" viewBox="0 0 100 40" fill="currentColor">
+            <svg class="absolute top-16 right-[12%] w-24 h-auto text-(--feedback-positive-base,var(--accent-highlight-secondary))/25" viewBox="0 0 100 40" fill="currentColor">
                 <path d="M10,20 Q30,5 60,20 T90,20 Q80,25 70,20 Q60,35 40,20 Z" />
                 <path d="M90,20 L95,12 L92,20 L95,28 Z" />
             </svg>
 
             <!-- Algas Bottom Left (Siluetas sutiles) -->
-            <svg class="absolute bottom-0 left-0 w-48 h-64 text-[var(--feedback-positive-base,#29c2fa)]/15" viewBox="0 0 100 200" fill="currentColor">
+            <svg class="absolute bottom-0 left-0 w-48 h-64 text-(--feedback-positive-base,var(--accent-highlight-secondary))/15" viewBox="0 0 100 200" fill="currentColor">
                 <path d="M10,200 Q20,150 5,100 T15,0 Q5,50 20,100 T10,200 Z" />
                 <path d="M40,200 Q50,130 35,80 T45,10 Q35,70 50,130 T40,200 Z" />
                 <path d="M70,200 Q60,160 75,110 T65,30 Q75,80 60,140 T70,200 Z" />
             </svg>
             
             <!-- Algas Bottom Right (Siluetas sutiles) -->
-            <svg class="absolute bottom-0 right-0 w-48 h-64 text-[var(--feedback-positive-base,#29c2fa)]/15 scale-x-[-1]" viewBox="0 0 100 200" fill="currentColor">
+            <svg class="absolute bottom-0 right-0 w-48 h-64 text-(--feedback-positive-base,var(--accent-highlight-secondary))/15 scale-x-[-1]" viewBox="0 0 100 200" fill="currentColor">
                 <path d="M10,200 Q20,150 5,100 T15,0 Q5,50 20,100 T10,200 Z" />
                 <path d="M40,200 Q50,130 35,80 T45,10 Q35,70 50,130 T40,200 Z" />
                 <path d="M70,200 Q60,160 75,110 T65,30 Q75,80 60,140 T70,200 Z" />
@@ -94,7 +94,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
         {titulo && (
             <div class="mb-12 text-center">
                 <TitleTag
-                    class="c6-title font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[44px] font-bold leading-tight uppercase tracking-wide"
+                    class="c6-title font-[family-name:var(--font-principal)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[32px] md:text-[44px] font-bold leading-tight uppercase tracking-wide"
                     data-split={tituloPartible ? "on" : "off"}
                 >
                     {titulo}
@@ -116,10 +116,10 @@ const tituloPartible = etiqueta_titulo !== "h1";
                     <div class="c6-lead-wrap w-full flex">
                     <a 
                         href={tarjeta_principal.url || "#"} 
-                        class="c6-card flex flex-col w-full bg-[#2BBDF4] rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
+                        class="c6-card flex flex-col w-full bg-(--surface-brand-secondary) rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
                     >
                         <!-- Imagen (Top) -->
-                        <div class="aspect-[16/11] w-full overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)]">
+                        <div class="aspect-[16/11] w-full overflow-hidden relative bg-(--neutral-background-strong,var(--custom-color-01))">
                             {tarjeta_principal.imagen && (
                                 <Image
                                     src={getStrapiUrl(tarjeta_principal.imagen)}
@@ -132,9 +132,9 @@ const tituloPartible = etiqueta_titulo !== "h1";
                         </div>
                         
                         <!-- Contenido (Bottom) -->
-                        <div class="p-8 flex flex-col justify-between flex-grow text-[var(--surface-brand-primary,#003F7F)]">
+                        <div class="p-8 flex flex-col justify-between flex-grow text-(--surface-brand-primary,var(--surface-brand-secondary))">
                             <div>
-                                <h3 class="font-[family-name:var(--font-principal)] text-[22px] md:text-[25px] font-bold leading-tight mb-4 group-hover:text-[var(--brand-interactive-base,#FBF21A)] transition-colors duration-300">
+                                <h3 class="font-[family-name:var(--font-principal)] text-[22px] md:text-[25px] font-bold leading-tight mb-4 group-hover:text-(--brand-interactive-base) transition-colors duration-300">
                                     {tarjeta_principal.titulo}
                                 </h3>
                                 {tarjeta_principal.descripcion && (
@@ -144,7 +144,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                 )}
                             </div>
                             
-                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-[var(--surface-brand-primary,#003F7F)]/20">
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-(--surface-brand-primary,var(--surface-brand-secondary))/20">
                                 <span class="font-[family-name:var(--font-secundaria)] text-[13px] md:text-[14px] font-bold opacity-80">
                                     {tarjeta_principal.fecha || "Noticia"}
                                 </span>
@@ -153,7 +153,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                     <span class="font-[family-name:var(--font-principal)] text-[13px] md:text-[14px] font-bold uppercase tracking-wider">
                                         Leer más
                                     </span>
-                                    <div class="w-8 h-8 rounded-full bg-[var(--surface-brand-primary,#003F7F)] text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-[var(--brand-interactive-base,#FBF21A)] group-hover/link:text-[var(--surface-brand-primary,#003F7F)] shadow">
+                                    <div class="w-8 h-8 rounded-full bg-(--surface-brand-primary,var(--surface-brand-secondary)) text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-(--brand-interactive-base) group-hover/link:text-(--surface-brand-primary,var(--surface-brand-secondary)) shadow">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                         </svg>
@@ -177,10 +177,10 @@ const tituloPartible = etiqueta_titulo !== "h1";
                         <div class="c6-sec-wrap">
                         <a 
                             href={card.url || "#"} 
-                            class="c6-card group flex flex-col md:flex-row bg-[#2BBDF4] rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 gap-6 w-full items-stretch"
+                            class="c6-card group flex flex-col md:flex-row bg-(--surface-brand-secondary) rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 gap-6 w-full items-stretch"
                         >
                             <!-- Imagen (Izquierda en desktop, Arriba en mobile) -->
-                            <div class="w-full md:w-[42%] aspect-[4/3] md:aspect-[4/3] md:min-h-[190px] rounded-[20px] overflow-hidden relative bg-[var(--neutral-background-strong,#1A1A2E)] shrink-0">
+                            <div class="w-full md:w-[42%] aspect-[4/3] md:aspect-[4/3] md:min-h-[190px] rounded-[20px] overflow-hidden relative bg-(--neutral-background-strong,var(--custom-color-01)) shrink-0">
                                 {card.imagen && (
                                     <Image
                                         src={getStrapiUrl(card.imagen)} 
@@ -193,9 +193,9 @@ const tituloPartible = etiqueta_titulo !== "h1";
                             </div>
                             
                             <!-- Contenido (Derecha) -->
-                            <div class="flex flex-col justify-between flex-grow text-[var(--surface-brand-primary,#003F7F)] py-1">
+                            <div class="flex flex-col justify-between flex-grow text-(--surface-brand-primary,var(--surface-brand-secondary)) py-1">
                                 <div>
-                                        <h4 class="font-[family-name:var(--font-principal)] text-[19px] md:text-[21px] font-bold leading-snug mb-3 group-hover:text-[var(--brand-interactive-base,#FBF21A)] transition-colors duration-300 line-clamp-2">
+                                        <h4 class="font-[family-name:var(--font-principal)] text-[19px] md:text-[21px] font-bold leading-snug mb-3 group-hover:text-(--brand-interactive-base) transition-colors duration-300 line-clamp-2">
                                         {card.titulo}
                                     </h4>
                                     {card.descripcion && (
@@ -205,12 +205,12 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                     )}
                                 </div>
                                 
-                                <div class="flex justify-end items-center mt-auto pt-2 border-t border-[var(--surface-brand-primary,#003F7F)]/10">
+                                <div class="flex justify-end items-center mt-auto pt-2 border-t border-(--surface-brand-primary,var(--surface-brand-secondary))/10">
                                     <div class="flex items-center gap-2 group/link">
                                         <span class="font-[family-name:var(--font-principal)] text-[12px] md:text-[13px] font-bold uppercase tracking-wider">
                                             Leer más
                                         </span>
-                                            <div class="w-7 h-7 rounded-full bg-[var(--surface-brand-primary,#003F7F)] text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-[var(--brand-interactive-base,#FBF21A)] group-hover/link:text-[var(--surface-brand-primary,#003F7F)] shadow">
+                                            <div class="w-7 h-7 rounded-full bg-(--surface-brand-primary,var(--surface-brand-secondary)) text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-(--brand-interactive-base) group-hover/link:text-(--surface-brand-primary,var(--surface-brand-secondary)) shadow">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                             </svg>
@@ -228,7 +228,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                     <div class="mt-2 flex justify-center w-full">
                         <a 
                             href={boton.url || "#"} 
-                            class="w-auto max-w-max inline-flex items-center justify-center border-[2.5px] border-[var(--surface-brand-primary,#003F7F)] hover:bg-[var(--surface-brand-primary,#003F7F)] hover:text-white text-[var(--surface-brand-primary,#003F7F)] font-[family-name:var(--font-principal)] font-bold text-[16px] py-3.5 px-12 rounded-[16px] shadow-sm hover:shadow-md transition-all duration-300 uppercase tracking-widest text-center shrink-0"
+                            class="w-auto max-w-max inline-flex items-center justify-center border-[2.5px] border-(--surface-brand-primary,var(--surface-brand-secondary)) hover:bg-(--surface-brand-primary,var(--surface-brand-secondary)) hover:text-white text-(--surface-brand-primary,var(--surface-brand-secondary)) font-[family-name:var(--font-principal)] font-bold text-[16px] py-3.5 px-12 rounded-[16px] shadow-sm hover:shadow-md transition-all duration-300 uppercase tracking-widest text-center shrink-0"
                         >
                             {boton.texto || "Otras noticias"}
                         </a>

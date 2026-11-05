@@ -63,10 +63,10 @@ const formatDate = (iso?: string): string => {
     });
 };
 
-const heroBtnBg = color_boton_hero || "#FBF21A";
+const heroBtnBg = color_boton_hero || "var(--brand-interactive-base)";
 const bgSec1 = color_fondo_seccion_1 || "var(--surface-brand-primary)";
 const bgSec2 = color_fondo_seccion_2 || "var(--surface-brand-secondary)";
-const bgSec3 = color_fondo_seccion_3 || "#FFFFFF";
+const bgSec3 = color_fondo_seccion_3 || "var(--neutral-text-inverted)";
 const blogHref = (slug?: string) => (slug ? getLocalizedUrl(`/blog/${slug}`, locale) : "#");
 
 const getBlogImage = (b: any) =>
@@ -173,7 +173,7 @@ const getBlogImage = (b: any) =>
                                         )}
                                         <a
                                             href={blogHref(blog.slug)}
-                                            class="bg-[#0084F8] mt-auto text-sm font-bold uppercase text-white hover:underline p-3 inline-block text-center rounded-md"
+                                            class="bg-(--accent-highlight-secondary) mt-auto text-sm font-bold uppercase text-white hover:underline p-3 inline-block text-center rounded-md"
                                         >
                                             Leer más
                                         </a>
@@ -255,7 +255,7 @@ const getBlogImage = (b: any) =>
                                 )}
                                 <a
                                     href={blogHref(blog.slug)}
-                                    class="bg-[#0084F8] mt-auto text-sm font-bold uppercase text-white hover:underline p-3 inline-block text-center rounded-md"
+                                    class="bg-(--accent-highlight-secondary) mt-auto text-sm font-bold uppercase text-white hover:underline p-3 inline-block text-center rounded-md"
                                 >
                                     Leer más
                                 </a>

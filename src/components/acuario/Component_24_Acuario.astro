@@ -39,10 +39,10 @@ const mediaFiles: any[] = (galeria?.data || galeria || []).filter(Boolean);
 
 // Defaults via setup-site CSS variables (regla del AGENTS.md: nunca hardcodear hex en class/style de UI)
 const finalSectionBg = color_fondo_seccion || "var(--surface-brand-primary)";
-const finalTitleColor = color_titulo_override || "var(--neutral-text-inverted, #ffffff)";
-const finalSubtitle1Color = color_subtitulo_1_override || "var(--neutral-text-inverted, #ffffff)";
+const finalTitleColor = color_titulo_override || "var(--neutral-text-inverted)";
+const finalSubtitle1Color = color_subtitulo_1_override || "var(--neutral-text-inverted)";
 const finalSubtitle2Color = color_subtitulo_2_override || "var(--brand-interactive-base)";
-const finalTextColor = color_texto_override || "var(--neutral-text-inverted, #ffffff)";
+const finalTextColor = color_texto_override || "var(--neutral-text-inverted)";
 
 const bgStyle = imagen_fondo
     ? {

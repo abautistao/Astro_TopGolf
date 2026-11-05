@@ -3,7 +3,7 @@
 // Replica `landing-sealand/visitas-escolares/index.html:85-114` (#experiencia).
 //
 // El origen es una `section-dark`: fondo degradado azul marino y texto claro.
-// Ese degradado (#06172e → #0a2f57 → #0b4965) NO se copia. Aquí el fondo se
+// Ese degradado navy de tres paradas NO se copia. Aquí el fondo se
 // construye mezclando variables semánticas con color-mix(), de modo que la
 // franja hereda la identidad de Acuario Inbursa configurada en setup-site.
 //
@@ -150,9 +150,9 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
 </section>
 
 <style>
-    /* Equivale al `linear-gradient(150deg, #06172e, #0a2f57 60%, #0b4965)` del
-       origen. El color base lo inyecta el override del editor (--bg-base) y los
-       dos paradas siguientes se derivan de variables de tema mezcladas entre sí:
+    /* Equivale al degradado navy de tres paradas del origen. El color base lo
+       inyecta el override del editor (--bg-base) y las dos paradas siguientes
+       se derivan de variables de tema mezcladas entre sí:
        hacia --surface-brand-secondary en el centro y hacia un acento para el
        extremo, que es donde el origen se vuelve más azulado. */
     .c34-section {
@@ -173,7 +173,7 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
         letter-spacing: -0.045em;
     }
 
-    /* Pozo más oscuro que el fondo para el video (#021225 en el origen):
+    /* Pozo más oscuro que el fondo para el video (navy profundo en el origen):
        --neutral-background-strong es la zona de alto contraste, así que al
        mezclarla con la base baja el tono sin introducir un color nuevo. */
     .c34-video-shell {
@@ -194,7 +194,7 @@ const figuras = galeria.filter((f) => f?.imagen || f?.pie_de_imagen);
         color: var(--neutral-text-inverted);
     }
 
-    /* Fondo de reserva mientras carga la foto (#0b2746 en el origen), para que
+    /* Fondo de reserva mientras carga la foto (navy medio en el origen), para que
        la figura no se vea como un hueco si el editor aún no sube la imagen. */
     .c34-figure {
         background-color: color-mix(in srgb, var(--surface-brand-secondary) 45%, var(--bg-base, var(--surface-brand-primary)));

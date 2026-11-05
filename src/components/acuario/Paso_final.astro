@@ -46,16 +46,16 @@ const {
 
         <div id="fail" class="paso-final-bloque text-center font-[family-name:var(--font-principal)] hidden">
             <h2 style={{color: color_titulo_fail}} class="paso-final-titulo font-bold lg:text-3xl mb-4">{titulo_fail}</h2>
-            <div class="text-[#15468F]" set:html={stringifyRichText(descripcion_fail)}></div>
-            <div class="text-[#15468F]" id="fail-message"></div>
-            <a class="underline text-[#15468F]" href={url_link_label_fail}>{link_label_fail}</a>
+            <div class="text-(--surface-brand-secondary)" set:html={stringifyRichText(descripcion_fail)}></div>
+            <div class="text-(--surface-brand-secondary)" id="fail-message"></div>
+            <a class="underline text-(--surface-brand-secondary)" href={url_link_label_fail}>{link_label_fail}</a>
         </div>
 
         <div id="success" class="paso-final-bloque text-center font-[family-name:var(--font-principal)] hidden">
             <h2 style={{color: color_titulo_success}} class="paso-final-titulo font-bold lg:text-4xl mb-4">{titulo_success}</h2>
-            <h3 class="text-[#15468F] mb-5">Tu número de reservación es el: <span class="font-bold" id="success-message"></span></h3>
-            <div class="text-[#15468F]" set:html={stringifyRichText(descripcion_success)}></div>
-            <a class="underline text-[#15468F]" href={url_link_label_success}>{link_label_success}</a>
+            <h3 class="text-(--surface-brand-secondary) mb-5">Tu número de reservación es el: <span class="font-bold" id="success-message"></span></h3>
+            <div class="text-(--surface-brand-secondary)" set:html={stringifyRichText(descripcion_success)}></div>
+            <a class="underline text-(--surface-brand-secondary)" href={url_link_label_success}>{link_label_success}</a>
         </div>
     </div>
 </section>

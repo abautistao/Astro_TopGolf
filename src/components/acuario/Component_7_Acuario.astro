@@ -45,7 +45,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
 
 <section 
     class="c7-section w-full py-12 md:py-16 relative overflow-hidden z-10"
-    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: #EAF5FC"}
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: var(--surface-brand-primary)"}
 >
     <!-- Imagen de fondo decorativa si se carga desde Strapi -->
     {imagen_fondo && (
@@ -65,7 +65,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
         <div class="mb-10 text-center">
             {titulo && (
                 <TitleTag
-                    class="c7-title font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
+                    class="c7-title font-[family-name:var(--font-principal)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
                     style={titleColorStyle}
                     data-split={tituloPartible ? "on" : "off"}
                 >
@@ -74,7 +74,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
             )}
             {subtitulo && (
                 <SubtitleTag
-                    class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[16px] md:text-[20px] font-medium mt-2 uppercase tracking-widest"
+                    class="font-[family-name:var(--font-secundaria)] text-(--surface-brand-secondary) text-[16px] md:text-[20px] font-medium mt-2 uppercase tracking-widest"
                     style={subtitleColorStyle}
                 >
                     {subtitulo}
@@ -104,7 +104,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                     <!-- Decoración "EL MÁS POPULAR" (Banner Superior) -->
                     {tarjeta.es_destacado && (
                         <div
-                            class="w-full bg-[var(--accent-highlight-secondary,#0097C4)] rounded-t-[20px] py-2 md:py-3 px-6 md:px-8 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6"
+                            class="w-full bg-(--accent-highlight-secondary) rounded-t-[20px] py-2 md:py-3 px-6 md:px-8 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6"
                             style={destacadoFondoStyle}
                         >
                             <span class="font-[family-name:var(--font-principal)] text-white font-black text-[22px] md:text-[40px] uppercase tracking-wide drop-shadow-sm text-center">
@@ -121,11 +121,11 @@ const tituloPartible = etiqueta_titulo !== "h1";
                             )}
                             {!tarjeta.icono_destacado && (
                                 /* Fallback SVG de la cinta con estrella si no se sube imagen */
-                                <div class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] text-[var(--brand-interactive-base,#FBF21A)] drop-shadow-md translate-y-[-5%]">
+                                <div class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] text-(--brand-interactive-base) drop-shadow-md translate-y-[-5%]">
                                     <svg viewBox="0 0 100 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10,0 L90,0 L90,100 L50,80 L10,100 Z" />
-                                        <circle cx="50" cy="40" r="25" fill="none" stroke="var(--surface-brand-primary,#003F7F)" stroke-width="4" />
-                                        <polygon points="50,22 56,34 69,36 60,45 62,58 50,52 38,58 40,45 31,36 44,34" fill="var(--surface-brand-primary,#003F7F)" />
+                                        <circle cx="50" cy="40" r="25" fill="none" stroke="var(--surface-brand-primary, var(--surface-brand-secondary))" stroke-width="4" />
+                                        <polygon points="50,22 56,34 69,36 60,45 62,58 50,52 38,58 40,45 31,36 44,34" fill="var(--surface-brand-primary, var(--surface-brand-secondary))" />
                                     </svg>
                                 </div>
                             )}
@@ -156,28 +156,28 @@ const tituloPartible = etiqueta_titulo !== "h1";
                             
                             <!-- Título -->
                             <h3
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-primary,#003F7F)] text-[24px] md:text-[40px] font-black leading-tight uppercase tracking-wide text-center"
+                                class="font-[family-name:var(--font-principal)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[24px] md:text-[40px] font-black leading-tight uppercase tracking-wide text-center"
                                 style={tarjetaTituloStyle}
                             >
                                 {tarjeta.titulo}
                             </h3>
 
                             <!-- Sección Precios (Cruzados) Centrada -->
-                            <div class="flex flex-row items-center justify-center gap-3 sm:gap-5 md:gap-6 mb-4 border-b-2 border-[var(--feedback-info-background,#EAF5FC)] pb-1">
+                            <div class="flex flex-row items-center justify-center gap-3 sm:gap-5 md:gap-6 mb-4 border-b-2 border-(--feedback-info-background,var(--surface-brand-primary)) pb-1">
                                 
                                 <!-- Precio Regular -->
                                 {tarjeta.precio_regular && (
                                     <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
                                         <!-- Label (Arriba en móvil, Izquierda en desktop) -->
                                         <span
-                                            class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
+                                            class="inline-block font-[family-name:var(--font-principal)] text-(--custom-color-01,var(--accent-highlight-secondary)) font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
                                             style={tarjetaPrecioLabelStyle}
                                         >
                                             {tarjeta.label_precio_regular || "PRECIO REGULAR"}
                                         </span>
                                         <!-- Valor -->
                                         <div
-                                            class="flex items-center text-[var(--surface-brand-primary,#003F7F)] opacity-90 leading-none relative"
+                                            class="flex items-center text-(--surface-brand-primary,var(--surface-brand-secondary)) opacity-90 leading-none relative"
                                             style={tarjetaPrecioValorStyle}
                                         >
                                             <span class="font-[family-name:var(--font-principal)] text-[32px] sm:text-[34px] md:text-[44px] font-black line-through decoration-[2px]">
@@ -186,14 +186,14 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                             <span class="font-[family-name:var(--font-principal)] text-[13px] sm:text-[14px] md:text-[16px] font-black ml-1.5 uppercase">
                                                 MXN
                                             </span>
-                                            <div class="absolute w-full h-[2px] bg-(--surface-brand-primary,#003F7F) top-1/2 left-0 -rotate-1 opacity-100"></div>
+                                            <div class="absolute w-full h-[2px] bg-(--surface-brand-primary,var(--surface-brand-secondary)) top-1/2 left-0 -rotate-1 opacity-100"></div>
                                         </div>
                                     </div>
                                 )}
                                 
                                 <!-- Línea separadora vertical siempre visible -->
                                 {tarjeta.precio_regular && tarjeta.precio_en_linea && (
-                                    <div class="w-[2px] sm:w-[3px] h-8 bg-[var(--custom-color-01,#00B2EA)] mx-2 sm:mx-3 self-center rounded-full"></div>
+                                    <div class="w-[2px] sm:w-[3px] h-8 bg-(--custom-color-01,var(--accent-highlight-secondary)) mx-2 sm:mx-3 self-center rounded-full"></div>
                                 )}
 
                                 <!-- Precio en Línea -->
@@ -201,14 +201,14 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                     <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
                                         <!-- Label (Arriba en móvil, Izquierda en desktop) -->
                                         <span
-                                            class="inline-block font-[family-name:var(--font-principal)] text-[var(--custom-color-01,#00B2EA)] font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
+                                            class="inline-block font-[family-name:var(--font-principal)] text-(--custom-color-01,var(--accent-highlight-secondary)) font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
                                             style={tarjetaPrecioLabelStyle}
                                         >
                                             {tarjeta.label_precio_en_linea || "PRECIO EN LÍNEA"}
                                         </span>
                                         <!-- Valor -->
                                         <div
-                                            class="flex items-center text-[var(--surface-brand-primary,#003F7F)] leading-none"
+                                            class="flex items-center text-(--surface-brand-primary,var(--surface-brand-secondary)) leading-none"
                                             style={tarjetaPrecioValorStyle}
                                         >
                                             <span class="font-[family-name:var(--font-principal)] text-[38px] sm:text-[40px] md:text-[50px] font-black">
@@ -224,7 +224,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
 
                             <!-- "Incluye" Título Fijo -->
                             <h4
-                                class="font-[family-name:var(--font-principal)] text-[var(--surface-brand-secondary,#1E8CA6)] text-[18px] md:text-[20px] font-bold mb-3"
+                                class="font-[family-name:var(--font-principal)] text-(--surface-brand-secondary) text-[18px] md:text-[20px] font-bold mb-3"
                                 style={tarjetaIncluyeTituloStyle}
                             >
                                 Incluye
@@ -245,7 +245,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                             <li class="flex items-start gap-3">
                                                 <!-- Icono Ticket/Pez (Renderiza la imagen de Strapi, o un SVG fallback) -->
                                                 <div
-                                                    class="w-6 h-6 shrink-0 mt-0.5 text-[var(--surface-brand-secondary,#1E8CA6)]"
+                                                    class="w-6 h-6 shrink-0 mt-0.5 text-(--surface-brand-secondary)"
                                                     style={itemIconStyle}
                                                 >
                                                     {item.icono ? (
@@ -258,7 +258,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                                     )}
                                                 </div>
                                                 <span
-                                                    class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[15px] md:text-[16px] leading-snug font-medium"
+                                                    class="font-[family-name:var(--font-secundaria)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[15px] md:text-[16px] leading-snug font-medium"
                                                     style={itemTextoStyle}
                                                 >
                                                     {item.texto}
@@ -272,7 +272,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                 {/* Opción 2: RichText (WYSIWYG) */}
                                 {tarjeta.incluye_wysiwyg && (
                                     <div 
-                                        class="prose prose-sm md:prose-base prose-p:font-[family-name:var(--font-secundaria)] prose-p:text-[var(--surface-brand-primary,#003F7F)] prose-p:text-[15px] md:prose-p:text-[16px] prose-p:font-medium prose-p:leading-snug max-w-none prose-li:text-[var(--surface-brand-primary,#003F7F)]"
+                                        class="prose prose-sm md:prose-base prose-p:font-[family-name:var(--font-secundaria)] prose-p:text-(--surface-brand-primary,var(--surface-brand-secondary)) prose-p:text-[15px] md:prose-p:text-[16px] prose-p:font-medium prose-p:leading-snug max-w-none prose-li:text-(--surface-brand-primary,var(--surface-brand-secondary))"
                                         set:html={renderMarkdown(tarjeta.incluye_wysiwyg)}
                                     ></div>
                                 )}
@@ -280,7 +280,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
 
                             <!-- Nota Legal Importante -->
                             {tarjeta.nota_importante && (
-                                <p class="font-[family-name:var(--font-secundaria)] text-[var(--surface-brand-primary,#003F7F)] text-[11px] md:text-[12px] font-bold opacity-80 mb-4 text-center md:text-left">
+                                <p class="font-[family-name:var(--font-secundaria)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[11px] md:text-[12px] font-bold opacity-80 mb-4 text-center md:text-left">
                                     {tarjeta.nota_importante}
                                 </p>
                             )}
@@ -290,7 +290,7 @@ const tituloPartible = etiqueta_titulo !== "h1";
                                 <div class="w-full flex justify-center md:justify-start">
                                     <a 
                                         href={tarjeta.boton.url || "#"} 
-                                        class="w-full md:w-auto min-w-[240px] flex items-center justify-center bg-[var(--brand-interactive-base,#FBF21A)] hover:bg-[var(--neutral-background-strong,#1A1A2E)] text-[var(--surface-brand-primary,#003F7F)] hover:text-[var(--brand-interactive-base,#FBF21A)] border-2 border-transparent hover:border-[var(--brand-interactive-base,#FBF21A)] font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-2.5 md:py-3 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
+                                        class="w-full md:w-auto min-w-[240px] flex items-center justify-center bg-(--brand-interactive-base) hover:bg-(--neutral-background-strong,var(--custom-color-01)) text-(--surface-brand-primary,var(--surface-brand-secondary)) hover:text-(--brand-interactive-base) border-2 border-transparent hover:border-(--brand-interactive-base) font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-2.5 md:py-3 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
                                     >
                                         {tarjeta.boton.texto || "COMPRA TU ENTRADA"}
                                     </a>
