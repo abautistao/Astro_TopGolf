@@ -467,9 +467,15 @@ export const generateFontFaces = (tipografias) => {
       .filter(Boolean)
   )];
 
+  // La familia "Secundaria" es opcional en el CMS, pero el frontend la consume
+  // (footer, cuerpos de texto). Si no está cargada, cae en la principal en vez
+  // de dejar --font-secundaria sin definir, que produce herencias invalidas.
+  const hasSecundaria = fontFamilies.some((familia) => familia.toLowerCase() === 'secundaria');
+
   const rootStyles = `
     :root {
       ${fontFamilies.map(familia => `--font-${familia.toLowerCase()}: '${familia}', sans-serif;`).join('\n      ')}
+      ${hasSecundaria ? '' : `--font-secundaria: var(--font-principal, sans-serif);`}
     }
   `;
 

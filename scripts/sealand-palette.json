@@ -1,0 +1,39 @@
+{
+  "_source": "odd/tasks/sealand-guadalajara-paleta.md — Tabla canónica de paleta (S1, S4, S7)",
+  "_measured_from": "https://www.sealand.com.mx/guadalajara/ (capturas 1440x900, presupuesto de color CDP)",
+  "setupSite": {
+    "surface_brand_primary": "#255FA7",
+    "surface_brand_secondary": "#0D3B7C",
+    "brand_interactive_base": "#FD7E14",
+    "neutral_background_strong": "#052475",
+    "neutral_background_subtle": "#F8F9FA",
+    "neutral_text_inverted": "#FFFFFF",
+    "accent_feedback_strong": "#FF8200",
+    "accent_highlight_secondary": "#15A4F3",
+    "accent_highlight_primary": "#6EC1E4",
+    "feedback_positive_dark": "#4B9C38",
+    "feedback_positive_base": "#25D366",
+    "feedback_info_background": "#0DCAF0",
+    "custom_color_01": "#020D4A"
+  },
+  "contentColorMap": {
+    "#0550a5": "#052475",
+    "#034ba2": "#020D4A",
+    "#ceedff": "#255FA7",
+    "#afdeff": "#255FA7",
+    "#eaf5fc": "#255FA7",
+    "#e8f6fd": "#255FA7",
+    "#2bbdf4": "#0D3B7C",
+    "#29c2fa": "#15A4F3",
+    "#f5ec23": "#FD7E14",
+    "#fbf21a": "#FD7E14",
+    "#ffd700": "#FD7E14",
+    "#ffb600": "#FD7E14",
+    "#002a4e": "#052475",
+    "#003f7f": "#0D3B7C",
+    "#005da8": "#0D3B7C",
+    "#061f44": "#020D4A",
+    "#15468f": "#0D3B7C",
+    "#ffffff": "#FFFFFF"
+  }
+}
