@@ -4,9 +4,11 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "predev": "node scripts/check-astro-script-tokens.mjs",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:astro-scripts": "node scripts/check-astro-script-tokens.mjs"
   },
   "dependencies": {
     "@alpinejs/collapse": "^3.15.2",
