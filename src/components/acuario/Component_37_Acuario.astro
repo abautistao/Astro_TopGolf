@@ -13,7 +13,7 @@
 // incluso a dos niveles como fase-nem-acuario → aprendizajes).
 //
 // Comportamiento de cliente: script propio (precedente de Component_16), no
-// Alpine. La aritmética es lo delicado del bloque y dentro de un `<script>` la
+// Alpine. La aritmética es lo delicado del bloque y dentro de un bloque de script la
 // función queda tipada y verificable por `astro check`; en `x-data` tendría que
 // viajar como cadena sin tipos ni validación. SeInstancia una vez por bloque
 // con `[data-c37-cotizador]`, así que dos componente-37 en la misma página no
@@ -579,7 +579,7 @@ const haySimulador = listaPaquetes.length > 0;
     /* --- Motion layer (T5). Decision 3 + the Astro scoping trap. ---
        *
        * Purely additive: nothing above this comment is touched, so the quote
-       * arithmetic in the `<script>` below stays byte-identical.
+       * arithmetic in the script block below stays byte-identical.
        *
        * WHY `:global()`: Astro puts its scope attribute on every compound, so a
        * plain `[data-motion="ready"] .c37-tarjeta` compiles to
@@ -636,7 +636,7 @@ const haySimulador = listaPaquetes.length > 0;
        * Two near-neighbours are deliberately NOT in this list.
        * `.c37-tarjeta-cotizacion` is a DIFFERENT class token on the quote card
        * inside `.c37-panel`, and the motion script never registers a trigger for
-       * `.c37-panel` or anything under it (see the WHY in its `<script>`), so
+       * `.c37-panel` or anything under it (see the WHY in its script block), so
        * there is no inline transform here to double-ease. `.c37-boton` keeps its
        * hand-written `transition: transform 0.2s ease, …` because it is inside
        * that same un-animated panel: GSAP never writes its transform, and its
@@ -881,7 +881,7 @@ const haySimulador = listaPaquetes.length > 0;
     /*
      * Simulador de cotización motion (T5) — the only work unit in this feature
      * whose block also owns business logic, so this is a NEW, separate
-     * `<script>` block rather than an edit to the arithmetic one above it.
+     * script block rather than an edit to the arithmetic one above it.
      *
      * WHY a separate block and not a few appended lines: that block is the quote
      * arithmetic, proven by a 70-assertion run against `app.js`. A motion change
