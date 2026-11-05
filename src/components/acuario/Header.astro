@@ -155,9 +155,9 @@ const isLinkActiveOrChild = (link: any) => {
                 <span class="text-white! text-[10px]! sm:text-xs! font-[family-name:var(--font-principal)] font-bold! tracking-wide uppercase! text-right! max-w-[150px]! leading-tight">
                     {textoHorario.split('/')[1]?.trim() || textoHorario} <!-- Shorten for mobile if contains / -->
                 </span>
-                <button id="mobile-menu-toggle" class="text-white! text-3xl! focus:outline-none ml-1! w-8! h-8! flex! items-center! justify-center!">
-                    <span id="menu-icon"><i class="fa-solid fa-bars"></i></span>
-                    <span id="close-icon" class="hidden!"><i class="fa-solid fa-xmark"></i></span>
+                <button aria-label="Abrir menú de navegación" id="mobile-menu-toggle" class="text-white! text-3xl! focus:outline-none ml-1! w-8! h-8! flex! items-center! justify-center!">
+                    <span id="menu-icon"><i aria-hidden="true" class="fa-solid fa-bars"></i></span>
+                    <span id="close-icon" class="hidden!"><i aria-hidden="true" class="fa-solid fa-xmark"></i></span>
                 </button>
             </div>
         </div>

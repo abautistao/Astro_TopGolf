@@ -108,7 +108,7 @@ const isCompleta = bannerMode === "completa";
 // para que la imagen dicte el alto del banner y nunca se recorte.
 const sectionClass = isCompleta
     ? "relative! z-10! w-screen! left-1/2! -ml-[50vw]! bg-[var(--surface-brand-primary)]!"
-    : "relative! z-10! w-screen left-1/2! -ml-[50vw]! aspect-[4/5]! md:aspect-auto! md:h-[680px]! flex! items-center! justify-center! overflow-hidden! bg-[var(--surface-brand-primary)]!";
+    : "relative! z-10! w-screen left-1/2! -ml-[50vw]! h-[450px] md:h-[680px]! flex! items-center! justify-center! overflow-hidden! bg-[var(--surface-brand-primary)]!";
 ---
 
 {/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
@@ -176,17 +176,25 @@ const sectionClass = isCompleta
                                         </a>
                                     ) : (
                                         <a href={link}>
-
-                                            <picture class="block! w-full!">
-                                                {hasMobileImage && (
-                                                    <source media="(max-width: 767px)" srcset={bgMobileUrl} />
-                                                )}
-                                                <img
-                                                    src={bgUrl}
+                                            {hasMobileImage && (
+                                                <Image
+                                                    src={bgMobileUrl}
                                                     alt={altText}
-                                                    class="block! w-full! h-auto! max-w-full!"
+                                                    class="w-full h-full object-cover object-center block! lg:hidden!"
+                                                    inferSize={true}
+                                                    loading="eager"
+                                                    fetchpriority="high"
                                                 />
-                                            </picture>
+                                            )}
+
+                                            <Image
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="w-full h-full object-cover object-center hidden! lg:block!"
+                                                inferSize={true}
+                                                loading="eager"
+                                                fetchpriority="high"
+                                            />
                                         </a>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
@@ -213,16 +221,27 @@ const sectionClass = isCompleta
                                         </a>
                                     ) : (
                                         <a href={link}>
-                                            <picture class="absolute! inset-0! w-full! h-full! block!">
-                                                {hasMobileImage && (
-                                                    <source media="(max-width: 767px)" srcset={bgMobileUrl} />
-                                                )}
-                                                <img
-                                                    src={bgUrl}
+                                            
+                                            {hasMobileImage && (
+                                                <Image
+                                                    src={bgMobileUrl}
                                                     alt={altText}
-                                                    class="c1-bg-media absolute! inset-0! w-full! h-full! object-cover!"
+                                                    class="absolute! inset-0! w-full! h-full! object-cover! block! lg:hidden!"
+                                                    inferSize={true}
+                                                    loading="eager"
+                                                    fetchpriority="high"
                                                 />
-                                            </picture>
+                                            )}
+
+                                            <Image
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="absolute! inset-0! w-full! h-full! object-cover! hidden! lg:block!"
+                                                inferSize={true}
+                                                loading="eager"
+                                                fetchpriority="high"
+                                            />
+                                            
                                         </a>
                                     )}
                                     {(slide.texto_principal || slide.subtitulo) && (
