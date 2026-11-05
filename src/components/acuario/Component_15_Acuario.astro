@@ -62,7 +62,7 @@ if (bloques_contenido && bloques_contenido.length > 0) {
 }
 ---
 
-<section class="w-full py-12 md:py-20 relative" style={{ backgroundColor: finalBgColor }}>
+<section class="c15-section w-full py-12 md:py-20 relative" style={{ backgroundColor: finalBgColor }}>
     <div class="container mx-auto px-6 md:px-12 max-w-[1440px]">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
@@ -78,12 +78,12 @@ if (bloques_contenido && bloques_contenido.length > 0) {
                         </h1>
                     )}
                     {subtitulo && (
-                        <p class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)]">
+                        <p class="c15-subtitulo font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)]">
                             {subtitulo}
                         </p>
                     )}
                     {etiqueta_texto && (
-                        <div class="mt-2">
+                        <div class="c15-etiqueta mt-2">
                             <span 
                                 class="inline-block px-4 py-1.5 rounded-full text-white text-xs md:text-sm font-bold uppercase tracking-wide"
                                 style={{ backgroundColor: etiqueta_color || "var(--brand-interactive-base)" }}
@@ -97,14 +97,14 @@ if (bloques_contenido && bloques_contenido.length > 0) {
                 {/* Descripción Inicial */}
                 {descripcion_inicial && (
                     <div 
-                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] leading-relaxed space-y-6 [&>h2]:font-[family-name:var(--font-principal)] [&>h2]:text-[32px] [&>h2]:font-bold [&>h2]:text-[var(--accent-highlight-primary)] [&>h3]:font-[family-name:var(--font-principal)] [&>h3]:text-[24px] [&>h3]:font-bold [&>h3]:text-[var(--surface-brand-primary)]"
+                        class="c15-descripcion font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-[var(--surface-brand-primary)] leading-relaxed space-y-6 [&>h2]:font-[family-name:var(--font-principal)] [&>h2]:text-[32px] [&>h2]:font-bold [&>h2]:text-[var(--accent-highlight-primary)] [&>h3]:font-[family-name:var(--font-principal)] [&>h3]:text-[24px] [&>h3]:font-bold [&>h3]:text-[var(--surface-brand-primary)]"
                         set:html={stringifyRichText(descripcion_inicial)}
                     />
                 )}
 
                 {/* Media Principal */}
                 {hasMainMedia && (
-                    <div class="w-full rounded-[24px] overflow-hidden shadow-lg mt-4 mb-4">
+                    <div class="c15-media w-full rounded-[24px] overflow-hidden shadow-lg mt-4 mb-4">
                         {isMainVideo ? (
                             <video src={mainMediaUrl} class="w-full h-auto object-cover" autoplay loop muted playsinline></video>
                         ) : (
@@ -115,7 +115,7 @@ if (bloques_contenido && bloques_contenido.length > 0) {
 
                 {/* Bloques Repetibles */}
                 {bloques_contenido.length > 0 && (
-                    <div class="flex flex-col gap-16 mt-8">
+                    <div class="c15-bloques flex flex-col gap-16 mt-8">
                         {bloques_contenido.map((bloque: any) => {
                             const bMedia = bloque.imagen?.data || bloque.imagen;
                             const bMediaUrl = bMedia ? getStrapiUrl(bloque.imagen) : null;
@@ -137,7 +137,7 @@ if (bloques_contenido && bloques_contenido.length > 0) {
                             }
 
                             return (
-                                <div class={bContainerClasses}>
+                                <div class={`${bContainerClasses} c15-bloque`}>
                                     <div class={bTextClasses}>
                                         {bloque.titulo && (
                                             <h2 id={slugify(bloque.titulo)} class="font-[family-name:var(--font-principal)] text-[28px] md:text-[32px] font-bold text-[var(--surface-brand-secondary)] mb-4">
@@ -177,12 +177,12 @@ if (bloques_contenido && bloques_contenido.length > 0) {
                             </h3>
                         </div>
                         <div class="p-6">
-                            <ul class="space-y-5 font-[family-name:var(--font-secundaria)]">
+                            <ul class="c15-toc space-y-5 font-[family-name:var(--font-secundaria)]">
                                 {tocItems.map(item => {
                                     // Indentar visualmente H3, H4, etc.
                                     const isSubLevel = item.level > 2;
                                     return (
-                                        <li class={`${isSubLevel ? 'ml-4' : ''}`}>
+                                        <li class={`c15-toc-item ${isSubLevel ? 'ml-4' : ''}`}>
                                             <a href={`#${item.id}`} class="group flex items-start gap-3 text-[14px] md:text-[15px] text-[var(--surface-brand-primary)] hover:text-[var(--accent-highlight-primary)] transition-colors duration-300">
                                                 <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--surface-brand-primary)] group-hover:bg-[var(--accent-highlight-primary)] shrink-0 transition-colors duration-300"></span>
                                                 <span class="leading-snug">{item.title}</span>
@@ -206,3 +206,125 @@ if (bloques_contenido && bloques_contenido.length > 0) {
         scroll-behavior: smooth;
     }
 </style>
+
+<script>
+    import { initMotion, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque (T7) — un post de blog: `h1` + entradilla + media +
+     * bloques de contenido + índice lateral.
+     *
+     * El `h1` NO se anima, y es a propósito. Es el encabezado principal de la
+     * página y vive en el primer pliegue (la sección abre el artículo, con
+     * `py-12 md:py-20` debajo del header del sitio): un `opacity: 0` o un
+     * `splitReveal` sobre él retrasaría el Largest Contentful Paint y, con él,
+     * el pintado de todo lo que va debajo. Se queda exactamente como lo dibuja
+     * la hoja de estilos y el movimiento se lo llevan sus hermanos.
+     *
+     * Las anclas `c15-` son el único asidero del script: no cambian el layout,
+     * sólo dan un nombre estable a cada pieza.
+     */
+    function setupPostMotion() {
+        document.querySelectorAll('.c15-section').forEach((section) => {
+            // Subtítulo y etiqueta: piezas cortas que acompañan al `h1` ya
+            // pintado, con un viaje corto para no competir con él.
+            const subtitulo = section.querySelector('.c15-subtitulo');
+
+            if (subtitulo) {
+                revealSection(subtitulo, {
+                    y: 14,
+                    duration: 0.6,
+                });
+            }
+
+            const etiqueta = section.querySelector('.c15-etiqueta');
+
+            if (etiqueta) {
+                revealSection(etiqueta, {
+                    y: 12,
+                    duration: 0.55,
+                    delay: 0.06,
+                });
+            }
+
+            // La entradilla del artículo.
+            const descripcion = section.querySelector('.c15-descripcion');
+
+            if (descripcion) {
+                revealSection(descripcion, {
+                    y: 26,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La imagen principal: el viaje más largo, para que se imponga
+            // como el bloque grande del artículo.
+            const media = section.querySelector('.c15-media');
+
+            if (media) {
+                revealSection(media, {
+                    y: 36,
+                    duration: 0.85,
+                    delay: 0.08,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Los bloques de contenido repetibles entran en cascada.
+            const bloques = section.querySelector('.c15-bloques');
+
+            if (bloques) {
+                revealStagger(bloques, {
+                    selector: '.c15-bloque',
+                    y: 30,
+                    stagger: 0.12,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // El índice lateral: se animan sus ítems, no el `aside`. El `aside`
+            // es `sticky` y un `transform` en él rompería el anclaje, así que
+            // el movimiento se queda un nivel más adentro. Cada `<li>` es un
+            // wrapper no enfocable (el enlace vive dentro) y el helper limpia
+            // el `opacity: 0` de los ancestros cuando algo dentro recibe el
+            // foco, de modo que un enlace nunca queda invisible (S13).
+            const indice = section.querySelector('.c15-toc');
+
+            if (indice) {
+                revealStagger(indice, {
+                    selector: '.c15-toc-item',
+                    y: 12,
+                    stagger: 0.05,
+                    duration: 0.45,
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupPostMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupPostMotion();
+    });
+</script>

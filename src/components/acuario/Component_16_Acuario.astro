@@ -103,8 +103,13 @@ const widthClass = (ancho?: "full" | "half") =>
 
 const baseInput =
     "c16-input w-full! px-4! py-3! rounded-md! bg-transparent! border! transition-colors font-[family-name:var(--font-secundaria)]! text-[16px]!";
+// `c16-etiqueta` es un ancla de motion (T8): marca SOLO las etiquetas de campo
+// (los <label> y el <legend> del grupo de radios). Los <label> de cada opción de
+// radio llevan su propia lista de clases y NO la llevan, porque esos <label>
+// CONTIENEN el <input type="radio">: revelar una etiqueta que envuelve al
+// input volvería invisible un control que el teclado todavía alcanza.
 const baseLabel =
-    "block! font-[family-name:var(--font-principal)]! font-bold! uppercase! text-[14px]! md:text-[16px]! mb-2! tracking-wide!";
+    "c16-etiqueta block! font-[family-name:var(--font-principal)]! font-bold! uppercase! text-[14px]! md:text-[16px]! mb-2! tracking-wide!";
 ---
 
 <section
@@ -124,13 +129,13 @@ const baseLabel =
 
     <div class="container! mx-auto! px-6! md:px-12! max-w-7xl! relative! z-10!">
         {titulo && (
-            <TitleTag class="font-[family-name:var(--font-principal)]! text-center! font-bold! text-[24px]! md:text-[32px]! uppercase! mb-4! leading-tight">
+            <TitleTag class="c16-titulo font-[family-name:var(--font-principal)]! text-center! font-bold! text-[24px]! md:text-[32px]! uppercase! mb-4! leading-tight">
                 {titulo}
             </TitleTag>
         )}
 
         {subtitulo && (
-            <p class="font-[family-name:var(--font-principal)]! text-center! font-medium! text-[16px]! md:text-[18px]! mb-6! opacity-90!">
+            <p class="c16-subtitulo font-[family-name:var(--font-principal)]! text-center! font-medium! text-[16px]! md:text-[18px]! mb-6! opacity-90!">
                 {subtitulo}
             </p>
         )}
@@ -225,7 +230,7 @@ const baseLabel =
 
             <button
                 type="submit"
-                class="basis-full! font-[family-name:var(--font-principal)]! font-bold! text-[16px]! md:text-[18px]! uppercase! py-3! md:py-4! rounded-md! transition-opacity! hover:opacity-90! disabled:opacity-60! text-[var(--surface-brand-primary)]! mt-2!"
+                class="c16-enviar basis-full! font-[family-name:var(--font-principal)]! font-bold! text-[16px]! md:text-[18px]! uppercase! py-3! md:py-4! rounded-md! transition-opacity! hover:opacity-90! disabled:opacity-60! text-[var(--surface-brand-primary)]! mt-2!"
                 style={`background-color: ${finalBtnBg} !important;`}
             >
                 {texto_boton}
@@ -295,6 +300,8 @@ const baseLabel =
 </style>
 
 <script>
+    import { initMotion, splitReveal, revealSection, revealStagger, hoverDepth } from "../../scripts/motion";
+
     // Flechas (no `function`) a propósito: TypeScript descarta el
     // estrechamiento de null dentro de declaraciones function izadas
     // (ts(18047)) aunque haya un guard inmediatamente antes.
@@ -415,4 +422,135 @@ const baseLabel =
 
     initC16Forms();
     document.addEventListener('astro:page-load', initC16Forms);
+
+    // --- Capa de motion (T8) --------------------------------------------------
+    //
+    // Va AL FINAL del script y no dentro de la lógica de envío a propósito: la
+    // ruta de WhatsApp, la ruta de POST, la aritmética del formulario y los
+    // mensajes de feedback quedan byte-idénticos arriba, y la capa de motion es
+    // una región propia del archivo que un diff futuro puede señalar sin tocar
+    // el envío. El import del helper y este bloque conviven porque ninguno lee
+    // del otro.
+    //
+    // Lo que NO se anima, y por qué (S13):
+    //
+    // El `<form>` NO se revela. Es un contenedor interactivo: guarda los
+    // `<input>`, `<select>`, `<textarea>`, `<fieldset>` y los `<button>` del
+    // bloque. Un `gsap.from()` escribe `opacity: 0` EN EL FORMULARIO en el
+    // momento de registrarse, así que hasta que el trigger dispara TODOS los
+    // campos quedan invisibles — y la opacidad no saca a un `<input>` del orden
+    // de tabulación, de modo que el teclado puede aterrizar en un campo que el
+    // usuario no ve. Ese es exactamente el defecto que esta feature existe para
+    // evitar, y la regla del ODD (S13) es explícita: un contenedor interactivo
+    // nunca se revela entero; el motion se dirige a envoltorios no interactivos
+    // o a hijos decorativos.
+    //
+    // Tampoco se revelan los campos, ni el `<div>` que envuelve cada campo,
+    // ni el `<fieldset>` de los radios. Lo que sí se mueve dentro del formulario
+    // son las ETIQUETAS (`.c16-etiqueta`), que son hojas de texto sin control
+    // dentro: entran en cascada con un stagger corto mientras los campos
+    // quedan exactamente donde el stylesheet los pone, visibles desde el
+    // primer fotograma.
+    //
+    // El motivo de esta asimetría (etiquetas sí, campos no) es que una etiqueta
+    // invisible sólo cuesta legibilidad, mientras que un campo invisible cuesta
+    // que el usuario escriba a ciegas. El texto de la etiqueta se lee igual de
+    // bien en su sitio final, así que el coste de no animarlo es cero.
+    //
+    // `splitReveal` sobre el título: es texto plano (sin HTML dentro), no es
+    // focusable y no vive dentro del formulario, así que es un objetivo legítimo
+    // del Word/Lines/Chars split.
+    function setupC16Motion() {
+        // Cada bloque de componente-16 se resuelve por su propio formulario
+        // (`data-form-c16` es la llave de instancia que ya usa el script de
+        // envío), así que dos bloques en la misma página no se pisan.
+        document.querySelectorAll<HTMLFormElement>('form[data-form-c16]').forEach((form) => {
+            const bloque = form.closest('section');
+            if (!bloque) {
+                return;
+            }
+
+            // El título se arma palabra por palabra. `type: 'words'` con la
+            // máscara por defecto (cada palabra sube desde su propia caja) da el
+            // aire "con carácter" que pide la feature sin tocar el copy: el
+            // texto que se lee es exactamente el mismo.
+            const titulo = bloque.querySelector('.c16-titulo');
+            if (titulo) {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 26,
+                    duration: 0.75,
+                    stagger: 0.045,
+                    ease: 'power3.out',
+                });
+            }
+
+            // El subtítulo es un `<p>` de texto plano: se asienta con un reveal
+            // corto, sin estela.
+            const subtitulo = bloque.querySelector('.c16-subtitulo');
+            if (subtitulo) {
+                revealSection(subtitulo, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Las etiquetas del formulario entran en cascada. El `selector` es
+            // `.c16-etiqueta` y NO `label`: los `<label>` de cada opción de radio
+            // CONTIENEN su `<input type="radio">`, y revelarlos fundiría a cero
+            // un control que el teclado todavía alcanzaría. Con
+            // `ocultar_labels` activo no hay ninguna etiqueta y el helper
+            // resuelve el grupo vacío sin registrar nada.
+            revealStagger(form, {
+                selector: '.c16-etiqueta',
+                stagger: 0.05,
+                y: 14,
+                duration: 0.5,
+                ease: 'power2.out',
+            });
+
+            // El botón de envío sí puede llevar profundidad: `hoverDepth` sólo
+            // escribe `transform` (rotación, elevación y escala) y NUNCA opacidad,
+            // así que el botón nunca queda invisible. Es además la única clase
+            // del botón que puede transformarse sin pelearse con su
+            // `transition-opacity` (que transiciona `opacity`, no `transform`).
+            // Y como es desktop-only (`hover: hover` + `pointer: fine`), en móvil
+            // el botón se queda como estaba.
+            const enviar = form.querySelector('.c16-enviar');
+            if (enviar) {
+                hoverDepth(enviar, {
+                    maxTilt: 3,
+                    lift: -4,
+                    scale: 1.01,
+                    duration: 0.35,
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupC16Motion();
+
+    // Decision 7, replicado del helper: en una navegación del lado del cliente
+    // el helper desmonta sus triggers y vuelve a armar motion, así que los
+    // triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. La
+    // guarda del primer evento replica la del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial, y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupC16Motion();
+    });
 </script>

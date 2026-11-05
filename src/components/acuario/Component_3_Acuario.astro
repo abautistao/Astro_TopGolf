@@ -66,7 +66,7 @@ const HeadingTag = etiqueta_titulo;
 ---
 
 <section 
-    class="w-full bg-[var(--surface-brand-primary)] py-12 md:py-20 overflow-hidden"
+    class="w-full bg-[var(--surface-brand-primary)] py-12 md:py-20 overflow-hidden c3-section"
     style={color_fondo ? `background-color: ${color_fondo}` : ""}
 >
     <div class="w-full max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col md:flex-row gap-10 md:gap-16 items-center">
@@ -75,19 +75,19 @@ const HeadingTag = etiqueta_titulo;
         <div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-10">
             
             {subtitulo && (
-                <span class="w-full text-center font-[family-name:var(--font-secundaria)] text-[var(--accent-highlight-primary)] text-[16px] md:text-[24px] font-medium md:font-bold tracking-[0.05em] uppercase md:leading-[25px] mb-1">
+                <span class="c3-eyebrow w-full text-center font-[family-name:var(--font-secundaria)] text-[var(--accent-highlight-primary)] text-[16px] md:text-[24px] font-medium md:font-bold tracking-[0.05em] uppercase md:leading-[25px] mb-1">
                     {subtitulo}
                 </span>
             )}
 
             {titulo && (
-                <HeadingTag class="w-full text-center font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] text-[32px] md:text-[54px] font-bold md:font-black uppercase leading-tight md:leading-[1.2] mb-4">
+                <HeadingTag class="c3-title w-full text-center font-[family-name:var(--font-principal)] text-[var(--neutral-text-inverted)] text-[32px] md:text-[54px] font-bold md:font-black uppercase leading-tight md:leading-[1.2] mb-4">
                     {titulo}
                 </HeadingTag>
             )}
 
             {imagen_decorativa && (
-                <div class="w-full mb-6 flex justify-center">
+                <div class="c3-figure w-full mb-6 flex justify-center">
                     <img 
                         src={getStrapiUrl(imagen_decorativa)} 
                         alt={imagen_decorativa.alternativeText || "Decoración Acuario"} 
@@ -98,7 +98,7 @@ const HeadingTag = etiqueta_titulo;
 
             {descripcion && (
                 <div
-                    class="w-full text-center md:text-justify font-[family-name:var(--font-secundaria)] text-[var(--neutral-text-inverted)] text-[16px] font-normal leading-[1.4] mb-8 [&>p>strong]:font-bold [&>p>strong]:text-[var(--neutral-text-inverted)] [&>p]:mb-4 last:[&>p]:mb-0"
+                    class="c3-text w-full text-center md:text-justify font-[family-name:var(--font-secundaria)] text-[var(--neutral-text-inverted)] text-[16px] font-normal leading-[1.4] mb-8 [&>p>strong]:font-bold [&>p>strong]:text-[var(--neutral-text-inverted)] [&>p]:mb-4 last:[&>p]:mb-0"
                     set:html={renderHtml(descripcion)}
                 />
             )}
@@ -130,9 +130,9 @@ const HeadingTag = etiqueta_titulo;
             </div>
         )}
 
-        {slides && slides.length > 0 && (
         <!-- Right Column: Carousel -->
-            <div class="w-full md:w-1/2 relative rounded-lg md:rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-video z-10">
+        {slides && slides.length > 0 && (
+            <div class="c3-carousel w-full md:w-1/2 relative rounded-lg md:rounded-xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-video z-10">
                 {slides && slides.length > 0 ? (
                     <div class="swiper acuario-componente-3-swiper w-full h-full absolute inset-0">
                         <div class="swiper-wrapper h-full">
@@ -217,6 +217,7 @@ const HeadingTag = etiqueta_titulo;
     import 'swiper/css';
     import 'swiper/css/pagination';
     import 'swiper/css/effect-fade';
+    import { initMotion, revealSection, floatLoop } from "../../scripts/motion";
 
     document.addEventListener('DOMContentLoaded', () => {
         const swiperElements = document.querySelectorAll('.acuario-componente-3-swiper');
@@ -239,5 +240,141 @@ const HeadingTag = etiqueta_titulo;
                 loop: true,
             });
         });
+    });
+
+    /*
+     * Motion del bloque (T5) — el bloque tiene DOS regiones independientes (la
+     * columna de texto a la izquierda y el carrusel a la derecha) y cada una
+     * recibe su propio trigger: una entrada en la columna no puede ocultar el
+     * carrusel, ni al revés.
+     *
+     * Por qué NO se revela ninguna diapositiva: Swiper es dueño del transform de
+     * sus diapositivas (efecto `fade` incluido), y una diapositiva en opacidad 0
+     * se quedaría invisible hasta que el usuario la alcanzara con el dedo, sin
+     * que el ScrollTrigger volviera a evaluarla (la posición de un trigger no
+     * sigue el transform interno de Swiper). El carrusel entra como una sola
+     * pieza: se revela su marco y las diapositivas aparecen con él.
+     *
+     * Por qué no hay CSS de estado inicial: `revealSection` y `floatLoop` se
+     * apoyan en `gsap.from()`, que lee el valor ACTUAL del elemento como destino
+     * del tween en el momento de crearlo. Una regla de hoja de estilos que
+     * pre-ocultara el elemento bajo el guard `[data-motion="ready"]` sería leída
+     * como ese destino y el tween animaría `opacity: 0 → 0`, dejando el bloque
+     * invisible para siempre. El estado inicial lo pone el tween, que es lo que
+     * mantiene la decisión 3: sin JS, con movimiento reducido o si el helper no
+     * inicializa, no se escribe ningún estilo inline y el contenido se ve tal
+     * cual.
+     */
+    function setupComponente3Motion() {
+        // Cada consulta se resuelve desde la raíz `.c3-section` de ESTE bloque,
+        // así que nada puede alcanzar a un componente-3 hermano en la misma
+        // página.
+        document.querySelectorAll('.c3-section').forEach((section) => {
+            // Antetítulo: entra solo, es la primera señal de que el bloque
+            // está por aparecer.
+            const eyebrow = section.querySelector('.c3-eyebrow');
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.55,
+                    ease: 'power2.out',
+                });
+            }
+
+            // Título. Si el editor eligió `h1` como etiqueta, NO se revela: un
+            // h1 puede ser el elemento LCP y la decisión 4 exige que el texto
+            // sobre el pliegue esté en el primer fotograma pintado. El h1 se
+            // queda exactamente donde la hoja de estilos lo pone.
+            const title = section.querySelector('.c3-title');
+            if (title && title.tagName !== 'H1') {
+                revealSection(title, {
+                    y: 30,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                    delay: 0.08,
+                });
+            }
+
+            // Texto descriptivo: entra después del título. Si el editor metió un
+            // enlace dentro del texto enriquecido, el contenedor se deja
+            // intacto (S13: nunca se revela como bloque un elemento que
+            // contiene un control enfocable).
+            const text = section.querySelector('.c3-text');
+            if (text && !text.querySelector('a')) {
+                revealSection(text, {
+                    y: 24,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                    delay: 0.16,
+                });
+            }
+
+            // La imagen decorativa es un ornamento, no una foto de contenido:
+            // flota en bucle continuo en lugar de revelarse. El reveal se
+            // aplica al ENVOLTORIO (`.c3-figure`) y el flotado a la imagen que
+            // va dentro: son dos elementos distintos, así que no hay dos dueños
+            // del mismo transform.
+            const figure = section.querySelector('.c3-figure');
+            const figureImage = figure ? figure.querySelector('img') : null;
+            if (figure) {
+                revealSection(figure, {
+                    y: 18,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                    delay: 0.14,
+                });
+            }
+            if (figureImage) {
+                floatLoop(figureImage, {
+                    distance: 8,
+                    duration: 5.5,
+                });
+            }
+
+            // El marco del carrusel: una sola entrada para todo el carrusel.
+            // El marco (y no el `.swiper`) es el que se revela, porque el
+            // `.swiper` raíz es `absolute inset-0` dentro de un marco que
+            // recorta: un `y` sobre él abriría una franja vacía en el borde.
+            const carousel = section.querySelector('.c3-carousel');
+            if (carousel) {
+                revealSection(carousel, {
+                    y: 34,
+                    duration: 0.85,
+                    ease: 'power3.out',
+                    delay: 0.1,
+                });
+            }
+
+            // Deliberadamente NO hay `hoverDepth` en este bloque: dentro de la
+            // diapositiva no hay una "tarjeta" sino la imagen o el video a
+            // sangre dentro de un marco con `overflow-hidden`; inclinar eso
+            // dejaría ver el fondo del slide en los bordes.
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que
+    // ningún trigger puede registrarse antes de esta llamada.
+    initMotion();
+    setupComponente3Motion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no
+    // registra ningún ClientRouter hoy, así que esto nunca se dispara; existe
+    // para que el bloque no se quede estático si algún día se activa el modo
+    // SPA. La guarda del primer evento replica la del propio helper: Astro
+    // también dispara `astro:page-load` en la carga inicial, y volver a
+    // registrar ahí pondría un segundo ScrollTrigger sobre los mismos
+    // elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupComponente3Motion();
     });
 </script>

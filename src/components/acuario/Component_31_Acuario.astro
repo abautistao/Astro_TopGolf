@@ -40,7 +40,7 @@ const finalClosing = color_final_override || "var(--neutral-text-inverted)";
 ---
 
 <section
-    class="relative overflow-hidden w-full py-12 md:py-20"
+    class="c31-section relative overflow-hidden w-full py-12 md:py-20"
     style={`background-color: ${finalBg}; color: ${finalText};`}
 >
     <div class="container mx-auto px-4 md:px-6 max-w-7xl">
@@ -48,7 +48,7 @@ const finalClosing = color_final_override || "var(--neutral-text-inverted)";
             <img
                 src={mediaUrl}
                 alt=""
-                class="block md:hidden w-full h-auto object-contain pointer-events-none -mx-4 -mt-12 mb-8"
+                class="c31-deco-movil block md:hidden w-full h-auto object-contain pointer-events-none -mx-4 -mt-12 mb-8"
                 loading="lazy"
             />
         )}
@@ -56,7 +56,7 @@ const finalClosing = color_final_override || "var(--neutral-text-inverted)";
         <div class="relative z-10 md:max-w-[58%]">
             {titulo && (
                 <TitleTag
-                    class="uppercase font-[family-name:var(--font-principal)] text-[37px] font-bold leading-[31px]"
+                    class="c31-titulo uppercase font-[family-name:var(--font-principal)] text-[37px] font-bold leading-[31px]"
                     style={`color: ${finalTitle};`}
                 >
                     {titulo}
@@ -65,7 +65,7 @@ const finalClosing = color_final_override || "var(--neutral-text-inverted)";
 
             {descripcion && (
                 <div
-                    class="font-[family-name:var(--font-secundaria)] text-[16px] leading-[24px] mt-6 [&>ul]:list-disc [&>ul]:pl-6 [&>ul>li]:mb-2 [&>p]:mb-3"
+                    class="c31-tips font-[family-name:var(--font-secundaria)] text-[16px] leading-[24px] mt-6 [&>ul]:list-disc [&>ul]:pl-6 [&>ul>li]:mb-2 [&>p]:mb-3"
                     set:html={stringifyRichText(descripcion)}
                 />
             )}
@@ -76,14 +76,14 @@ const finalClosing = color_final_override || "var(--neutral-text-inverted)";
                 src={mediaUrl}
                 alt=""
                 aria-hidden="true"
-                class="hidden md:block absolute top-0 right-0 h-full max-h-[75%] w-auto max-w-[45%] object-contain object-top pointer-events-none"
+                class="c31-deco-escritorio hidden md:block absolute top-0 right-0 h-full max-h-[75%] w-auto max-w-[45%] object-contain object-top pointer-events-none"
                 loading="lazy"
             />
         )}
 
         {mensaje_final && (
             <p
-                class="font-[family-name:var(--font-principal)] text-[20px] font-bold mt-10 text-center"
+                class="c31-mensaje font-[family-name:var(--font-principal)] text-[20px] font-bold mt-10 text-center"
                 style={`color: ${finalClosing};`}
             >
                 {mensaje_final}
@@ -91,3 +91,155 @@ const finalClosing = color_final_override || "var(--neutral-text-inverted)";
         )}
     </div>
 </section>
+
+<style>
+    /* --- Motion layer (T7). La cobertura del parallax. ---
+     *
+     * WHY `:global()`: Astro le pone su atributo de scope a cada compuesto, así
+     * que un `[data-motion="ready"] .c31-deco-escritorio` a secas compila a
+     * `[data-astro-cid-x][data-motion=ready] .c31-deco-escritorio[data-astro-cid-x]`
+     * y exige que UN solo elemento tenga los dos atributos — pero `data-motion`
+     * vive en `<html>`, que nunca lleva un cid. `:global()` deja el guardia
+     * fuera del scope y la clase sigue acotada a este componente.
+     *
+     * WHY 1.08: la capa de parallax viaja un 4% de su propia altura en cada
+     * dirección, y la imagen está pegada al borde superior de la sección
+     * (`top-0` dentro de un `overflow-hidden`). Sin un poco de material de
+     * sobra, el viaje descubriría el borde. La cobertura mínima es
+     * 1 + 2 * (distancia / 100) = 1.08, y con `transform-origin` en el centro
+     * la imagen gana 4% de aire por arriba y por abajo: justo lo que el
+     * recorrido necesita.
+     *
+     * WHY la propiedad `scale` y no `transform`: `transform` es de GSAP (allá
+     * va el `yPercent` del parallax) y una regla de estilo con `transform`
+     * perdería contra el valor inline. La propiedad `scale` es independiente:
+     * GSAP la dobla dentro del transform que ya posee, así que la escala
+     * termina dentro de la misma interpolación.
+     *
+     * WHY bajo el guardia: con JS apagado (o con movimiento reducido)
+     * `data-motion` nunca se escribe, la escala se queda en 1 y la imagen se
+     * dibuja exactamente como la dibujaba la hoja de estilos.
+     */
+    :global([data-motion="ready"]) .c31-deco-escritorio {
+        scale: 1.08;
+    }
+</style>
+
+<script>
+    import { floatLoop, initMotion, parallaxLayer, revealSection, revealStagger, splitReveal } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque (T7) — consejos con viñetas y una imagen decorativa.
+     *
+     * Las anclas `c31-` son el único asidero del script: no cambian el layout,
+     * sólo dan un nombre estable a cada pieza.
+     *
+     * El título se arma por palabras, SIN máscara: el encabezado va con
+     * `leading-[31px]` sobre un cuerpo de 37px (interlineado negativo) y una
+     * máscara de SplitText recorta la caja de línea, dejando las letras
+     * cortadas por arriba y por abajo.
+     *
+     * Si el editor dejó el título como `h1` no se parte: un `h1` es candidato
+     * a LCP y `splitReveal` escribe `opacity: 0` en cada parte al cargar.
+     */
+    function setupConsejosMotion() {
+        document.querySelectorAll('.c31-section').forEach((section) => {
+            const titulo = section.querySelector('.c31-titulo');
+
+            if (titulo && titulo.tagName !== 'H1') {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 24,
+                    duration: 0.8,
+                    stagger: 0.045,
+                    mask: false,
+                });
+            }
+
+            // Los consejos: si la descripción trae una lista, entra viñeta por
+            // viñeta; si el editor dejó texto corrido, se revela el bloque
+            // entero. El `ul` es hijo directo de la descripción, así que los
+            // `li` se pueden alcanzar con el selector del helper.
+            const consejos = section.querySelector('.c31-tips');
+
+            if (consejos) {
+                if (consejos.querySelectorAll('li').length > 0) {
+                    revealStagger(consejos, {
+                        selector: 'li',
+                        y: 16,
+                        stagger: 0.09,
+                        duration: 0.6,
+                    });
+                } else {
+                    revealSection(consejos, {
+                        y: 22,
+                        duration: 0.7,
+                    });
+                }
+            }
+
+            const cierre = section.querySelector('.c31-mensaje');
+
+            if (cierre) {
+                revealSection(cierre, {
+                    y: 16,
+                    duration: 0.7,
+                    delay: 0.12,
+                });
+            }
+
+            // La imagen decorativa de escritorio lleva un parallax suave: es
+            // un adorno que acompaña al texto, no algo que haya que leer. El
+            // `trigger` es la sección entera para que el recorrido no dependa
+            // de la caja del contenedor. La escala que le da cobertura vive en
+            // el `<style>` de este bloque.
+            const decoEscritorio = section.querySelector('.c31-deco-escritorio');
+
+            if (decoEscritorio) {
+                parallaxLayer(decoEscritorio, {
+                    distance: 4,
+                    trigger: section,
+                });
+            }
+
+            // La imagen decorativa de móvil (la misma foto, en otra posición)
+            // flota en su lugar. Baja 8px en vez de subirlos: está pegada al
+            // borde superior de la sección por su margen negativo, así que
+            // subirla la recortaría contra el `overflow-hidden`.
+            const decoMovil = section.querySelector('.c31-deco-movil');
+
+            if (decoMovil) {
+                floatLoop(decoMovil, {
+                    distance: 8,
+                    duration: 5.5,
+                    ease: 'sine.inOut',
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupConsejosMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupConsejosMotion();
+    });
+</script>

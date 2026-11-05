@@ -291,6 +291,7 @@ const overlay = color_overlay ? color_overlay : 'transparent'
     import 'swiper/css';
     import 'swiper/css/pagination';
     import 'swiper/css/effect-fade';
+    import { initMotion, revealSection, revealStagger, splitReveal, hoverDepth } from "../../scripts/motion";
 
     function initGaleriaSwiper() {
         const sliders = document.querySelectorAll('.acuario-galeria-swiper');
@@ -313,5 +314,125 @@ const overlay = color_overlay ? color_overlay : 'transparent'
         });
     }
 
-    document.addEventListener('DOMContentLoaded', initGaleriaSwiper);
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. La profundidad se aplica al CONTENIDO de
+     * dentro del slide (la imagen o el video), nunca al slide. Tampoco hay un
+     * reveal por slide: un slide fuera de pantalla se quedaría en opacidad 0
+     * hasta que el usuario lo desplace, y la posición de un ScrollTrigger no
+     * sigue el transform interno de Swiper.
+     *
+     * Las columnas se resuelven por ESTRUCTURA y no por clases: en este archivo
+     * las clases de Tailwind llevan el sufijo `!` (`grid!`, `container!`…), así
+     * que no sirven como selector. La estructura es
+     * `<section> > contenedor > grilla > primera columna`.
+     */
+    function setupMotion() {
+        const section = document.getElementById('component-9');
+        if (!section) {
+            return;
+        }
+
+        const grid = section.firstElementChild?.firstElementChild ?? null;
+        const columna = grid?.firstElementChild ?? null;
+
+        // Título del bloque: el primer encabezado DIRECTO de la columna. El `<h3>`
+        // de la lista de iconos va después en el DOM, así que nunca se confunde
+        // con el título.
+        const heading = columna?.querySelector(
+            ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6',
+        ) ?? null;
+
+        // `splitReveal` nunca se aplica a un `h1`: escribe `opacity: 0` en las
+        // partes del texto al cargar, y un `h1` por encima del pliegue retrasaría
+        // el LCP (decisión 4 del helper).
+        if (heading && heading.tagName !== 'H1') {
+            splitReveal(heading, {
+                type: 'words',
+                y: 26,
+                stagger: 0.045,
+                duration: 0.75,
+                ease: 'power3.out',
+            });
+        }
+
+        // Lista de iconos: entra elemento por elemento. El bloque de texto
+        // enriquecido (`.rich-text`) también puede traer `<ul>`, así que se
+        // descarta para no revelar el texto del CMS por partes.
+        const list = Array.from(columna?.querySelectorAll('ul') ?? [])
+            .find((ul) => !ul.closest('.rich-text')) ?? null;
+
+        if (list) {
+            revealStagger(list, {
+                selector: 'li',
+                stagger: 0.08,
+                y: 16,
+                duration: 0.55,
+                ease: 'power2.out',
+            });
+        }
+
+        const carousel = section.querySelector('.acuario-galeria-swiper');
+
+        if (carousel) {
+            // El contenedor del carrusel se levanta con el bloque. Se usa
+            // `opacityFrom: 1` (sin rampa de opacidad) porque el carrusel puede
+            // contener el `<iframe>` de YouTube: un reveal con opacidad 0 dejaría
+            // ese control invisible pero enfocable (S13).
+            revealSection(carousel, {
+                y: 34,
+                opacityFrom: 1,
+                duration: 0.85,
+                ease: 'power3.out',
+            });
+
+            // La profundidad va al medio de cada slide, no al slide. La escala del
+            // hover (1.05) tapa el hueco que abriría la inclinación en los bordes
+            // del marco, porque el medio ocupa el slide completo.
+            const media = Array.from(
+                carousel.querySelectorAll('.swiper-slide > img, .swiper-slide > video'),
+            );
+
+            hoverDepth(media, {
+                maxTilt: 3,
+                lift: -4,
+                scale: 1.05,
+                duration: 0.45,
+            });
+        }
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+
+    // Swiper primero: en modo `loop` clona los slides, y el movimiento tiene que
+    // alcanzarlos a todos. Por eso el setup del movimiento va después del
+    // arranque del carrusel.
+    document.addEventListener('DOMContentLoaded', () => {
+        initGaleriaSwiper();
+        setupMotion();
+    });
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
 </script>

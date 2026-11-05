@@ -33,6 +33,11 @@ const {
 
 const TitleTag = htmlTag;
 
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8): un `h1`
+// puede quedar en el primer pliegue y `splitReveal` escribe `opacity: 0` en
+// sus partes al cargar.
+const tituloPartible = htmlTag !== "h1";
+
 // Helper: enum → clase Tailwind text-align (default: center)
 const alignClass = (a?: "center" | "left" | "right") =>
     a === "left" ? "text-left" :
@@ -41,21 +46,31 @@ const alignClass = (a?: "center" | "left" | "right") =>
 ---
 
 <section
-    class="w-full py-12 md:py-20 relative overflow-hidden"
+    class="c22-section w-full py-12 md:py-20 relative overflow-hidden"
     style={{
         backgroundColor: color_fondo || "transparent",
-        backgroundImage: imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
     }}
 >
+    {/* Capa de fondo: la imagen deja de ser un `background-image` inline de la
+        sección y pasa a un elemento propio, para que `parallaxLayer` pueda
+        desplazarla. Cubre y se posiciona igual que antes (`cover` / `center`)
+        y queda detrás del contenido (`z-0`). */}
+    {imagen_fondo && (
+        <div
+            class="c22-bg absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none z-0"
+            style={{ backgroundImage: `url(${getStrapiUrl(imagen_fondo)})` }}
+            aria-hidden="true"
+        ></div>
+    )}
+
     <div class="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
         {(titulo || subtitulo || descripcion) && (
             <div class="mb-10 md:mb-16">
                 {titulo && (
                     <TitleTag
-                        class={`font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase mb-2 ${alignClass(titulo_alineacion)}`}
+                        class={`c22-title font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase mb-2 ${alignClass(titulo_alineacion)}`}
                         style={color_titulo ? { color: color_titulo } : { color: "var(--surface-brand-primary)" }}
+                        data-split={tituloPartible ? "on" : "off"}
                     >
                         {titulo}
                     </TitleTag>
@@ -81,18 +96,25 @@ const alignClass = (a?: "center" | "left" | "right") =>
         )}
 
         {tarjetas && tarjetas.length > 0 && (
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12 justify-items-center">
+            <div class="c22-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12 justify-items-center">
                 {tarjetas.map((tarjeta) => {
                     const CardTag = (tarjeta.htmlTag || "h3") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
                     return (
-                        <div class="flex flex-col items-center text-center w-full max-w-[320px] group">
+                        <div class="c22-card flex flex-col items-center text-center w-full max-w-[320px] group">
                             {tarjeta.imagen && (
+                                /* Caja de recorte: el `zoomImage` necesita un
+                                   contenedor con `overflow-hidden`, porque el
+                                   zoom es un `scale` y sin recorte la imagen
+                                   se saldría de su caja. La caja conserva las
+                                   medidas de antes (`max-w-[220px]`). */
+                                <div class="c22-media w-full max-w-[220px] overflow-hidden">
                                 <img
                                     src={getStrapiUrl(tarjeta.imagen)}
                                     alt={tarjeta.titulo || "Tarjeta"}
-                                    class="w-full max-w-[220px] h-auto"
+                                    class="c22-card-img w-full h-auto"
                                     loading="lazy"
                                 />
+                                </div>
                             )}
 
                             {tarjeta.titulo && (
@@ -119,3 +141,121 @@ const alignClass = (a?: "center" | "left" | "right") =>
         )}
     </div>
 </section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * La tarjeta y la imagen de este bloque no llevan ninguna clase de
+     * transición de Tailwind, así que no hay doble easing que corregir: GSAP
+     * es el único dueño del `transform` de cada una y nada más lo compite.
+     *
+     * Holgura para el parallax del fondo: el viaje vertical del `yPercent`
+     * descubriría el borde de la foto si la imagen midiese exactamente lo que
+     * su caja. Un `scale` de 1.22 deja 11% de aire arriba y abajo, y el
+     * recorrido es del 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro, así que la forma sin `:global()`
+     * compila a un selector que jamás hace match.
+     */
+    :global([data-motion="ready"]) .c22-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento de la rejilla de iconos/tarjetas (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c22-card`     → el reveal (opacidad + viaje vertical).
+     *   - `.c22-card`     → `hoverDepth` (inclinación + lift).
+     *   - `.c22-card-img` → `zoomImage` (zoom por scroll).
+     *   - `.c22-bg`       → `parallaxLayer` (fondo de la sección).
+     *
+     * Aquí el reveal sí puede apuntar a la tarjeta: no contiene ningún
+     * control focusable (sólo imagen, título y subtítulo), así que un
+     * `gsap.from()` no puede dejar nada invisible y tabulable (S13).
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c22-section').forEach((section) => {
+            // El título se arma palabra por palabra. Sólo si no es un `h1`:
+            // `splitReveal` escribe `opacity: 0` en las partes al cargar y un
+            // `h1` puede estar en el primer pliegue (S8).
+            const title = section.querySelector('.c22-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // Las tarjetas llegan una detrás de otra.
+            const grid = section.querySelector('.c22-grid');
+            if (grid) {
+                revealStagger(grid, {
+                    selector: '.c22-card',
+                    stagger: 0.1,
+                    y: 28,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper registra el efecto dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`.
+            section.querySelectorAll('.c22-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 6, lift: -6 });
+            });
+
+            // Zoom por scroll del icono, dentro de su caja `overflow-hidden`.
+            // `from: 1.05` deja margen para que el recorte nunca enseñe un
+            // borde.
+            section.querySelectorAll('.c22-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo de la sección se desplaza despacio; el `scale: 1.22`
+            // del `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c22-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, y siempre por debajo del contenido (`z-10`), así
+            // que nunca tapan texto ni capturan un clic.
+            ambientBubbles(section, { count: 6, maxOnMobile: 3 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

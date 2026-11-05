@@ -27,6 +27,11 @@ const {
 
 const TitleTag = htmlTag as any;
 
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8): un `h1`
+// puede quedar en el primer pliegue y `splitReveal` escribe `opacity: 0` en
+// sus partes al cargar.
+const tituloPartible = htmlTag !== "h1";
+
 const finalBg = color_fondo || "var(--neutral-background-subtle)";
 const finalTitleColor = color_titulo || "var(--surface-brand-primary)";
 const finalTextColor = color_texto || "var(--surface-brand-primary)";
@@ -34,10 +39,10 @@ const finalTextColor = color_texto || "var(--surface-brand-primary)";
 const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 ---
 
-<section class="w-full py-12 md:py-20 relative overflow-hidden" style={`background-color: ${finalBg};`}>
+<section class="c21-section w-full py-12 md:py-20 relative overflow-hidden" style={`background-color: ${finalBg};`}>
     {bgUrl && (
         <div
-            class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            class="c21-bg absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={`background-image: url(${bgUrl});`}
             aria-hidden="true"
         ></div>
@@ -48,8 +53,9 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
             <div class="text-center mb-10 md:mb-16">
                 {titulo && (
                     <TitleTag
-                        class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-black uppercase mb-2"
+                        class="c21-title font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-black uppercase mb-2"
                         style={`color: ${finalTitleColor};`}
+                        data-split={tituloPartible ? "on" : "off"}
                     >
                         {titulo}
                     </TitleTag>
@@ -75,15 +81,21 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
         )}
 
         {tarjetas.length > 0 && (
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-items-center">
+            <div class="c21-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-items-center">
                 {tarjetas.map((tarjeta) => (
-                    <div class="relative w-full max-w-[380px] rounded-[24px] overflow-hidden flex flex-col items-center justify-end text-center group transition-transform duration-300 hover:-translate-y-2 shadow-lg min-h-[480px]">
+                    /* Envoltorio de motion: conserva la caja de la tarjeta
+                       (`w-full` + `max-w-[380px]` + `flex`, para que la tarjeta
+                       siga estirándose a la altura de la fila) y es el
+                       elemento que se revela. El reveal nunca apunta al
+                       botón de compra, que es focusable (S13). */
+                    <div class="c21-item w-full max-w-[380px] flex">
+                    <div class="c21-card relative w-full max-w-[380px] rounded-[24px] overflow-hidden flex flex-col items-center justify-end text-center group transition-transform duration-300 hover:-translate-y-2 shadow-lg min-h-[480px]">
 
                         {tarjeta.imagen_fondo && (
                             <img
                                 src={getStrapiUrl(tarjeta.imagen_fondo)}
                                 alt=""
-                                class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110"
+                                class="c21-card-img absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110"
                             />
                         )}
 
@@ -164,8 +176,147 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 
                         </div>
                     </div>
+                    </div>
                 ))}
             </div>
         )}
     </div>
 </section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Tailwind v4 escribe `transition-property: transform, translate, scale,
+     * rotate` en `transition-transform`. Cuando GSAP escribe un `transform`
+     * inline en el mismo elemento, la transición interpola frame a frame las
+     * escrituras de GSAP y la tarjeta se retrasa ~300ms respecto a su propia
+     * animación (el defecto de doble easing). Bajo el guard de motion se deja
+     * la lista sin el canal `transform`: GSAP queda como único dueño de ese
+     * `transform`.
+     *
+     * Este ajuste NO salva una elevación de Tailwind: al tomar el `transform`,
+     * GSAP escribe `translate: none` inline y una declaración inline gana a
+     * cualquier regla de clase, así que el `hover:-translate-y-2` de la
+     * tarjeta deja de aplicarse (L18, medido en Chromium). La elevación la
+     * pone `hoverDepth` (GSAP), no Tailwind: un único dueño por elemento.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro, así que la forma sin `:global()`
+     * compila a un selector que jamás hace match.
+     */
+    :global([data-motion="ready"]) .c21-card {
+        transition-property: translate, scale, rotate;
+    }
+
+    :global([data-motion="ready"]) .c21-card-img {
+        transition-property: translate, scale, rotate;
+    }
+
+    /* Holgura para el parallax del fondo: el viaje vertical del `yPercent`
+     * descubriría el borde de la foto si la imagen midiese exactamente lo que
+     * su caja. Un `scale` de 1.22 deja 11% de aire arriba y abajo, y el
+     * recorrido es del 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     */
+    :global([data-motion="ready"]) .c21-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento del bloque de promociones (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c21-item`     → el reveal (opacidad + viaje vertical).
+     *   - `.c21-card`     → `hoverDepth` (inclinación + lift).
+     *   - `.c21-card-img` → `zoomImage` (zoom por scroll).
+     *   - `.c21-bg`       → `parallaxLayer` (fondo de la sección).
+     *
+     * El reveal nunca apunta al botón de compra, que es focusable: un
+     * `gsap.from()` sobre un control lo deja invisible y tabulable si su
+     * trigger no dispara (S13). De ahí el envoltorio `<div>` de cada tarjeta.
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c21-section').forEach((section) => {
+            // El título se arma palabra por palabra. Sólo si no es un `h1`:
+            // `splitReveal` escribe `opacity: 0` en las partes al cargar y un
+            // `h1` puede estar en el primer pliegue (S8).
+            const title = section.querySelector('.c21-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // Las tarjetas llegan una detrás de otra.
+            const grid = section.querySelector('.c21-grid');
+            if (grid) {
+                revealStagger(grid, {
+                    selector: '.c21-item',
+                    stagger: 0.12,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper registra el efecto dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`. El `lift` sustituye al
+            // `hover:-translate-y-2` de Tailwind, que GSAP desactiva al
+            // tomar el `transform` de la tarjeta (L18).
+            section.querySelectorAll('.c21-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 6, lift: -8 });
+            });
+
+            // Zoom por scroll de la foto, dentro de la caja `overflow-hidden`
+            // de la tarjeta. `from: 1.05` deja margen para que el recorte
+            // nunca enseñe un borde.
+            section.querySelectorAll('.c21-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo de la sección se desplaza despacio; el `scale: 1.22`
+            // del `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c21-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, y siempre por debajo del contenido (`z-10`), así
+            // que nunca tapan texto ni capturan un clic.
+            ambientBubbles(section, { count: 7, maxOnMobile: 4 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

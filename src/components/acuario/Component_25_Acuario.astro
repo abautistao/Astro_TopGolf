@@ -41,20 +41,24 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
     {bgUrl && (
         <>
             <div
-                class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                class="c25-bg absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={`background-image: url(${bgUrl});`}
                 aria-hidden="true"
             ></div>
             <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
+            <!-- Anfitrión de las burbujas: va por encima del velo oscuro y por
+                 debajo del contenido (`z-10`), así que la atmósfera se ve sin
+                 tapar ni el texto ni el formulario. -->
+            <div class="c25-burbujas absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true"></div>
         </>
     )}
 
     <div class="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-            <div class="flex flex-col gap-5">
+            <div class="c25-texto flex flex-col gap-5">
                 {titulo && (
                     <TitleTag
-                        class="font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase leading-tight text-center lg:text-left"
+                        class="c25-titulo font-[family-name:var(--font-principal)] text-[32px] md:text-[42px] font-bold uppercase leading-tight text-center lg:text-left"
                         style={`color: ${finalTitleColor};`}
                     >
                         {titulo}
@@ -63,13 +67,13 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
 
                 {descripcion && (
                     <div
-                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-normal leading-relaxed text-center lg:text-left [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        class="c25-descripcion font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-normal leading-relaxed text-center lg:text-left [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
                         set:html={stringifyRichText(descripcion)}
                     />
                 )}
 
                 {elementos_lista && elementos_lista.length > 0 && (
-                    <ul class="flex flex-col gap-3 mt-2">
+                    <ul class="c25-lista flex flex-col gap-3 mt-2">
                         {elementos_lista.map((item) => (
                             <li class="flex items-start gap-3 font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] font-medium">
                                 {item.icono && (
@@ -90,3 +94,109 @@ const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
         </div>
     </div>
 </section>
+
+<style>
+    /* Capa de motion (T3) — cobertura del parallax del fondo.
+     *
+     * La foto de fondo se desplaza 8% de su alto con el scroll. Como vive
+     * dentro de un contenedor `overflow-hidden`, necesita holgura para que el
+     * viaje no destape el borde: `scale: 1.16` = 1 + 2 * (8 / 100) es
+     * exactamente la headroom que consume el viaje en cada extremo.
+     *
+     * WHY `:global()`: `data-motion` vive en `<html>`, que no lleva scope id
+     * de Astro; la forma sin `:global()` compilaría a un selector que exige un
+     * mismo elemento con los dos atributos y no matchearía nunca.
+     *
+     * WHY `scale` y no `transform`: GSAP es dueño del `transform` de la capa
+     * (escribe el `yPercent` del parallax); la propiedad independiente `scale`
+     * es la que CSSPlugin folds dentro de esa transform, así que hay un solo
+     * dueño del transform.
+     */
+    :global([data-motion="ready"]) .c25-bg {
+        scale: 1.16;
+    }
+</style>
+
+<script>
+    import { initMotion, parallaxLayer, ambientBubbles, revealSection, revealStagger } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque inmersivo (T3) — foto de fondo con una lista y un
+     * formulario embebido.
+     *
+     * - El fondo se desplaza (parallax) y respira con burbujas discretas: la
+     *   atmósfera va por detrás del contenido y nunca roba un clic.
+     * - El texto entra por bloques: primero el título, luego la descripción y
+     *   por último los puntos de la lista, uno tras otro.
+     * - El formulario NO se toca por dentro: lo trae `Component_16_Acuario`,
+     *   que ya tiene su propia capa de motion y sus propios triggers. Aquí sólo
+     *   se mueve lo que hay ALREDEDOR del formulario. La descripción lleva
+     *   `skipFocusable` porque el editor puede meter un enlace en el texto
+     *   enriquecido, y un contenedor con un control enfocable nunca debe
+     *   revelarse como un todo (S13).
+     */
+    function setupImmersiveMotion() {
+        document.querySelectorAll('.c25-bg').forEach((fondo) => {
+            parallaxLayer(fondo, { distance: 8 });
+        });
+
+        document.querySelectorAll('.c25-burbujas').forEach((anfitrion) => {
+            ambientBubbles(anfitrion, { count: 12, maxOnMobile: 5 });
+        });
+
+        document.querySelectorAll('.c25-texto').forEach((texto) => {
+            const titulo = texto.querySelector('.c25-titulo');
+            const descripcion = texto.querySelector('.c25-descripcion');
+            const lista = texto.querySelector('.c25-lista');
+
+            if (titulo) {
+                revealSection(titulo, { y: 22, duration: 0.6, ease: 'power2.out' });
+            }
+
+            if (descripcion) {
+                revealSection(descripcion, {
+                    y: 18,
+                    duration: 0.6,
+                    delay: 0.08,
+                    ease: 'power2.out',
+                    skipFocusable: true,
+                });
+            }
+
+            if (lista) {
+                revealStagger(lista, {
+                    selector: 'li',
+                    y: 16,
+                    duration: 0.5,
+                    stagger: 0.08,
+                    ease: 'power2.out',
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupImmersiveMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupImmersiveMotion();
+    });
+</script>

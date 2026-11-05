@@ -39,13 +39,13 @@ const finalDisclaimerColor = color_disclaimer_override || "var(--brand-interacti
 ---
 
 <section
-    class="w-full py-12 md:py-20"
+    class="c27-section w-full py-12 md:py-20"
     style={`background-color: ${finalBg}; color: ${finalTextColor};`}
 >
     <div class="container mx-auto px-4 md:px-6 max-w-7xl text-center">
         {titulo && (
             <TitleTag
-                class="font-[family-name:var(--font-principal)] text-[37px] font-bold leading-[31px]"
+                class="c27-titulo font-[family-name:var(--font-principal)] text-[37px] font-bold leading-[31px]"
                 style={`color: ${finalTitleColor};`}
             >
                 {titulo}
@@ -54,7 +54,7 @@ const finalDisclaimerColor = color_disclaimer_override || "var(--brand-interacti
 
         {subtitulo && (
             <p
-                class="font-[family-name:var(--font-principal)] text-[39px] font-black leading-[31px] mt-2"
+                class="c27-subtitulo font-[family-name:var(--font-principal)] text-[39px] font-black leading-[31px] mt-2"
                 style={`color: ${finalSubtitleColor};`}
             >
                 {subtitulo}
@@ -63,14 +63,14 @@ const finalDisclaimerColor = color_disclaimer_override || "var(--brand-interacti
 
         {descripcion && (
             <div
-                class="font-[family-name:var(--font-secundaria)] text-[16px] font-normal leading-[21px] mt-6 [&>p]:mb-3 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                class="c27-descripcion font-[family-name:var(--font-secundaria)] text-[16px] font-normal leading-[21px] mt-6 [&>p]:mb-3 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
                 set:html={stringifyRichText(descripcion)}
             />
         )}
 
         {disclaimer && (
             <p
-                class="font-[family-name:var(--font-principal)] text-[18px] font-black leading-[25px] mt-6"
+                class="c27-disclaimer font-[family-name:var(--font-principal)] text-[18px] font-black leading-[25px] mt-6"
                 style={`color: ${finalDisclaimerColor};`}
             >
                 {disclaimer}
@@ -78,3 +78,97 @@ const finalDisclaimerColor = color_disclaimer_override || "var(--brand-interacti
         )}
     </div>
 </section>
+
+<script>
+    import { initMotion, revealSection, splitReveal } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque (T7) — un encabezado centrado con su descripción y su
+     * descargo legal.
+     *
+     * Las anclas `c27-` son el único asidero del script: no cambian el layout,
+     * sólo dan un nombre estable a cada pieza.
+     *
+     * El título se arma por palabras, SIN máscara. El encabezado va con
+     * `leading-[31px]` sobre un cuerpo de 37px (interlineado negativo), y una
+     * máscara de SplitText recorta la caja de línea: las letras se veían
+     * cortadas por arriba y por abajo. Sin máscara las palabras entran igual,
+     * sólo que desde su sitio.
+     *
+     * Si el editor dejó el título como `h1` no se parte: un `h1` es candidato a
+     * LCP y `splitReveal` escribe `opacity: 0` en cada parte al cargar.
+     */
+    function setupAvisoMotion() {
+        document.querySelectorAll('.c27-section').forEach((section) => {
+            const titulo = section.querySelector('.c27-titulo');
+
+            if (titulo && titulo.tagName !== 'H1') {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 24,
+                    duration: 0.8,
+                    stagger: 0.045,
+                    mask: false,
+                });
+            }
+
+            const subtitulo = section.querySelector('.c27-subtitulo');
+
+            if (subtitulo) {
+                revealSection(subtitulo, {
+                    y: 14,
+                    duration: 0.6,
+                    delay: 0.1,
+                });
+            }
+
+            const descripcion = section.querySelector('.c27-descripcion');
+
+            if (descripcion) {
+                revealSection(descripcion, {
+                    y: 22,
+                    duration: 0.7,
+                    delay: 0.16,
+                });
+            }
+
+            // El descargo legal entra más suave: es la nota al pie del bloque,
+            // no el mensaje principal.
+            const descargo = section.querySelector('.c27-disclaimer');
+
+            if (descargo) {
+                revealSection(descargo, {
+                    y: 12,
+                    duration: 0.85,
+                    delay: 0.26,
+                    ease: 'power1.out',
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupAvisoMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupAvisoMotion();
+    });
+</script>

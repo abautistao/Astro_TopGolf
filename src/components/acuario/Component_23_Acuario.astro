@@ -35,7 +35,7 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
 ---
 
 <section
-    class="w-full! py-10! md:py-14! relative! overflow-hidden!"
+    class="c23-section w-full! py-10! md:py-14! relative! overflow-hidden!"
     style={`background-color: ${finalSectionBg} !important;`}
 >
     <div class="w-full! max-w-[1280px]! mx-auto! px-6! md:px-12!">
@@ -45,7 +45,7 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
         >
             {titulo && (
                 <TitleTag
-                    class="font-[family-name:var(--font-principal)]! text-[18px]! md:text-[20px]! font-black! leading-tight! mb-3!"
+                    class="c23-titulo font-[family-name:var(--font-principal)]! text-[18px]! md:text-[20px]! font-black! leading-tight! mb-3!"
                     style={`${tituloStyle ? tituloStyle + "; " : ""}color: ${finalTitleColor};`}
                 >
                     {titulo}
@@ -54,7 +54,7 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
 
             {descripcion && (
                 <div
-                    class="rich-text-cortesias font-[family-name:var(--font-principal)]! text-[16px]! font-normal! leading-snug! [&>p]:mb-2! last:[&>p]:mb-0! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
+                    class="c23-descripcion rich-text-cortesias font-[family-name:var(--font-principal)]! text-[16px]! font-normal! leading-snug! [&>p]:mb-2! last:[&>p]:mb-0! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
                     style={`${descripcionStyle ? descripcionStyle + "; " : ""}color: ${finalTextColor};`}
                     set:html={stringifyRichText(descripcion)}
                 />
@@ -67,3 +67,71 @@ const descripcionStyle = color_texto_override ? `color: ${color_texto_override}`
         color: #FFB600
     }
 </style>
+
+<script>
+    import { initMotion, revealSection, splitReveal } from "../../scripts/motion";
+
+    /*
+     * Motion del bloque (T7) — un cintillo promocional: encabezado + texto.
+     *
+     * Las anclas `c23-` son el único asidero del script: no cambian el layout,
+     * sólo dan un nombre estable al título y a la descripción.
+     *
+     * El título se arma por palabras. Si el editor lo dejó como `h1` no se
+     * parte: un `h1` es candidato a LCP y `splitReveal` escribe `opacity: 0`
+     * en cada parte al cargar.
+     *
+     * La caja del cintillo NO se revela como bloque: dentro vive el título, y
+     * ocultar el contenedor dejaría el texto partido sin verse. Lo que se
+     * revela es su descripción, que es texto corrido.
+     */
+    function setupBannerMotion() {
+        document.querySelectorAll('.c23-section').forEach((section) => {
+            const titulo = section.querySelector('.c23-titulo');
+
+            if (titulo && titulo.tagName !== 'H1') {
+                splitReveal(titulo, {
+                    type: 'words',
+                    y: 20,
+                    duration: 0.7,
+                    stagger: 0.035,
+                });
+            }
+
+            const descripcion = section.querySelector('.c23-descripcion');
+
+            if (descripcion) {
+                revealSection(descripcion, {
+                    y: 18,
+                    duration: 0.65,
+                    delay: 0.12,
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupBannerMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupBannerMotion();
+    });
+</script>

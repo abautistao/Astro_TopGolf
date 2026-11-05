@@ -70,7 +70,7 @@ const youtubeId = tipo_media === "youtube" ? getYoutubeId(youtube_url ?? "") : n
 >
     <div class="container mx-auto px-4 md:px-6 max-w-7xl">
         <div class:list={[
-            "w-full relative overflow-hidden rounded-[24px] bg-transparent",
+            "c28-marco w-full relative overflow-hidden rounded-[24px] bg-transparent",
             wrapperAspect,
             wrapperWidth,
         ]}>
@@ -102,3 +102,96 @@ const youtubeId = tipo_media === "youtube" ? getYoutubeId(youtube_url ?? "") : n
         </div>
     </div>
 </section>
+
+<script>
+    import { initMotion, revealSection, zoomImage } from "../../scripts/motion";
+
+    /*
+     * Bloque de media motion (T8).
+     *
+     * Este bloque tiene dos variantes y ninguna de las dos necesita un `<script>`
+     * propio de lógica: sólo renderiza un `<img>` o un `<iframe>` de YouTube
+     * dentro de un marco que recorta.
+     *
+     * El ancla es `.c28-marco`, la clase que lleva el `<div>` contenedor — el
+     * que tiene `overflow-hidden` — y NO el `<img>` ni el `<iframe>`. El marco es
+     * un envoltorio NO interactivo: no es un control, no recibe foco y no
+     * guarda ningún valor, así que revelarlo no puede dejar nada invisible
+     * detrás de una Tecla.
+     *
+     * POR QUÉ el marco sí se revela con opacidad (a diferencia del `<form>` del
+     * componente-16): el `<iframe>` de YouTube SÍ es focusable —el teclado puede
+     * entrar en él—, pero el helper tiene la red de seguridad para eso
+     * (`bindFocusRescue`): en cuanto algo dentro de un contenedor con
+     * `opacity: 0` en línea recibe el foco, el contenedor se limpia y el control
+     * queda visible justo cuando el usuario lo necesita. Ese mecanismo es
+     * justamente lo que permite este reveal, y lo que hace IMPOSIBLE revelar
+     * el `<iframe>` en sí mismo (el helper limpia a los ANCESTROS del elemento
+     * enfocado, no al elemento enfocado: un `<iframe>` con opacidad 0 propia se
+     * quedaría invisible y focusable para siempre).
+     *
+     * POR QUÉ no hay CSS de estado inicial para el marco: `revealSection` y
+     * `zoomImage` construyen tweens `gsap.from()`, que leen el valor ACTUAL del
+     * elemento como destino al crearse. Una regla de stylesheet que preocultara
+     * el marco bajo `[data-motion="ready"]` sería leída como ese destino, el
+     * tween animaría `opacity: 0 → 0` y el bloque se quedaría invisible para
+     * siempre. El estado inicial escondido viene del tween, que es lo que
+     * mantiene honesta la regla de "sin JS, sin atributo de disponibilidad, sin
+     * contenido oculto".
+     */
+    function setupMediaMotion() {
+        document.querySelectorAll<HTMLElement>('.c28-marco').forEach((marco) => {
+            // El marco entra con un reveal corto: sube y aparece. Es un tween de
+            // una sola pasada (`once: true`), así que una vez que el bloque
+            // quedó atrás no se vuelve a tocar.
+            revealSection(marco, {
+                y: 30,
+                duration: 0.85,
+                ease: 'power3.out',
+            });
+
+            // El zoom pertenece SÓLO a la variante de imagen. `zoomImage` es un
+            // tween con `scrub` sobre la escala de la imagen, y la imagen
+            // vive dentro del marco con `overflow-hidden`, así que el recorte
+            // recorta el sobredimensionado en vez de dejarlo asomar: no hace
+            // falta ningún `scale` de holgura en el stylesheet.
+            //
+            // El `<iframe>` de YouTube queda fuera a propósito: meter motion
+            // dentro del reproductor es imposible (es un documento ajeno) y
+            // transformarlo movería el player bajo el cursor.
+            const imagen = marco.querySelector('img');
+            if (imagen) {
+                zoomImage(imagen, {
+                    from: 1.07,
+                    to: 1,
+                    duration: 1.1,
+                });
+            }
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupMediaMotion();
+
+    // Decision 7, replicado del helper: en una navegación del lado del cliente
+    // el helper desmonta sus triggers y vuelve a armar motion, así que los
+    // triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. La
+    // guarda del primer evento replica la del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial, y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMediaMotion();
+    });
+</script>

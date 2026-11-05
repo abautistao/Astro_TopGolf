@@ -283,6 +283,7 @@ const getBlogImage = (b: any) =>
     import "swiper/css";
     import "swiper/css/navigation";
     import "swiper/css/pagination";
+    import { initMotion, revealSection, splitReveal, hoverDepth } from "../../scripts/motion";
 
     function initBlogPopularSwipers() {
         document.querySelectorAll(".blog-popular-swiper").forEach((el) => {
@@ -309,4 +310,101 @@ const getBlogImage = (b: any) =>
 
     initBlogPopularSwipers();
     document.addEventListener("astro:page-load", initBlogPopularSwipers);
+
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Este bloque renderiza VARIAS secciones sueltas (sin un contenedor común),
+     * y cada una se resuelve por su propio ancla: la primera por la columna de
+     * texto (`md:col-span-6`), la segunda por el carrusel
+     * (`.blog-popular-swiper`) y la tercera por el botón de "cargar más"
+     * (`[x-data*="total:"]`). Nunca se navega entre secciones vecinas, así que
+     * un reveal en una sección no puede tocar —ni ocultar— la siguiente.
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. La profundidad se aplica a la TARJETA de
+     * dentro del slide (`article`), nunca al slide, y tampoco hay un reveal por
+     * slide: un slide fuera de pantalla se quedaría en opacidad 0 hasta que el
+     * usuario lo desplace, y la posición de un ScrollTrigger no sigue el
+     * transform interno de Swiper.
+     */
+    function setupMotion() {
+        const secciones = [
+            document.querySelector(".md\\:col-span-6")?.closest("section") ?? null,
+            document.querySelector(".blog-popular-swiper")?.closest("section") ?? null,
+            document.querySelector('[x-data*="total:"]')?.closest("section") ?? null,
+        ];
+
+        for (const seccion of secciones) {
+            if (!seccion) {
+                continue;
+            }
+
+            // Cada sección se revela por separado: el trigger usa la propia
+            // sección como referencia, así que una sección nunca esconde a otra.
+            //
+            // `opacityFrom: 1` (un levantamiento, sin rampa de opacidad) porque
+            // las secciones tienen enlaces "Leer más" y un reveal con opacidad 0
+            // los dejaría invisibles pero enfocables (S13).
+            revealSection(seccion, {
+                y: 30,
+                opacityFrom: 1,
+                duration: 0.8,
+                ease: "power3.out",
+            });
+
+            // Cada sección tiene su propio `h2`, y los tres están por debajo del
+            // pliegue: el título se arma por partes.
+            const heading = seccion.querySelector("h2");
+
+            if (heading) {
+                splitReveal(heading, {
+                    type: "words",
+                    y: 24,
+                    stagger: 0.045,
+                    duration: 0.75,
+                    ease: "power3.out",
+                });
+            }
+        }
+
+        // Tarjetas del carrusel de populares: la tarjeta es blanca, con esquinas
+        // redondeadas y `overflow: hidden`, así que la inclinación se ve limpia
+        // y el enlace "Leer más" se mueve junto con su tarjeta.
+        const tarjetas = Array.from(
+            document.querySelectorAll(".blog-popular-swiper .swiper-slide > article"),
+        );
+
+        hoverDepth(tarjetas, {
+            maxTilt: 6,
+            lift: -6,
+            scale: 1.02,
+            duration: 0.4,
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+    setupMotion();
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener("astro:page-load", () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== "complete";
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
 </script>

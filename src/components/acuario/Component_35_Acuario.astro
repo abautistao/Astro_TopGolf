@@ -64,6 +64,17 @@ const listaFases = fases.filter((f) => f?.fase || f?.nivel || f?.titulo || f?.de
 // normaliza a arreglo y descarta los ítems sin texto, para que una fase con la
 // lista vacía no deje un encabezado de sección sin contenido debajo.
 const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) => i?.texto) : []);
+
+// El número de campo (`c.numero`) es texto libre del editor. Sólo puede
+// contar si el helper va a escribir EXACTAMENTE el mismo texto final: el
+// contador termina escribiendo `prefix + valor + suffix`, sin ceros a la
+// izquierda ni signo, así que "01" o "+500" no son contables y se quedan tal
+// cual. El marcado trae siempre el valor final, de modo que sin motion (o con
+// movimiento reducido) el número se ve igual.
+const numeroContable = (valor: unknown): string | undefined => {
+    const texto = String(valor ?? '').trim();
+    return /^[1-9]\d*$/.test(texto) ? texto : undefined;
+};
 ---
 
 <section class="c35-section w-full py-[68px] lg:py-[82px] xl:py-[104px]">
@@ -100,7 +111,12 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
                 {listaCampos.map((c) => (
                     <article class="c35-card p-7 rounded-[22px] min-h-[230px]">
                         {c.numero && (
-                            <span class="c35-card-numero font-[family-name:var(--font-principal)] font-bold">{c.numero}</span>
+                            <span
+                                class="c35-card-numero font-[family-name:var(--font-principal)] font-bold"
+                                data-count-to={numeroContable(c.numero)}
+                            >
+                                {c.numero}
+                            </span>
                         )}
 
                         {c.titulo && (
@@ -337,4 +353,267 @@ const textos = (arr: any): any[] => (Array.isArray(arr) ? arr.filter((i: any) =>
     [x-cloak] {
         display: none !important;
     }
+
+    /* --- Motion layer (T4). Decision 3 + the Astro scoping trap. ---
+       *
+       * WHY `:global()`: Astro puts its scope attribute on every compound, so a
+       * plain `[data-motion="ready"] .c35-download` compiles to
+       * `[data-astro-cid-x][data-motion=ready] .c35-download[data-astro-cid-x]`
+       * and demands that ONE element carry both attributes — but `data-motion`
+       * is written on <html>, which never gets a cid. It compiles and never
+       * matches. `:global()` leaves the guard unscoped while `.c35-download`
+       * stays scoped to this component.
+       *
+       * WHAT this is for: the downloads carry Tailwind's `transition-transform`,
+       * and a CSS transition applies to the inline `transform` GSAP writes on
+       * every frame of the reveal just as readily as to the Tailwind one. The
+       * browser then interpolates between GSAP's per-frame writes, so the whole
+       * reveal eases ~150-200ms behind its own tween: the double-easing artifact
+       * `Component_34` already identified and solved for `.c34-figure-img`.
+       *
+       * WHY this drops only `transform` from the list and does NOT repeat
+       * `transition: none` the way `.c34-figure-img` does — because these
+       * buttons have a Tailwind hover lift that `.c34-figure-img` does not
+       * (there, the zoom is a GSAP tween and the stylesheet transition is dead
+       * weight under motion). Verified against the installed Tailwind v4.2.1
+       * compiler, which emits:
+       *   .transition-transform { transition-property: transform, translate, scale, rotate; }
+       *   .-translate-y-0.5       { --tw-translate-y: …; translate: var(--tw-translate-x) var(--tw-translate-y); }
+       * Two facts follow. (1) The hover lift lives on the STANDALONE `translate`
+       * property, not on `transform`, so it does not compete with GSAP's inline
+       * transform for the same channel. (2) `transition-property` lists
+       * `translate` too, so `transition: none` would also delete the lift's
+       * easing and turn a 150ms hover into an instant snap. Listing Tailwind's
+       * own set minus `transform` removes the double-eased channel and leaves
+       * the hover exactly as it was, duration and timing-function included,
+       * because this rule overrides one longhand and inherits the rest of the
+       * shorthand from `.transition-transform`.
+       *
+       * CORRECTION (L18, measured in Chromium 149): the previous version of
+       * this comment claimed that the Tailwind lift "survives GSAP owning the
+       * transform". That is FALSE. When GSAP takes the transform of an element
+       * it writes `translate: none; rotate: none; scale: none` inline, and an
+       * inline declaration outranks any class rule, so a `hover:-translate-y-*`
+       * on that same element stops applying altogether. The
+       * `transition-property` fix above is still needed and still correct — it
+       * stops CSS from interpolating GSAP's per-frame writes — but it never
+       * protected the lift. The rule that keeps a lift alive is ONE OWNER PER
+       * ELEMENT: the affordance has to be GSAP's own (`hoverDepth`'s `lift`) or
+       * it has to live on a child GSAP never touches.
+       *
+       * STATE OF THIS RULE TODAY: the download links are no longer transformed
+       * by GSAP at all — their reveal moved to the `.c35-downloads` row (see the
+       * script) — so there is no inline `transform` here to double-ease and the
+       * rule is left as a guard in case the block ever gives GSAP the button's
+       * transform again. The buttons' own Tailwind lift keeps working exactly
+       * as before, because it lives in the standalone `translate` property.
+       *
+       * WHY under the guard: with JS off, reduced motion on, or before the
+       * helper initializes, `data-motion` is never written, no inline transform
+       * exists to double-ease, and the buttons render and hover exactly as the
+       * pre-motion build did. */
+    :global([data-motion="ready"]) .c35-download {
+        transition-property: translate, scale, rotate;
+    }
 </style>
+
+<script>
+    import { initMotion, revealSection, splitReveal, countUp, hoverDepth } from "../../scripts/motion";
+
+    /*
+     * NEM block motion (T9) — decision 5 bites harder here than anywhere else on
+     * the page: `.c35-module` contains the phase tablist, the panels Alpine
+     * swaps and the two download buttons, so this block IS the interactive
+     * zone. There is no `parallaxLayer` anywhere in this script, on purpose.
+     * Every reveal below is a `gsap.from()` behind a `once: true` ScrollTrigger,
+     * so the block is entered once and then left alone: no transform is ever
+     * rewritten while the reader is pointing at a tab or clicking a download.
+     *
+     * UN SOLO DUEÑO POR ELEMENTO: el transform de cada elemento pertenece a
+     * una sola cosa. El encabezado lo reparten el `splitReveal` del título y
+     * los revelados del antetítulo y de la descripción; la rejilla de
+     * tarjetas la sube el reveal y el transform de CADA tarjeta es del
+     * `hoverDepth`; y las descargas las mueve el reveal de su contenedor, no
+     * el de los enlaces.
+     *
+     * WHY there is no hidden-state CSS for any of these elements:
+     * `revealSection` is built on `gsap.from()`, which reads the element's
+     * CURRENT value as the tween's END state when the tween is created. A
+     * stylesheet rule that pre-hid an element under the readiness guard would
+     * be read as the destination and the tween would animate `opacity: 0 → 0`,
+     * stranding the block invisible forever. The hidden state comes from the
+     * tween instead, which is also what keeps decision 3 honest: no JS, no
+     * readiness attribute, no inline style, no hidden content.
+     *
+     * WHY the script adds no selector class and touches no markup: every anchor
+     * it needs already carries a `c35-` prefix, and each query is resolved from
+     * this block's own `.c35-section` root, so nothing here can reach a sibling
+     * block on the same page (components 32-38 all render together).
+     */
+    function setupNemMotion() {
+        document.querySelectorAll('.c35-section').forEach((section) => {
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves its parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
+            const title = section.querySelector('.c35-title');
+
+            if (title && title.tagName !== 'H1') {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
+                    duration: 0.75,
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes por arriba y por abajo.
+                    mask: false,
+                });
+            }
+
+            // The eyebrow is the first direct `<p>` of the title's column.
+            const eyebrow = title?.parentElement?.querySelector(':scope > p') ?? null;
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            // `.c35-muted` is NOT a safe anchor on its own: the field cards
+            // reuse it for their body copy, so the description is only the
+            // heading's when it is not inside a card.
+            const description =
+                Array.from(section.querySelectorAll('.c35-muted')).find((node) => !node.closest('.c35-card')) ?? null;
+
+            if (description) {
+                revealSection(description, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.08,
+                });
+            }
+
+            // The four training-field cards. The reveal stays on the ROW — one
+            // object that rises as a block — and NOT on each card: `hoverDepth`
+            // is the owner of the card's transform, and a `gsap.from()` on the
+            // same card would be a second owner of one transform (L18). These
+            // cards are also read-only: no link and no button inside them, so
+            // the tilt can never desync the pointer from a control.
+            const firstCard = section.querySelector('.c35-card');
+            const cardsRow = firstCard?.parentElement ?? null;
+
+            if (cardsRow) {
+                revealSection(cardsRow, {
+                    y: 30,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+
+                // Pointer-driven depth, desktop only: the helper registers the
+                // effect inside a `gsap.matchMedia()` of `(hover: hover) and
+                // (pointer: fine)`, so on touch nothing is hooked up and the
+                // mobile layout is untouched.
+                hoverDepth(section.querySelectorAll('.c35-card'), {
+                    maxTilt: 6,
+                    lift: -6,
+                    scale: 1.02,
+                });
+            }
+
+            // The field numbers count up only when the editor typed a plain
+            // integer: the helper writes `prefix + valor + suffix` at the end of
+            // the count, and the markup already carries the final value, so
+            // "01" or "+500" are simply skipped and keep their authored text.
+            countUp(section.querySelectorAll('.c35-card-numero'));
+
+            // WHY `.c35-module` is NOT revealed — this is the P1 repair, and the
+            // absence is the point, not an oversight.
+            //
+            // `revealSection` / `revealStagger` build `gsap.from()` tweens, and
+            // `gsap.from()` renders its START values immediately, so merely
+            // REGISTERING a trigger on this container writes `opacity: 0` inline
+            // at page load, before the reader has scrolled anywhere. That is safe
+            // only for as long as the trigger is guaranteed to fire. If it never
+            // does — an anchor jump that lands the panel below the `top 85%` start
+            // line, an unexpected restored scroll position, a teardown that runs
+            // between registration and the first scroll event — the `opacity: 0`
+            // simply stays. And `.c35-module` is not display-only: it holds the
+            // `role="tablist"` phase tabs, each one a focusable `<button>`, plus
+            // the `x-show` panel. A stranded reveal there does not look like a
+            // missed animation, it looks like invisible-but-still-focusable tab
+            // controls sitting in the accessibility tree, which is a WCAG failure
+            // rather than a taste call.
+            //
+            // WHY dropping it beats retargeting it: every element between the tab
+            // strip and the section root is an ANCESTOR of the tab strip, so there
+            // is no non-interactive wrapper inside `.c35-module` to hand the
+            // reveal to, and moving it up to `.c35-section` would re-introduce the
+            // same hazard one level higher. The block keeps its movement from the
+            // targets that are genuinely display-only — the heading, the card
+            // grid and the downloads row — and the dark panel arrives with the
+            // stylesheet, which is the same behaviour every no-JS and
+            // reduced-motion reader already gets.
+            //
+            // This is the same discipline `Component_34` applied to its
+            // `<video controls>` and `Component_37` to `.c37-panel`: leave
+            // anything holding a focusable control exactly where the stylesheet
+            // puts it.
+
+            // The two downloads get their own, later beat, so they read as the
+            // block's exit point rather than arriving with the frame. They sit on
+            // `.c35-module`'s dark gradient, and the second one is an outline
+            // button, so this is transform-only motion: nothing here changes the
+            // background it is drawn on.
+            //
+            // WHERE THE REVEAL NOW SITS: on the `.c35-downloads` ROW, not on the
+            // links. A `<a download>` is focusable, and a `gsap.from()` on a
+            // focusable control leaves it invisible AND tabbable if the trigger
+            // never fires (S13 — the defect class the previous feature left
+            // flagged here). The row is a plain `<div>` with no interaction of
+            // its own, and it is revealed with `opacityFrom: 1`, es decir, sólo
+            // transform: los enlaces de dentro NUNCA quedan en `opacity: 0`,
+            // se mueven pero no desaparecen.
+            const firstDownload = section.querySelector('.c35-download');
+            const downloadsRow = firstDownload?.parentElement ?? null;
+
+            if (downloadsRow) {
+                revealSection(downloadsRow, {
+                    opacityFrom: 1,
+                    y: 16,
+                    duration: 0.55,
+                    ease: 'power2.out',
+                });
+            }
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupNemMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupNemMotion();
+    });
+</script>

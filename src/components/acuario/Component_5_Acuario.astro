@@ -26,12 +26,18 @@ const {
 const TitleTag = etiqueta_titulo;
 const SubtitleTag = etiqueta_subtitulo;
 
+// El título sólo se arma por palabras si NO es un `h1`: `splitReveal` escribe
+// `opacity: 0` en las partes al cargar, y un `h1` puede quedar en el primer
+// pliegue (S8: el LCP no puede esperar a la animación). Con `h1` el título se
+// queda intacto y sólo se mueve el resto del bloque.
+const tituloPartible = etiqueta_titulo !== "h1";
+
 // Decorative bg URL (computado una sola vez para no romper si llega null)
 const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_fondo) : null;
 ---
 
 <section
-    class="w-full! pt-6! pb-16! md:pt-6! md:pb-24! relative! overflow-hidden!"
+    class="c5-section w-full! pt-6! pb-16! md:pt-6! md:pb-24! relative! overflow-hidden!"
     style={color_fondo ? `background-color: ${color_fondo} !important` : "background-color: var(--surface-brand-primary, #003F7F) !important;"}
 >
     <!-- Elemento Decorativo Fondo (opcional) -->
@@ -50,7 +56,10 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
         <!-- Header de la sección -->
         <div class="text-center! mb-12! md:mb-16! text-white! max-w-4xl! mx-auto! px-6! md:px-12!">
             {titulo && (
-                <TitleTag class="font-[family-name:var(--font-principal)]! text-[21px]! md:text-[32px]! font-black! uppercase! leading-tight mb-2!">
+                <TitleTag
+                    class="c5-title font-[family-name:var(--font-principal)]! text-[21px]! md:text-[32px]! font-black! uppercase! leading-tight mb-2!"
+                    data-split={tituloPartible ? "on" : "off"}
+                >
                     {titulo}
                 </TitleTag>
             )}
@@ -67,23 +76,29 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
         </div>
 
         <!-- Grid de Tarjetas -->
-        <div class="grid! grid-cols-1! md:grid-cols-3! gap-6! md:gap-8!">
+        <div class="c5-grid grid! grid-cols-1! md:grid-cols-3! gap-6! md:gap-8!">
             {tarjetas.map((card: any) => {
                 // Calculamos el URL UNA vez por tarjeta. Si llega null (imagen no poblada o URL rota)
                 // NO renderizamos el <img> para que el navegador no muestre el alt como "imagen rota".
                 const imgUrl = card?.imagen ? getStrapiUrl(card.imagen) : null;
 
                 return (
+                    /* Envoltorio de movimiento: la tarjeta es un `<a>` y un
+                       reveal sobre un control focusable lo dejaría invisible y
+                       tabulable si su trigger nunca dispara (S13). El
+                       envoltorio no cambia el layout —es el ítem del grid y
+                       reproduce la misma caja— y es lo que se revela. */
+                    <div class="c5-item">
                     <a
                         href={card?.url || "#"}
-                        class="group block! relative! rounded-[16px]! overflow-hidden! aspect-[4/3]! md:aspect-[4/3]! shadow-lg! hover:shadow-2xl! transition-all duration-300 bg-[#002A4E]!"
+                        class="c5-card group block! relative! rounded-[16px]! overflow-hidden! aspect-[4/3]! md:aspect-[4/3]! shadow-lg! hover:shadow-2xl! transition-all duration-300 bg-[#002A4E]!"
                     >
                         {/* Imagen de fondo (solo si hay URL válida) */}
                         {imgUrl ? (
                             <img
                                 src={imgUrl}
                                 alt={card?.titulo || "Tarjeta"}
-                                class="absolute! inset-0! w-full! h-full! object-cover! transition-transform duration-700 group-hover:scale-110"
+                                class="c5-card-img absolute! inset-0! w-full! h-full! object-cover! transition-transform duration-700 group-hover:scale-110"
                                 loading="lazy"
                             />
                         ) : (
@@ -123,8 +138,131 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
                             </button>
                         </div>
                     </a>
+                    </div>
                 );
             })}
         </div>
     </div>
 </section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Tailwind v4 escribe `transition-property: transform, translate, scale,
+     * rotate` en `transition-transform` y `transition-property: all` en
+     * `transition-all`. Cuando GSAP escribe un `transform` inline en el mismo
+     * elemento, esa transición interpola las escrituras de GSAP frame a frame y
+     * la tarjeta se retrasa ~300ms respecto a su propia animación (el defecto
+     * de doble easing).
+     *
+     * Por eso, bajo el guard de motion, se deja la lista de propiedades sin el
+     * canal `transform`: GSAP queda como único dueño de ese `transform`.
+     *
+     * Lo que este ajuste NO hace es salvar una elevación de Tailwind: al
+     * tomar el `transform`, GSAP escribe `translate: none` inline, y una
+     * declaración inline gana a cualquier regla de clase, así que un
+     * `hover:-translate-y-*` sobre la MISMA tarjeta deja de funcionar (L18,
+     * medido en Chromium). Por eso la elevación la pone `hoverDepth` (GSAP),
+     * no Tailwind. La regla es un único dueño por elemento.
+     *
+     * El guard va con `:global()` porque `data-motion` vive en `<html>`, que
+     * nunca lleva el atributo de scope de Astro: la forma sin `:global()`
+     * compila a un selector que jamás hace match.
+     */
+    :global([data-motion="ready"]) .c5-card {
+        transition-property: translate, scale, rotate;
+    }
+
+    :global([data-motion="ready"]) .c5-card-img {
+        transition-property: translate, scale, rotate;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage } from "../../scripts/motion";
+
+    /*
+     * Movimiento de la rejilla de tarjetas (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c5-item`     → el reveal (opacidad + viaje vertical).
+     *   - `.c5-card`     → `hoverDepth` (inclinación + elevación).
+     *   - `.c5-card-img` → `zoomImage` (zoom por scroll).
+     *
+     * El reveal NUNCA apunta a la tarjeta: es un `<a>` y un `gsap.from()` sobre
+     * un control focusable lo deja invisible y tabulable si el trigger no
+     * dispara (S13). Por eso la tarjeta va envuelta en un `<div>` que sólo
+     * aporta el ancla de motion.
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada: el bloque se ve
+     * exactamente igual que antes.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c5-section').forEach((section) => {
+            // El título se arma palabra por palabra. Sólo si no es un `h1`:
+            // `splitReveal` escribe `opacity: 0` en las partes al cargar y un
+            // `h1` puede estar en el primer pliegue (S8).
+            const title = section.querySelector('.c5-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
+                    duration: 0.7,
+                    stagger: 0.04,
+                });
+            }
+
+            // Las tarjetas llegan una tras otra.
+            const grid = section.querySelector('.c5-grid');
+            if (grid) {
+                revealStagger(grid, {
+                    selector: '.c5-item',
+                    stagger: 0.1,
+                    y: 28,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper registra el efecto dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`, así que en táctil no se
+            // engancha nada. La elevación (`lift`) la pone GSAP y no
+            // Tailwind: al tomar el `transform` de la tarjeta, GSAP escribe
+            // `translate: none` inline y un `hover:-translate-y-*` sobre la
+            // misma tarjeta deja de aplicarse (L18). Un único dueño por
+            // elemento.
+            section.querySelectorAll('.c5-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 7, lift: -8 });
+            });
+
+            // El zoom de la foto va por scroll dentro de la caja
+            // `overflow-hidden` de la tarjeta. `from: 1.05` deja margen para
+            // que el recorte nunca enseñe un borde.
+            section.querySelectorAll('.c5-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él y cualquier
+    // trigger registrado antes no haría nada.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): en una navegación cliente el helper
+    // desmonta sus triggers y los vuelve a armar, así que hay que registrar
+    // los de este bloque otra vez.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

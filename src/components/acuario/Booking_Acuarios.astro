@@ -46,7 +46,7 @@ const bg = background_color ? background_color : '#050146';
     <input id="vmg_plugin_version" type="hidden" value={vmgPluginVersion}>
     <input id="vmg_plugin_lang" type="hidden" value={lang}>
 
-    <div id="pluginContainer" class="container mx-auto px-6 md:px-12"></div>
+    <div id="pluginContainer" class="acuario-booking-frame container mx-auto px-6 md:px-12"></div>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
     <script is:inline src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -278,6 +278,50 @@ const bg = background_color ? background_color : '#050146';
         });
     </script>
 </div>
+
+<script>
+    import { initMotion, revealSection } from "../../scripts/motion";
+
+    /* ================================================================
+     * Capa de motion del booking (T2).
+     *
+     * El booking es un plugin externo que se inyecta por AJAX dentro de un
+     * iframe. Adentro del iframe NO se puede mover nada — el documento es
+     * de otro origen — así que el reveal se aplica al contenedor PROPIO que
+     * alojará el iframe (`.acuario-booking-frame`), y ahí se acaba.
+     *
+     * El contenedor se registra aunque esté vacío: el plugin lo rellena
+     * después, y el contenedor sigue siendo el mismo nodo, así que el fade
+     * de entrada abriga al booking completo.
+     * ================================================================ */
+    function setupAcuarioBookingMotion() {
+        document.querySelectorAll('.acuario-booking-frame').forEach((frame) => {
+            revealSection(frame, {
+                y: 24,
+                duration: 0.7,
+                ease: 'power3.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupAcuarioBookingMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupAcuarioBookingMotion();
+    });
+</script>
 <style define:vars={{ padding_top, bg }}>
   #booking-container-acuario {
     padding-top: var(--padding_top);

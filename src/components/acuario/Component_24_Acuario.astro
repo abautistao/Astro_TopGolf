@@ -161,6 +161,7 @@ const hasGallery = mediaFiles.length > 0;
     import { Navigation } from "swiper/modules";
     import "swiper/css";
     import "swiper/css/navigation";
+    import { initMotion, revealSection, splitReveal, zoomImage, hoverDepth } from "../../scripts/motion";
 
     function initC24Swiper() {
         const sliders = document.querySelectorAll(".acuario-24-swiper");
@@ -188,6 +189,113 @@ const hasGallery = mediaFiles.length > 0;
         });
     }
 
-    document.addEventListener("DOMContentLoaded", initC24Swiper);
-    document.addEventListener("astro:page-load", initC24Swiper);
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. El zoom va a la IMAGEN de dentro de la
+     * tarjeta y la inclinación va a la TARJETA: son dos elementos distintos, así
+     * que no hay dos dueños del mismo transform. Tampoco hay un reveal por
+     * slide: un slide fuera de pantalla se quedaría en opacidad 0 hasta que el
+     * usuario lo desplace, y la posición de un ScrollTrigger no sigue el
+     * transform interno de Swiper.
+     */
+    function setupMotion() {
+        // Cada carrusel del bloque se resuelve por separado, así que dos
+        // instancias en la misma página no se pisan.
+        const swipers = Array.from(document.querySelectorAll(".acuario-24-swiper"));
+
+        for (const swiper of swipers) {
+            const section = swiper.closest("section");
+
+            if (!section) {
+                continue;
+            }
+
+            // El título es el primer elemento del bloque de texto. Se resuelve por
+            // estructura porque en este archivo las clases de Tailwind llevan el
+            // sufijo `!` (`text-center!`) y no sirven como selector.
+            const textBlock = section.firstElementChild?.firstElementChild ?? null;
+            const title = textBlock?.firstElementChild ?? null;
+
+            // `splitReveal` nunca se aplica a un `h1`: escribe `opacity: 0` en las
+            // partes del texto al cargar, y un `h1` por encima del pliegue retrasaría
+            // el LCP (decisión 4 del helper).
+            if (title && /^H[1-6]$/.test(title.tagName) && title.tagName !== "H1") {
+                splitReveal(title, {
+                    type: "words",
+                    y: 26,
+                    stagger: 0.045,
+                    duration: 0.75,
+                    ease: "power3.out",
+                });
+            }
+
+            // El carrusel entra como un solo bloque. Los botones de navegación viven
+            // FUERA del contenedor del carrusel, así que dentro no hay ningún control
+            // enfocable y el reveal puede bajar la opacidad.
+            revealSection(swiper, {
+                y: 32,
+                duration: 0.85,
+                ease: "power3.out",
+            });
+
+            const cards = Array.from(swiper.querySelectorAll(".swiper-slide > div"));
+            const images = Array.from(swiper.querySelectorAll(".swiper-slide img"));
+
+            // Zoom lento de la foto con el scroll. Es seguro: la imagen vive dentro
+            // de una caja con `overflow: hidden`, así que el enlargement nunca se sale
+            // del marco.
+            zoomImage(images, {
+                from: 1.08,
+                to: 1,
+            });
+
+            // La inclinación va en la tarjeta, no en la imagen: la caja es la que
+            // tiene fondo, esquinas redondeadas y `overflow: hidden`, así que la
+            // inclinación se ve limpia y la foto no destapa el marco.
+            hoverDepth(cards, {
+                maxTilt: 6,
+                lift: -6,
+                scale: 1.02,
+                duration: 0.4,
+            });
+        }
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+
+    // Swiper primero: en modo `loop` clona los slides, y el movimiento tiene que
+    // alcanzarlos a todos. Por eso el setup del movimiento va después del
+    // arranque del carrusel.
+    document.addEventListener("DOMContentLoaded", () => {
+        initC24Swiper();
+        setupMotion();
+    });
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener("astro:page-load", () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== "complete";
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        // El carrusel también se rearma en una navegación del lado del cliente
+        // (comportamiento que ya tenía el bloque) y el movimiento se registra
+        // después, para alcanzar a los slides clonados.
+        initC24Swiper();
+        setupMotion();
+    });
 </script>

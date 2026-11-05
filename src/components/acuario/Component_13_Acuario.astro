@@ -26,11 +26,16 @@ const finalBgColor = color_fondo || "var(--surface-brand-primary)";
 const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
 
 // Procesar galería
-const mediaFiles = galeria?.data || galeria || [];
+// Strapi entrega la galería como `{ data: [...] }` o como arreglo plano según
+// la forma del response; el `Array.isArray` sólo desambigua el tipo para que
+// el compilador pueda leer `.data` sin cambiar el comportamiento (si el
+// response trae la estructura sin `data`, se usa una lista vacía en lugar de
+// reventar la build).
+const mediaFiles: any[] = Array.isArray(galeria) ? galeria : (galeria?.data ?? []);
 ---
 
 <section 
-    class="w-full py-16 md:py-24 relative overflow-hidden" 
+    class="w-full py-16 md:py-24 relative overflow-hidden c13-section" 
     style={{
         backgroundColor: finalBgColor,
         backgroundImage: bgImageStyle,
@@ -43,18 +48,18 @@ const mediaFiles = galeria?.data || galeria || [];
         {/* Cabecera: Título, Subtítulo y Descripción */}
         <div class="text-center max-w-4xl mx-auto mb-12 md:mb-16 px-6 md:px-12">
             {titulo && (
-                <TitleTag class="font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-2">
+                <TitleTag class="c13-title font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-bold uppercase text-white mb-2">
                     {titulo}
                 </TitleTag>
             )}
             {subtitulo && (
-                <p class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)] mb-6">
+                <p class="c13-subtitle font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] uppercase text-[var(--accent-highlight-primary)] mb-6">
                     {subtitulo}
                 </p>
             )}
             {descripcion && (
                 <div 
-                    class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-white leading-relaxed opacity-90 [&>p]:mb-4"
+                    class="c13-text font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] text-white leading-relaxed opacity-90 [&>p]:mb-4"
                     set:html={stringifyRichText(descripcion)}
                 />
             )}
@@ -62,7 +67,7 @@ const mediaFiles = galeria?.data || galeria || [];
 
         {/* Carrusel de Imágenes */}
         {mediaFiles.length > 0 && (
-            <div class="relative w-full px-0 md:px-10">
+            <div class="c13-carousel relative w-full px-0 md:px-10">
                 <div class="componente-13-swiper w-full overflow-hidden pb-12" data-total={mediaFiles.length}>
                     <div class="swiper-wrapper flex items-stretch">
                         {mediaFiles.map((mediaFile: any) => {
@@ -151,6 +156,7 @@ const mediaFiles = galeria?.data || galeria || [];
     import 'swiper/css';
     import 'swiper/css/navigation';
     import 'swiper/css/pagination';
+    import { initMotion, revealSection, parallaxLayer, ambientBubbles } from "../../scripts/motion";
 
     function initComp13Swiper() {
         const sliders = document.querySelectorAll('.componente-13-swiper');
@@ -201,4 +207,143 @@ const mediaFiles = galeria?.data || galeria || [];
     // Inicializar al cargar el DOM y en ViewTransitions
     document.addEventListener('DOMContentLoaded', initComp13Swiper);
     document.addEventListener('astro:page-load', initComp13Swiper);
+
+    /*
+     * Motion del bloque (T5) — cabecera de texto + carrusel de galería.
+     *
+     * Por qué NO se revela ninguna diapositiva: Swiper es dueño del transform de
+     * sus diapositivas, y una diapositiva en opacidad 0 se quedaría invisible
+     * hasta que el usuario la alcanzara con el dedo, sin que el ScrollTrigger
+     * volviera a evaluarla (la posición de un trigger no sigue el transform
+     * interno de Swiper). El carrusel entra como una sola pieza: se revela el
+     * contenedor que lo abraza (carrusel + controles), no cada imagen.
+     *
+     * Por qué el fondo no lleva parallax: la imagen de fondo del bloque es el
+     * `background-image` CSS del propio `<section>`, y el helper sólo puede
+     * desplazar un ELEMENTO. Convertir ese fondo en una capa `<img>` sería un
+     * cambio de maquetación, y esta unidad es sólo motion. Lo que sí se
+     * desplaza es el carrusel, que es lo que da la profundidad contra ese
+     * fondo fijo: es la misma lectura visual (contenido que flota sobre una
+     * foto quieta) sin tocar el DOM.
+     *
+     * Por qué no hay CSS de estado inicial: `revealSection` se apoya en
+     * `gsap.from()`, que lee el valor ACTUAL del elemento como destino del tween
+     * en el momento de crearlo. Una regla de hoja de estilos que pre-ocultara
+     * el elemento bajo el guard `[data-motion="ready"]` sería leída como ese
+     * destino y el tween animaría `opacity: 0 → 0`, dejando el bloque invisible
+     * para siempre. El estado inicial lo pone el tween, que es lo que mantiene
+     * la decisión 3: sin JS, con movimiento reducido o si el helper no
+     * inicializa, no se escribe ningún estilo inline y el contenido se ve tal
+     * cual.
+     */
+    function setupComponente13Motion() {
+        // Cada consulta se resuelve desde la raíz `.c13-section` de ESTE bloque.
+        document.querySelectorAll('.c13-section').forEach((section) => {
+            // Título. Si el editor eligió `h1` como etiqueta, NO se revela: un
+            // h1 puede ser el elemento LCP y la decisión 4 exige que el texto
+            // sobre el pliegue esté en el primer fotograma pintado.
+            const title = section.querySelector('.c13-title');
+            if (title && title.tagName !== 'H1') {
+                revealSection(title, {
+                    y: 28,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            const subtitle = section.querySelector('.c13-subtitle');
+            if (subtitle) {
+                revealSection(subtitle, {
+                    y: 18,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                    delay: 0.08,
+                });
+            }
+
+            // Texto descriptivo. Si el editor metió un enlace dentro del texto
+            // enriquecido, el contenedor se deja intacto (S13: nunca se revela
+            // como bloque un elemento que contiene un control enfocable).
+            const text = section.querySelector('.c13-text');
+            if (text && !text.querySelector('a')) {
+                revealSection(text, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.16,
+                });
+            }
+
+            // Burbujas ambiente: el bloque tiene imagen de fondo y recorta con
+            // `overflow-hidden`, así que las burbujas quedan dentro. El helper
+            // las crea con `pointer-events: none` y `aria-hidden`, no capturan
+            // el clic y el contenido va en un contenedor con `z-10`, así que
+            // quedan por detrás del texto.
+            ambientBubbles(section, {
+                count: 7,
+                maxOnMobile: 4,
+            });
+
+            // El contenedor del carrusel (carrusel + controles) entra como una
+            // sola pieza. La entrada es una ESCALA y no un `y` a propósito: el
+            // carrusel es el que lleva el parallax (que escribe `yPercent`), y
+            // así los dos movimientos usan canales distintos del mismo
+            // transform de GSAP (`scale` de un lado, `yPercent` del otro) y no
+            // se pisan. La escala no altera el ancho de maquetación, así que
+            // Swiper sigue midiendo las diapositivas igual.
+            const carousel = section.querySelector('.c13-carousel');
+            if (carousel) {
+                revealSection(carousel, {
+                    y: 0,
+                    scale: 0.95,
+                    duration: 0.9,
+                    ease: 'power3.out',
+                });
+            }
+
+            // Parallax contra la imagen de fondo. El carrusel no contiene
+            // ningún control enfocable (los videos van sin `controls`), así que
+            // el helper lo acepta sin `allowInteractive`; y los botones de
+            // navegación son HERMANOS del contenedor del carrusel, no
+            // ancestros, así que ningún control enfocable queda bajo un
+            // transform con scrub.
+            const swiper = section.querySelector('.componente-13-swiper');
+            if (swiper) {
+                parallaxLayer(swiper, {
+                    distance: 3,
+                    trigger: section,
+                });
+            }
+
+            // Deliberadamente NO hay `hoverDepth` en este bloque: la imagen de
+            // cada diapositiva ocupa la tarjeta completa y tanto el carrusel
+            // como la propia tarjeta recortan con `overflow-hidden`, así que
+            // cualquier ascenso o escala de la tarjeta quedaría cortado. El
+            // gesto de hover que el bloque ya tiene (el `group-hover:scale-105`
+            // de la imagen) sí sobrevive, porque GSAP nunca toca la imagen.
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que
+    // ningún trigger puede registrarse antes de esta llamada.
+    initMotion();
+    setupComponente13Motion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no
+    // registra ningún ClientRouter hoy, así que esto nunca se dispara; existe
+    // para que el bloque no se quede estático si algún día se activa el modo
+    // SPA.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupComponente13Motion();
+    });
 </script>

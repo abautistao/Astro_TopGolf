@@ -69,7 +69,7 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
     <!-- SECCIÓN 2 — Logos + columnas de enlaces + contacto + Newsletter -->
     <section class="w-full! py-10! md:py-14! bg-(--neutral-background-strong)! text-white!">
         <div class="container! mx-auto! px-6! md:px-12! max-w-[1280px]!">
-            <div class="grid! grid-cols-1! md:grid-cols-12! gap-8! md:gap-6! items-center!">
+            <div class="acuario-footer-columns grid! grid-cols-1! md:grid-cols-12! gap-8! md:gap-6! items-center!">
 
                 <!-- Columna 1: Logos -->
                 <div class="md:col-span-2! flex! flex-row! items-center! justify-center! gap-6! md:gap-8!">
@@ -257,6 +257,8 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
 </footer>
 
 <script>
+    import { initMotion, revealStagger } from "../../scripts/motion";
+
     const accordions = document.querySelectorAll('.footer-accordion-btn');
     accordions.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -274,5 +276,54 @@ const separadorTipo = separadorInferior?.tipo || "tipo_1";
                 if (icon) icon.style.transform = 'rotate(0deg)';
             }
         });
+    });
+
+    /* ================================================================
+     * Capa de movimiento del footer (T2).
+     *
+     * El footer está por debajo del pliegue, así que aquí sí cabe un reveal
+     * por scroll: las columnas entran en cascada cuando la sección entra en
+     * el viewport, y el trigger es `once: true` — se dispara una vez y no
+     * vuelve a escribir nada mientras el lector sigue abajo.
+     *
+     * QUÉ se anima: las columnas directas de la retícula (logos, menús,
+     * contacto y newsletter). `:scope > div` las toma sólo a ellas, sin
+     * bajar a los `<li>` de cada menú.
+     *
+     * Las columnas CONTIENEN enlaces, el input del newsletter y su botón, y
+     * por eso NO se pasan `skipFocusable`: la columna es el objetivo, nunca
+     * el control. Un enlace o un input nunca es objetivo de un `gsap.from()`
+     * (S13). El helper además tiene su red de seguridad: si algo recibe el
+     * foco antes de que dispare el trigger, limpia el `opacity: 0` de sus
+     * antecesores para que el control sea visible justo cuando hace falta.
+     * ================================================================ */
+    function setupAcuarioFooterMotion() {
+        document.querySelectorAll('.acuario-footer-columns').forEach((columns) => {
+            revealStagger(columns, {
+                selector: ':scope > div',
+                stagger: 0.09,
+                y: 26,
+                duration: 0.7,
+                ease: 'power3.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupAcuarioFooterMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupAcuarioFooterMotion();
     });
 </script>

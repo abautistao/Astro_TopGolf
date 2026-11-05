@@ -65,7 +65,7 @@ const googleUrl = getStrapiUrl(imagen_google);
             )}
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="c29-badges flex items-center gap-4">
             {appleUrl && (
                 enlace_apple ? (
                     <a href={enlace_apple} target="_blank" rel="noopener">
@@ -87,3 +87,78 @@ const googleUrl = getStrapiUrl(imagen_google);
         </div>
     </div>
 </section>
+
+<script>
+    import { initMotion, revealSection, hoverDepth } from "../../scripts/motion";
+
+    /*
+     * Bloque de descarga motion (T8).
+     *
+     * El ancla es `.c29-badges`, la clase del `<div>` que sostiene las
+     * insignias (los enlaces a las tiendas de apps). Es un envoltorio NO
+     * interactivo: no es un control, no recibe foco y no guarda ningún valor.
+     *
+     * POR QUÉ se revela el contenedor y NO el enlace: el enlace SÍ es focusable
+     * (es un `<a href>`), y un `gsap.from()` escribe `opacity: 0` EN EL ENLACE
+     * en el momento de registrarse. El helper limpia la opacidad de los
+     * ANCESTORES del elemento enfocado, no la del elemento enfocado: un
+     * `<a>` con opacidad 0 propia se quedaría invisible y focusable para
+     * siempre. Por eso el objetivo del reveal es el contenedor, y por eso el
+     * enlace no aparece jamás como objetivo de un `gsap.from()`.
+     *
+     * `hoverDepth` sí puede aplicarse al enlace: sólo escribe `transform`
+     * (rotación, elevación y escala) y nunca opacidad, así que el badge nunca
+     * desaparece. Además es desktop-only (el helper lo ata a `hover: hover` y
+     * `pointer: fine`), de modo que en móvil no hay efecto: el badge se queda
+     * exactamente como estaba, sólo con el reveal de entrada.
+     */
+    function setupDescargasMotion() {
+        document.querySelectorAll<HTMLElement>('.c29-badges').forEach((badges) => {
+            // Las insignias entran juntas, con un reveal corto. El contenedor es
+            // el objetivo, no los enlaces: ver el WHY de arriba.
+            revealSection(badges, {
+                y: 26,
+                duration: 0.7,
+                ease: 'power3.out',
+            });
+
+            // La profundidad va sobre cada insignia enlazada. Como son
+            // elementos flex (`display: inline` bloqueificado por ser flex
+            // item), el `transform` sí se aplica — un `<a>` inline suelto no
+            // sería transformable.
+            badges.querySelectorAll<HTMLElement>('a').forEach((insignia) => {
+                hoverDepth(insignia, {
+                    maxTilt: 6,
+                    lift: -6,
+                    scale: 1.04,
+                    duration: 0.35,
+                });
+            });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupDescargasMotion();
+
+    // Decision 7, replicado del helper: en una navegación del lado del cliente
+    // el helper desmonta sus triggers y vuelve a armar motion, así que los
+    // triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // bloque no se quede estático si algún día se activa el modo SPA. La
+    // guarda del primer evento replica la del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial, y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupDescargasMotion();
+    });
+</script>
