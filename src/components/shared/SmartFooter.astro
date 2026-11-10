@@ -25,7 +25,7 @@ if (
 
     if (componentName.includes("toca")) {
         Component = TocaFooter;
-    } else if (componentName.includes("sealand")) {
+    } else if (IS_SEALAND && componentName.includes("sealand")) {
         Component = SealandFooter;
     } else if (componentName.includes("acuario")) {
         // Bajo el theme Sealand el contenido de Acuario se renderiza con el chrome de Sealand.

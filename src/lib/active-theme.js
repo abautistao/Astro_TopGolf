@@ -12,7 +12,10 @@ const raw = devTheme || import.meta.env.PUBLIC_THEME || "toca";
 
 const ALIASES = { sealands: "sealand" };
 
-export const ACTIVE_THEME = ALIASES[raw] ?? raw;
+// `Object.hasOwn` y no `ALIASES[raw] ?? raw`: la indexación normal recorre la
+// cadena de prototipos, así que un PUBLIC_THEME="constructor" devolvería una
+// función en vez de un nombre de theme.
+export const ACTIVE_THEME = Object.hasOwn(ALIASES, raw) ? ALIASES[raw] : raw;
 
 /** El theme activo es Sealand: la copia de Acuario con su propia implementación. */
 export const IS_SEALAND = ACTIVE_THEME === "sealand";
