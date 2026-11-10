@@ -154,11 +154,56 @@ import Component_38_Acuario from "./acuario/Component_38_Acuario.astro";
 import Separadores from "./acuario/Separadores.astro";
 import BookingAcuarios from "./acuario/Booking_Acuarios.astro";
 
+// SEALAND COMPONENTS (tema propio: copia de Acuario que se modifica por separado)
+import Component_1_Sealand from "./sealand/Component_1_Sealand.astro";
+import Component_2_Sealand from "./sealand/Component_2_Sealand.astro";
+import Component_3_Sealand from "./sealand/Component_3_Sealand.astro";
+import Component_4_Sealand from "./sealand/Component_4_Sealand.astro";
+import Component_5_Sealand from "./sealand/Component_5_Sealand.astro";
+import Component_6_Sealand from "./sealand/Component_6_Sealand.astro";
+import Component_7_Sealand from "./sealand/Component_7_Sealand.astro";
+import Component_8_Sealand from "./sealand/Component_8_Sealand.astro";
+import Component_9_Sealand from "./sealand/Component_9_Sealand.astro";
+import Component_10_Sealand from "./sealand/Component_10_Sealand.astro";
+import Component_11_Sealand from "./sealand/Component_11_Sealand.astro";
+import Component_12_Sealand from "./sealand/Component_12_Sealand.astro";
+import Component_13_Sealand from "./sealand/Component_13_Sealand.astro";
+import Component_14_Sealand from "./sealand/Component_14_Sealand.astro";
+import Component_15_Sealand from "./sealand/Component_15_Sealand.astro";
+import Component_16_Sealand from "./sealand/Component_16_Sealand.astro";
+import Component_17_Sealand from "./sealand/Component_17_Sealand.astro";
+import Component_18_Sealand from "./sealand/Component_18_Sealand.astro";
+import Component_19_Sealand from "./sealand/Component_19_Sealand.astro";
+import Component_20_Sealand from "./sealand/Component_20_Sealand.astro";
+import Component_21_Sealand from "./sealand/Component_21_Sealand.astro";
+import Component_22_Sealand from "./sealand/Component_22_Sealand.astro";
+import Component_23_Sealand from "./sealand/Component_23_Sealand.astro";
+import Component_24_Sealand from "./sealand/Component_24_Sealand.astro";
+import Component_25_Sealand from "./sealand/Component_25_Sealand.astro";
+import Component_26_Sealand from "./sealand/Component_26_Sealand.astro";
+import Component_27_Sealand from "./sealand/Component_27_Sealand.astro";
+import Component_28_Sealand from "./sealand/Component_28_Sealand.astro";
+import Component_29_Sealand from "./sealand/Component_29_Sealand.astro";
+import Component_30_Sealand from "./sealand/Component_30_Sealand.astro";
+import Component_31_Sealand from "./sealand/Component_31_Sealand.astro";
+import Component_32_Sealand from "./sealand/Component_32_Sealand.astro";
+import Component_33_Sealand from "./sealand/Component_33_Sealand.astro";
+import Component_34_Sealand from "./sealand/Component_34_Sealand.astro";
+import Component_35_Sealand from "./sealand/Component_35_Sealand.astro";
+import Component_36_Sealand from "./sealand/Component_36_Sealand.astro";
+import Component_37_Sealand from "./sealand/Component_37_Sealand.astro";
+import Component_38_Sealand from "./sealand/Component_38_Sealand.astro";
+import SeparadoresSealand from "./sealand/Separadores.astro";
+import BookingSealand from "./sealand/Booking_Sealand.astro";
+import PasoFinalSealand from "./sealand/Paso_final.astro";
+
 import ContainerBackgroundHome_Blu from "./blu/ContainerBackgroundHome_Blu.astro";
 import Iframe from "./shared/Iframe.astro";
 import Countdown from './toca/Countdown.astro';
 import Modal from "../components/toca/Modal.astro";
 import PasoFinal from "./acuario/Paso_final.astro";
+import { IS_SEALAND } from "../lib/active-theme.js";
+
 interface Props {
     blocks: any[];
 }
@@ -323,12 +368,66 @@ const componentsMap: any = {
     "secciones.booking-acuarios": BookingAcuarios,
     "secciones.paso-final": PasoFinal,
 };
+
+// ==========================================================================================
+// SECCIÓN 2b: MAPA DEL THEME SEALAND
+// ==========================================================================================
+// El contenido del CMS es el mismo que usa Acuario (los UID son
+// `secciones.componente-N-acuario`), pero bajo el theme `sealand` cada bloque se
+// renderiza con su componente propio. Este mapa se SOBREPONE al general: lo que
+// no esté aquí se resuelve igual que antes.
+const componentsMapSealand: any = {
+    "secciones.componente-1-acuario": Component_1_Sealand,
+    "secciones.componente-2-acuario": Component_2_Sealand,
+    "secciones.componente-3-acuario": Component_3_Sealand,
+    "secciones.componente-4-acuario": Component_4_Sealand,
+    "secciones.componente-5-acuario": Component_5_Sealand,
+    "secciones.componente-6-acuario": Component_6_Sealand,
+    "secciones.componente-7-acuario": Component_7_Sealand,
+    "secciones.componente-8-acuario": Component_8_Sealand,
+    "secciones.componente-9-acuario": Component_9_Sealand,
+    "secciones.componente-10-acuario": Component_10_Sealand,
+    "secciones.componente-11-acuario": Component_11_Sealand,
+    "secciones.componente-12-acuario": Component_12_Sealand,
+    "secciones.componente-13-acuario": Component_13_Sealand,
+    "secciones.componente-14-acuario": Component_14_Sealand,
+    "secciones.componente-15-acuario": Component_15_Sealand,
+    "secciones.componente-16-acuario": Component_16_Sealand,
+    "secciones.componente-17-acuario": Component_17_Sealand,
+    "secciones.componente-18-acuario": Component_18_Sealand,
+    "secciones.componente-19-acuario": Component_19_Sealand,
+    "secciones.componente-20-acuario": Component_20_Sealand,
+    "secciones.componente-21-acuario": Component_21_Sealand,
+    "secciones.componente-22-acuario": Component_22_Sealand,
+    "secciones.componente-23-acuario": Component_23_Sealand,
+    "secciones.componente-24-acuario": Component_24_Sealand,
+    "secciones.componente-25-acuario": Component_25_Sealand,
+    "secciones.componente-26-acuario": Component_26_Sealand,
+    "secciones.componente-27-acuario": Component_27_Sealand,
+    "secciones.componente-28-acuario": Component_28_Sealand,
+    "secciones.componente-29-acuario": Component_29_Sealand,
+    "secciones.componente-30-acuario": Component_30_Sealand,
+    "secciones.componente-31-acuario": Component_31_Sealand,
+    "secciones.componente-32-acuario": Component_32_Sealand,
+    "secciones.componente-33-acuario": Component_33_Sealand,
+    "secciones.componente-34-acuario": Component_34_Sealand,
+    "secciones.componente-35-acuario": Component_35_Sealand,
+    "secciones.componente-36-acuario": Component_36_Sealand,
+    "secciones.componente-37-acuario": Component_37_Sealand,
+    "secciones.componente-38-acuario": Component_38_Sealand,
+    "secciones.separadores": SeparadoresSealand,
+    "secciones.booking-acuarios": BookingSealand,
+    "secciones.paso-final": PasoFinalSealand,
+};
+
+// Mapa efectivo: el general + los overrides del theme activo.
+const mapaActivo = IS_SEALAND ? { ...componentsMap, ...componentsMapSealand } : componentsMap;
 ---
 
 {
     blocks &&
         blocks.map((bloque: any) => {
-            const Componente = componentsMap[bloque.__component] as any;
+            const Componente = mapaActivo[bloque.__component] as any;
             return Componente ? (
                 <Componente {...bloque} />
             ) : (

@@ -5,6 +5,8 @@ import TocaFooter from "../toca/Footer.astro";
 import BluFooter from "../blu/Footer.astro";
 import DolphinarisFooter from "../dolphinaris/Footer.astro";
 import AcuarioFooter from "../acuario/Footer.astro";
+import SealandFooter from "../sealand/Footer.astro";
+import { IS_SEALAND } from "../../lib/active-theme.js";
 
 const { locale = "en", hideTarjeta = false } = Astro.props;
 const footerData = await getFooterData(locale);
@@ -23,8 +25,11 @@ if (
 
     if (componentName.includes("toca")) {
         Component = TocaFooter;
+    } else if (componentName.includes("sealand")) {
+        Component = SealandFooter;
     } else if (componentName.includes("acuario")) {
-        Component = AcuarioFooter;
+        // Bajo el theme Sealand el contenido de Acuario se renderiza con el chrome de Sealand.
+        Component = IS_SEALAND ? SealandFooter : AcuarioFooter;
     } else if (componentName.includes("dolphinaris")) {
         Component = DolphinarisFooter;
     } else if (componentName.includes("blu")) {

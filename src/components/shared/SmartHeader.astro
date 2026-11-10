@@ -6,6 +6,9 @@ import BluHeader from "../blu/Header.astro";
 import DolphinarisHeader from "../dolphinaris/Header.astro";
 import AcuarioHeader from "../acuario/Header.astro";
 import HeaderSimpleAcuario from "../acuario/HeaderSimpleAcuario.astro";
+import SealandHeader from "../sealand/Header.astro";
+import HeaderSimpleSealand from "../sealand/HeaderSimpleSealand.astro";
+import { IS_SEALAND } from "../../lib/active-theme.js";
 
 const { locale = "en", alternateLinks = {}, simplified = false } = Astro.props;
 // Fetch data directly here
@@ -40,11 +43,14 @@ if (
     // CSS variables for colors/typography). Today only HeaderSimpleAcuario exists;
     // if more "simple" variants land later, we can extend this branch by brand.
     if (simplified && componentName.includes("simple")) {
-        Component = HeaderSimpleAcuario;
+        Component = IS_SEALAND ? HeaderSimpleSealand : HeaderSimpleAcuario;
     } else if (componentName.includes("toca")) {
         Component = TocaHeader;
+    } else if (componentName.includes("sealand")) {
+        Component = SealandHeader;
     } else if (componentName.includes("acuario")) {
-        Component = AcuarioHeader;
+        // Bajo el theme Sealand el contenido de Acuario se renderiza con el chrome de Sealand.
+        Component = IS_SEALAND ? SealandHeader : AcuarioHeader;
     } else if (componentName.includes("dolphinaris")) {
         Component = DolphinarisHeader;
     } else if (componentName.includes("blu")) {
