@@ -19,6 +19,7 @@ const {
     alternateLinks,
     headerSimplified = false,
     hide_tarjeta_habiente = false,
+    siteChrome = true,
 } = Astro.props;
 
 const isMultiLanguage = import.meta.env.PUBLIC_MULTILANGUAGE !== "false";
@@ -119,15 +120,21 @@ const seoProps = seo || defaultSeo;
             </noscript>
         )}
         
-        <Header locale={locale} alternateLinks={alternateLinks} simplified={headerSimplified} />
-        
+        {siteChrome && (
+            <Header locale={locale} alternateLinks={alternateLinks} simplified={headerSimplified} />
+        )}
+
         <slot />
-        
-        <Footer locale={locale} hideTarjeta={hide_tarjeta_habiente}/>
-        <LanguageSwitcher
-            alternateLinks={alternateLinks}
-            class="fixed hidden bottom-20 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"
-        />
+
+        {siteChrome && (
+            <>
+                <Footer locale={locale} hideTarjeta={hide_tarjeta_habiente}/>
+                <LanguageSwitcher
+                    alternateLinks={alternateLinks}
+                    class="fixed hidden bottom-20 right-4 z-50 bg-white text-black p-2 rounded shadow border border-gray-200"
+                />
+            </>
+        )}
 
         <!-- INICIO: Píxel de Pinterest diferido -->
         <script is:inline>

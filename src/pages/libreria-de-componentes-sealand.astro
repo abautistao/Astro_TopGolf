@@ -1,0 +1,1061 @@
+---
+// src/pages/libreria-de-componentes-sealand.astro
+import Layout from "../layouts/Layout.astro";
+
+import SealandHeader from "../components/sealand/Header.astro";
+import SealandFooter from "../components/sealand/Footer.astro";
+import SealandHeaderSimple from "../components/sealand/HeaderSimpleSealand.astro";
+import SealandBooking from "../components/sealand/Booking_Sealand.astro";
+import Separadores from "../components/sealand/Separadores.astro";
+import Component_1_Sealand from "../components/sealand/Component_1_Sealand.astro";
+import Component_2_Sealand from "../components/sealand/Component_2_Sealand.astro";
+import Component_3_Sealand from "../components/sealand/Component_3_Sealand.astro";
+import Component_4_Sealand from "../components/sealand/Component_4_Sealand.astro";
+import Component_5_Sealand from "../components/sealand/Component_5_Sealand.astro";
+import Component_6_Sealand from "../components/sealand/Component_6_Sealand.astro";
+import Component_7_Sealand from "../components/sealand/Component_7_Sealand.astro";
+import Component_8_Sealand from "../components/sealand/Component_8_Sealand.astro";
+import Component_9_Sealand from "../components/sealand/Component_9_Sealand.astro";
+import Component_10_Sealand from "../components/sealand/Component_10_Sealand.astro";
+import Component_11_Sealand from "../components/sealand/Component_11_Sealand.astro";
+import Component_12_Sealand from "../components/sealand/Component_12_Sealand.astro";
+import Component_13_Sealand from "../components/sealand/Component_13_Sealand.astro";
+import Component_14_Sealand from "../components/sealand/Component_14_Sealand.astro";
+import Component_15_Sealand from "../components/sealand/Component_15_Sealand.astro";
+import Component_16_Sealand from "../components/sealand/Component_16_Sealand.astro";
+import Component_17_Sealand from "../components/sealand/Component_17_Sealand.astro";
+import Component_18_Sealand from "../components/sealand/Component_18_Sealand.astro";
+import Component_19_Sealand from "../components/sealand/Component_19_Sealand.astro";
+import Component_20_Sealand from "../components/sealand/Component_20_Sealand.astro";
+import Component_21_Sealand from "../components/sealand/Component_21_Sealand.astro";
+import Component_22_Sealand from "../components/sealand/Component_22_Sealand.astro";
+import Component_23_Sealand from "../components/sealand/Component_23_Sealand.astro";
+import Component_24_Sealand from "../components/sealand/Component_24_Sealand.astro";
+import Component_25_Sealand from "../components/sealand/Component_25_Sealand.astro";
+import Component_26_Sealand from "../components/sealand/Component_26_Sealand.astro";
+import Component_27_Sealand from "../components/sealand/Component_27_Sealand.astro";
+import Component_28_Sealand from "../components/sealand/Component_28_Sealand.astro";
+import Component_29_Sealand from "../components/sealand/Component_29_Sealand.astro";
+import Component_30_Sealand from "../components/sealand/Component_30_Sealand.astro";
+import Component_31_Sealand from "../components/sealand/Component_31_Sealand.astro";
+import Component_32_Sealand from "../components/sealand/Component_32_Sealand.astro";
+import Component_33_Sealand from "../components/sealand/Component_33_Sealand.astro";
+import Component_34_Sealand from "../components/sealand/Component_34_Sealand.astro";
+import Component_35_Sealand from "../components/sealand/Component_35_Sealand.astro";
+import Component_36_Sealand from "../components/sealand/Component_36_Sealand.astro";
+import Component_37_Sealand from "../components/sealand/Component_37_Sealand.astro";
+import Component_38_Sealand from "../components/sealand/Component_38_Sealand.astro";
+
+// ============================================================
+//  DUMMY DATA — solo para visualización (BD vacía en producción)
+// ============================================================
+const IMG = (label: string, w = 800, h = 600) =>
+    `https://placehold.co/${w}x${h}/0080BB/FFFFFF?text=${encodeURIComponent(label)}`;
+
+const media = (label: string, w = 800, h = 600) => ({
+    url: IMG(label, w, h),
+    alternativeText: label,
+});
+
+const boton = (texto: string, url = "#") => ({ texto, url });
+
+const slug = (name: string) =>
+    name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // quita acentos: "Galería" -> "galeria"
+        .replace(/[—–]/g, "-")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+const dummySlides = [
+    {
+        id: 1,
+        fondo: media("Banner Sealand 1", 1920, 900),
+        fondo_mobile: media("Banner Sealand 1 Mobile", 800, 1200),
+        texto_principal: "DESCUBRE SEALAND",
+        nivel_heading: "h1",
+        subtitulo: "Una experiencia submarina única",
+        boton: [boton("COMPRA TUS BOLETOS", "#comprar")],
+    },
+    {
+        id: 2,
+        fondo: media("Banner Sealand 2", 1920, 900),
+        texto_principal: "VIVE LA AVENTURA MARINA",
+        nivel_heading: "h1",
+        subtitulo: "Más de 30,000 especies te esperan",
+        boton: [boton("RESERVA AHORA", "#reservar")],
+    },
+];
+
+const dummyTarjetas7 = [
+    {
+        id: 1,
+        titulo: "ENTRADA GENERAL",
+        imagen: media("Paquete General", 600, 400),
+        precio_regular: "350 MXN",
+        precio_en_linea: "299 MXN",
+        label_precio_regular: "PRECIO REGULAR",
+        label_precio_en_linea: "PRECIO EN LÍNEA",
+        lista_incluye: [
+            { texto: "Acceso a todas las exhibiciones", icono: null },
+            { texto: "Show de delfines incluido", icono: null },
+            { texto: "Recorrido completo autoguiado", icono: null },
+        ],
+        nota_importante: "Válido de lunes a domingo",
+        boton: boton("COMPRA TU ENTRADA", "#comprar"),
+    },
+    {
+        id: 2,
+        titulo: "PAQUETE FAMILIAR",
+        imagen: media("Paquete Familiar", 600, 400),
+        precio_regular: "1200 MXN",
+        precio_en_linea: "999 MXN",
+        label_precio_regular: "PRECIO REGULAR",
+        label_precio_en_linea: "PRECIO EN LÍNEA",
+        es_destacado: true,
+        texto_destacado: "EL MÁS POPULAR",
+        lista_incluye: [
+            { texto: "4 entradas generales", icono: null },
+            { texto: "Almuerzo para 4 personas", icono: null },
+            { texto: "Foto recuerdo del grupo", icono: null },
+            { texto: "Acceso prioritario sin fila", icono: null },
+        ],
+        nota_importante: "Aplica para 4 personas",
+        boton: boton("COMPRA PAQUETE", "#comprar"),
+    },
+];
+
+const dummyTarjetas4 = [
+    {
+        titulo: "VISITA GENERAL",
+        imagen: media("Tarjeta 1", 400, 300),
+        precio_regular: "350 MXN",
+        precio_en_linea: "299 MXN",
+        label_precio_regular: "REGULAR",
+        label_precio_en_linea: "EN LÍNEA",
+        boton: boton("COMPRA AQUÍ", "#"),
+        es_popular: false,
+    },
+    {
+        titulo: "PAQUETE PREMIUM",
+        imagen: media("Tarjeta 2", 400, 300),
+        precio_regular: "650 MXN",
+        precio_en_linea: "549 MXN",
+        label_precio_regular: "REGULAR",
+        label_precio_en_linea: "EN LÍNEA",
+        boton: boton("COMPRA AQUÍ", "#"),
+        es_popular: true,
+        texto_popular: "MÁS POPULAR",
+    },
+    {
+        titulo: "FAMILIAR",
+        imagen: media("Tarjeta 3", 400, 300),
+        precio_regular: "1200 MXN",
+        precio_en_linea: "999 MXN",
+        label_precio_regular: "REGULAR",
+        label_precio_en_linea: "EN LÍNEA",
+        boton: boton("COMPRA AQUÍ", "#"),
+        es_popular: false,
+    },
+];
+
+const dummyTarjetas5 = [
+    { titulo: "PINGÜINOS", imagen: media("Pingüinos", 600, 450), texto_enlace: "CONOCE MÁS", url: "#" },
+    { titulo: "DELFINES", imagen: media("Delfines", 600, 450), texto_enlace: "CONOCE MÁS", url: "#" },
+    { titulo: "MANTARRAYAS", imagen: media("Mantarrayas", 600, 450), texto_enlace: "CONOCE MÁS", url: "#" },
+];
+
+const dummyTarjetas6 = {
+    tarjeta_principal: {
+        titulo: "Noticia Principal — Apertura nueva exhibición",
+        descripcion: "Descubre nuestra nueva exhibición de tiburones ballena en Sealand.",
+        imagen: media("Noticia Principal", 800, 600),
+        fecha: "15 de octubre, 2024",
+        url: "#",
+    },
+    tarjetas_secundarias: [
+        {
+            titulo: "Noticia secundaria 1",
+            descripcion: "Resumen corto de la noticia secundaria para mostrar el formato de la card.",
+            imagen: media("Noticia 2", 400, 300),
+            url: "#",
+        },
+        {
+            titulo: "Noticia secundaria 2",
+            descripcion: "Otra noticia relevante del acuario.",
+            imagen: media("Noticia 3", 400, 300),
+            url: "#",
+        },
+    ],
+};
+
+const dummyTarjetas8 = [
+    {
+        imagen_fondo: media("Promo Fondo 1", 400, 600),
+        imagen_logo: media("Logo Promo 1", 200, 100),
+        texto_superior: "PROMOCIÓN ESPECIAL",
+        texto_secundario: "DISPONIBLE POR TIEMPO LIMITADO",
+        precio: "$299",
+        texto_inferior: "POR PERSONA",
+        boton: boton("ADQUIÉRELO AQUÍ", "#"),
+        texto_disclaimer: "Aplican restricciones",
+        texto_terminos: "Términos y condiciones",
+        enlace_terminos: "#",
+    },
+    {
+        imagen_fondo: media("Promo Fondo 2", 400, 600),
+        imagen_logo: media("Logo Promo 2", 200, 100),
+        texto_superior: "VERANO EN SEALAND",
+        texto_secundario: "JUNIO - AGOSTO",
+        precio: "$199",
+        texto_inferior: "POR VISITA",
+        boton: boton("RESERVA YA", "#"),
+        texto_disclaimer: "Solo online",
+        texto_terminos: "Ver términos",
+        enlace_terminos: "#",
+    },
+];
+
+const dummyTarjetas12 = [
+    {
+        titulo: "EDUCATIVO",
+        icono: media("Icono Educativo", 100, 100),
+        descripcion: "<p>Programas educativos para escuelas y grupos.</p>",
+    },
+    {
+        titulo: "FAMILIAR",
+        icono: media("Icono Familiar", 100, 100),
+        descripcion: "<p>Paquetes diseñados para disfrutar en familia.</p>",
+    },
+    {
+        titulo: "EVENTOS",
+        icono: media("Icono Eventos", 100, 100),
+        descripcion: "<p>Celebra tus eventos especiales en el acuario.</p>",
+    },
+];
+
+const dummyTarjetas18 = [
+    {
+        imagen: media("Hover Card 1", 600, 500),
+        titulo: "EXHIBICIÓN 1",
+        descripcion: "Conoce a nuestros pingüinos de Magallanes.",
+        boton: boton("VER MÁS", "#"),
+    },
+    {
+        imagen: media("Hover Card 2", 600, 500),
+        titulo: "EXHIBICIÓN 2",
+        descripcion: "Sumérgete con tiburones y mantarrayas.",
+        boton: boton("VER MÁS", "#"),
+    },
+    {
+        imagen: media("Hover Card 3", 600, 500),
+        titulo: "EXHIBICIÓN 3",
+        descripcion: "Acuario de medusas bioluminiscentes.",
+        boton: boton("VER MÁS", "#"),
+    },
+];
+
+const dummyTarjetas19 = [
+    {
+        imagen: media("Card 19 - 1", 400, 600),
+        titulo: "PINGÜINOS",
+        descripcion: "Los pingüinos de Magallanes son una especie que habita en las costas del sur.",
+    },
+    {
+        imagen: media("Card 19 - 2", 400, 600),
+        titulo: "DELFINES",
+        descripcion: "Nuestros delfines nariz de botella te sorprenderán con sus trucos.",
+    },
+    {
+        imagen: media("Card 19 - 3", 400, 600),
+        titulo: "TIBURONES",
+        descripcion: "Observa de cerca a los tiburones en nuestro túnel submarino.",
+    },
+];
+
+const dummyTarjetas21 = [
+    {
+        imagen_fondo: media("Card 21 BG 1", 400, 600),
+        imagen_logo: media("Card 21 Logo 1", 200, 100),
+        texto_superior: "PROMOCIÓN",
+        texto_secundario: "LIMITADA",
+        precio: "$199",
+        texto_inferior: "POR PERSONA",
+        boton: boton("COMPRA", "#"),
+        texto_disclaimer: "Aplica restricciones",
+        texto_terminos: "Términos",
+        enlace_terminos: "#",
+    },
+];
+
+const dummyTarjetas22 = [
+    {
+        imagen: media("Logo Aliado 1", 200, 200),
+        titulo: "ALIADO 1",
+        subtitulo: "Empresa aliada del acuario",
+    },
+    {
+        imagen: media("Logo Aliado 2", 200, 200),
+        titulo: "ALIADO 2",
+        subtitulo: "Patrocinador oficial",
+    },
+    {
+        imagen: media("Logo Aliado 3", 200, 200),
+        titulo: "ALIADO 3",
+        subtitulo: "Colaborador estratégico",
+    },
+];
+
+const dummyGaleria = [
+    media("Galería 1", 800, 600),
+    media("Galería 2", 800, 600),
+    media("Galería 3", 800, 600),
+    media("Galería 4", 800, 600),
+    media("Galería 5", 800, 600),
+];
+
+const dummyElementosLista9 = [
+    { texto: "Más de 30,000 especies marinas", icono: "fa-solid fa-fish" },
+    { texto: "Shows de delfines y leones marinos", icono: "fa-solid fa-water" },
+    { texto: "Túnel submarino de 360°", icono: "fa-solid fa-eye" },
+    { texto: "Área interactiva para niños", icono: "fa-solid fa-child" },
+];
+
+const dummyAcordeones10 = [
+    {
+        titulo: "¿Cuáles son los horarios del acuario?",
+        contenido: "<p>El acuario abre de lunes a domingo de 10:00 a 19:00 hrs. Última entrada a las 18:00 hrs.</p>",
+        icono: null,
+    },
+    {
+        titulo: "¿Se permite el ingreso con alimentos?",
+        contenido: "<p>No está permitido el ingreso con alimentos externos. Contamos con restaurantes dentro del acuario.</p>",
+        icono: null,
+    },
+    {
+        titulo: "¿Hay descuentos para estudiantes?",
+        contenido: "<p>Sí, presentamos tu credencial vigente y obtén 20% de descuento en la entrada general.</p>",
+        icono: null,
+    },
+];
+
+const dummyCampos16 = [
+    { id: 1, tipo: "text", name: "nombre", label: "Nombre completo", placeholder: "Tu nombre", required: true, ancho: "full" },
+    { id: 2, tipo: "email", name: "email", label: "Correo electrónico", placeholder: "tu@email.com", required: true, ancho: "half" },
+    { id: 3, tipo: "tel", name: "telefono", label: "Teléfono", placeholder: "55 1234 5678", required: true, ancho: "half" },
+    { id: 4, tipo: "date", name: "fecha_visita", label: "Fecha de visita", required: false, ancho: "half" },
+    { id: 5, tipo: "select", name: "tipo_entrada", label: "Tipo de entrada", placeholder: "Selecciona", required: true, ancho: "half", opciones: [
+        { value: "general", label: "General" },
+        { value: "vip", label: "VIP" },
+        { value: "familiar", label: "Familiar" },
+    ] },
+    { id: 6, tipo: "textarea", name: "comentarios", label: "Comentarios", placeholder: "Cuéntanos algo...", required: false, ancho: "full", filas: 3 },
+];
+
+// --- Datos dummy de los componentes 27 a 38 ---
+
+const dummyChips34 = [
+    { texto: "Acuario" },
+    { texto: "Inmersión" },
+    { texto: "Familia" },
+    { texto: "Educativo" },
+];
+
+const dummyFiguras34 = [
+    { imagen: media("Figura 34 - 1", 900, 700), texto_alt_imagen: "Exhibición principal", pie_de_imagen: "Túnel submarino" },
+    { imagen: media("Figura 34 - 2", 700, 500), texto_alt_imagen: "Delfines", pie_de_imagen: "Show de delfines" },
+    { imagen: media("Figura 34 - 3", 700, 500), texto_alt_imagen: "Pingüinos", pie_de_imagen: "Habitad de pingüinos" },
+    { imagen: media("Figura 34 - 4", 900, 500), texto_alt_imagen: "Medusas", pie_de_imagen: "Medusas bioluminiscentes" },
+];
+
+const dummyCampos35 = [
+    { numero: "01", titulo: "Grupos de 10 a 20", descripcion: "Formato para preescolar y primaria con acompañamiento del guía." },
+    { numero: "02", titulo: "Grupos de 20 a 40", descripcion: "Recorrido ampliado con taller de biodiversidad." },
+    { numero: "03", titulo: "Grupos de 40 a 60", descripcion: "Programa de ciencia marina con sesión en el laboratorio." },
+];
+
+const dummyFases35 = [
+    {
+        fase: "Fase 1",
+        nivel: "Primaria",
+        titulo: "Conociendo el mar",
+        descripcion: "Primera aproximación a los ecosistemas marinos y a la vida que los habita.",
+        aprendizajes: [
+            { texto: "Identifica las tres zonas marinas básicas" },
+            { texto: "Explica qué es un ecosistema acuático" },
+        ],
+        productos: [
+            { texto: "Guía del docente imprimible" },
+            { texto: "Acceso al recorrido autoguiado" },
+        ],
+    },
+    {
+        fase: "Fase 2",
+        nivel: "Secundaria",
+        titulo: "Ciencia de los océanos",
+        descripcion: "Profundiza en la dinámica de los océanos y su impacto en el clima.",
+        aprendizajes: [
+            { texto: "Relaciona corrientes marinas y clima" },
+            { texto: "Calcula índices de diversidad con datos del acuario" },
+        ],
+        productos: [
+            { texto: "Cuaderno de campo digital" },
+        ],
+    },
+];
+
+const dummyDocumentos36 = [
+    {
+        tipo_documento: "PDF",
+        titulo: "Reglamento de visita",
+        descripcion: "Normas de seguridad y conducta dentro de las instalaciones.",
+        archivo: {
+            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            name: "reglamento-visita.pdf",
+            ext: ".pdf",
+        },
+        abrir_en_pestana_nueva: true,
+    },
+    {
+        tipo_documento: "PDF",
+        titulo: "Lista de seguridad",
+        descripcion: "Checklist para preparar la visita del grupo escolar.",
+        archivo: {
+            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            name: "lista-seguridad.pdf",
+            ext: ".pdf",
+        },
+        abrir_en_pestana_nueva: false,
+    },
+];
+
+const dummyMateriales36 = [
+    {
+        titulo: "Guía docente por nivel educativo",
+        archivo: {
+            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            ext: ".pdf",
+        },
+    },
+    {
+        titulo: "Material imprimible de actividades",
+        archivo: {
+            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            ext: ".pdf",
+        },
+    },
+];
+
+const dummyPaquetes37 = [
+    {
+        nombre: "Entrada general",
+        precio: 350,
+        incluye: "Acceso a todas las exhibiciones y al show de delfines.",
+        regla_cortesia: "general",
+        destacado: false,
+    },
+    {
+        nombre: "Entrada escolar",
+        precio: 180,
+        incluye: "Acceso con guía y taller de biodiversidad.",
+        regla_cortesia: "solo_entrada_general",
+        destacado: true,
+    },
+];
+
+const dummyReglas37 = [
+    { texto: "El precio es por persona y el pago es en línea." },
+    { texto: "Los grupos de más de 20 personas requieren reservación previa." },
+    { texto: "Cada grupo puede obtener una cortesía por cada 20 personas." },
+];
+
+const dummyPasos38 = [
+    { numero: "01", titulo: "Reserva tu visita", descripcion: "Elige la sede, la fecha y el número de participantes." },
+    { numero: "02", titulo: "Recibe la confirmación", descripcion: "Te enviamos el formato y las indicaciones por correo." },
+    { numero: "03", titulo: "Llega 20 minutos antes", descripcion: "El punto de encuentro es la entrada de grupos." },
+    { numero: "04", titulo: "Disfruta la experiencia", descripcion: "El guía acompaña al grupo durante todo el recorrido." },
+];
+
+const componentsBlock: any[] = [
+    { name: "Header", Comp: SealandHeader, props: {} },
+    { name: "HeaderSimple", Comp: SealandHeaderSimple, props: {} },
+    { name: "Footer", Comp: SealandFooter, props: {} },
+    { name: "Separadores", Comp: Separadores, props: {} },
+    { name: "Booking", Comp: SealandBooking, props: {} },
+    {
+        name: "Component_1 (Banner con Slides)",
+        Comp: Component_1_Sealand,
+        props: {
+            slides: dummySlides,
+            banner_texto: "COMPRA TUS BOLETOS AL SEALAND SOLO EN EL SITIO OFICIAL",
+            banner_enlace: "#",
+        },
+    },
+    {
+        name: "Component_1 — modo completa (fullwidth, sin recorte)",
+        Comp: Component_1_Sealand,
+        props: {
+            slides: [
+                {
+                    id: 100,
+                    fondo: media("Banner Fullwidth con texto", 1920, 700),
+                    texto_principal: "",
+                    subtitulo: "",
+                    ajuste_imagen: "completa",
+                },
+            ],
+            banner_texto: "COMPRA TUS BOLETOS AL SEALAND SOLO EN EL SITIO OFICIAL",
+            banner_enlace: "#",
+        },
+    },
+    {
+        name: "Component_2 (Cintillo Promocional)",
+        Comp: Component_2_Sealand,
+        props: {
+            texto_resaltado: "COMPRA TUS BOLETOS",
+            texto_secundario: "AL SEALAND SOLO EN EL SITIO OFICIAL",
+            boton: boton("VER MÁS", "#"),
+        },
+    },
+    {
+        name: "Component_3 (Texto + Carrusel Media)",
+        Comp: Component_3_Sealand,
+        props: {
+            subtitulo: "BIENVENIDO",
+            titulo: "DESCUBRE SEALAND",
+            descripcion: "<p>Sealand es uno de los acuarios más grandes de Latinoamérica, con más de 30,000 especies marinas.</p>",
+            boton: boton("CONOCE MÁS", "#"),
+            slides: [
+                { fondo: media("Slide 3-1", 800, 600), fondo_mobile: media("Slide 3-1 mobile", 600, 800), texto_principal: "Slide 1" },
+                { fondo: media("Slide 3-2", 800, 600), fondo_mobile: media("Slide 3-2 mobile", 600, 800), texto_principal: "Slide 2" },
+                { fondo: media("Slide 3-3", 800, 600), fondo_mobile: media("Slide 3-3 mobile", 600, 800), texto_principal: "Slide 3" },
+            ],
+        },
+    },
+    {
+        name: "Component_4 (Cards con Hover)",
+        Comp: Component_4_Sealand,
+        props: {
+            titulo: "VISITA SEALAND",
+            subtitulo: "Elige tu paquete",
+            tarjetas: dummyTarjetas4,
+        },
+    },
+    {
+        name: "Component_5 (Grid de Tarjetas con Imagen)",
+        Comp: Component_5_Sealand,
+        props: {
+            titulo: "CONOCE NUESTRAS ESPECIES",
+            subtitulo: "Una experiencia única",
+            descripcion: "Más de 30,000 especies marinas te esperan.",
+            tarjetas: dummyTarjetas5,
+        },
+    },
+    {
+        name: "Component_6 (Noticias — Principal + Secundarias)",
+        Comp: Component_6_Sealand,
+        props: {
+            titulo: "NOTICIAS Y EVENTOS",
+            tarjeta_principal: dummyTarjetas6.tarjeta_principal,
+            tarjetas_secundarias: dummyTarjetas6.tarjetas_secundarias,
+            boton: boton("OTRAS NOTICIAS", "#"),
+        },
+    },
+    {
+        name: "Component_7 (Paquetes / Cards de Precios)",
+        Comp: Component_7_Sealand,
+        props: {
+            titulo: "ENTRADAS Y PAQUETES",
+            subtitulo: "ELIGE TU EXPERIENCIA",
+            tarjetas: dummyTarjetas7,
+        },
+    },
+    {
+        name: "Component_8 (Promociones — Cards con Overlay)",
+        Comp: Component_8_Sealand,
+        props: {
+            titulo: "PROMOCIONES ESPECIALES",
+            subtitulo: "DISFRUTA ESTAS OFERTAS",
+            tarjetas: dummyTarjetas8,
+        },
+    },
+    {
+        name: "Component_9 (Galería + Info + Lista)",
+        Comp: Component_9_Sealand,
+        props: {
+            mostrar_tag_destacado: true,
+            texto_tag_destacado: "EL MÁS POPULAR",
+            subtitulo: "NUESTRO TOQUE ESPECIAL",
+            titulo: "EXHIBICIÓN DE MEDUSAS",
+            descripcion: "<p>Más de <strong>10,000 medusas</strong> bioluminiscentes en una exhibición única en Latinoamérica.</p>",
+            titulo_lista: "INCLUYE",
+            elementos_lista: dummyElementosLista9,
+            galeria: dummyGaleria.slice(0, 4),
+        },
+    },
+    {
+        name: "Component_10 (Acordeón FAQ / Restricciones)",
+        Comp: Component_10_Sealand,
+        props: {
+            variante: "Preguntas Frecuentes",
+            titulo: "PREGUNTAS FRECUENTES",
+            acordeones: dummyAcordeones10,
+        },
+    },
+    {
+        name: "Component_11 (Carrusel de Galería)",
+        Comp: Component_11_Sealand,
+        props: {
+            titulo: "GALERÍA",
+            subtitulo: "DESCUBRE NUESTRAS INSTALACIONES",
+            slides_desktop: 3,
+            galeria: dummyGaleria,
+        },
+    },
+    {
+        name: "Component_12 (Grid de Iconos + Texto)",
+        Comp: Component_12_Sealand,
+        props: {
+            titulo: "NUESTROS SERVICIOS",
+            subtitulo: "TODO PARA TU VISITA",
+            tarjetas: dummyTarjetas12,
+        },
+    },
+    {
+        name: "Component_13 (Carrusel Horizontal)",
+        Comp: Component_13_Sealand,
+        props: {
+            titulo: "EXPLORA",
+            subtitulo: "MOMENTOS INOLVIDABLES",
+            descripcion: "<p>Revive los mejores momentos del acuario.</p>",
+            galeria: dummyGaleria,
+        },
+    },
+    {
+        name: "Component_14 (Texto + Media Single/Gallery)",
+        Comp: Component_14_Sealand,
+        props: {
+            disposicion: "texto_izquierda",
+            titulo: "EXHIBICIÓN PERMANENTE",
+            subtitulo: "CONOCE NUESTROS HABITATS",
+            descripcion: "<p>Más de 30 exhibiciones temáticas que recrean los ecosistemas marinos más importantes del mundo.</p>",
+            media: media("Imagen Principal 14", 800, 600),
+        },
+    },
+    {
+        name: "Component_15 (Post de Blog con ToC)",
+        Comp: Component_15_Sealand,
+        props: {
+            titulo_principal: "LA IMPORTANCIA DE CONSERVAR LOS OCÉANOS",
+            subtitulo: "Educación ambiental",
+            etiqueta_texto: "BLOG",
+            etiqueta_color: "#FD7E14",
+            descripcion_inicial: [
+                { type: "heading", level: 2, children: [{ text: "Introducción" }] },
+                { type: "paragraph", children: [{ text: "Los océanos cubren más del 70% de la superficie terrestre y son vitales para la vida en el planeta." }] },
+                { type: "heading", level: 2, children: [{ text: "Conservación Marina" }] },
+                { type: "paragraph", children: [{ text: "La conservación de los ecosistemas marinos es una prioridad global." }] },
+            ],
+            imagen_principal: media("Imagen Blog Principal", 1200, 600),
+            bloques_contenido: [
+                {
+                    titulo: "Especies en peligro",
+                    descripcion: "<p>Muchas especies marinas están en peligro de extinción debido a la actividad humana.</p>",
+                    imagen: media("Bloque Blog 1", 800, 500),
+                    disposicion: "texto_izquierda",
+                },
+            ],
+        },
+    },
+    {
+        name: "Component_16 (Formulario de Contacto)",
+        Comp: Component_16_Sealand,
+        props: {
+            titulo: "CONTÁCTANOS",
+            subtitulo: "Estamos para ayudarte",
+            campos: dummyCampos16,
+            texto_boton: "ENVIAR MENSAJE",
+        },
+    },
+    {
+        name: "Component_17 (Blog — 3 secciones)",
+        Comp: Component_17_Sealand,
+        props: {
+            titulo_seccion_1: "ÚLTIMAS NOTICIAS",
+            titulo_seccion_2: "LOS MÁS POPULARES",
+            titulo_seccion_3: "DESCUBRE MÁS",
+        },
+    },
+    {
+        name: "Component_18 (Cards con Hover Effect)",
+        Comp: Component_18_Sealand,
+        props: {
+            tarjetas: dummyTarjetas18,
+        },
+    },
+    {
+        name: "Component_19 (Carrusel de Cards con Imagen)",
+        Comp: Component_19_Sealand,
+        props: {
+            titulo: "CONOCE A NUESTROS HABITANTES",
+            subtitulo: "Especies destacadas del acuario",
+            cards: dummyTarjetas19,
+        },
+    },
+    {
+        name: "Component_20 (Botón de Descarga)",
+        Comp: Component_20_Sealand,
+        props: {
+            texto: "DESCARGA NUESTRO MAPA",
+            archivo: {
+                id: 1,
+                url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                name: "mapa-sealand.pdf",
+                mime: "application/pdf",
+            },
+        },
+    },
+    {
+        name: "Component_21 (Promociones — Variante 2)",
+        Comp: Component_21_Sealand,
+        props: {
+            titulo: "MÁS PROMOCIONES",
+            subtitulo: "DISFRUTA ESTAS OFERTAS",
+            tarjetas: dummyTarjetas21,
+        },
+    },
+    {
+        name: "Component_22 (Logos / Aliados)",
+        Comp: Component_22_Sealand,
+        props: {
+            titulo: "NUESTROS ALIADOS",
+            subtitulo: "EMPRESAS QUE NOS ACOMPAÑAN",
+            tarjetas: dummyTarjetas22,
+        },
+    },
+    {
+        name: "Component_23 (Banner Promocional)",
+        Comp: Component_23_Sealand,
+        props: {
+            titulo: "PROMOCIÓN VÁLIDA RESERVANDO EN LÍNEA CON 24 HORAS DE ANTICIPACIÓN",
+            htmlTag: "h3",
+            descripcion: [
+                { type: "paragraph", children: [
+                    { text: "*Tu entrada Shark Pass incluye los adicionales: " },
+                    { text: "1 Foto de bienvenida y Alimentos que se agregarán automáticamente a tu carrito", bold: true },
+                    { text: ". Sólo selecciona tu entrada y listo, ¡a disfrutar!" },
+                ] },
+                { type: "paragraph", children: [
+                    { text: "*Esta actividad es apta para marineros a partir de los 4 años en adelante." },
+                ] },
+            ],
+        },
+    },
+    {
+        name: "Component_24 (Texto + Carrusel de Galería)",
+        Comp: Component_24_Sealand,
+        props: {
+            titulo: "EXHIBICIONES TEMÁTICAS",
+            htmlTag: "h2",
+            subtitulo_1: "DESCUBRE",
+            subtitulo_2: "NUESTROS HABITATS",
+            descripcion: "<p>Recorre nuestras exhibiciones y descubre la biodiversidad marina que habita en cada ecosistema.</p>",
+            galeria: dummyGaleria,
+        },
+    },
+    {
+        name: "Component_25 (Texto + Lista + Formulario)",
+        Comp: Component_25_Sealand,
+        props: {
+            titulo: "CONTÁCTANOS",
+            htmlTag: "h2",
+            descripcion: "<p>¿Tienes alguna pregunta? Escríbenos y te responderemos a la brevedad.</p>",
+            elementos_lista: [
+                { id: 1, icono: "fa-solid fa-phone", texto: "55 1234 5678" },
+                { id: 2, icono: "fa-solid fa-envelope", texto: "hola@sealand.mx" },
+                { id: 3, icono: "fa-solid fa-location-dot", texto: "Av. Miguel de Cervantes Saavedra, CDMX" },
+            ],
+            formulario: {
+                titulo: "ENVÍA TU MENSAJE",
+                subtitulo: "Te responderemos pronto",
+                campos: dummyCampos16,
+                texto_boton: "ENVIAR MENSAJE",
+            },
+        },
+    },
+    {
+        name: "Component_26 (Mapa Google Maps Fullwidth)",
+        Comp: Component_26_Sealand,
+        props: {
+            url_mapa: "https://www.google.com/maps?q=Sealand+Guadalajara&output=embed",
+            altura: "450",
+        },
+    },
+    {
+        name: "Component_27 (Promo de Texto Centrado)",
+        Comp: Component_27_Sealand,
+        props: {
+            titulo: "PROMOCIÓN DE TEMPORADA",
+            htmlTag: "h2",
+            subtitulo: "50% DE DESCUENTO EN ENTRADAS",
+            descripcion: "<p>Aprovecha el cambio de temporada y trae a tu familia a conocer el océano de cerca.</p>",
+            disclaimer: "*Válido del 1 al 15 de diciembre. Sujeto a disponibilidad.",
+        },
+    },
+    {
+        name: "Component_28 (Media Simple — imagen)",
+        Comp: Component_28_Sealand,
+        props: {
+            tipo_media: "imagen",
+            imagen: media("Exhibición Principal", 1200, 675),
+            relacion_aspecto: "16_9",
+        },
+    },
+    {
+        name: "Component_28 (Media Simple — YouTube)",
+        Comp: Component_28_Sealand,
+        props: {
+            tipo_media: "youtube",
+            youtube_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            relacion_aspecto: "16_9",
+        },
+    },
+    {
+        name: "Component_29 (Banner de Descarga de App)",
+        Comp: Component_29_Sealand,
+        props: {
+            titulo: "LLEVA SEALAND CONTIGO",
+            subtitulo: "Descarga la app y recibe alertas de tus visitas",
+            imagen_apple: media("Badge App Store", 200, 60),
+            enlace_apple: "#",
+            imagen_google: media("Badge Google Play", 200, 60),
+            enlace_google: "#",
+        },
+    },
+    {
+        name: "Component_30 (Grid 2x2 de Imágenes)",
+        Comp: Component_30_Sealand,
+        props: {
+            imagen_1: media("Grid 30 - 1", 600, 450),
+            imagen_2: media("Grid 30 - 2", 600, 450),
+            imagen_3: media("Grid 30 - 3", 600, 450),
+            imagen_4: media("Grid 30 - 4", 600, 450),
+            enlace_1: "#",
+            enlace_2: "#",
+            enlace_3: "#",
+            enlace_4: "#",
+        },
+    },
+    {
+        name: "Component_31 (Banner de Consejos para tu Visita)",
+        Comp: Component_31_Sealand,
+        props: {
+            titulo: "CONSEJOS PARA TU VISITA",
+            descripcion: "<p>Llega temprano, trae ropa cómoda y no忘记了 tu cámara: hay mucho por fotografiar.</p>",
+            mensaje_final: "¡Te esperamos en Sealand!",
+            imagen: media("Icono Consejos", 240, 240),
+        },
+    },
+    {
+        name: "Component_32 (Hero Visitas Escolares)",
+        Comp: Component_32_Sealand,
+        props: {
+            imagen_fondo: media("Fondo Visita Escolar", 1920, 900),
+            texto_alt_imagen: "Grupo escolar frente al acuario",
+            eyebrow: "VISITAS ESCOLARES",
+            titulo: "APRENDE EN EL ACUARIO",
+            descripcion: "<p>Un programa educativo donde cada grupo descubre la vida marina con guías especializados.</p>",
+            boton_principal: boton("RESERVA TU VISITA", "#"),
+            boton_secundario: boton("VER PRECIOS", "#"),
+            datos: [
+                { valor: "30,000", etiqueta: "especies marinas" },
+                { valor: "12", etiqueta: "exhibiciones" },
+                { valor: "4K", etiqueta: "metros de túnel" },
+            ],
+            panel_tag: "QUÉ INCLUYE",
+            panel_titulo: "TU VISITA ESCOLAR",
+            panel_puntos: [
+                { texto: "Guía especializado por grupo" },
+                { texto: "Recorrido autoguiado de 2 horas" },
+                { texto: "Taller de biodiversidad" },
+            ],
+            panel_enlace_texto: "VER EL PROGRAMA COMPLETO",
+            panel_enlace_url: "#",
+        },
+    },
+    {
+        name: "Component_33 (Bloque Editorial con Imagen)",
+        Comp: Component_33_Sealand,
+        props: {
+            eyebrow: "EDUCACIÓN",
+            titulo: "PROGRAMAS ESCOLARES",
+            parrafo: "<p>Diseñamos rutas educativas para cada nivel escolar, con materiales para el docente y actividades en el acuario.</p>",
+            boton: boton("CONOCE MÁS", "#"),
+            imagen: media("Programa Escolar", 800, 600),
+            texto_alt_imagen: "Docente guiding a un grupo escolar",
+        },
+    },
+    {
+        name: "Component_34 (Video + Chips + Galería)",
+        Comp: Component_34_Sealand,
+        props: {
+            eyebrow: "RECORRIDOS",
+            titulo: "CONOCE SEALAND EN VIDEO",
+            descripcion: "<p>Un recorrido por nuestros hábitats para saber qué te espera antes de tu visita.</p>",
+            video: media("Video del recorrido", 1280, 720),
+            poster_video: media("Poster del video", 1280, 720),
+            chips: dummyChips34,
+            galeria: dummyFiguras34,
+        },
+    },
+    {
+        name: "Component_35 (Campos + Fases Educativas)",
+        Comp: Component_35_Sealand,
+        props: {
+            eyebrow: "PROGRAMA EDUCATIVO",
+            titulo: "FORMACIÓN PARA DOCENTES",
+            descripcion: "<p>Capacitación y materiales para llevar el océano al salón de clases.</p>",
+            campos: dummyCampos35,
+            fases: dummyFases35,
+            descarga_vinculacion: {
+                url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                name: "plan-vinculacion.pdf",
+            },
+            descarga_vinculacion_texto: "Descarga el plan de vinculación",
+            descarga_proyecto: {
+                url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                name: "plan-proyecto.pdf",
+            },
+            descarga_proyecto_texto: "Descarga el plan de proyecto",
+        },
+    },
+    {
+        name: "Component_36 (Documentos + Materiales)",
+        Comp: Component_36_Sealand,
+        props: {
+            eyebrow: "DESCARGABLES",
+            titulo: "DOCUMENTOS PARA TU VISITA",
+            descripcion: "<p>Reglamentos, listas y guías que puedes consultar antes de venir.</p>",
+            documentos: dummyDocumentos36,
+            titulo_materiales: "MATERIALES EDUCATIVOS",
+            descripcion_materiales: "<p>Recursos listos para usar en el salón de clases.</p>",
+            materiales: dummyMateriales36,
+            texto_privacidad: "Usamos tus datos únicamente para coordinar la visita.",
+        },
+    },
+    {
+        name: "Component_37 (Paquetes + Cotizador)",
+        Comp: Component_37_Sealand,
+        props: {
+            eyebrow: "COTIZADOR",
+            titulo: "PAQUETES PARA GRUPOS",
+            descripcion: "<p>Calcula el costo de tu visita escolar según el número de participantes.</p>",
+            paquetes: dummyPaquetes37,
+            reglas: dummyReglas37,
+            titulo_simulador: "SIMULA TU COTIZACIÓN",
+            descripcion_simulador: "<p>Ingresa el número de participantes para ver el total.</p>",
+            valor_cortesia: 1,
+            cada_cuantas_cortesias: 20,
+            personas_maximas: 60,
+            whatsapp_numero: "521234567890",
+            texto_boton: "COTIZAR POR WHATSAPP",
+            texto_aviso_legal: "Cotización referencial, sujeta a disponibilidad.",
+        },
+    },
+    {
+        name: "Component_38 (Pasos del Proceso)",
+        Comp: Component_38_Sealand,
+        props: {
+            eyebrow: "CÓMO RESERVAR",
+            titulo: "RESERVA TU VISITA EN 4 PASOS",
+            descripcion: "<p>Del formulario al recorrido, así de fácil.</p>",
+            pasos: dummyPasos38,
+        },
+    },
+];
+---
+
+<Layout title="Librería de Componentes — Sealand" siteChrome={false}>
+  <main class="w-full p-4 mx-auto my-12 md:p-8">
+    <h1 class="mb-2 text-3xl font-bold text-center">Librería de Componentes — Sealand</h1>
+    <p class="mb-2 text-center text-gray-500">Catálogo visual para identificar cada componente del theme <code class="px-1 bg-gray-100 rounded">sealand</code>.</p>
+    <p class="mb-2 text-xs text-center text-amber-600">⚠ Datos dummy. La BD de Strapi está vacía; este render no representa contenido real.</p>
+    <p class="mb-10 text-xs text-center text-gray-500">ℹ Dentro de las previews los elementos <code>sticky</code> y <code>fixed</code> se muestran estáticos, para que nada flote sobre el catálogo.</p>
+
+    <!-- Barra fija compacta: sólo el selector de salto. El índice completo vive
+         abajo, en un desplegable que NO es sticky, para que no tape el catálogo. -->
+    <nav class="sticky top-0 z-50 mb-8 bg-white border-b shadow-sm">
+      <div class="flex flex-wrap items-center gap-3 px-4 py-2">
+        <span class="text-sm font-semibold">Catálogo Sealand</span>
+        <select id="catalogo-salto" class="flex-1 min-w-[220px] px-2 py-1 text-sm border rounded">
+          <option value="">Saltar a un componente…</option>
+          {componentsBlock.map(({ name }) => (
+            <option value={slug(name)}>{name}</option>
+          ))}
+        </select>
+        <a href="#indice" class="text-sm text-blue-700 underline">Índice completo</a>
+      </div>
+    </nav>
+
+    <details id="indice" class="mb-12 border rounded-lg shadow-sm">
+      <summary class="px-4 py-3 font-semibold cursor-pointer">
+        Índice completo ({componentsBlock.length} bloques)
+      </summary>
+      <div class="max-h-[40vh] overflow-y-auto px-4 pb-4">
+        <div class="flex flex-wrap gap-2 text-sm">
+          {componentsBlock.map(({ name }) => (
+            <a href={`#${slug(name)}`} class="px-2 py-1 text-blue-700 underline rounded hover:bg-blue-50">
+              {name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <div class="grid grid-cols-1 gap-12">
+      {componentsBlock.map(({ name, Comp, props }) => (
+        <section id={slug(name)} class="scroll-mt-24 p-4 border rounded-lg shadow-lg md:p-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-semibold">{name}</h2>
+            <span class="px-2 py-1 text-xs text-gray-500 bg-gray-100 rounded">
+              frontend/src/components/sealand/{name.startsWith("Component_") ? name.split(" ")[0] + "_Sealand" : name === "HeaderSimple" ? "HeaderSimpleSealand" : name === "Booking" ? "Booking_Sealand" : name}.astro
+            </span>
+          </div>
+          <div class="component-wrapper">
+            <Comp {...props} />
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .component-wrapper {
+    border: 2px dashed #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #fdfdff;
+    overflow: hidden;
+  }
+
+  /* Aislamiento de la preview: si un componente trae una barra fija o pegajosa
+     (el ToC del blog, el botón flotante del footer), dentro del catálogo se
+     queda en su sitio; si no, flotaría sobre las demás previews.
+     `:global()` es obligatorio: sin él el ámbito de Astro NO alcanza los
+     elementos de los componentes hijos. */
+  .component-wrapper :global([class*="sticky"]),
+  .component-wrapper :global([class*="fixed"]) {
+    position: static !important;
+  }
+</style>
+
+<script>
+  const select = document.getElementById("catalogo-salto") as HTMLSelectElement | null;
+
+  select?.addEventListener("change", () => {
+    if (!select.value) return;
+    document.getElementById(select.value)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+</script>
