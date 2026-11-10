@@ -34,7 +34,7 @@ for (const [key, value] of Object.entries(rawParams)) {
     }
 }
 
-const bg = background_color ? background_color : '#050146';
+const bg = background_color ? background_color : 'var(--custom-color-01)';
 ---
 
 <div 
@@ -58,12 +58,13 @@ const bg = background_color ? background_color : '#050146';
             var vmg_plugin_lang = $('#vmg_plugin_lang').val();
             var paramsVMG = paramsLimpios;
 
-            $.getScript( `https://plugin.venturae.com.mx/js/pluginscripts.js`, function(jd) {
+            $.getScript( `https://dev-plugin.venturae.com.mx/js/pluginscripts.js`, function(jd) {
                 "use strict";
-                $.pluginUrl = `https://plugin.venturae.com.mx/${vmg_plugin_version}.php`;
+                $.pluginUrl = `https://dev-plugin.venturae.com.mx/${vmg_plugin_version}.php`;
                 var params = {
                     ...paramsVMG,
-                    'plugin_id': vmg_plugin_id
+                    'plugin_id': vmg_plugin_id,
+                    'dev_plugin': 1
                 };
                 
                 const urlParams = new URLSearchParams(window.location.search);

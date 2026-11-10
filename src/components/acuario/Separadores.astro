@@ -2,7 +2,7 @@
 const { tipo = 'tipo_1', color_inicio, color_final } = Astro.props;
 
 // Usamos el color provisto por el CMS, o por defecto usamos los de Acuario
-// El usuario puede poner "var(--surface-brand-primary)", "#003F7F", etc.
+// El usuario puede poner "var(--surface-brand-primary)", "var(--surface-brand-secondary)", etc.
 const startColor = color_inicio || 'var(--surface-brand-primary)';
 const endColor = color_final || 'var(--accent-highlight-primary)';
 ---

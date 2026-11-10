@@ -41,8 +41,8 @@ const finalBgColor = color_fondo || defaultBgColor;
 const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
 
 // Colores de texto por variante (preservan comportamiento actual)
-const defaultAccTitleColor = isFAQ ? "#FFFFFF" : "var(--surface-brand-primary)";
-const defaultAccContentColor = "#FFFFFF";
+const defaultAccTitleColor = isFAQ ? "var(--neutral-text-inverted)" : "var(--surface-brand-primary)";
+const defaultAccContentColor = "var(--neutral-text-inverted)";
 
 const finalAccTitleColor = color_titulo_acordeon || defaultAccTitleColor;
 const finalAccContentColor = color_texto_acordeon || defaultAccContentColor;

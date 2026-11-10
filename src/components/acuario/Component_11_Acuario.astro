@@ -80,7 +80,7 @@ const alignClass = (a?: "center" | "left" | "right") =>
                 {subtitulo && (
                     <span
                         class={`c11-subtitle mt-3 block font-[family-name:var(--font-principal)] text-[16px] md:text-[20px] font-medium uppercase tracking-wide ${alignClass(subtitulo_alineacion)}`}
-                        style={color_subtitulo ? { color: color_subtitulo } : { color: "var(--accent-highlight-primary, #4BA3B5)" }}
+                        style={color_subtitulo ? { color: color_subtitulo } : { color: "var(--accent-highlight-primary)" }}
                     >
                         {subtitulo}
                     </span>
@@ -200,7 +200,7 @@ const alignClass = (a?: "center" | "left" | "right") =>
     }
 
     :global(.acuario-carousel-pagination .swiper-pagination-bullet-active) {
-        background-color: var(--brand-interactive-base, #FBF21A);
+        background-color: var(--brand-interactive-base);
         opacity: 1;
     }
 </style>

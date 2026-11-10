@@ -5,13 +5,15 @@
 // STACKED ROWS (flex-col) — no menu at all, no scripts, no hamburger.
 //
 //   FILA 1 — social icons band (desktop only, `hidden md:flex`).
-//     Full-width band with `bg-[var(--custom-color-01)]` matching the dark
-//     wrapper from the original Acuario top bar col1. Hidden on mobile to
-//     preserve the desktop-only behaviour of the original top bar.
+//     Full-width band with `bg-[var(--feedback-positive-dark)]` — the green
+//     that the remote uses for its top bar — matching the single
+//     green band of `Header.astro`. Hidden on mobile to preserve the
+//     desktop-only behaviour of the original top bar.
 //
 //   FILA 2 — centered logo (desktop + mobile).
-//     `bg-[var(--neutral-background-strong)]` with the yellow underline
-//     accent `border-b-4 border-[var(--brand-interactive-base)]` and
+//     `bg-[var(--surface-brand-secondary)]` — the navy of the
+//     remote's navigation row — with the accent underline
+//     `border-b-4 border-[var(--brand-interactive-base)]` and
 //     `md:border-b-0` to mirror the original main nav row exactly. Logo is
 //     capped at `max-w-[80px]` and centered on both axes
 //     (`justify-center text-center mx-auto`).
@@ -101,15 +103,15 @@ void _ctaButtonRaw;
 <header class="acuario-header-simple w-full relative z-50 flex flex-col">
     {/*
         FILA 1 — social icons band (desktop only).
-        Replicates the original Acuario top bar's dark col1 wrapper but
-        promoted to a full-width ROW: `bg-[var(--custom-color-01)]`, flex
-        centering, `px-8`, `min-h-[60px]`, `font-bold`. Hidden on mobile
-        (`hidden md:flex`) to match the original top bar's desktop-only
-        behaviour. ALWAYS rendered (no `social.length > 0` guard) so the dark
-        band keeps its min-height whether or not icons are configured — same
-        visual as `Header.astro` with no social configured.
+        Single green band `bg-[var(--feedback-positive-dark)]`, the
+        same top-bar green the remote uses and the same one `Header.astro`
+        paints: it carries the phone, the schedule and the social icons.
+        Hidden on mobile (`hidden md:flex`) to match the original top bar's
+        desktop-only behaviour. ALWAYS rendered (no `social.length > 0`
+        guard) so the band keeps its min-height whether or not icons are
+        configured — same visual as `Header.astro` with no social configured.
     */}
-    <div class="hidden! md:flex! bg-(--custom-color-01)! items-center! justify-between! px-8! w-full! min-h-[60px]! font-bold!">
+    <div class="hidden! md:flex! bg-(--feedback-positive-dark)! items-center! justify-between! px-8! w-full! min-h-[60px]! font-bold!">
         <div class="acuario-header-simple-block flex items-center justify-center gap-6">
             <div class="text-white! text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
                 <i class="fas fa-phone-alt"></i> <span>+ (52) 55 4438 6978</span>
@@ -134,14 +136,14 @@ void _ctaButtonRaw;
 
     {/*
         FILA 2 — centered logo (desktop + mobile).
-        Same background and yellow underline accent as the original main nav
-        row: `bg-[var(--neutral-background-strong)]` plus
+        Same background as the navigation row of `Header.astro`:
+        `bg-[var(--surface-brand-secondary)]` (navy) plus
         `border-b-4 md:border-b-0 border-[var(--brand-interactive-base)]`
         (border shows on mobile only — same as `Header.astro`). Logo is
         centered on both axes (`justify-center text-center mx-auto`) and
         capped at `max-w-[80px]` per design.
     */}
-    <div class="bg-[var(--neutral-background-strong)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)] flex items-center justify-center text-center w-full">
+    <div class="bg-[var(--surface-brand-secondary)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)] flex items-center justify-center text-center w-full">
         <a
             href="/"
             class="h-full py-2 inline-flex items-center justify-center mx-auto"

@@ -31,7 +31,7 @@ const {
     cards = [],
 } = Astro.props;
 
-const finalBgColor = color_fondo || "#E8F6FD";
+const finalBgColor = color_fondo || "var(--surface-brand-primary)";
 const finalTextColor = color_texto || "var(--surface-brand-primary)";
 const finalCardTitleColor = color_titulo_card || "var(--surface-brand-secondary)";
 const validCards = cards.filter((c) => c && c.imagen);

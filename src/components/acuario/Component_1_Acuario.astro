@@ -71,7 +71,9 @@ const BannerTag = validBannerTags.includes(banner_html_tag || "")
 
 // Color resolution: override explícito gana; si no, usa los CSS variables del setup-site.
 // Esto mantiene la regla del AGENTS.md: nunca hardcodear hex en componentes.
-const bannerBg = banner_color_fondo_override || "var(--brand-interactive-base)";
+// La franja promocional usa --accent-highlight-secondary (el azul del banner del
+// sitio de Sealand), no el naranja de CTA.
+const bannerBg = banner_color_fondo_override || "var(--accent-highlight-secondary)";
 const bannerColor = banner_color_texto_override || "var(--neutral-background-strong)";
 
 if (finalSlides.length === 0 && (imagen || titulo)) {
@@ -312,9 +314,9 @@ const sectionClass = isCompleta
 <style>
     .acuario-banner-swiper {
         --swiper-theme-color: var(--brand-interactive-base);
-        --swiper-navigation-color: #ffffff;
+        --swiper-navigation-color: var(--neutral-text-inverted);
         --swiper-pagination-color: var(--brand-interactive-base);
-        --swiper-pagination-bullet-inactive-color: #ffffff;
+        --swiper-pagination-bullet-inactive-color: var(--neutral-text-inverted);
         --swiper-pagination-bullet-inactive-opacity: 0.5;
     }
     

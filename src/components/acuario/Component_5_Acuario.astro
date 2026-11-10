@@ -39,7 +39,7 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
 
 <section
     class="c5-section w-full! pt-6! pb-16! md:pt-6! md:pb-24! relative! overflow-hidden!"
-    style={color_fondo ? `background-color: ${color_fondo} !important` : "background-color: var(--surface-brand-primary, #003F7F) !important;"}
+    style={color_fondo ? `background-color: ${color_fondo} !important` : "background-color: var(--surface-brand-primary, var(--surface-brand-secondary)) !important;"}
 >
     <!-- Elemento Decorativo Fondo (opcional) -->
     {decorativaUrl && (
@@ -67,7 +67,7 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
                 </TitleTag>
             )}
             {subtitulo && (
-                <SubtitleTag class="font-[family-name:var(--font-principal)]! text-[15px]! md:text-[20px]! font-medium! uppercase! text-[var(--accent-highlight-primary,#76E5FE)]! tracking-wide">
+                <SubtitleTag class="font-[family-name:var(--font-principal)]! text-[15px]! md:text-[20px]! font-medium! uppercase! text-(--accent-highlight-primary)! tracking-wide">
                     {subtitulo}
                 </SubtitleTag>
             )}
@@ -94,7 +94,7 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
                     <div class="c5-item">
                     <a
                         href={card?.url || "#"}
-                        class="c5-card group block! relative! rounded-[16px]! overflow-hidden! aspect-[4/3]! md:aspect-[4/3]! shadow-lg! hover:shadow-2xl! transition-all duration-300 bg-[#002A4E]!"
+                        class="c5-card group block! relative! rounded-[16px]! overflow-hidden! aspect-[4/3]! md:aspect-[4/3]! shadow-lg! hover:shadow-2xl! transition-all duration-300 bg-(--custom-color-01)!"
                     >
                         {/* Imagen de fondo (solo si hay URL válida) */}
                         {imgUrl ? (
@@ -108,7 +108,7 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
                         ) : (
                             /* Placeholder cuando la imagen no está poblada (común en promociones
                                si el deep-populate no llega por merge por índice) */
-                            <div class="absolute! inset-0! w-full! h-full! flex! items-center! justify-center! bg-gradient-to-br! from-[#002A4E]! via-[#003F7F]! to-[#005DA8]!">
+                            <div class="absolute! inset-0! w-full! h-full! flex! items-center! justify-center! bg-gradient-to-br! from-(--custom-color-01)! via-(--surface-brand-secondary)! to-(--surface-brand-secondary)!">
                                 <i class="fas fa-image text-white/30! text-5xl!" aria-hidden="true"></i>
                             </div>
                         )}
@@ -123,7 +123,7 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
                         )}
 
                         {/* 2. ESTADO: ESCRITORIO HOVER (Oscuro + Lupa) */}
-                        <div class="hidden! md:flex! absolute! inset-0! bg-[#002A4E]/70! flex-col! items-center! justify-center! text-white! opacity-0! group-hover:opacity-100! transition-opacity duration-300 z-20! pb-14! pointer-events-none!">
+                        <div class="hidden! md:flex! absolute! inset-0! bg-(--custom-color-01)/70! flex-col! items-center! justify-center! text-white! opacity-0! group-hover:opacity-100! transition-opacity duration-300 z-20! pb-14! pointer-events-none!">
                             <i class="fas fa-search text-5xl! mb-4!" aria-hidden="true"></i>
                             <span class="font-[family-name:var(--font-principal)]! font-bold! text-[20px]!">
                                 {card?.texto_enlace || 'Leer más'}
@@ -131,13 +131,13 @@ const decorativaUrl = imagen_decorativa_fondo ? getStrapiUrl(imagen_decorativa_f
                         </div>
 
                         {/* 3. ESTADO: MÓVIL NORMAL (Oscuro + Título + Botón) */}
-                        <div class="md:hidden! absolute! inset-0! bg-[#002A4E]/60! flex! flex-col! items-center! justify-center! text-white! p-6! z-20!">
+                        <div class="md:hidden! absolute! inset-0! bg-(--custom-color-01)/60! flex! flex-col! items-center! justify-center! text-white! p-6! z-20!">
                             {card?.titulo && (
                                 <h3 class="font-[family-name:var(--font-principal)]! text-[24px]! font-bold! uppercase! text-center! mb-6! leading-tight! drop-shadow-md!">
                                     {card.titulo}
                                 </h3>
                             )}
-                            <button class="bg-[var(--accent-highlight-primary,#76E5FE)]! text-[#002A4E]! font-[family-name:var(--font-secundaria)]! font-bold! text-[16px]! py-3! px-8! rounded-full! shadow-lg! uppercase! tracking-wider">
+                            <button class="bg-(--accent-highlight-primary)! text-(--custom-color-01)! font-[family-name:var(--font-secundaria)]! font-bold! text-[16px]! py-3! px-8! rounded-full! shadow-lg! uppercase! tracking-wider">
                                 {card?.texto_enlace || 'LEER MÁS'}
                             </button>
                         </div>
