@@ -1,0 +1,322 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    subtitulo?: string;
+    descripcion?: any;
+    color_fondo?: string;
+    imagen_fondo?: any;
+    color_titulo?: string;
+    color_texto?: string;
+    tarjetas?: any[];
+}
+
+const {
+    titulo,
+    htmlTag = "h2",
+    subtitulo,
+    descripcion,
+    color_fondo,
+    imagen_fondo,
+    color_titulo,
+    color_texto,
+    tarjetas = [],
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8): un `h1`
+// puede quedar en el primer pliegue y `splitReveal` escribe `opacity: 0` en
+// sus partes al cargar.
+const tituloPartible = htmlTag !== "h1";
+
+const finalBg = color_fondo || "var(--neutral-background-subtle)";
+const finalTitleColor = color_titulo || "var(--surface-brand-primary)";
+const finalTextColor = color_texto || "var(--surface-brand-primary)";
+
+const bgUrl = imagen_fondo ? getStrapiUrl(imagen_fondo) : null;
+---
+
+<section class="c21-section w-full py-12 md:py-20 relative overflow-hidden" style={`background-color: ${finalBg};`}>
+    {bgUrl && (
+        <div
+            class="c21-bg absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={`background-image: url(${bgUrl});`}
+            aria-hidden="true"
+        ></div>
+    )}
+
+    <div class="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
+        {(titulo || subtitulo || descripcion) && (
+            <div class="text-center mb-10 md:mb-16">
+                {titulo && (
+                    <TitleTag
+                        class="c21-title font-[family-name:var(--font-principal)] text-[32px] md:text-[40px] font-black uppercase mb-2"
+                        style={`color: ${finalTitleColor};`}
+                        data-split={tituloPartible ? "on" : "off"}
+                    >
+                        {titulo}
+                    </TitleTag>
+                )}
+
+                {subtitulo && (
+                    <span
+                        class="block font-[family-name:var(--font-principal)] text-[18px] md:text-[24px] font-medium uppercase tracking-wide"
+                        style={`color: ${finalTextColor};`}
+                    >
+                        {subtitulo}
+                    </span>
+                )}
+
+                {descripcion && (
+                    <div
+                        class="mt-6 mx-auto max-w-3xl font-[family-name:var(--font-secundaria)] text-[16px] md:text-[24px] font-normal md:leading-[25px] [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic"
+                        style={`color: ${finalTextColor};`}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+            </div>
+        )}
+
+        {tarjetas.length > 0 && (
+            <div class="c21-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-items-center">
+                {tarjetas.map((tarjeta) => (
+                    /* Envoltorio de motion: conserva la caja de la tarjeta
+                       (`w-full` + `max-w-[380px]` + `flex`, para que la tarjeta
+                       siga estirándose a la altura de la fila) y es el
+                       elemento que se revela. El reveal nunca apunta al
+                       botón de compra, que es focusable (S13). */
+                    <div class="c21-item w-full max-w-[380px] flex">
+                    <div class="c21-card relative w-full max-w-[380px] rounded-[24px] overflow-hidden flex flex-col items-center justify-end text-center group transition-transform duration-300 hover:-translate-y-2 shadow-lg min-h-[480px]">
+
+                        {tarjeta.imagen_fondo && (
+                            <img
+                                src={getStrapiUrl(tarjeta.imagen_fondo)}
+                                alt=""
+                                class="c21-card-img absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110"
+                            />
+                        )}
+
+                        <div
+                            class="absolute inset-0 z-0 mix-blend-multiply transition-opacity duration-300"
+                            style={{
+                                backgroundColor: tarjeta.color_overlay || "var(--surface-brand-primary)",
+                                opacity: tarjeta.imagen_fondo ? 0.1 : 1,
+                            }}
+                        ></div>
+                        
+
+                        <div class="relative z-10 flex flex-col items-center justify-between w-full p-6 md:p-8">
+
+                            <div class="w-full flex flex-col items-center">
+                                {tarjeta.imagen_logo && (
+                                    <img
+                                        src={getStrapiUrl(tarjeta.imagen_logo)}
+                                        alt="Logo Promoción"
+                                        class="h-auto w-[180px] md:w-[220px] mb-6 drop-shadow-md"
+                                    />
+                                )}
+
+                                {tarjeta.texto_superior && (
+                                    <span class="font-[family-name:var(--font-principal)] text-white text-[14px] md:text-[16px] font-bold uppercase mb-1 drop-shadow-sm px-2">
+                                        {tarjeta.texto_superior}
+                                    </span>
+                                )}
+                                {tarjeta.texto_secundario && (
+                                    <span class="font-[family-name:var(--font-secundaria)] text-white/90 text-[12px] md:text-[13px] font-semibold uppercase tracking-widest mb-2 drop-shadow-sm">
+                                        {tarjeta.texto_secundario}
+                                    </span>
+                                )}
+
+                                {tarjeta.precio && (
+                                    <span class="font-[family-name:var(--font-principal)] text-white font-black text-[54px] md:text-[64px] leading-none drop-shadow-lg my-2">
+                                        {tarjeta.precio}
+                                    </span>
+                                )}
+
+                                {tarjeta.texto_inferior && (
+                                    <span class="font-[family-name:var(--font-principal)] text-white text-[12px] md:text-[14px] font-bold uppercase tracking-wide mt-1 drop-shadow-sm px-2">
+                                        {tarjeta.texto_inferior}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div class="w-full flex flex-col items-center mt-auto pt-8">
+                                {tarjeta.boton && (
+                                    <a
+                                        href={tarjeta.boton.url || "#"}
+                                        class="inline-block w-[90%] bg-(--brand-interactive-base) hover:bg-(--custom-color-01) text-(--surface-brand-primary,var(--surface-brand-secondary)) hover:text-white border-2 border-transparent hover:border-(--custom-color-01) font-[family-name:var(--font-principal)] font-bold text-[14px] md:text-[16px] py-3 px-6 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide mb-4"
+                                    >
+                                        {tarjeta.boton.texto || "ADQUIÉRELO AQUÍ"}
+                                    </a>
+                                )}
+
+                                {tarjeta.texto_disclaimer && (
+                                    <div class="flex items-center gap-2 mb-4 w-full justify-center px-2">
+                                        <div class="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center bg-(--brand-interactive-base) text-(--surface-brand-primary,var(--surface-brand-secondary)) rounded-full font-black text-[12px] md:text-[14px] shrink-0">
+                                            !
+                                        </div>
+                                        <span class="font-[family-name:var(--font-secundaria)] text-white text-[11px] md:text-[13px] font-medium leading-tight">
+                                            {tarjeta.texto_disclaimer}
+                                        </span>
+                                    </div>
+                                )}
+
+                                {tarjeta.texto_terminos && (
+                                    <a
+                                        href={tarjeta.enlace_terminos || "#"}
+                                        class="font-[family-name:var(--font-secundaria)] text-white/80 hover:text-white text-[9px] md:text-[10px] uppercase font-medium tracking-wider transition-colors underline decoration-white/30 hover:decoration-white underline-offset-4"
+                                    >
+                                        {tarjeta.texto_terminos}
+                                    </a>
+                                )}
+                            </div>
+
+                        </div>
+                    </div>
+                    </div>
+                ))}
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Tailwind v4 escribe `transition-property: transform, translate, scale,
+     * rotate` en `transition-transform`. Cuando GSAP escribe un `transform`
+     * inline en el mismo elemento, la transición interpola frame a frame las
+     * escrituras de GSAP y la tarjeta se retrasa ~300ms respecto a su propia
+     * animación (el defecto de doble easing). Bajo el guard de motion se deja
+     * la lista sin el canal `transform`: GSAP queda como único dueño de ese
+     * `transform`.
+     *
+     * Este ajuste NO salva una elevación de Tailwind: al tomar el `transform`,
+     * GSAP escribe `translate: none` inline y una declaración inline gana a
+     * cualquier regla de clase, así que el `hover:-translate-y-2` de la
+     * tarjeta deja de aplicarse (L18, medido en Chromium). La elevación la
+     * pone `hoverDepth` (GSAP), no Tailwind: un único dueño por elemento.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro, así que la forma sin `:global()`
+     * compila a un selector que jamás hace match.
+     */
+    :global([data-motion="ready"]) .c21-card {
+        transition-property: translate, scale, rotate;
+    }
+
+    :global([data-motion="ready"]) .c21-card-img {
+        transition-property: translate, scale, rotate;
+    }
+
+    /* Holgura para el parallax del fondo: el viaje vertical del `yPercent`
+     * descubriría el borde de la foto si la imagen midiese exactamente lo que
+     * su caja. Un `scale` de 1.22 deja 11% de aire arriba y abajo, y el
+     * recorrido es del 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     */
+    :global([data-motion="ready"]) .c21-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento del bloque de promociones (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c21-item`     → el reveal (opacidad + viaje vertical).
+     *   - `.c21-card`     → `hoverDepth` (inclinación + lift).
+     *   - `.c21-card-img` → `zoomImage` (zoom por scroll).
+     *   - `.c21-bg`       → `parallaxLayer` (fondo de la sección).
+     *
+     * El reveal nunca apunta al botón de compra, que es focusable: un
+     * `gsap.from()` sobre un control lo deja invisible y tabulable si su
+     * trigger no dispara (S13). De ahí el envoltorio `<div>` de cada tarjeta.
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c21-section').forEach((section) => {
+            // El título se arma palabra por palabra. Sólo si no es un `h1`:
+            // `splitReveal` escribe `opacity: 0` en las partes al cargar y un
+            // `h1` puede estar en el primer pliegue (S8).
+            const title = section.querySelector('.c21-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // Las tarjetas llegan una detrás de otra.
+            const grid = section.querySelector('.c21-grid');
+            if (grid) {
+                revealStagger(grid, {
+                    selector: '.c21-item',
+                    stagger: 0.12,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper registra el efecto dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`. El `lift` sustituye al
+            // `hover:-translate-y-2` de Tailwind, que GSAP desactiva al
+            // tomar el `transform` de la tarjeta (L18).
+            section.querySelectorAll('.c21-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 6, lift: -8 });
+            });
+
+            // Zoom por scroll de la foto, dentro de la caja `overflow-hidden`
+            // de la tarjeta. `from: 1.05` deja margen para que el recorte
+            // nunca enseñe un borde.
+            section.querySelectorAll('.c21-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo de la sección se desplaza despacio; el `scale: 1.22`
+            // del `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c21-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, y siempre por debajo del contenido (`z-10`), así
+            // que nunca tapan texto ni capturan un clic.
+            ambientBubbles(section, { count: 7, maxOnMobile: 4 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

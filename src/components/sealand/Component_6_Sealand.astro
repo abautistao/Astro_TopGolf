@@ -1,0 +1,386 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    color_fondo?: string;
+    imagen_decorativa_fondo?: any;
+    tarjeta_principal?: any;
+    tarjetas_secundarias?: any[];
+    boton?: any;
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    color_fondo,
+    imagen_decorativa_fondo,
+    tarjeta_principal,
+    tarjetas_secundarias = [],
+    boton
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8).
+const tituloPartible = etiqueta_titulo !== "h1";
+---
+
+<section 
+    class="c6-section w-full py-16 md:py-24 relative overflow-hidden bg-(--surface-brand-primary) z-10"
+    style={color_fondo ? `background-color: ${color_fondo}` : ""}
+>
+    <!-- Fondo decorativo predeterminado (Peces, burbujas y algas) si no hay imagen de fondo cargada -->
+    {!imagen_decorativa_fondo && (
+        <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 opacity-40">
+            <!-- Burbujas Bottom Left -->
+            <div class="absolute bottom-10 left-10 flex flex-col gap-4 items-center">
+                <span class="w-3 h-3 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-60 animate-bounce"></span>
+                <span class="w-5 h-5 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-40 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-70"></span>
+            </div>
+            
+            <!-- Burbujas Bottom Right -->
+            <div class="absolute bottom-20 right-16 flex flex-col-reverse gap-3 items-center">
+                <span class="w-4 h-4 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-50 animate-pulse"></span>
+                <span class="w-6 h-6 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-30 animate-bounce"></span>
+                <span class="w-3 h-3 rounded-full border border-(--feedback-positive-base,var(--accent-highlight-secondary)) opacity-60"></span>
+            </div>
+
+            <!-- Silueta Pez Top Left -->
+            <svg class="absolute top-10 left-[8%] w-32 h-auto text-(--feedback-positive-base,var(--accent-highlight-secondary))/30" viewBox="0 0 100 40" fill="currentColor">
+                <path d="M10,20 Q30,5 60,20 T90,20 Q80,25 70,20 Q60,35 40,20 Z" />
+                <path d="M90,20 L95,12 L92,20 L95,28 Z" />
+            </svg>
+
+            <!-- Silueta Pez Top Right -->
+            <svg class="absolute top-16 right-[12%] w-24 h-auto text-(--feedback-positive-base,var(--accent-highlight-secondary))/25" viewBox="0 0 100 40" fill="currentColor">
+                <path d="M10,20 Q30,5 60,20 T90,20 Q80,25 70,20 Q60,35 40,20 Z" />
+                <path d="M90,20 L95,12 L92,20 L95,28 Z" />
+            </svg>
+
+            <!-- Algas Bottom Left (Siluetas sutiles) -->
+            <svg class="absolute bottom-0 left-0 w-48 h-64 text-(--feedback-positive-base,var(--accent-highlight-secondary))/15" viewBox="0 0 100 200" fill="currentColor">
+                <path d="M10,200 Q20,150 5,100 T15,0 Q5,50 20,100 T10,200 Z" />
+                <path d="M40,200 Q50,130 35,80 T45,10 Q35,70 50,130 T40,200 Z" />
+                <path d="M70,200 Q60,160 75,110 T65,30 Q75,80 60,140 T70,200 Z" />
+            </svg>
+            
+            <!-- Algas Bottom Right (Siluetas sutiles) -->
+            <svg class="absolute bottom-0 right-0 w-48 h-64 text-(--feedback-positive-base,var(--accent-highlight-secondary))/15 scale-x-[-1]" viewBox="0 0 100 200" fill="currentColor">
+                <path d="M10,200 Q20,150 5,100 T15,0 Q5,50 20,100 T10,200 Z" />
+                <path d="M40,200 Q50,130 35,80 T45,10 Q35,70 50,130 T40,200 Z" />
+                <path d="M70,200 Q60,160 75,110 T65,30 Q75,80 60,140 T70,200 Z" />
+            </svg>
+        </div>
+    )}
+
+    <!-- Imagen de fondo decorativa si se carga desde Strapi -->
+    {imagen_decorativa_fondo && (
+        <Image
+            src={getStrapiUrl(imagen_decorativa_fondo)}
+            alt="Fondo decorativo"
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 opacity-80"
+            inferSize={true}
+            loading="lazy"
+        />
+    )}
+
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
+        
+        <!-- Header de la sección (Centrado) -->
+        {titulo && (
+            <div class="mb-12 text-center">
+                <TitleTag
+                    class="c6-title font-[family-name:var(--font-principal)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[32px] md:text-[44px] font-bold leading-tight uppercase tracking-wide"
+                    data-split={tituloPartible ? "on" : "off"}
+                >
+                    {titulo}
+                </TitleTag>
+            </div>
+        )}
+
+        <!-- Layout 2 Columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+            
+            <!-- Columna 1: Tarjeta Principal (Ocupa 5/12 en desktop) -->
+            <div class="c6-lead-col lg:col-span-5 flex">
+                {tarjeta_principal && (
+                    /* Envoltorio de motion: la tarjeta es un `<a>` y un reveal
+                       sobre un control focusable lo dejaría invisible y
+                       tabulable (S13). Reproduce exactamente la caja
+                       anterior: mismo ancho (100%) y la tarjeta estirada a lo
+                       alto de la columna. */
+                    <div class="c6-lead-wrap w-full flex">
+                    <a 
+                        href={tarjeta_principal.url || "#"} 
+                        class="c6-card flex flex-col w-full bg-(--surface-brand-secondary) rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
+                    >
+                        <!-- Imagen (Top) -->
+                        <div class="aspect-[16/11] w-full overflow-hidden relative bg-(--neutral-background-strong,var(--custom-color-01))">
+                            {tarjeta_principal.imagen && (
+                                <Image
+                                    src={getStrapiUrl(tarjeta_principal.imagen)}
+                                    alt={tarjeta_principal.titulo} 
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                    inferSize={true}
+                                    loading="lazy"
+                                />
+                            )}
+                        </div>
+                        
+                        <!-- Contenido (Bottom) -->
+                        <div class="p-8 flex flex-col justify-between flex-grow text-(--surface-brand-primary,var(--surface-brand-secondary))">
+                            <div>
+                                <h3 class="font-[family-name:var(--font-principal)] text-[22px] md:text-[25px] font-bold leading-tight mb-4 group-hover:text-(--brand-interactive-base) transition-colors duration-300">
+                                    {tarjeta_principal.titulo}
+                                </h3>
+                                {tarjeta_principal.descripcion && (
+                                    <p class="font-[family-name:var(--font-secundaria)] text-[15px] md:text-[16px] font-normal leading-relaxed opacity-90 mb-6">
+                                        {tarjeta_principal.descripcion}
+                                    </p>
+                                )}
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-(--surface-brand-primary,var(--surface-brand-secondary))/20">
+                                <span class="font-[family-name:var(--font-secundaria)] text-[13px] md:text-[14px] font-bold opacity-80">
+                                    {tarjeta_principal.fecha || "Noticia"}
+                                </span>
+                                
+                                <div class="flex items-center gap-2 group/link">
+                                    <span class="font-[family-name:var(--font-principal)] text-[13px] md:text-[14px] font-bold uppercase tracking-wider">
+                                        Leer más
+                                    </span>
+                                    <div class="w-8 h-8 rounded-full bg-(--surface-brand-primary,var(--surface-brand-secondary)) text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-(--brand-interactive-base) group-hover/link:text-(--surface-brand-primary,var(--surface-brand-secondary)) shadow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    </div>
+                )}
+            </div>
+
+            <!-- Columna 2: Tarjetas Secundarias y Botón (Ocupa 7/12 en desktop) -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                <!-- Lista de tarjetas secundarias (Horizontal en desktop) -->
+                <div class="c6-list flex flex-col gap-6">
+                    {tarjetas_secundarias && tarjetas_secundarias.map((card) => (
+                        /* Envoltorio de motion (mismo motivo que el de la
+                           tarjeta principal): el `<a>` no puede ser el objetivo
+                           de un reveal. */
+                        <div class="c6-sec-wrap">
+                        <a 
+                            href={card.url || "#"} 
+                            class="c6-card group flex flex-col md:flex-row bg-(--surface-brand-secondary) rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 gap-6 w-full items-stretch"
+                        >
+                            <!-- Imagen (Izquierda en desktop, Arriba en mobile) -->
+                            <div class="w-full md:w-[42%] aspect-[4/3] md:aspect-[4/3] md:min-h-[190px] rounded-[20px] overflow-hidden relative bg-(--neutral-background-strong,var(--custom-color-01)) shrink-0">
+                                {card.imagen && (
+                                    <Image
+                                        src={getStrapiUrl(card.imagen)} 
+                                        alt={card.titulo}
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0"
+                                        inferSize={true}
+                                        loading="lazy"
+                                    />
+                                )}
+                            </div>
+                            
+                            <!-- Contenido (Derecha) -->
+                            <div class="flex flex-col justify-between flex-grow text-(--surface-brand-primary,var(--surface-brand-secondary)) py-1">
+                                <div>
+                                        <h4 class="font-[family-name:var(--font-principal)] text-[19px] md:text-[21px] font-bold leading-snug mb-3 group-hover:text-(--brand-interactive-base) transition-colors duration-300 line-clamp-2">
+                                        {card.titulo}
+                                    </h4>
+                                    {card.descripcion && (
+                                        <p class="font-[family-name:var(--font-secundaria)] text-[14px] md:text-[15px] font-normal leading-relaxed opacity-90 line-clamp-3 mb-4">
+                                            {card.descripcion}
+                                        </p>
+                                    )}
+                                </div>
+                                
+                                <div class="flex justify-end items-center mt-auto pt-2 border-t border-(--surface-brand-primary,var(--surface-brand-secondary))/10">
+                                    <div class="flex items-center gap-2 group/link">
+                                        <span class="font-[family-name:var(--font-principal)] text-[12px] md:text-[13px] font-bold uppercase tracking-wider">
+                                            Leer más
+                                        </span>
+                                            <div class="w-7 h-7 rounded-full bg-(--surface-brand-primary,var(--surface-brand-secondary)) text-white flex items-center justify-center transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:bg-(--brand-interactive-base) group-hover/link:text-(--surface-brand-primary,var(--surface-brand-secondary)) shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        </div>
+                    ))}
+                </div>
+
+                <!-- Botón de Otras Noticias (Centrado debajo de la columna 2) -->
+                {boton && (
+                    <div class="mt-2 flex justify-center w-full">
+                        <a 
+                            href={boton.url || "#"} 
+                            class="w-auto max-w-max inline-flex items-center justify-center border-[2.5px] border-(--surface-brand-primary,var(--surface-brand-secondary)) hover:bg-(--surface-brand-primary,var(--surface-brand-secondary)) hover:text-white text-(--surface-brand-primary,var(--surface-brand-secondary)) font-[family-name:var(--font-principal)] font-bold text-[16px] py-3.5 px-12 rounded-[16px] shadow-sm hover:shadow-md transition-all duration-300 uppercase tracking-widest text-center shrink-0"
+                        >
+                            {boton.texto || "Otras noticias"}
+                        </a>
+                    </div>
+                )}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Tailwind v4 escribe `transition-property: transform, translate, scale,
+     * rotate` en `transition-transform` y `transition-property: all` en
+     * `transition-all`. Con GSAP escribiendo un `transform` inline en el mismo
+     * elemento, la transición interpola frame a frame las escrituras de GSAP y
+     * la tarjeta se retrasa ~300ms respecto a su propia animación (doble
+     * easing). Bajo el guard de motion se deja la lista sin el canal
+     * `transform`: GSAP queda como único dueño de ese `transform` y la
+     * elevación del hover (`hover:-translate-y-1`, que escribe la propiedad
+     * independiente `translate`) conserva su easing.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro, así que la forma sin `:global()`
+     * compila a un selector que jamás hace match.
+     */
+    :global([data-motion="ready"]) .c6-card {
+        transition-property: translate, scale, rotate;
+    }
+
+    :global([data-motion="ready"]) .c6-card-img {
+        transition-property: translate, scale, rotate;
+    }
+
+    /* Holgura para el parallax del fondo: el viaje vertical del `yPercent`
+     * descubriría el borde de la foto si la imagen midiese exactamente lo que
+     * su caja. Un `scale` de 1.22 deja 11% de aire arriba y abajo, y el
+     * recorrido es del 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     */
+    :global([data-motion="ready"]) .c6-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento del bloque de noticias (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c6-lead-wrap` / `.c6-sec-wrap` → el reveal (opacidad + viaje).
+     *   - `.c6-card`                        → `hoverDepth` (inclinación + lift).
+     *   - `.c6-card-img`                   → `zoomImage` (zoom por scroll).
+     *   - `.c6-bg`                         → `parallaxLayer` (fondo).
+     *
+     * El reveal nunca apunta a la tarjeta: es un `<a>` y un `gsap.from()` sobre
+     * un control focusable lo deja invisible y tabulable si su trigger no
+     * dispara (S13). De ahí el envoltorio `<div>` de cada tarjeta.
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c6-section').forEach((section) => {
+            // El título se arma palabra por palabra, salvo que sea un `h1`
+            // (LCP, S8).
+            const title = section.querySelector('.c6-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // La tarjeta principal y la lista de secundarias son dos rejillas
+            // distintas: cada una se revela con su propio trigger, para que la
+            // secuencia arranque cuando cada columna entra en pantalla.
+            const leadCol = section.querySelector('.c6-lead-col');
+            if (leadCol) {
+                revealStagger(leadCol, {
+                    selector: '.c6-lead-wrap',
+                    stagger: 0.12,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            const list = section.querySelector('.c6-list');
+            if (list) {
+                revealStagger(list, {
+                    selector: '.c6-sec-wrap',
+                    stagger: 0.1,
+                    y: 26,
+                    duration: 0.65,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper la registra dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`. El `lift` sustituye al
+            // `hover:-translate-y-1` de Tailwind, que GSAP desactiva al tomar
+            // el `transform` de la tarjeta.
+            section.querySelectorAll('.c6-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 6, lift: -4 });
+            });
+
+            // Zoom por scroll de la foto, dentro de su caja `overflow-hidden`.
+            section.querySelectorAll('.c6-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo decorativo se desplaza despacio. `distance: 8` es un
+            // porcentaje de la altura de la foto y el `scale: 1.22` del
+            // `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c6-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, y siempre por debajo del contenido (que va en
+            // `z-10`), así que nunca tapan texto ni capturan un clic.
+            ambientBubbles(section, { count: 8, maxOnMobile: 4 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

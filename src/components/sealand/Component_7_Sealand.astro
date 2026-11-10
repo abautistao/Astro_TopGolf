@@ -1,0 +1,418 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    subtitulo?: string;
+    etiqueta_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    color_fondo?: string;
+    imagen_fondo?: any;
+    color_titulo_override?: string;
+    color_subtitulo_override?: string;
+    tarjetas?: any[];
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    subtitulo,
+    etiqueta_subtitulo = "span",
+    color_fondo,
+    imagen_fondo,
+    color_titulo_override,
+    color_subtitulo_override,
+    tarjetas = []
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+const SubtitleTag = etiqueta_subtitulo;
+
+// Función para procesar texto de forma segura si viene en el RichText
+const renderMarkdown = (text) => {
+    if (!text) return "";
+    return stringifyRichText(text);
+};
+
+// Helper: devuelve el override si existe, si no devuelve undefined
+// para no pisar los CSS variables definidos en el class
+const titleColorStyle = color_titulo_override ? `color: ${color_titulo_override}` : undefined;
+const subtitleColorStyle = color_subtitulo_override ? `color: ${color_subtitulo_override}` : undefined;
+
+// El título sólo se arma por palabras si NO es un `h1` (LCP, S8).
+const tituloPartible = etiqueta_titulo !== "h1";
+---
+
+<section 
+    class="c7-section w-full py-12 md:py-16 relative overflow-hidden z-10"
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: var(--surface-brand-primary)"}
+>
+    <!-- Imagen de fondo decorativa si se carga desde Strapi -->
+    {imagen_fondo && (
+        <img 
+            src={getStrapiUrl(imagen_fondo)} 
+            alt="Fondo de sección" 
+            class="c7-bg absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+        />
+    )}
+
+    <!-- Olas/Decoración superior (Simulación si es necesario o puro CSS por theme) -->
+    <!-- (Puedes añadir tu SVG de transición aquí si lo requiere el diseño general) -->
+
+    <div class="max-w-[1280px] mx-auto px-6 md:px-12 relative z-10">
+        
+        <!-- Headers (Título y Subtítulo Centrados) -->
+        <div class="mb-10 text-center">
+            {titulo && (
+                <TitleTag
+                    class="c7-title font-[family-name:var(--font-principal)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[32px] md:text-[40px] font-bold leading-tight uppercase tracking-wide"
+                    style={titleColorStyle}
+                    data-split={tituloPartible ? "on" : "off"}
+                >
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <SubtitleTag
+                    class="font-[family-name:var(--font-secundaria)] text-(--surface-brand-secondary) text-[16px] md:text-[20px] font-medium mt-2 uppercase tracking-widest"
+                    style={subtitleColorStyle}
+                >
+                    {subtitulo}
+                </SubtitleTag>
+            )}
+        </div>
+
+        <!-- Grid de Tarjetas de Entradas/Paquetes -->
+        <div class="c7-list flex flex-col gap-6 md:gap-8">
+            {tarjetas && tarjetas.map((tarjeta) => {
+                const tarjetaTituloStyle = tarjeta.color_titulo_override ? `color: ${tarjeta.color_titulo_override}` : undefined;
+                const tarjetaPrecioLabelStyle = tarjeta.color_precio_label_override ? `color: ${tarjeta.color_precio_label_override}` : undefined;
+                const tarjetaPrecioValorStyle = tarjeta.color_precio_valor_override ? `color: ${tarjeta.color_precio_valor_override}` : undefined;
+                const tarjetaIncluyeTituloStyle = tarjeta.color_incluye_titulo_override ? `color: ${tarjeta.color_incluye_titulo_override}` : undefined;
+                const tarjetaIncluyeTextoHex = tarjeta.color_incluye_texto_override || undefined;
+                const tarjetaIncluyeIconoHex = tarjeta.color_incluye_icono_override || undefined;
+                const tarjetaIncluyeTextoStyle = tarjetaIncluyeTextoHex ? `color: ${tarjetaIncluyeTextoHex}` : undefined;
+                const tarjetaIncluyeIconoStyle = tarjetaIncluyeIconoHex ? `color: ${tarjetaIncluyeIconoHex}` : undefined;
+                const destacadoFondoStyle = tarjeta.color_fondo_destacado_override ? `background-color: ${tarjeta.color_fondo_destacado_override}` : undefined;
+
+                return (
+                /* Este `<div>` es el ancla de motion del ítem: no es focusable
+                   y contiene el botón de compra, así que el reveal lo可以做 sin
+                   dejar controles invisibles ni tabulables (S13). */
+                <div class="c7-item relative w-full">
+                    
+                    <!-- Decoración "EL MÁS POPULAR" (Banner Superior) -->
+                    {tarjeta.es_destacado && (
+                        <div
+                            class="w-full bg-(--accent-highlight-secondary) rounded-t-[20px] py-2 md:py-3 px-6 md:px-8 flex items-center justify-center shadow-sm relative z-20 -mb-4 md:-mb-6"
+                            style={destacadoFondoStyle}
+                        >
+                            <span class="font-[family-name:var(--font-principal)] text-white font-black text-[22px] md:text-[40px] uppercase tracking-wide drop-shadow-sm text-center">
+                                {tarjeta.texto_destacado || "EL MÁS POPULAR"}
+                            </span>
+                            
+                            {/* Icono Cinta/Estrella Amarilla (Esquina Derecha) */}
+                            {tarjeta.icono_destacado && (
+                                <img 
+                                    src={getStrapiUrl(tarjeta.icono_destacado)} 
+                                    alt="Destacado"
+                                    class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] h-auto drop-shadow-md translate-y-[-10%]"
+                                />
+                            )}
+                            {!tarjeta.icono_destacado && (
+                                /* Fallback SVG de la cinta con estrella si no se sube imagen */
+                                <div class="absolute top-0 right-4 md:right-8 w-[60px] md:w-[75px] text-(--brand-interactive-base) drop-shadow-md translate-y-[-5%]">
+                                    <svg viewBox="0 0 100 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10,0 L90,0 L90,100 L50,80 L10,100 Z" />
+                                        <circle cx="50" cy="40" r="25" fill="none" stroke="var(--surface-brand-primary, var(--surface-brand-secondary))" stroke-width="4" />
+                                        <polygon points="50,22 56,34 69,36 60,45 62,58 50,52 38,58 40,45 31,36 44,34" fill="var(--surface-brand-primary, var(--surface-brand-secondary))" />
+                                    </svg>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <!-- Contenedor Principal de la Tarjeta Blanca -->
+                    <!-- Si tiene destacado, añadimos paddingTop para que no se pegue al banner azul -->
+                    <div class={`c7-card w-full bg-white rounded-[24px] shadow-xl overflow-hidden flex flex-col md:flex-row items-stretch relative z-10 ${tarjeta.es_destacado ? "pt-4 md:pt-6" : ""}`}>
+                        
+                        <!-- Columna Izquierda: Imagen del Paquete -->
+                        <div class="w-full aspect-[16/10] md:aspect-auto md:w-[40%] lg:w-[35%] shrink-0 p-3 md:p-4 relative overflow-hidden">
+                            <div class="relative w-full h-full rounded-[20px] overflow-hidden min-h-[160px] md:min-h-full">
+                                {tarjeta.imagen ? (
+                                    <img 
+                                        src={getStrapiUrl(tarjeta.imagen)} 
+                                        alt={tarjeta.titulo} 
+                                        class="c7-card-img w-full h-full object-cover absolute inset-0"
+                                    />
+                                ) : (
+                                    <div class="w-full h-full bg-gray-200 animate-pulse absolute inset-0"></div>
+                                )}
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Contenido y Precios -->
+                        <div class="w-full md:w-[60%] lg:w-[65%] p-5 md:p-6 md:pl-0 flex flex-col">
+                            
+                            <!-- Título -->
+                            <h3
+                                class="font-[family-name:var(--font-principal)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[24px] md:text-[40px] font-black leading-tight uppercase tracking-wide text-center"
+                                style={tarjetaTituloStyle}
+                            >
+                                {tarjeta.titulo}
+                            </h3>
+
+                            <!-- Sección Precios (Cruzados) Centrada -->
+                            <div class="flex flex-row items-center justify-center gap-3 sm:gap-5 md:gap-6 mb-4 border-b-2 border-(--feedback-info-background,var(--surface-brand-primary)) pb-1">
+                                
+                                <!-- Precio Regular -->
+                                {tarjeta.precio_regular && (
+                                    <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
+                                        <!-- Label (Arriba en móvil, Izquierda en desktop) -->
+                                        <span
+                                            class="inline-block font-[family-name:var(--font-principal)] text-(--custom-color-01,var(--accent-highlight-secondary)) font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
+                                            style={tarjetaPrecioLabelStyle}
+                                        >
+                                            {tarjeta.label_precio_regular || "PRECIO REGULAR"}
+                                        </span>
+                                        <!-- Valor -->
+                                        <div
+                                            class="flex items-center text-(--surface-brand-primary,var(--surface-brand-secondary)) opacity-90 leading-none relative"
+                                            style={tarjetaPrecioValorStyle}
+                                        >
+                                            <span class="font-[family-name:var(--font-principal)] text-[32px] sm:text-[34px] md:text-[44px] font-black line-through decoration-[2px]">
+                                                {tarjeta.precio_regular}
+                                            </span>
+                                            <span class="font-[family-name:var(--font-principal)] text-[13px] sm:text-[14px] md:text-[16px] font-black ml-1.5 uppercase">
+                                                MXN
+                                            </span>
+                                            <div class="absolute w-full h-[2px] bg-(--surface-brand-primary,var(--surface-brand-secondary)) top-1/2 left-0 -rotate-1 opacity-100"></div>
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                <!-- Línea separadora vertical siempre visible -->
+                                {tarjeta.precio_regular && tarjeta.precio_en_linea && (
+                                    <div class="w-[2px] sm:w-[3px] h-8 bg-(--custom-color-01,var(--accent-highlight-secondary)) mx-2 sm:mx-3 self-center rounded-full"></div>
+                                )}
+
+                                <!-- Precio en Línea -->
+                                {tarjeta.precio_en_linea && (
+                                    <div class="flex flex-col items-center sm:flex-row sm:items-center gap-1 sm:gap-2.5">
+                                        <!-- Label (Arriba en móvil, Izquierda en desktop) -->
+                                        <span
+                                            class="inline-block font-[family-name:var(--font-principal)] text-(--custom-color-01,var(--accent-highlight-secondary)) font-black text-[12px] sm:text-[13px] md:text-[15px] uppercase tracking-wide mb-1 sm:mb-0 text-center sm:text-left whitespace-nowrap sm:whitespace-normal sm:leading-[1.1] sm:max-w-[80px] shrink-0"
+                                            style={tarjetaPrecioLabelStyle}
+                                        >
+                                            {tarjeta.label_precio_en_linea || "PRECIO EN LÍNEA"}
+                                        </span>
+                                        <!-- Valor -->
+                                        <div
+                                            class="flex items-center text-(--surface-brand-primary,var(--surface-brand-secondary)) leading-none"
+                                            style={tarjetaPrecioValorStyle}
+                                        >
+                                            <span class="font-[family-name:var(--font-principal)] text-[38px] sm:text-[40px] md:text-[50px] font-black">
+                                                {tarjeta.precio_en_linea}
+                                            </span>
+                                            <span class="font-[family-name:var(--font-principal)] text-[13px] sm:text-[14px] md:text-[16px] font-black ml-1.5 uppercase">
+                                                MXN
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <!-- "Incluye" Título Fijo -->
+                            <h4
+                                class="font-[family-name:var(--font-principal)] text-(--surface-brand-secondary) text-[18px] md:text-[20px] font-bold mb-3"
+                                style={tarjetaIncluyeTituloStyle}
+                            >
+                                Incluye
+                            </h4>
+
+                            <!-- Contenido "Incluye" (Dos opciones: Lista de iconos O editor WYSIWYG) -->
+                            <div class="flex-grow mb-4">
+                                
+                                {/* Opción 1: Lista Dinámica de Iconos */}
+                                {tarjeta.lista_incluye && tarjeta.lista_incluye.length > 0 && (
+                                    <ul class="flex flex-col gap-2">
+{tarjeta.lista_incluye.map((item) => {
+                                            const itemIconHex = item.color_icono_override || tarjetaIncluyeIconoHex;
+                                            const itemTextoHex = item.color_texto_override || tarjetaIncluyeTextoHex;
+                                            const itemIconStyle = itemIconHex ? `color: ${itemIconHex}` : undefined;
+                                            const itemTextoStyle = itemTextoHex ? `color: ${itemTextoHex}` : undefined;
+                                            return (
+                                            <li class="flex items-start gap-3">
+                                                <!-- Icono Ticket/Pez (Renderiza la imagen de Strapi, o un SVG fallback) -->
+                                                <div
+                                                    class="w-6 h-6 shrink-0 mt-0.5 text-(--surface-brand-secondary)"
+                                                    style={itemIconStyle}
+                                                >
+                                                    {item.icono ? (
+                                                        <img src={getStrapiUrl(item.icono)} alt="Icono" class="w-full h-full object-contain" />
+                                                    ) : (
+                                                        /* Ticket Fallback Icon */
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M21.5,10.8l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0L17,9l-2-2l0.6-0.6c0.4-0.4,0.4-1.1,0-1.5l-2.4-2.4c-0.4-0.4-1.1-0.4-1.5,0 L11,3.2L9,1.2C8.6,0.8,8,0.8,7.6,1.2L5.2,3.6c-0.4-0.4-0.4-1.1,0-1.5L5.8,5.8l-2,2L3.2,7.2c-0.4-0.4-1.1-0.4-1.5,0L-0.7,9.6 c-0.4,0.4-0.4,1.1,0,1.5L1.7,13.5l2-2l-0.6-0.6c-0.4-0.4-0.4-1.1,0-1.5l2.4-2.4c0.4-0.4,1.1-0.4,1.5,0L7,7.6l2,2L8.4,10.2 c-0.4,0.4-0.4,1.1,0,1.5l2.4,2.4c0.4,0.4,1.1,0.4,1.5,0L13,13.4l2,2l0.6,0.6c0.4,0.4,0.4,1.1,0,1.5l-2.4,2.4 c-0.4-0.4-1.1-0.4-1.5,0l-2.4-2.4L7.8,20.2L9.2,21.6c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4c0.4-0.4,0.4-1.1,0-1.5l-0.6-0.6l2-2l0.6,0.6 c0.4,0.4,1.1,0.4,1.5,0l2.4-2.4C21.9,11.9,21.9,11.2,21.5,10.8z"/>
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                                <span
+                                                    class="font-[family-name:var(--font-secundaria)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[15px] md:text-[16px] leading-snug font-medium"
+                                                    style={itemTextoStyle}
+                                                >
+                                                    {item.texto}
+                                                </span>
+                                            </li>
+                                            );
+                                        })}
+                                    </ul>
+                                )}
+
+                                {/* Opción 2: RichText (WYSIWYG) */}
+                                {tarjeta.incluye_wysiwyg && (
+                                    <div 
+                                        class="prose prose-sm md:prose-base prose-p:font-[family-name:var(--font-secundaria)] prose-p:text-(--surface-brand-primary,var(--surface-brand-secondary)) prose-p:text-[15px] md:prose-p:text-[16px] prose-p:font-medium prose-p:leading-snug max-w-none prose-li:text-(--surface-brand-primary,var(--surface-brand-secondary))"
+                                        set:html={renderMarkdown(tarjeta.incluye_wysiwyg)}
+                                    ></div>
+                                )}
+                            </div>
+
+                            <!-- Nota Legal Importante -->
+                            {tarjeta.nota_importante && (
+                                <p class="font-[family-name:var(--font-secundaria)] text-(--surface-brand-primary,var(--surface-brand-secondary)) text-[11px] md:text-[12px] font-bold opacity-80 mb-4 text-center md:text-left">
+                                    {tarjeta.nota_importante}
+                                </p>
+                            )}
+
+                            <!-- Botón de Compra -->
+                            {tarjeta.boton && (
+                                <div class="w-full flex justify-center md:justify-start">
+                                    <a 
+                                        href={tarjeta.boton.url || "#"} 
+                                        class="w-full md:w-auto min-w-[240px] flex items-center justify-center bg-(--brand-interactive-base) hover:bg-(--neutral-background-strong,var(--custom-color-01)) text-(--surface-brand-primary,var(--surface-brand-secondary)) hover:text-(--brand-interactive-base) border-2 border-transparent hover:border-(--brand-interactive-base) font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px] py-2.5 md:py-3 px-8 rounded-[12px] shadow-md hover:shadow-lg transition-all duration-300 uppercase tracking-wide text-center"
+                                    >
+                                        {tarjeta.boton.texto || "COMPRA TU ENTRADA"}
+                                    </a>
+                                </div>
+                            )}
+
+                        </div>
+                    </div>
+                </div>
+                );
+            })}
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* --- Capa de movimiento (T4) ---
+     *
+     * Holgura para el parallax del fondo: el `yPercent` delHelper descubriría
+     * el borde de la foto si la imagen midiese exactamente lo que su caja. Un
+     * `scale` de 1.22 deja 11% de aire arriba y abajo, y el recorrido es del
+     * 8% de la altura de la imagen (8 * 1.22 = 9.8% < 11%).
+     *
+     * Se usa la propiedad `scale` y no `transform` porque `transform` es de
+     * GSAP: al parsear el elemento, GSAP lee el `scale` calculado y lo
+     * incorpora a su propio `transform`, de modo que los dos componen en una
+     * sola matriz.
+     *
+     * `:global()` es obligatorio: `data-motion` vive en `<html>`, que nunca
+     * lleva el atributo de scope de Astro.
+     */
+    :global([data-motion="ready"]) .c7-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, revealStagger, splitReveal, hoverDepth, zoomImage, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Movimiento de la rejilla de entradas/paquetes (T4).
+     *
+     * Reparto de transforms: cada elemento tiene un único dueño.
+     *   - `.c7-item`     → el reveal (opacidad + viaje vertical).
+     *   - `.c7-card`     → `hoverDepth` (inclinación + elevación).
+     *   - `.c7-card-img` → `zoomImage` (zoom por scroll).
+     *   - `.c7-bg`       → `parallaxLayer` (fondo de la sección).
+     *
+     * El reveal apunta al ítem (`<div>`), nunca al botón de compra: un
+     * `gsap.from()` sobre un control focusable lo deja invisible y tabulable
+     * si su trigger no dispara (S13).
+     *
+     * Sin JS o con `prefers-reduced-motion`, `initMotion()` no escribe
+     * `data-motion` y ninguna de estas llamadas hace nada.
+     */
+    function setupMotion() {
+        document.querySelectorAll('.c7-section').forEach((section) => {
+            // El título se arma palabra por palabra, salvo que sea un `h1`
+            // (LCP, S8).
+            const title = section.querySelector('.c7-title[data-split="on"]');
+            if (title) {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 28,
+                    duration: 0.75,
+                    stagger: 0.04,
+                });
+            }
+
+            // Cada paquete entra uno detrás de otro.
+            const list = section.querySelector('.c7-list');
+            if (list) {
+                revealStagger(list, {
+                    selector: '.c7-item',
+                    stagger: 0.12,
+                    y: 30,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // La profundidad la aporta el puntero, sólo en escritorio: el
+            // helper la registra dentro de un `gsap.matchMedia()`
+            // `(hover: hover) and (pointer: fine)`. La tarjeta es muy
+            // apaisada, así que la inclinación es discreta.
+            section.querySelectorAll('.c7-card').forEach((card) => {
+                hoverDepth(card, { maxTilt: 4, lift: -6 });
+            });
+
+            // Zoom por scroll de la foto, dentro de su caja `overflow-hidden`.
+            section.querySelectorAll('.c7-card-img').forEach((image) => {
+                zoomImage(image, { from: 1.05, duration: 1.2 });
+            });
+
+            // El fondo de la sección se desplaza despacio; el `scale: 1.22`
+            // del `<style>` deja la holgura para que el borde nunca asome.
+            section.querySelectorAll('.c7-bg').forEach((bg) => {
+                parallaxLayer(bg, { distance: 8 });
+            });
+
+            // Burbujas de ambiente: decoración pura, `pointer-events: none` y
+            // `aria-hidden`, siempre por debajo del contenido (`z-10`).
+            ambientBubbles(section, { count: 7, maxOnMobile: 4 });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupMotion();
+
+    // Decision 7 (espejo del helper): hay que registrar los triggers otra vez
+    // tras una navegación cliente.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

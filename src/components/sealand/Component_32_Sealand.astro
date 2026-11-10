@@ -1,0 +1,410 @@
+---
+// Hero de página completa para el tema Sealand (componente-32-sealand).
+// Replica `landing-sealand/visitas-escolares/index.html:39-69` (.hero).
+//
+// La paleta del origen (--navy, --teal, --accent…) NO es la identidad de Sealand
+// Inbursa: aquí todo color sale de las variables semánticas que Layout.astro
+// inyecta desde setup-site. Los degradados y las capas translúcidas se
+// construyen con color-mix() sobre esas variables, nunca con hex literals.
+import { stringifyRichText, getStrapiUrl } from "../../lib/strapi.js";
+
+export interface Props {
+    imagen_fondo?: any;
+    texto_alt_imagen?: string;
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    boton_principal?: any;
+    boton_secundario?: any;
+    datos?: any[];
+    panel_tag?: string;
+    panel_titulo?: string;
+    panel_htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    panel_puntos?: any[];
+    panel_enlace_texto?: string;
+    panel_enlace_url?: string;
+    color_sombrado_override?: string;
+    color_eyebrow_override?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    imagen_fondo,
+    texto_alt_imagen,
+    eyebrow,
+    titulo,
+    htmlTag = "h1",
+    descripcion,
+    boton_principal,
+    boton_secundario,
+    datos = [],
+    panel_tag,
+    panel_titulo,
+    panel_htmlTag = "h2",
+    panel_puntos = [],
+    panel_enlace_texto,
+    panel_enlace_url,
+    color_sombrado_override,
+    color_eyebrow_override,
+    color_titulo_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+const PanelTag = panel_htmlTag as any;
+
+// Strapi entrega `repeatable: false` como objeto plano o envuelto en un arreglo
+// según la forma del response; normalizamos igual que componente-3-sealand.
+const normalizeBoton = (boton?: any) => (Array.isArray(boton) ? boton[0] : boton);
+const btnPrincipal = normalizeBoton(boton_principal);
+const btnSecundario = normalizeBoton(boton_secundario);
+
+// Media plano: getStrapiUrl devuelve null si el editor no subió imagen, y en ese
+// caso el slot se omite (no queda un <img> roto). Media dentro de un repeatable sí
+// necesitaría deep-populate en strapi.js; aquí es un campo plano, no hace falta.
+const bgUrl = getStrapiUrl(imagen_fondo);
+
+// Cascada: el override del editor (hex del color picker) gana; si no hay, la
+// variable de tema definida en setup-site.
+const scrimBase = color_sombrado_override || "var(--surface-brand-primary)";
+const eyebrowColor = color_eyebrow_override || "var(--accent-highlight-tertiary)";
+const titleColor = color_titulo_override || "var(--neutral-text-inverted)";
+const textColor = color_texto_override || "var(--neutral-text-inverted)";
+
+// El panel lateral sólo aparece si hay algo real que mostrar; si el editor lo deja
+// vacío no queda una caja de cristal huérfana.
+const puntos = panel_puntos.filter((p) => p?.texto);
+const mostrarPanel = Boolean(panel_tag || panel_titulo || puntos.length || panel_enlace_texto);
+---
+
+<section
+    class="hero relative w-full overflow-hidden flex items-center text-[color:var(--neutral-text-inverted)] min-h-[640px] md:min-h-[860px]"
+    style={`--scrim: ${scrimBase};${bgUrl ? "" : `background-color: ${scrimBase};`}`}
+>
+    {bgUrl && (
+        <img
+            src={bgUrl}
+            alt={texto_alt_imagen || ""}
+            class="hero-bg absolute inset-0 w-full h-full object-cover object-center"
+        />
+    )}
+    {/* El velo sólo se pinta si hay foto detrás; sin foto, el fondo es liso. */}
+    {bgUrl && <div class="hero-overlay absolute inset-0" aria-hidden="true" />}
+
+    <div class="container relative z-[2] mx-auto px-4 md:px-6 max-w-7xl">
+        <div class="grid gap-9 lg:grid-cols-[1.2fr_0.62fr] lg:gap-[70px] items-center py-14 md:py-16 lg:py-[58px]">
+            <div class="max-w-[760px]">
+                {eyebrow && (
+                    <p class="hero-eyebrow font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em] mb-4" style={`color: ${eyebrowColor};`}>
+                        {eyebrow}
+                    </p>
+                )}
+
+                {titulo && (
+                    <TitleTag class="hero-title font-[family-name:var(--font-principal)] font-bold mb-[26px]" style={`color: ${titleColor};`}>
+                        {titulo}
+                    </TitleTag>
+                )}
+
+                {descripcion && (
+                    <div
+                        class="hero-lead font-[family-name:var(--font-secundaria)] font-normal text-[17px] md:text-[20px] max-w-[690px] [&>p]:mb-0"
+                        style={`color: color-mix(in srgb, ${textColor} 84%, transparent);`}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+
+                {(btnPrincipal || btnSecundario) && (
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-[14px] mt-[34px] mb-10">
+                        {btnPrincipal?.texto && (
+                            <a
+                                href={btnPrincipal.url || "#"}
+                                class="btn-principal inline-flex items-center justify-center min-h-[52px] px-[22px] py-[13px] rounded-full border border-transparent font-[family-name:var(--font-principal)] font-bold text-[14px] transition-transform hover:-translate-y-0.5"
+                            >
+                                {btnPrincipal.texto}
+                            </a>
+                        )}
+                        {btnSecundario?.texto && (
+                            <a
+                                href={btnSecundario.url || "#"}
+                                class="btn-secundario inline-flex items-center justify-center min-h-[52px] px-[22px] py-[13px] rounded-full border font-[family-name:var(--font-principal)] font-bold text-[14px] transition-transform hover:-translate-y-0.5"
+                            >
+                                {btnSecundario.texto}
+                            </a>
+                        )}
+                    </div>
+                )}
+
+                {datos.length > 0 && (
+                    <div class="flex flex-wrap gap-6 md:gap-[42px]">
+                        {datos.filter((d) => d?.valor || d?.etiqueta).map((d) => (
+                            <div class="grid">
+                                {d.valor && (
+                                    <strong class="font-[family-name:var(--font-principal)] font-bold text-[29px] tracking-[-0.03em]" style={`color: ${titleColor};`}>
+                                        {d.valor}
+                                    </strong>
+                                )}
+                                {d.etiqueta && (
+                                    <span class="hero-fact-label font-[family-name:var(--font-secundaria)] text-[13px]" style={`color: color-mix(in srgb, ${textColor} 72%, transparent);`}>
+                                        {d.etiqueta}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {mostrarPanel && (
+                <aside class="hero-panel rounded-[32px] p-6 md:p-[34px] max-w-[680px]">
+                    {panel_tag && (
+                        <span class="panel-tag inline-flex rounded-full px-[11px] py-[7px] text-[11px] font-bold tracking-[0.08em] uppercase">
+                            {panel_tag}
+                        </span>
+                    )}
+
+                    {panel_titulo && (
+                        <PanelTag class="panel-title font-[family-name:var(--font-principal)] font-bold text-[30px] tracking-[-0.03em] mt-5 mb-[18px]">
+                            {panel_titulo}
+                        </PanelTag>
+                    )}
+
+                    {puntos.length > 0 && (
+                        <ul class="list-disc pl-5 m-0">
+                            {puntos.map((p) => (
+                                <li class="my-[10px]" style={`color: color-mix(in srgb, ${textColor} 82%, transparent);`}>
+                                    {p.texto}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    {panel_enlace_texto && (
+                        <a href={panel_enlace_url || "#"} class="panel-link inline-flex items-center gap-1 mt-6 font-[family-name:var(--font-principal)] font-bold">
+                            {panel_enlace_texto}
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    )}
+                </aside>
+            )}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Velo en dos capas sobre la foto: un barrido horizontal (fuerte a la
+       izquierda, que es donde va el texto) + un degradado vertical suave.
+       Los porcentajes replican el .hero-overlay del origen; el color base es
+       --surface-brand-primary, mezclado con transparent. */
+    .hero-overlay {
+        background-image:
+            linear-gradient(
+                90deg,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 92%, transparent) 0%,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 72%, transparent) 48%,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 25%, transparent) 100%
+            ),
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 5%, transparent),
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 48%, transparent)
+            );
+    }
+
+    /* El origen baja el velo a un solo plano en móvil para que la foto respire. */
+    @media (max-width: 1023px) {
+        .hero-overlay {
+            background-image: linear-gradient(
+                90deg,
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 92%, transparent),
+                color-mix(in srgb, var(--scrim, var(--surface-brand-primary)) 65%, transparent)
+            );
+        }
+    }
+
+    .btn-principal {
+        background-color: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        box-shadow: 0 12px 30px color-mix(in srgb, var(--brand-interactive-base) 22%, transparent);
+    }
+
+    .btn-secundario {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 12%, transparent);
+        border-color: color-mix(in srgb, var(--neutral-text-inverted) 35%, transparent);
+        color: var(--neutral-text-inverted);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Cristal del panel lateral: relleno translúcido + borde tenue + drop shadow
+       suave, los tres derivados de variables de tema. */
+    .hero-panel {
+        background-color: color-mix(in srgb, var(--neutral-text-inverted) 11%, transparent);
+        border: 1px solid color-mix(in srgb, var(--neutral-text-inverted) 20%, transparent);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 30px 80px color-mix(in srgb, var(--neutral-background-strong) 25%, transparent);
+    }
+
+    .panel-tag {
+        background-color: color-mix(in srgb, var(--accent-highlight-tertiary) 16%, transparent);
+        color: var(--accent-highlight-tertiary);
+    }
+
+    .panel-link {
+        color: var(--neutral-text-inverted);
+    }
+
+    /* Escala no-role del origen: el hero es deliberadamente full-bleed, así que
+       conserva el clamp en vez de la escala de 32px. La familia siempre viene
+       de --font-principal (nunca un font-family hardcodeado). */
+    .hero-title {
+        font-size: clamp(46px, 6.2vw, 82px);
+        line-height: 1.02;
+        letter-spacing: -0.055em;
+    }
+
+    /* --- Motion layer (T2). Decision 4: the hero is the LCP-critical block. ---
+       *
+       * WHY `:global()`: Astro scopes a selector by putting its scope attribute
+       * on every compound, so a plain `[data-motion="ready"] .hero-bg` compiles
+       * to `[data-astro-cid-x][data-motion=ready] .hero-bg[data-astro-cid-x]` and
+       * demands that ONE element carry both attributes — but `data-motion` lives
+       * on <html>, which never gets a cid. `:global()` leaves the guard unscoped
+       * while `.hero-bg` stays scoped to this component.
+       *
+       * WHY a stylesheet rule and not an inline style: the helper tears its
+       * triggers down with `gsap.set(targets, { clearProps: 'all' })` on
+       * `.hero-bg`, and `clearProps: 'all'` empties `style.cssText`, wiping any
+       * inline scale set from script. A stylesheet rule survives that.
+       *
+       * WHY the `scale` property and not `transform`: `transform` belongs to GSAP
+       * here — it writes the yPercent `translate3d` — and an inline transform
+       * would outrank this stylesheet rule. The independent `scale` property does
+       * not: GSAP folds it into the transform it already owns the first time it
+       * parses the element (CSSPlugin "accommodate independent transforms by
+       * combining them into normal ones"), so the scale ends up inside the very
+       * tween the parallax writes, instead of surviving as a bare inline style.
+       *
+       * WHY 1.22 with `distance: 8`: the photo has no bleed of its own, so any
+       * vertical travel would uncover the top or bottom edge of the
+       * `overflow-hidden` hero. A 1.22 scale about the centre leaves
+       * (1.22 - 1) / 2 = 11% of headroom on each side, and `distance: 8` is 8%
+       * of the image height, so 3% of headroom survives at either end of the
+       * scrub — before GSAP's fold, the worst case would still be covered at
+       * 11% - 8 * 1.22 = 1.2%.
+       *
+       * Residual: `clearProps: 'all'` also writes an inline `scale: none`, which
+       * would outrank this rule if triggers were torn down and rebuilt while the
+       * guard stayed set — reachable only if SPA navigation is ever enabled. Left
+       * undefended on purpose: `!important` would win that cascade, but GSAP would
+       * then fold the same scale in a second time and double-scale the photo.
+       *
+       * WHY under the guard: with JS off (or reduced motion on) `data-motion` is
+       * never written, the scale stays at 1 and the hero renders exactly as
+       * before.
+       */
+    :global([data-motion="ready"]) .hero-bg {
+        scale: 1.22;
+    }
+</style>
+
+<script>
+    import { initMotion, parallaxLayer, ambientBubbles } from "../../scripts/motion";
+
+    /*
+     * Hero motion (T2) — decision 4: this is the LCP-critical block, so the
+     * surface here is deliberately tiny: exactly two elements move, and neither
+     * ever gets an opacity ramp.
+     *
+     * `.hero-title`, `.hero-lead`, `.btn-principal` and `.btn-secundario` are NOT
+     * animated and never get a hidden start state: they have to be in the first
+     * painted frame, because an `opacity: 0` start on above-the-fold text delays
+     * Largest Contentful Paint. That is the entire reason there is no
+     * `revealSection` call anywhere below.
+     */
+    function setupHeroMotion() {
+        // `.hero-bg` is the prime LCP candidate of this block, and that is exactly
+        // why its transform is the only thing that moves: no opacity is ever
+        // written on it, so the photo paints at full strength on the first frame
+        // while it drifts behind the copy. `distance: 8` is a percentage of the
+        // image's own height, applied as yPercent inside the `overflow-hidden`
+        // hero; the stylesheet pairs it with `scale: 1.22` so the travel can never
+        // uncover the edge of the container.
+        document.querySelectorAll('.hero-bg').forEach((layer) => {
+            parallaxLayer(layer, { distance: 8 });
+
+            // Burbujas de ambiente sobre la foto. El anfitrión es el
+            // `<section class="hero">` — el padre directo de la foto — porque
+            // es el único contenedor del bloque que recorta (`overflow-hidden`)
+            // y que es `relative`: las burbujas se quedan dentro del marco y
+            // no mueven nada del layout.
+            //
+            // POR QUÉ NO QUEDAN ENCIMA DEL TEXTO: el texto vive en `.container`,
+            // que lleva `z-[2]`, mientras que las burbujas se quedan en el
+            // nivel `auto` del propio `section`. El orden de pintado deja el
+            // texto por encima de ellas. Y las burbujas no capturan el puntero
+            // (`pointer-events: none`) ni llegan al árbol de accesibilidad
+            // (`aria-hidden`), así que son atmósfera, no contenido.
+            //
+            // Sólo hay burbujas si hay foto: sin imagen de fondo el velo es
+            // liso y no hay nada que habitar.
+            const host = layer.parentElement;
+            if (!host) {
+                return;
+            }
+
+            ambientBubbles(host, {
+                count: 10,
+                maxOnMobile: 5,
+                duration: 18,
+                rise: 110,
+                opacity: 0.28,
+            });
+        });
+
+        // The glass panel drifts against the background at half the travel, to
+        // build depth. `distance: -4` is the helper's own direction flip (it
+        // tweens yPercent from `-distance` to `distance`), so the panel rises
+        // while the background sinks.
+        // `trigger` is the `<section class="hero">`: without it the helper would
+        // default to the panel's parent — the grid cell — and the two layers
+        // would drift out of sync.
+        // `allowInteractive` is an explicit opt-in because the panel does hold a
+        // focusable element (`.panel-link`). It is safe here: the link is a static
+        // anchor with no value to desync, hit-testing follows the transform, and
+        // the whole card moves together with its own content. Decision 5's hazard
+        // (componente-37's sliders and live arithmetic) does not apply here.
+        document.querySelectorAll('.hero-panel').forEach((panel) => {
+            parallaxLayer(panel, {
+                distance: -4,
+                trigger: panel.closest('.hero') ?? panel,
+                allowInteractive: true,
+            });
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupHeroMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so this
+    // never fires — it exists so the hero cannot silently go static if SPA mode is
+    // ever enabled. The first-event guard mirrors the helper's own: Astro also
+    // dispatches `astro:page-load` on the initial load, and re-registering there
+    // would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupHeroMotion();
+    });
+</script>

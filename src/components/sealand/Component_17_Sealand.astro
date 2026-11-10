@@ -1,0 +1,410 @@
+---
+import { Image } from "astro:assets";
+import { getStrapiUrl, getLocalizedUrl, getBlogsForListing } from "../../lib/strapi.js";
+
+export interface Props {
+    titulo_seccion_1?: string;
+    titulo_seccion_2?: string;
+    titulo_seccion_3?: string;
+    color_fondo_seccion_1?: string;
+    color_fondo_seccion_2?: string;
+    color_fondo_seccion_3?: string;
+    imagen_fondo_seccion_3?: any;
+    color_boton_hero?: string;
+    color_texto_seccion_1?: string;
+    color_texto_seccion_2?: string;
+    color_texto_seccion_3?: string;
+    mostrar_seccion_1?: boolean;
+    mostrar_seccion_2?: boolean;
+    mostrar_seccion_3?: boolean;
+    items_iniciales_seccion_3?: number;
+    items_por_carga_seccion_3?: number;
+}
+
+const {
+    titulo_seccion_1 = "Últimas Noticias",
+    titulo_seccion_2 = "Los Más Populares",
+    titulo_seccion_3 = "Descubre Más",
+    color_fondo_seccion_1,
+    color_fondo_seccion_2,
+    color_fondo_seccion_3,
+    imagen_fondo_seccion_3,
+    color_boton_hero,
+    color_texto_seccion_1,
+    color_texto_seccion_2,
+    color_texto_seccion_3,
+    mostrar_seccion_1 = true,
+    mostrar_seccion_2 = true,
+    mostrar_seccion_3 = true,
+    items_iniciales_seccion_3 = 6,
+    items_por_carga_seccion_3 = 6,
+} = Astro.props;
+
+const locale = (Astro as any).currentLocale || "es";
+const allBlogs: any[] = (await getBlogsForListing(locale)) || [];
+
+const sortedBlogs = allBlogs.filter((b: any) => b && b.publishedAt);
+const latestBlog: any = sortedBlogs[0];
+const popularBlogs: any[] = sortedBlogs.filter(
+    (b: any) => b.popular && b.id !== latestBlog?.id
+);
+const remainingBlogs: any[] = sortedBlogs.filter(
+    (b: any) => b.id !== latestBlog?.id && !b.popular
+);
+
+const formatDate = (iso?: string): string => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    });
+};
+
+const heroBtnBg = color_boton_hero || "var(--brand-interactive-base)";
+const bgSec1 = color_fondo_seccion_1 || "var(--surface-brand-primary)";
+const bgSec2 = color_fondo_seccion_2 || "var(--surface-brand-secondary)";
+const bgSec3 = color_fondo_seccion_3 || "var(--neutral-text-inverted)";
+const blogHref = (slug?: string) => (slug ? getLocalizedUrl(`/blog/${slug}`, locale) : "#");
+
+const getBlogImage = (b: any) =>
+    b?.imagen_destacada?.data?.attributes || b?.imagen_destacada || null;
+---
+
+<!-- SECCIÓN 1 — Última noticia (hero) -->
+{mostrar_seccion_1 && latestBlog && (
+    <section
+        class="w-full py-10 md:py-16 text-white"
+        style={`background-color: ${bgSec1};`}
+    >
+        <div class="container mx-auto px-6 md:px-12 max-w-[1280px]">
+            <h2 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-3xl uppercase text-center mb-8 md:mb-10 tracking-wide" style={color_texto_seccion_1 ? `color: ${color_texto_seccion_1};` : undefined}>
+                {titulo_seccion_1}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center">
+                <div class="md:col-span-6 order-2 md:order-1">
+                    <span class="inline-block text-[11px] md:text-xs uppercase tracking-wider font-bold bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)] mb-3 p-1">
+                        {latestBlog.categoria || "Noticia"}
+                    </span>
+                    <h3 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-4xl uppercase leading-tight mb-4" style={color_texto_seccion_1 ? `color: ${color_texto_seccion_1};` : undefined}>
+                        {latestBlog.titulo}
+                    </h3>
+                    <p class="text-xs md:text-sm text-white/80 mb-2" style={color_texto_seccion_1 ? `color: ${color_texto_seccion_1}; opacity: 0.8;` : undefined}>
+                        {latestBlog.autor ? `De ${latestBlog.autor}` : ""}{" "}
+                        {formatDate(latestBlog.fecha_publicacion || latestBlog.publishedAt)
+                            ? `· ${formatDate(latestBlog.fecha_publicacion || latestBlog.publishedAt)}`
+                            : ""}
+                    </p>
+                    {latestBlog.resumen && (
+                        <p class="text-sm md:text-base text-white/90 leading-relaxed mb-6" style={color_texto_seccion_1 ? `color: ${color_texto_seccion_1}; opacity: 0.9;` : undefined}>
+                            {latestBlog.resumen}
+                        </p>
+                    )}
+                    <a
+                        href={blogHref(latestBlog.slug)}
+                        class="inline-block font-[family-name:var(--font-principal)] font-bold text-sm md:text-base uppercase px-8 py-3 text-[var(--surface-brand-primary)] transition-opacity hover:opacity-90 rounded-md"
+                        style={`background-color: ${heroBtnBg};`}
+                    >
+                        Leer más
+                    </a>
+                </div>
+                <div class="md:col-span-6 order-1 md:order-2">
+                    {getBlogImage(latestBlog) && (
+                        <Image
+                            src={getStrapiUrl(latestBlog.imagen_destacada)}
+                            alt={latestBlog.titulo}
+                            width={720}
+                            height={420}
+                            class="w-full h-56 md:h-80 lg:h-[420px] object-cover rounded-md"
+                        />
+                    )}
+                </div>
+            </div>
+        </div>
+    </section>
+)}
+
+<!-- SECCIÓN 2 — Más populares (carrusel) -->
+{mostrar_seccion_2 && popularBlogs.length > 0 && (
+    <section
+        class="w-full py-10 md:py-14 text-white"
+        style={`background-color: ${bgSec2};`}
+    >
+        <div class="container mx-auto px-6 md:px-12 max-w-[1280px]">
+            <h2 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-3xl uppercase text-center mb-2 tracking-wide" style={color_texto_seccion_2 ? `color: ${color_texto_seccion_2};` : undefined}>
+                {titulo_seccion_2}
+            </h2>
+            <p class="text-center text-white/90 text-sm md:text-base mb-8" style={color_texto_seccion_2 ? `color: ${color_texto_seccion_2}; opacity: 0.9;` : undefined}>
+                La inspiración para construir Sealand Inbursa es producto del grave deterioro de los ecosistemas marinos y de la necesidad de concientizar a la gente y ayudar a conservar el mundo marino.
+            </p>
+            <div class="blog-popular-swiper relative">
+                <div class="swiper-wrapper">
+                    {popularBlogs.map((blog: any) => {
+                        const img = getBlogImage(blog);
+                        return (
+                            <div class="swiper-slide">
+                                <article class="bg-white text-[var(--surface-brand-primary)] rounded-md overflow-hidden h-full flex flex-col">
+                                    {img && (
+                                        <div class="aspect-[16/10] overflow-hidden">
+                                            <Image
+                                                src={getStrapiUrl(blog.imagen_destacada)}
+                                                alt={blog.titulo}
+                                                width={480}
+                                                height={300}
+                                                class="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    )}
+                                    <div class="p-5 flex flex-col flex-grow">
+                                        {blog.categoria && (
+                                            <span class="inline-block self-start text-[11px] uppercase font-bold text-white bg-[var(--brand-interactive-base)] px-2 py-1 mb-3 tracking-wider" style={`color: var(--surface-brand-primary);`}>
+                                                {blog.categoria}
+                                            </span>
+                                        )}
+                                        <h3 class="font-[family-name:var(--font-principal)] font-bold text-lg md:text-xl leading-snug mb-2">
+                                            {blog.titulo}
+                                        </h3>
+                                        {blog.resumen && (
+                                            <p class="text-sm text-[var(--surface-brand-primary)]/80 leading-relaxed mb-4 line-clamp-3">
+                                                {blog.resumen}
+                                            </p>
+                                        )}
+                                        <a
+                                            href={blogHref(blog.slug)}
+                                            class="bg-(--accent-highlight-secondary) mt-auto text-sm font-bold uppercase text-white hover:underline p-3 inline-block text-center rounded-md"
+                                        >
+                                            Leer más
+                                        </a>
+                                    </div>
+                                </article>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div class="blog-popular-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 hover:bg-white text-[var(--surface-brand-primary)] rounded-full cursor-pointer shadow-md">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="blog-popular-next absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 hover:bg-white text-[var(--surface-brand-primary)] rounded-full cursor-pointer shadow-md">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+                <div class="blog-popular-pagination flex justify-center gap-2 mt-6"></div>
+            </div>
+        </div>
+    </section>
+)}
+
+<!-- SECCIÓN 3 — Descubre más (grid con load more) -->
+{mostrar_seccion_3 && remainingBlogs.length > 0 && (
+    <section
+        class="w-full py-10 md:py-14 relative overflow-hidden"
+        style={`background-color: ${bgSec3};`}
+    >
+        {imagen_fondo_seccion_3 && (
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <Image
+                    src={getStrapiUrl(imagen_fondo_seccion_3)}
+                    alt=""
+                    width={1920}
+                    height={600}
+                    class="w-full h-full object-cover opacity-20"
+                />
+            </div>
+        )}
+        <div class="relative z-10 container mx-auto px-6 md:px-12 max-w-[1280px]">
+            <h2 class="font-[family-name:var(--font-principal)] font-bold text-2xl md:text-3xl uppercase text-[var(--surface-brand-primary)] mb-8 tracking-wide" style={color_texto_seccion_3 ? `color: ${color_texto_seccion_3};` : undefined}>
+                {titulo_seccion_3}
+            </h2>
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                x-data={`{ count: ${items_iniciales_seccion_3} }`}
+            >
+                {remainingBlogs.map((blog: any, idx: number) => {
+                    const img = getBlogImage(blog);
+                    return (
+                        <article
+                            x-show={`${idx} < count`}
+                            x-transition.duration.300ms
+                            class="bg-white text-[var(--surface-brand-primary)] rounded-md overflow-hidden flex flex-col shadow-sm"
+                        >
+                            {img && (
+                                <div class="aspect-[16/10] overflow-hidden">
+                                    <Image
+                                        src={getStrapiUrl(blog.imagen_destacada)}
+                                        alt={blog.titulo}
+                                        width={480}
+                                        height={300}
+                                        class="w-full h-full object-cover"
+                                    />
+                                </div>
+                            )}
+                            <div class="p-5 flex flex-col flex-grow">
+                                {blog.categoria && (
+                                    <span class="inline-block self-start text-[11px] uppercase font-bold text-white bg-[var(--brand-interactive-base)] px-2 py-1 mb-3 tracking-wider" style={`color: var(--surface-brand-primary);`}>
+                                        {blog.categoria}
+                                    </span>
+                                )}
+                                <h3 class="font-[family-name:var(--font-principal)] font-bold text-lg md:text-xl leading-snug mb-2">
+                                    {blog.titulo}
+                                </h3>
+                                {blog.resumen && (
+                                    <p class="text-sm text-[var(--surface-brand-primary)]/80 leading-relaxed mb-4 line-clamp-3">
+                                        {blog.resumen}
+                                    </p>
+                                )}
+                                <a
+                                    href={blogHref(blog.slug)}
+                                    class="bg-(--accent-highlight-secondary) mt-auto text-sm font-bold uppercase text-white hover:underline p-3 inline-block text-center rounded-md"
+                                >
+                                    Leer más
+                                </a>
+                            </div>
+                        </article>
+                    );
+                })}
+            </div>
+            <div class="hidden justify-center mt-8" x-data={`{ count: ${items_iniciales_seccion_3}, total: ${remainingBlogs.length}, step: ${items_por_carga_seccion_3} }`}>
+                <button
+                    x-show={`count < total`}
+                    x-on:click={`count = Math.min(count + step, total)`}
+                    class="font-[family-name:var(--font-principal)] font-bold text-sm md:text-base uppercase px-10 py-3 bg-[var(--surface-brand-primary)] text-white hover:opacity-90 transition-opacity"
+                >
+                    Cargar más
+                </button>
+            </div>
+        </div>
+    </section>
+)}
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination } from "swiper/modules";
+    import "swiper/css";
+    import "swiper/css/navigation";
+    import "swiper/css/pagination";
+    import { initMotion, revealSection, splitReveal, hoverDepth } from "../../scripts/motion";
+
+    function initBlogPopularSwipers() {
+        document.querySelectorAll(".blog-popular-swiper").forEach((el) => {
+            new Swiper(el as HTMLElement, {
+                modules: [Navigation, Pagination],
+                slidesPerView: 1,
+                spaceBetween: 16,
+                breakpoints: {
+                    640: { slidesPerView: 2, spaceBetween: 20 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
+                },
+                navigation: {
+                    prevEl: el.querySelector(".blog-popular-prev") as HTMLElement,
+                    nextEl: el.querySelector(".blog-popular-next") as HTMLElement,
+                },
+                pagination: {
+                    el: el.querySelector(".blog-popular-pagination") as HTMLElement,
+                    clickable: true,
+                },
+                loop: false,
+            });
+        });
+    }
+
+    initBlogPopularSwipers();
+    document.addEventListener("astro:page-load", initBlogPopularSwipers);
+
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Este bloque renderiza VARIAS secciones sueltas (sin un contenedor común),
+     * y cada una se resuelve por su propio ancla: la primera por la columna de
+     * texto (`md:col-span-6`), la segunda por el carrusel
+     * (`.blog-popular-swiper`) y la tercera por el botón de "cargar más"
+     * (`[x-data*="total:"]`). Nunca se navega entre secciones vecinas, así que
+     * un reveal en una sección no puede tocar —ni ocultar— la siguiente.
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. La profundidad se aplica a la TARJETA de
+     * dentro del slide (`article`), nunca al slide, y tampoco hay un reveal por
+     * slide: un slide fuera de pantalla se quedaría en opacidad 0 hasta que el
+     * usuario lo desplace, y la posición de un ScrollTrigger no sigue el
+     * transform interno de Swiper.
+     */
+    function setupMotion() {
+        const secciones = [
+            document.querySelector(".md\\:col-span-6")?.closest("section") ?? null,
+            document.querySelector(".blog-popular-swiper")?.closest("section") ?? null,
+            document.querySelector('[x-data*="total:"]')?.closest("section") ?? null,
+        ];
+
+        for (const seccion of secciones) {
+            if (!seccion) {
+                continue;
+            }
+
+            // Cada sección se revela por separado: el trigger usa la propia
+            // sección como referencia, así que una sección nunca esconde a otra.
+            //
+            // `opacityFrom: 1` (un levantamiento, sin rampa de opacidad) porque
+            // las secciones tienen enlaces "Leer más" y un reveal con opacidad 0
+            // los dejaría invisibles pero enfocables (S13).
+            revealSection(seccion, {
+                y: 30,
+                opacityFrom: 1,
+                duration: 0.8,
+                ease: "power3.out",
+            });
+
+            // Cada sección tiene su propio `h2`, y los tres están por debajo del
+            // pliegue: el título se arma por partes.
+            const heading = seccion.querySelector("h2");
+
+            if (heading) {
+                splitReveal(heading, {
+                    type: "words",
+                    y: 24,
+                    stagger: 0.045,
+                    duration: 0.75,
+                    ease: "power3.out",
+                });
+            }
+        }
+
+        // Tarjetas del carrusel de populares: la tarjeta es blanca, con esquinas
+        // redondeadas y `overflow: hidden`, así que la inclinación se ve limpia
+        // y el enlace "Leer más" se mueve junto con su tarjeta.
+        const tarjetas = Array.from(
+            document.querySelectorAll(".blog-popular-swiper .swiper-slide > article"),
+        );
+
+        hoverDepth(tarjetas, {
+            maxTilt: 6,
+            lift: -6,
+            scale: 1.02,
+            duration: 0.4,
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+    setupMotion();
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener("astro:page-load", () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== "complete";
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

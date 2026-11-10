@@ -1,0 +1,461 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+export interface Props {
+    titulo?: string;
+    etiqueta_titulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    subtitulo?: string;
+    etiqueta_subtitulo?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span";
+    tarjetas?: any[];
+    icono_decorativo_hover?: any;
+    color_fondo?: string;
+    imagen_decorativa_fondo?: any;
+    autoplay?: boolean;
+}
+
+const {
+    titulo,
+    etiqueta_titulo = "h2",
+    subtitulo,
+    etiqueta_subtitulo = "span",
+    tarjetas = [],
+    icono_decorativo_hover,
+    color_fondo,
+    imagen_decorativa_fondo,
+    autoplay = true
+} = Astro.props;
+
+const TitleTag = etiqueta_titulo;
+const SubtitleTag = etiqueta_subtitulo;
+
+const defaultSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+</svg>`;
+---
+
+<section 
+    class="w-full py-16 md:py-24 overflow-hidden relative c4-section" 
+    style={color_fondo ? `background-color: ${color_fondo}` : "background-color: var(--surface-brand-primary);"}
+>
+    <!-- Elemento decorativo lateral (opcional según imagen) -->
+    {imagen_decorativa_fondo ? (
+        <div class="absolute left-0 top-0 h-[52.5%] pointer-events-none hidden md:block w-32 md:w-48">
+            <Image
+                src={getStrapiUrl(imagen_decorativa_fondo)}
+                alt="Decoración de fondo"
+                class="w-full h-full object-contain object-left"
+                inferSize={true}
+                loading="lazy"
+            />
+        </div>
+    ) : (
+        <div class="c4-deco absolute left-0 top-0 w-24 h-[52.5%] pointer-events-none hidden md:block">
+            <svg viewBox="0 0 100 800" class="w-full h-full" shape-rendering="geometricPrecision">
+                <path d="M20,0 Q60,200 10,400 T30,800" stroke="var(--accent-highlight-primary)" stroke-width="3" fill="none" stroke-dasharray="10 10" />
+                <circle cx="15" cy="50" r="15" fill="var(--brand-interactive-base)" />
+            </svg>
+        </div>
+    )}
+
+    <div class="max-w-360 mx-auto px-6 md:px-12 relative z-10">
+        <div class="text-center mb-12 md:mb-16">
+            {titulo && (
+                <TitleTag class="c4-title font-[family-name:var(--font-principal)] text-(--surface-brand-secondary) text-[32px] font-black uppercase leading-tight">
+                    {titulo}
+                </TitleTag>
+            )}
+            {subtitulo && (
+                <SubtitleTag class="c4-subtitle font-[family-name:var(--font-secundaria)] text-(--surface-brand-secondary) text-[26px] font-medium uppercase mt-2 block tracking-wider">
+                    {subtitulo}
+                </SubtitleTag>
+            )}
+        </div>
+
+        <div class="swiper sealand-precios-swiper" data-count={tarjetas.length} data-autoplay={autoplay ? "true" : "false"}>
+            <div class={`swiper-wrapper ${tarjetas.length <= 3 ? 'lg:!grid lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] lg:gap-8 lg:w-full lg:justify-center' : ''}`}>
+                {tarjetas.map((item) => (
+                    <div class="swiper-slide h-auto group pb-10 pt-4 relative">
+                        <div 
+                            class="c4-card relative z-10 rounded-[30px] overflow-visible flex flex-col h-full border-[7px] border-transparent group-hover:border-[var(--surface-brand-secondary)] transition-all duration-300 shadow-xl group-hover:shadow-2xl group-hover:-translate-y-2"
+                            style={item.color_fondo_contenido ? `background-color: ${item.color_fondo_contenido}` : "background-color: var(--custom-color-01);"}
+                        >
+                            
+                            {/* Popular Badge */}
+                            {item.es_popular && (
+                                <div class="absolute top-0 right-0 z-20 overflow-hidden w-32 h-32 pointer-events-none">
+                                    <div class="absolute top-6 -right-8 bg-(--brand-interactive-base) text-(--custom-color-01) font-[family-name:var(--font-principal)] font-bold text-[10px] py-1 w-32 text-center transform rotate-45 shadow-md uppercase">
+                                        {item.texto_popular || 'MÁS POPULAR'}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Imagen */}
+                            <div class="relative aspect-video rounded-t-[27px] overflow-hidden">
+                                <Image
+                                    src={getStrapiUrl(item.imagen)}
+                                    alt={item.titulo}
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    inferSize={true}
+                                    loading="lazy"
+                                />
+
+                                
+                                <div class="absolute inset-0 bg-gradient-to-t from-(--custom-color-01) via-transparent to-transparent opacity-60"></div>
+                            </div>                            {/* Contenido */}
+                            <div class="pt-2 pb-6 px-8 md:pt-2 md:pb-8 md:px-10 flex flex-col flex-grow items-center text-center text-white">
+                                <h3 class="font-[family-name:var(--font-principal)] text-[20px] font-black uppercase mb-3 leading-tight min-h-[2rem] flex items-center justify-center">
+                                    {item.titulo}
+                                </h3>
+
+                                <div class="w-full mb-8">
+                                    {item.precio_regular && item.precio_en_linea ? (
+                                        /* Case 1: Both prices exist - 2 Column Grid */
+                                        <div class="grid grid-cols-2 gap-4 w-full">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-medium tracking-wider">
+                                                    {item.label_precio_regular || 'Precio Regular'}
+                                                </span>
+                                                <div class="flex items-center justify-center relative">
+                                                    <span class="text-[28px] md:text-[34px] font-normal opacity-100">
+                                                        {item.precio_regular?.split(' ')[0]}
+                                                    </span>
+                                                    <span class="text-[10px] font-bold uppercase ml-0.5">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
+                                                    <div class="absolute w-full h-[2px] bg-white top-1/2 left-0 -rotate-1 opacity-100"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-bold tracking-wider">
+                                                    {item.label_precio_en_linea || 'Precio en Línea'}
+                                                </span>
+                                                <div class="flex items-center justify-center">
+                                                    <span class="text-[28px] md:text-[34px] font-black">
+                                                        {item.precio_en_linea?.split(' ')[0]}
+                                                    </span>
+                                                    <span class="text-[12px] font-bold uppercase ml-1">{item.precio_en_linea?.split(' ')[1] || 'MXN'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        /* Case 2: Only one price exists - Centered */
+                                        <div class="flex flex-col items-center">
+                                            {item.precio_regular && (
+                                                <>
+                                                    <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-medium tracking-wider">
+                                                        {item.label_precio_regular || 'Precio Regular'}
+                                                    </span>
+                                                    <div class="flex items-center justify-center relative">
+                                                        <span class="text-[28px] md:text-[34px] font-normal">
+                                                            {item.precio_regular?.split(' ')[0]}
+                                                        </span>
+                                                        <span class="text-[12px] font-bold uppercase ml-1">{item.precio_regular?.split(' ')[1] || 'MXN'}</span>
+                                                        <div class="absolute w-full h-[2px] bg-white top-1/2 left-0 -rotate-1 opacity-100"></div>
+                                                    </div>
+                                                </>
+                                            )}
+                                            {item.precio_en_linea && (
+                                                <>
+                                                    <span class="text-[10px] md:text-[11px] uppercase opacity-90 mb-2 font-bold tracking-wider">
+                                                        {item.label_precio_en_linea || 'Precio en Línea'}
+                                                    </span>
+                                                    <div class="flex items-center justify-center">
+                                                        <span class="text-[28px] md:text-[34px] font-black">
+                                                            {item.precio_en_linea?.split(' ')[0]}
+                                                        </span>
+                                                        <span class="text-[12px] font-bold uppercase ml-1">{item.precio_en_linea?.split(' ')[1] || 'MXN'}</span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {item.boton && (
+                                    <a
+                                        href={item.boton.url}
+                                        class="w-full py-1.5 md:py-2.5 bg-(--brand-interactive-base) text-(--custom-color-01) font-[family-name:var(--font-principal)] font-black text-[20px] md:text-[24px] rounded-2xl uppercase hover:scale-105 transition-all shadow-lg mb-4"
+                                    >
+                                        {item.boton.texto || 'COMPRA AQUÍ'}
+                                    </a>
+                                )}
+
+                                {item.disclaimer && (
+                                    <p class="text-[10px] font-[family-name:var(--font-secundaria)] opacity-90 uppercase tracking-widest font-medium">
+                                        {item.disclaimer}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Estrella / Elemento Decorativo detrás (solo mitad visible) */}
+                        </div>
+                        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 translate-y-1/2 z-0 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 pointer-events-none">
+                            {icono_decorativo_hover ? (
+                                <div class="h-20 flex items-center justify-center">
+                                    <Image
+                                        src={getStrapiUrl(icono_decorativo_hover)}
+                                        alt="Icono decorativo"
+                                        class="h-full w-auto object-contain drop-shadow-lg"
+                                        inferSize={true}
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ) : (
+                                <div class="w-14 h-14 flex items-center justify-center bg-[var(--accent-highlight-primary)] text-white rounded-full shadow-lg border-4 border-(--custom-color-01)">
+                                    <Fragment set:html={defaultSvg} />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            
+            {/* Controles Movil/Desktop */}
+            <div class={`flex items-center justify-center gap-6 mt-8 ${tarjetas.length <= 3 ? 'lg:hidden' : ''}`}>
+                <button class="swiper-btn-prev p-2 text-(--surface-brand-secondary) hover:scale-110 transition-transform">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <div class="swiper-pagination-dots !static !w-auto flex gap-2"></div>
+                <button class="swiper-btn-next p-2 text-(--surface-brand-secondary) hover:scale-110 transition-transform">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    :global(.sealand-precios-swiper .swiper-pagination-bullet) {
+        width: 10px;
+        height: 10px;
+        background: var(--surface-brand-secondary);
+        opacity: 0.3;
+        transition: all 0.3s ease;
+    }
+    :global(.sealand-precios-swiper .swiper-pagination-bullet-active) {
+        opacity: 1;
+        transform: scale(1.3);
+        background: var(--surface-brand-secondary);
+    }
+
+    /*
+     * Motion (T5) — GSAP escribe el `transform` de la tarjeta (el efecto de
+     * profundidad con el puntero) y la clase `transition-all` de Tailwind
+     * incluye ese canal: sin esta regla el navegador intentaría suavizar CADA
+     * frame que GSAP escribe y el resultado sería un transform rezagado cerca
+     * de 300 ms, es decir, una inclinación que persigue al puntero en vez de
+     * seguirlo.
+     *
+     * La lista conserva el easing de los otros dos cambios del hover
+     * (`border-color` y `box-shadow`) y sólo retira el canal `transform`, que a
+     * partir de ahora es de GSAP. `translate`, `scale` y `rotate` se quedan en
+     * la lista porque son las propiedades independientes que usa Tailwind v4.
+     *
+     * Por qué el guard es `:global([data-motion="ready"]) .c4-card` y no la
+     * forma desnuda: dentro de un `<style>` con scope de Astro, la forma
+     * desnuda compila a `[data-astro-cid-x][data-motion="ready"]
+     * .c4-card[data-astro-cid-x]`, que exige que UN mismo elemento tenga los
+     * dos atributos, pero `data-motion` vive en `<html>`, que no tiene scope
+     * id: compilaría limpio y no coincidiría nunca. Con JS apagado el
+     * atributo nunca se escribe y la tarjeta conserva su `transition-all`
+     * original.
+     */
+    :global([data-motion="ready"]) .c4-card {
+        transition-property: border-color, box-shadow, translate, scale, rotate;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    import { initMotion, revealSection, floatLoop, hoverDepth } from "../../scripts/motion";
+
+    function initPreciosSwiper() {
+        const sliders = document.querySelectorAll('.sealand-precios-swiper');
+        
+        sliders.forEach((sliderElement) => {
+            const count = parseInt(sliderElement.getAttribute('data-count') || '0', 10);
+            const autoplayEnabled = sliderElement.getAttribute('data-autoplay') !== "false";
+            let swiperInstance: Swiper | null = null;
+
+            const handleResize = () => {
+                const isDesktop = window.innerWidth >= 1024;
+                const shouldBeCarousel = !isDesktop || count > 3;
+
+                if (shouldBeCarousel) {
+                    if (!swiperInstance) {
+                        swiperInstance = new Swiper(sliderElement as HTMLElement, {
+                            modules: [Navigation, Pagination, Autoplay],
+                            slidesPerView: 1, // En móvil solo 1 tarjeta
+                            centeredSlides: false,
+                            spaceBetween: 20,
+                            loop: count > 1, // Solo hacer loop si hay más de 1 tarjeta
+                            autoplay: autoplayEnabled ? {
+                                delay: 3000, // 3 segundos
+                                disableOnInteraction: false,
+                            } : false,
+                            pagination: {
+                                el: sliderElement.parentElement?.querySelector('.swiper-pagination-dots') as HTMLElement,
+                                clickable: true,
+                            },
+                            navigation: {
+                                nextEl: sliderElement.parentElement?.querySelector('.swiper-btn-next') as HTMLElement,
+                                prevEl: sliderElement.parentElement?.querySelector('.swiper-btn-prev') as HTMLElement,
+                            },
+                            breakpoints: {
+                                640: {
+                                    slidesPerView: 1,
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    centeredSlides: false,
+                                    spaceBetween: 30,
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    if (swiperInstance) {
+                        swiperInstance.destroy(true, true);
+                        swiperInstance = null;
+                    }
+                }
+            };
+
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initPreciosSwiper);
+
+    /*
+     * Motion del bloque de precios (T5) — el bloque tiene tres situaciones y
+     * cada una recibe su propio tratamiento:
+     *
+     * 1. Con tres tarjetas o menos, en escritorio, el carrusel se desactiva y
+     *    las tarjetas se ven como una rejilla (`lg:!grid`); con más, es un
+     *    carrusel de verdad. La entrada y la profundidad se aplican al
+     *    CARRUSEL (`.sealand-precios-swiper`), que en los dos casos es el
+     *    contenedor de las tarjetas, así que el bloque se comporta igual en
+     *    ambas configuraciones.
+     *
+     * 2. Las diapositivas NO se revelan nunca: Swiper es dueño del transform de
+     *    sus diapositivas, y una diapositiva en opacidad 0 se quedaría
+     *    invisible hasta que el usuario la alcanzara con el dedo (la posición
+     *    de un ScrollTrigger no sigue el transform interno de Swiper). El
+     *    carrusel entra como una sola pieza.
+     *
+     * 3. El `hoverDepth` va sobre la TARJETA que vive dentro de la diapositiva,
+     *    nunca sobre la diapositiva, y nunca sobre el `.swiper` raíz.
+     *
+     * Por qué no hay CSS de estado inicial: `revealSection` y `floatLoop` se
+     * apoyan en `gsap.from()`, que lee el valor ACTUAL del elemento como destino
+     * del tween en el momento de crearlo. Una regla de hoja de estilos que
+     * pre-ocultara el elemento bajo el guard `[data-motion="ready"]` sería leída
+     * como ese destino y el tween animaría `opacity: 0 → 0`, dejando el bloque
+     * invisible para siempre. El estado inicial lo pone el tween, que es lo que
+     * mantiene la decisión 3: sin JS, con movimiento reducido o si el helper no
+     * inicializa, no se escribe ningún estilo inline y el contenido se ve tal
+     * cual.
+     */
+    function setupPreciosMotion() {
+        // Cada consulta se resuelve desde la raíz `.c4-section` de ESTE bloque.
+        document.querySelectorAll('.c4-section').forEach((section) => {
+            // Título. Si el editor eligió `h1` como etiqueta, NO se revela: un
+            // h1 puede ser el elemento LCP y la decisión 4 exige que el texto
+            // sobre el pliegue esté en el primer fotograma pintado.
+            const title = section.querySelector('.c4-title');
+            if (title && title.tagName !== 'H1') {
+                revealSection(title, {
+                    y: 28,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            const subtitle = section.querySelector('.c4-subtitle');
+            if (subtitle) {
+                revealSection(subtitle, {
+                    y: 18,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                    delay: 0.1,
+                });
+            }
+
+            // Ornamento lateral: flota despacio y sin parar. Es decorativo
+            // (`pointer-events-none`) y el bloque lo oculta en móvil, así que
+            // el flotado nunca estorba al contenido.
+            const deco = section.querySelector('.c4-deco');
+            if (deco) {
+                floatLoop(deco, {
+                    distance: 10,
+                    duration: 7,
+                });
+            }
+
+            // El carrusel (o la rejilla de tarjetas) entra como una sola pieza.
+            const swiper = section.querySelector('.sealand-precios-swiper');
+            if (swiper) {
+                revealSection(swiper, {
+                    y: 36,
+                    duration: 0.85,
+                    ease: 'power3.out',
+                    delay: 0.12,
+                });
+            }
+
+            // La tarjeta de cada diapositiva. `hoverDepth` es de escritorio
+            // únicamente (el helper lo mete en un `gsap.matchMedia()` de
+            // `(hover: hover) and (pointer: fine)`), así que en móvil no hace
+            // falta una contraparte.
+            //
+            // `maxTilt: 0` a propósito: la tarjeta está pegada a los bordes de
+            // su diapositiva y Swiper recorta con `overflow: hidden`, así que
+            // cualquier inclinación sacaría las esquinas de la tarjeta fuera
+            // del recorte. Lo que sí cabe es el ascenso, porque la diapositiva
+            // trae `pt-4 pb-10` de holgura vertical.
+            //
+            // Sobre el `group-hover:-translate-y-2` de Tailwind: GSAP es dueño
+            // del transform de la tarjeta y pone `translate: none` en línea al
+            // tomar possession de él, de modo que la utilidad de Tailwind
+            // queda anulada mientras el bloque está en pantalla (se recupera
+            // sola cuando el helper desmonta sus triggers). El ascenso lo
+            // aporta ahora el propio `hoverDepth`, así que el efecto pedido se
+            // conserva. El `group-hover:scale-110` de la IMAGEN sí sobrevive:
+            // la imagen es otro elemento y GSAP nunca la toca.
+            const cards = section.querySelectorAll('.c4-card');
+            hoverDepth(cards, {
+                maxTilt: 0,
+                lift: -8,
+                scale: 1.01,
+            });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que
+    // ningún trigger puede registrarse antes de esta llamada.
+    initMotion();
+    setupPreciosMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no
+    // registra ningún ClientRouter hoy, así que esto nunca se dispara; existe
+    // para que el bloque no se quede estático si algún día se activa el modo
+    // SPA.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupPreciosMotion();
+    });
+</script>

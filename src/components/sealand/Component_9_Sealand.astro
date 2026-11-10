@@ -1,0 +1,438 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    mostrar_tag_destacado?: boolean;
+    texto_tag_destacado?: string;
+    subtitulo?: string;
+    posicion_subtitulo?: "arriba" | "debajo";
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: string;
+    titulo_lista?: string;
+    elementos_lista?: any[];
+    galeria?: { data: any[] } | any[];
+    /** Gallery image mode: "recortar" preserves the historical cropped layout; "completa" keeps media fully visible. */
+    ajuste_imagen?: "recortar" | "completa";
+    imagen_fondo?: any;
+    color_titulo_override?: string;
+    color_subtitulo_override?: string;
+    color_texto_override?: string;
+    color_item_lista_override?: string;
+    color_overlay?: string;
+}
+
+const {
+    color_fondo,
+    mostrar_tag_destacado = true,
+    texto_tag_destacado = "EL MÁS POPULAR",
+    subtitulo,
+    posicion_subtitulo = "arriba",
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    titulo_lista,
+    elementos_lista = [],
+    galeria,
+    ajuste_imagen = "recortar",
+    youtube_url,
+    imagen_fondo,
+    color_titulo_override,
+    color_subtitulo_override,
+    color_texto_override,
+    color_item_lista_override,
+    color_overlay,
+} = Astro.props;
+
+const TitleTag = htmlTag;
+
+const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const patterns = [
+        /youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+        /youtu\.be\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]+)/,
+        /youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/,
+    ];
+    for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return m[1];
+    }
+    return null;
+};
+
+// Procesar galería (soporta Strapi v4/v5 format)
+const mediaFiles = galeria?.data || galeria || [];
+const youtubeId = youtube_url ? getYoutubeId(youtube_url) : null;
+const slideCount = mediaFiles.length + (youtubeId ? 1 : 0);
+const isCompleta = ajuste_imagen === "completa";
+const overlay = color_overlay ? color_overlay : 'transparent'
+---
+
+<section 
+    id="component-9"
+    class="w-full! py-12! md:py-20! relative! overflow-hidden!"
+    style={{
+        backgroundColor: color_fondo || "var(--surface-brand-primary)",
+        backgroundImage: imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+    }}
+>
+    <div class="container! mx-auto! px-6! md:px-12! max-w-7xl! relative! z-10!">
+            <div class="grid! grid-cols-1! lg:grid-cols-2! gap-10! items-center">
+            
+            {/* Columna Izquierda: Información */}
+            <div class="flex! flex-col! items-start! w-full! pr-0! lg:pr-8!">
+                
+                {/* Etiqueta Destacada (Listón) */}
+                {mostrar_tag_destacado && texto_tag_destacado && (
+                    <div class="relative! mb-6!">
+                        <div class="bg-(--brand-interactive-base)! text-(--custom-color-01)! font-[family-name:var(--font-principal)]! font-bold! text-[18px]! md:text-[22px]! px-6! py-2! shadow-sm! inline-block!"
+                             style="clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%); padding-right: 2.5rem;">
+                            {texto_tag_destacado}
+                        </div>
+                    </div>
+                )}
+                
+                {/* Subtítulo + Título Principal (orden configurable) */}
+                {posicion_subtitulo === "debajo" ? (
+                    <>
+                        {titulo && (
+                            <TitleTag
+                                class="font-[family-name:var(--font-principal)]! text-[var(--surface-brand-primary)]! text-[36px]! md:text-[40px]! font-black! leading-tight! mb-2! uppercase! w-full! text-center! lg:text-left!"
+                                style={color_titulo_override ? `color: ${color_titulo_override} !important` : undefined}
+                            >
+                                {titulo}
+                            </TitleTag>
+                        )}
+                        {subtitulo && (
+                            <span
+                                class="font-[family-name:var(--font-principal)]! text-[var(--surface-brand-secondary)]! text-[20px]! md:text-[23px]! font-bold! uppercase! tracking-wide! mb-6! w-full! text-center! lg:text-left!"
+                                style={color_subtitulo_override ? `color: ${color_subtitulo_override} !important` : undefined}
+                            >
+                                {subtitulo}
+                            </span>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {subtitulo && (
+                            <span
+                                class="font-[family-name:var(--font-principal)]! text-(--surface-brand-secondary)! text-[20px]! md:text-[20px]! font-bold! uppercase! tracking-wide! mb-2! w-full! text-center! lg:text-left!"
+                                style={color_subtitulo_override ? `color: ${color_subtitulo_override} !important` : undefined}
+                            >
+                                {subtitulo}
+                            </span>
+                        )}
+                        {titulo && (
+                            <TitleTag
+                                class="font-[family-name:var(--font-principal)]! text-(--surface-brand-primary)! text-[36px]! md:text-[40px]! font-black! leading-tight! mb-6! uppercase! w-full! text-center! lg:text-left!"
+                                style={color_titulo_override ? `color: ${color_titulo_override} !important` : undefined}
+                            >
+                                {titulo}
+                            </TitleTag>
+                        )}
+                    </>
+                )}
+                
+                {/* Descripción (Rich Text / Blocks) */}
+                {descripcion && (
+                    <div
+                        class="rich-text font-[family-name:var(--font-secundaria)]! text-[17px]! md:text-[16px]! text-(--surface-brand-primary)! font-normal! leading-[26px]! mb-6! [&>p]:mb-4! [&_strong]:font-bold! [&_u]:underline! [&_em]:italic!"
+                        style={color_texto_override ? `color: ${color_texto_override} !important` : undefined}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+                
+                {/* Título de Lista */}
+                {titulo_lista && (
+                    <h3 class="font-[family-name:var(--font-principal)]! text-(--surface-brand-secondary)! text-[20px]! font-bold! mb-4!">
+                        {titulo_lista}
+                    </h3>
+                )}
+                
+                {/* Elementos de Lista (Iconos FontAwesome) */}
+                {elementos_lista && elementos_lista.length > 0 && (
+                    <ul class="flex! flex-col! gap-3!">
+                        {elementos_lista.map((item) => (
+                            <li
+                                class="flex! items-start! gap-3! font-[family-name:var(--font-secundaria)]! text-[16px]! md:text-[18px]! text-(--surface-brand-primary)! font-bold!"
+                                style={color_item_lista_override ? `color: ${color_item_lista_override} !important` : undefined}
+                            >
+                                {item.icono && (
+                                    <i class={`${item.icono} text-(--surface-brand-secondary)! mt-1! text-[20px]! w-6! text-center! shrink-0!`}></i>
+                                )}
+                                <span>{item.texto}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
+            {youtubeId && (
+                    <div class="aspect-video w-full">
+                        <iframe
+                            src={`https://www.youtube.com/embed/${youtubeId}`}
+                            title={titulo || "YouTube video"}
+                            class="block! w-full! h-full! border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                        />
+                    </div>
+                )}
+                
+            {/* Columna Derecha: Carrusel Swiper */}
+            {mediaFiles.length > 0 && (
+                <div class="w-auto! relative! flex! items-center! justify-center! mt-10! lg:mt-0! h-125!">
+                    
+                    {mediaFiles.length > 0 && (
+                        <div class:list={[
+                            "sealand-galeria-swiper w-full md:w-91! rounded-[24px]! shadow-2xl! relative! h-125! overflow-hidden",
+                            isCompleta ? "" : "aspect-[5/4]! md:aspect-square! overflow-hidden!",
+                        ]}>
+                            <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full!"]}>
+                                {youtubeId && (
+                                    <div class="swiper-slide w-full! h-full! relative! bg-black!">
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${youtubeId}`}
+                                            title={titulo || "YouTube video"}
+                                            class="w-full! h-full!"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen
+                                        />
+                                    </div>
+                                )}
+    
+                                {mediaFiles.map((mediaFile: any) => {
+                                    const url = getStrapiUrl(mediaFile);
+                                    const isVideo = mediaFile?.attributes?.mime?.startsWith('video/') || mediaFile?.mime?.startsWith('video/');
+                                    
+                                    return (
+                                    <div class:list={["swiper-slide w-full! relative!", isCompleta ? "" : "h-full!"]}>
+                                            {isVideo ? (
+                                                <video 
+                                                    src={url} 
+                                                    class:list={["w-full!", isCompleta ? "h-auto! object-contain!" : "h-full! object-cover!"]}
+                                                    autoplay 
+                                                    loop 
+                                                    muted 
+                                                    playsinline
+                                                ></video>
+                                            ) : (
+                                                <img 
+                                                    src={url} 
+                                                    alt="Galería" 
+                                                    class:list={["w-full! max-h-125", isCompleta ? "h-auto! object-contain!" : "h-full! object-cover!"]}
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            
+                            {slideCount > 1 && (
+                                <div class="swiper-pagination"></div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+            
+        </div>
+    </div>
+</section>
+
+<style define:vars={{overlay}}>
+    /* Estilos para customizar la paginación de Swiper */
+    :global(.sealand-galeria-swiper .swiper-pagination-bullet) {
+        background: white;
+        opacity: 0.6;
+        width: 10px;
+        height: 10px;
+        transition: all 0.3s ease;
+    }
+    :global(.sealand-galeria-swiper .swiper-pagination-bullet-active) {
+        background: var(--brand-interactive-base);
+        opacity: 1;
+        width: 24px;
+        border-radius: 5px;
+    }
+
+    .rich-text :global(h3) {
+        color: var(--feedback-positive-base) !important;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .rich-text :global(ul) {
+        list-style: disc;
+        padding-left: 1rem;
+    }
+
+    #component-9::before {
+        background-color: var(--overlay);
+        display: block;
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        opacity: .9;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    import 'swiper/css/effect-fade';
+    import { initMotion, revealSection, revealStagger, splitReveal, hoverDepth } from "../../scripts/motion";
+
+    function initGaleriaSwiper() {
+        const sliders = document.querySelectorAll('.sealand-galeria-swiper');
+        
+        sliders.forEach((sliderElement) => {
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Pagination, Autoplay, EffectFade],
+                slidesPerView: 1,
+                effect: 'card',
+                fadeEffect: {
+                    crossFade: true
+                },
+                loop: true,
+                autoplay: false,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+            });
+        });
+    }
+
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. La profundidad se aplica al CONTENIDO de
+     * dentro del slide (la imagen o el video), nunca al slide. Tampoco hay un
+     * reveal por slide: un slide fuera de pantalla se quedaría en opacidad 0
+     * hasta que el usuario lo desplace, y la posición de un ScrollTrigger no
+     * sigue el transform interno de Swiper.
+     *
+     * Las columnas se resuelven por ESTRUCTURA y no por clases: en este archivo
+     * las clases de Tailwind llevan el sufijo `!` (`grid!`, `container!`…), así
+     * que no sirven como selector. La estructura es
+     * `<section> > contenedor > grilla > primera columna`.
+     */
+    function setupMotion() {
+        const section = document.getElementById('component-9');
+        if (!section) {
+            return;
+        }
+
+        const grid = section.firstElementChild?.firstElementChild ?? null;
+        const columna = grid?.firstElementChild ?? null;
+
+        // Título del bloque: el primer encabezado DIRECTO de la columna. El `<h3>`
+        // de la lista de iconos va después en el DOM, así que nunca se confunde
+        // con el título.
+        const heading = columna?.querySelector(
+            ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6',
+        ) ?? null;
+
+        // `splitReveal` nunca se aplica a un `h1`: escribe `opacity: 0` en las
+        // partes del texto al cargar, y un `h1` por encima del pliegue retrasaría
+        // el LCP (decisión 4 del helper).
+        if (heading && heading.tagName !== 'H1') {
+            splitReveal(heading, {
+                type: 'words',
+                y: 26,
+                stagger: 0.045,
+                duration: 0.75,
+                ease: 'power3.out',
+            });
+        }
+
+        // Lista de iconos: entra elemento por elemento. El bloque de texto
+        // enriquecido (`.rich-text`) también puede traer `<ul>`, así que se
+        // descarta para no revelar el texto del CMS por partes.
+        const list = Array.from(columna?.querySelectorAll('ul') ?? [])
+            .find((ul) => !ul.closest('.rich-text')) ?? null;
+
+        if (list) {
+            revealStagger(list, {
+                selector: 'li',
+                stagger: 0.08,
+                y: 16,
+                duration: 0.55,
+                ease: 'power2.out',
+            });
+        }
+
+        const carousel = section.querySelector('.sealand-galeria-swiper');
+
+        if (carousel) {
+            // El contenedor del carrusel se levanta con el bloque. Se usa
+            // `opacityFrom: 1` (sin rampa de opacidad) porque el carrusel puede
+            // contener el `<iframe>` de YouTube: un reveal con opacidad 0 dejaría
+            // ese control invisible pero enfocable (S13).
+            revealSection(carousel, {
+                y: 34,
+                opacityFrom: 1,
+                duration: 0.85,
+                ease: 'power3.out',
+            });
+
+            // La profundidad va al medio de cada slide, no al slide. La escala del
+            // hover (1.05) tapa el hueco que abriría la inclinación en los bordes
+            // del marco, porque el medio ocupa el slide completo.
+            const media = Array.from(
+                carousel.querySelectorAll('.swiper-slide > img, .swiper-slide > video'),
+            );
+
+            hoverDepth(media, {
+                maxTilt: 3,
+                lift: -4,
+                scale: 1.05,
+                duration: 0.45,
+            });
+        }
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+
+    // Swiper primero: en modo `loop` clona los slides, y el movimiento tiene que
+    // alcanzarlos a todos. Por eso el setup del movimiento va después del
+    // arranque del carrusel.
+    document.addEventListener('DOMContentLoaded', () => {
+        initGaleriaSwiper();
+        setupMotion();
+    });
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

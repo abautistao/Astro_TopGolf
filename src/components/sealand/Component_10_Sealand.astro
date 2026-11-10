@@ -1,0 +1,316 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    variante?: "Preguntas Frecuentes" | "Restricciones";
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    color_fondo?: string;
+    imagen_fondo?: any;
+    color_titulo_acordeon?: string;
+    color_fondo_titulo_acordeon?: string;
+    color_texto_acordeon?: string;
+    color_fondo_acordeon?: string;
+    acordeones?: any[];
+    final_text: any;
+    color_final_text: string;
+}
+
+const {
+    variante = "Preguntas Frecuentes",
+    titulo,
+    htmlTag = "h2",
+    color_fondo,
+    imagen_fondo,
+    color_titulo_acordeon,
+    color_fondo_titulo_acordeon,
+    color_texto_acordeon,
+    color_fondo_acordeon,
+    acordeones = [],
+    final_text,
+    color_final_text
+} = Astro.props;
+
+const TitleTag = htmlTag;
+
+// Configuración visual según la variante elegida
+const isFAQ = variante === "Preguntas Frecuentes";
+
+const defaultBgColor = isFAQ ? "var(--surface-brand-primary)" : "var(--neutral-background-subtle)";
+const finalBgColor = color_fondo || defaultBgColor;
+const bgImageStyle = imagen_fondo ? `url(${getStrapiUrl(imagen_fondo)})` : "none";
+
+// Colores de texto por variante (preservan comportamiento actual)
+const defaultAccTitleColor = isFAQ ? "var(--neutral-text-inverted)" : "var(--surface-brand-primary)";
+const defaultAccContentColor = "var(--neutral-text-inverted)";
+
+const finalAccTitleColor = color_titulo_acordeon || defaultAccTitleColor;
+const finalAccContentColor = color_texto_acordeon || defaultAccContentColor;
+
+// Fondos: solo se aplican como style inline si hay override desde Strapi.
+// Sin override, las clases Tailwind en headerClass/bodyContainerClass dan el default por variante.
+const headerBgStyle = color_fondo_titulo_acordeon
+    ? { backgroundColor: color_fondo_titulo_acordeon }
+    : undefined;
+const bodyBgStyle = color_fondo_acordeon
+    ? { backgroundColor: color_fondo_acordeon }
+    : undefined;
+
+// Estilos dinámicos para los ítems
+const itemContainerClass = isFAQ 
+    ? "border-b border-white py-4!" 
+    : "border-2 border-[var(--surface-brand-primary)] mb-2";
+
+const headerClass = isFAQ 
+    ? "w-full flex justify-start items-center gap-4 text-left cursor-pointer focus:outline-none" 
+    : "w-full flex justify-between items-center bg-[var(--surface-brand-secondary)]/10 p-2 text-left cursor-pointer focus:outline-none";
+
+const iconClass = isFAQ 
+    ? "text-[var(--brand-interactive-base)] text-xl shrink-0 transition-transform duration-300" 
+    : "text-[var(--surface-brand-primary)] text-xl shrink-0 transition-transform duration-300 order-last";
+
+const titleTextClass = "font-[family-name:var(--font-principal)] font-bold text-[18px] md:text-[20px]";
+
+const bodyContainerClass = isFAQ 
+    ? "overflow-hidden transition-all duration-300 max-h-0" 
+    : "overflow-hidden transition-all duration-300 max-h-0 bg-[var(--surface-brand-primary)]";
+
+const bodyContentClass = "font-[family-name:var(--font-secundaria)] text-[16px] leading-relaxed [&>p]:mb-2 [&_strong]:font-bold [&_u]:underline [&_em]:italic" + (isFAQ
+    ? " p-5! md:p-6!"
+    : " p-4! md:p-5! [&_ul]:list-disc! [&_ul]:pl-5! [&_li]:mb-1!");
+
+// Generar un ID único para este componente para aislar la interactividad
+const componentId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<section 
+    class="c10-section w-full py-7 relative overflow-hidden"
+    style={{
+        backgroundColor: finalBgColor,
+        backgroundImage: bgImageStyle,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+    }}
+>
+    <div class="container mx-auto px-6 md:px-12 relative z-10">
+        
+        {/* Título Principal */}
+        {titulo && (
+            <div class="text-center mb-8 md:mb-10">
+                <TitleTag class={`c10-titulo font-[family-name:var(--font-principal)] text-[24px] md:text-[40px] font-black uppercase ${isFAQ ? 'text-white' : 'text-[var(--surface-brand-primary)]'}`}>
+                    {titulo}
+                </TitleTag>
+            </div>
+        )}
+
+        {/* Contenedor de Acordeones */}
+        <div class="c10-acordeones flex flex-col w-full" id={componentId}>
+            {acordeones.map((item, index) => (
+                <div class={`accordion-item ${itemContainerClass}`}>
+                    <button
+                        class={`accordion-header ${headerClass} focus:outline-none!`}
+                        style={headerBgStyle}
+                        aria-expanded="false"
+                        aria-controls={`content-${componentId}-${index}`}
+                    >
+                        {/* Icono izquierdo (o derecho en variante 2) */}
+                        <div style={{ color: finalAccTitleColor }} class={`accordion-icon ${iconClass}`}>
+                            {item.icono ? (
+                                <i class={item.icono}></i>
+                            ) : (
+                                <i class={`fa-solid ${isFAQ ? 'fa-circle-plus' : 'fa-plus'}`}></i>
+                            )}
+                        </div>
+
+                        {/* Título del Acordeón */}
+                        <span
+                            class={`accordion-title ${titleTextClass} flex items-center gap-2`}
+                            style={{ color: finalAccTitleColor }}
+                        >
+                            {!isFAQ && item.icono && <i class={`${item.icono} text-xl shrink-0`}></i>}
+                            {item.titulo}
+                        </span>
+                    </button>
+
+                    {/* Contenido Desplegable */}
+                    <div
+                        id={`content-${componentId}-${index}`}
+                        class={`accordion-body ${bodyContainerClass}`}
+                        style={bodyBgStyle}
+                    >
+                        <div
+                            class={`accordion-content-inner ${bodyContentClass}`}
+                            style={{ color: finalAccContentColor }}
+                            set:html={stringifyRichText(item.contenido)}
+                        />
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        {final_text && (
+            <div set:html={stringifyRichText(final_text)} style={{ color: color_final_text }} class="text-xs mt-2"></div>
+        )}
+    </div>
+</section>
+
+<script>
+    import { initMotion, revealStagger, splitReveal } from "../../scripts/motion";
+
+function initAccordions() {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    // Abrir el primer acordeón por defecto
+    if (accordionHeaders.length > 0) {
+        const firstHeader = accordionHeaders[0];
+        const firstItem = firstHeader.closest('.accordion-item');
+        const firstBody = firstItem?.querySelector('.accordion-body');
+        const firstIcon = firstItem?.querySelector('.accordion-icon');
+
+        firstHeader.setAttribute('aria-expanded', 'true');
+        if (firstBody) firstBody.style.maxHeight = firstBody.scrollHeight + 'px';
+        if (firstIcon) {
+            if (firstIcon.querySelector('.fa-circle-plus')) {
+                firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-circle-plus', 'fa-circle-minus');
+            } else if (firstIcon.querySelector('.fa-plus')) {
+                firstIcon.innerHTML = firstIcon.innerHTML.replace('fa-plus', 'fa-minus');
+            }
+            firstIcon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    accordionHeaders.forEach(header => {
+            // Remove previous event listeners to avoid duplicates if re-init occurs
+            const newHeader = header.cloneNode(true);
+            header.parentNode?.replaceChild(newHeader, header);
+            
+            newHeader.addEventListener('click', (e) => {
+                const btn = e.currentTarget as HTMLElement;
+                const item = btn.closest('.accordion-item');
+                const body = item?.querySelector('.accordion-body') as HTMLElement;
+                const icon = btn.querySelector('.accordion-icon') as HTMLElement;
+                
+                // Toggle state
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                
+                // Close all other accordions (Optional, adjust if you want multiple open)
+                const allItems = btn.closest('.flex-col')?.querySelectorAll('.accordion-item');
+                allItems?.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        const otherBtn = otherItem.querySelector('.accordion-header');
+                        const otherBody = otherItem.querySelector('.accordion-body') as HTMLElement;
+                        const otherIcon = otherItem.querySelector('.accordion-icon') as HTMLElement;
+                        
+                        otherBtn?.setAttribute('aria-expanded', 'false');
+                        if (otherBody) otherBody.style.maxHeight = '0px';
+                        if (otherIcon) {
+                            // Rotate back icon
+                            if(otherIcon.querySelector('.fa-circle-minus')) {
+                                otherIcon.innerHTML = otherIcon.innerHTML.replace('fa-circle-minus', 'fa-circle-plus');
+                            } else if (otherIcon.querySelector('.fa-minus')) {
+                                otherIcon.innerHTML = otherIcon.innerHTML.replace('fa-minus', 'fa-plus');
+                            }
+                            otherIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                });
+
+                // Open/Close current
+                if (isExpanded) {
+                    btn.setAttribute('aria-expanded', 'false');
+                    if (body) body.style.maxHeight = '0px';
+                    if (icon) {
+                        if(icon.querySelector('.fa-circle-minus')) icon.innerHTML = icon.innerHTML.replace('fa-circle-minus', 'fa-circle-plus');
+                        else if (icon.querySelector('.fa-minus')) icon.innerHTML = icon.innerHTML.replace('fa-minus', 'fa-plus');
+                        icon.style.transform = 'rotate(0deg)';
+                    }
+                } else {
+                    btn.setAttribute('aria-expanded', 'true');
+                    if (body) body.style.maxHeight = body.scrollHeight + 'px';
+                    if (icon) {
+                        if(icon.querySelector('.fa-circle-plus')) icon.innerHTML = icon.innerHTML.replace('fa-circle-plus', 'fa-circle-minus');
+                        else if (icon.querySelector('.fa-plus')) icon.innerHTML = icon.innerHTML.replace('fa-plus', 'fa-minus');
+                        icon.style.transform = 'rotate(180deg)'; // Slight rotate for smooth transition
+                    }
+                }
+            });
+        });
+    }
+
+    // Initialize on DOM load and on Astro page changes
+    document.addEventListener('DOMContentLoaded', initAccordions);
+    // Para entornos con ViewTransitions (Astro SPA mode)
+    document.addEventListener('astro:page-load', initAccordions);
+
+/*
+ * Motion del bloque (T7) — este bloque es un acordeón (título + lista de
+ * preguntas), así que la receta es la de los bloques "split": el título se
+ * arma por palabras y la lista entra escalonada.
+ *
+ * Las anclas `c10-` son el único asidero del script: no cambian el layout,
+ * sólo dan un nombre estable al título, al contenedor y a la lista. El
+ * contenedor de los ítems es `.c10-acordeones` y cada ítem es un
+ * `.accordion-item` (esa clase ya existía en el marcado).
+ *
+ * El título se revela con `splitReveal` porque es un encabezado de sección que
+ * vive por debajo del pliegue. Si el editor eligió `h1` para este bloque NO
+ * se parte: un `h1` es candidato a LCP y `splitReveal` escribe `opacity: 0` en
+ * cada parte al cargar, lo que retrasa el pintado del texto principal. En ese
+ * caso el título se deja exactamente como lo dibuja la hoja de estilos.
+ *
+ * Los ítems del acordeón SÍ se revelan: son wrappers no enfocables (el
+ * `<button>` vive dentro), y el helper trae la red de seguridad de S13 — al
+ * enfocar un control, limpia el `opacity: 0` de sus ancestros, de modo que
+ * un botón enfocable nunca queda invisible (defecto P1 reparado).
+ */
+function setupFaqMotion() {
+    document.querySelectorAll('.c10-section').forEach((section) => {
+        const titulo = section.querySelector('.c10-titulo');
+
+        if (titulo && titulo.tagName !== 'H1') {
+            splitReveal(titulo, {
+                type: 'words',
+                y: 26,
+                duration: 0.75,
+                stagger: 0.04,
+            });
+        }
+
+        const acordeones = section.querySelector('.c10-acordeones');
+
+        if (acordeones) {
+            revealStagger(acordeones, {
+                selector: '.accordion-item',
+                y: 18,
+                stagger: 0.09,
+                duration: 0.6,
+            });
+        }
+    });
+}
+
+// El orden importa: `motionDisabled()` depende de `initialized`, así que un
+// trigger registrado antes de `initMotion()` no haría nada.
+initMotion();
+setupFaqMotion();
+
+// Decisión 7, reflejada desde el helper: en una navegación del lado del
+// cliente el helper desmonta sus triggers y vuelve a armar el motion, así que
+// hay que registrar los triggers otra vez. `Layout.astro` no registra un
+// ClientRouter hoy, así que esto nunca se dispara; existe para que el bloque
+// no se quede estático si algún día se activa el modo SPA. El guardia de
+// primera carga es el mismo del helper: Astro también dispara
+// `astro:page-load` en la carga inicial y volver a registrar ahí dejaría dos
+// ScrollTrigger sobre los mismos elementos.
+let initialLoadSeen = false;
+document.addEventListener('astro:page-load', () => {
+    const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+    initialLoadSeen = true;
+
+    if (isInitialLoad) {
+        return;
+    }
+
+    setupFaqMotion();
+});
+</script>

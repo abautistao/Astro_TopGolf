@@ -1,0 +1,347 @@
+---
+import { getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
+import { Image } from "astro:assets";
+import Separadores from "./Separadores.astro";
+
+const { data, locale = "es", hideTarjeta } = Astro.props;
+
+// TODO(brand): los tres textos por defecto de más abajo (newsletter, marcas y copyright)
+// son el copy legal de Acuario heredado de la copia base. Hay que sustituirlos por la
+// redacción real de Sealand/Sealands antes de publicar este tema.
+
+const logoPrincipal = getStrapiUrl(data?.logo_principal);
+const logoSecundario = getStrapiUrl(data?.logo_secundario);
+const columnasEnlaces = data?.columnas_enlaces || [];
+
+const newsletterTitulo = data?.newsletter_titulo || "NEWSLATER";
+const newsletterDesc = data?.newsletter_descripcion || "¡Lo mejor del mar en tu correo! Lo último en el Sealand Inbursa.";
+const newsletterBoton = data?.newsletter_boton_texto || "Suscríbete";
+
+const ctaTitulo = data?.cta_titulo;
+const ctaBotonTexto = data?.cta_boton_texto;
+const ctaBotonUrl = data?.cta_boton_url || "#";
+/* El color de la banda del CTA sigue viniendo del CMS (`cta_color_fondo`):
+   el componente lo lee, no lo reescribe. El respaldo es una variable de la
+   paleta (nunca un hex literal) y cae en el navy de las bandas del footer. */
+const ctaColorFondo = data?.cta_color_fondo || "var(--surface-brand-secondary)";
+
+const franjaTitulo = data?.franja_seguridad_titulo || "¡Aparta tu lugar comprando en línea!";
+const franjaTexto = data?.franja_seguridad_texto || "Normas de Seguridad de la Industria de Tarjetas de Pago\nOpciones de Pago";
+const logosPagos = data?.logos_pagos?.data || data?.logos_pagos || [];
+
+const textoMarcas = data?.texto_marcas || "Sealand Inbursa y Sealand Interactivo son marcas de Ventura Entertainment";
+const tituloParques = data?.otros_parques_titulo || "Otros Parques";
+//const logosParques = data?.logos_parques?.data || data?.logos_parques || [];
+const logosParques = data?.logos?.data || data?.logos || [];
+
+const social = data?.social || [];
+const copyright = data?.copyright || "© Sealand Inbursa. Todos los derechos reservados";
+const enlacesLegales = data?.enlaces_legales || [];
+
+const imagenFondo = getStrapiUrl(data?.imagen_fondo);
+const seccion5ColorFondo = data?.seccion_5_color_fondo;
+
+const separadorInferior = data?.separador_inferior;
+/* El separador lo pinta el CMS; el respaldo arranca en el navy de la banda
+   que le precede para que la onda no deje una costura visible. */
+const separadorColorInicio = separadorInferior?.color_inicio || "var(--neutral-background-strong)";
+const separadorColorFinal = separadorInferior?.color_final || "var(--accent-highlight-primary)";
+const separadorTipo = separadorInferior?.tipo || "tipo_1";
+---
+
+<footer class="w-full! relative! font-[family-name:var(--font-secundaria)]">
+
+    <!-- SECCIÓN 1 — Banner CTA superior (tarjetahabientes) -->
+    {!hideTarjeta && (ctaTitulo || ctaBotonTexto) && (
+        <section
+            class="w-full! py-5! md:py-6! text-center! text-white!"
+            style={`background-color: ${ctaColorFondo};`}
+        >
+            <div class="container! mx-auto! px-6! md:px-12! max-w-5xl! flex! flex-col! items-center! justify-center! gap-3! md:gap-4!">
+                {ctaTitulo && (
+                    <h2 class="font-[family-name:var(--font-principal)]! font-bold! md:font-black! text-[18px]! md:text-[32px]! uppercase! tracking-wide! leading-tight!">
+                        {ctaTitulo}
+                    </h2>
+                )}
+                {ctaBotonTexto && (
+                    <a
+                        href={ctaBotonUrl}
+                        class="inline-block! bg-(--brand-interactive-base)! text-(--neutral-text-inverted)! font-[family-name:var(--font-principal)]! font-bold! text-[20px]! uppercase! px-8! md:px-10! py-3! rounded-full! shadow-[0_4px_10px_0_rgba(0,0,0,0.5)]! transition-opacity! hover:opacity-90! tracking-wide!"
+                    >
+                        {ctaBotonTexto}
+                    </a>
+                )}
+            </div>
+        </section>
+    )}
+
+    <!-- SECCIÓN 2 — Logos + columnas de enlaces + contacto + Newsletter -->
+    <!-- Navy medio del footer: `neutral-background-strong`. -->
+    <section class="w-full! py-10! md:py-14! bg-(--neutral-background-strong)! text-white!">
+        <div class="container! mx-auto! px-6! md:px-12! max-w-[1280px]!">
+            <div class="sealand-footer-columns grid! grid-cols-1! md:grid-cols-12! gap-8! md:gap-6! items-center!">
+
+                <!-- Columna 1: Logos -->
+                <div class="md:col-span-2! flex! flex-row! items-center! justify-center! gap-6! md:gap-8!">
+                    {logoPrincipal && (
+                        <Image src={logoPrincipal} alt="Logo principal" width={220} height={130} class="h-14! md:h-16! w-auto! object-contain!" />
+                    )}
+                    {logoSecundario && (
+                        <Image src={logoSecundario} alt="Logo secundario" width={220} height={130} class="h-14! md:h-16! w-auto! object-contain!" />
+                    )}
+                </div>
+
+                <!-- Columnas 2 y 3: Menús (Nosotros / Beneficios) -->
+                {columnasEnlaces.length > 0 && (
+                    <div class="md:col-span-5! grid! grid-cols-1! sm:grid-cols-2! gap-6! md:gap-8!">
+                        {columnasEnlaces.map((columna: any) => (
+                            <div class="footer-accordion-group border-b! border-white/20! md:border-0! pb-3! md:pb-0!">
+                                <button class="footer-accordion-btn w-full! md:w-auto! flex! justify-between! items-center! text-left! md:cursor-default! focus:outline-none!">
+                                    <h3 class="text-(--accent-highlight-primary)! font-[family-name:var(--font-principal)]! font-bold! text-base! md:text-lg! border-b-2! border-(--accent-highlight-primary)! pb-1! inline-block! leading-tight!">
+                                        {columna.titulo}
+                                    </h3>
+                                    <i class="fa-solid fa-chevron-down text-(--accent-highlight-primary)! md:hidden! transition-transform! duration-300! text-sm! ml-2!"></i>
+                                </button>
+                                <ul class="footer-accordion-content hidden! md:flex! flex-col! gap-1.5! mt-3! md:mt-4!">
+                                    {columna.enlaces?.map((link: any) => (
+                                        <li>
+                                            <a
+                                                href={link.url ? getLocalizedUrl(link.url, locale) : "#"}
+                                                class="text-white! hover:text-(--accent-highlight-primary)! transition-colors text-sm! leading-relaxed!"
+                                            >
+                                                {link.texto}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                <!-- Columna 4: Contacto -->
+                <div class="md:col-span-2! flex! flex-col! gap-4!">
+                    {(data?.contacto_direccion || data?.contacto_telefono) ? (
+                        <>
+                            {data.contacto_direccion && (
+                                <div class="flex! items-start! gap-3!">
+                                    <i class="fa-solid fa-location-dot text-(--accent-highlight-primary)! mt-1! text-base! shrink-0!"></i>
+                                    <p class="text-(--accent-highlight-primary)! text-sm! leading-snug!">{data.contacto_direccion}</p>
+                                </div>
+                            )}
+                            {data.contacto_telefono && (
+                                <div class="flex! items-center! gap-3!">
+                                    <i class="fa-solid fa-phone text-(--accent-highlight-primary)! text-base! shrink-0!"></i>
+                                    <a
+                                        href={`tel:${data.contacto_telefono.replace(/\s|\(|\)|-/g, '')}`}
+                                        class="text-(--accent-highlight-primary)! text-sm! hover:underline!"
+                                    >
+                                        {data.contacto_telefono}
+                                    </a>
+                                </div>
+                            )}
+                        </>
+                    ) : null}
+                </div>
+
+                <!-- Columna 5: Newsletter -->
+                <div class="md:col-span-3!">
+                    <h3 class="font-[family-name:var(--font-principal)]! font-bold! text-base! md:text-lg! mb-2! text-white! tracking-wide!">
+                        {newsletterTitulo}
+                    </h3>
+                    <p class="text-white/90! text-sm! mb-4! leading-snug!">{newsletterDesc}</p>
+                    <form class="flex! flex-row! w-full! h-11!" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Email" class="w-full! px-4! bg-white! text-black! placeholder:text-gray-400! outline-none! font-[family-name:var(--font-secundaria)]! text-sm!" required />
+                        <button
+                            type="submit"
+                            class="bg-(--brand-interactive-base)! text-(--neutral-text-inverted)! font-bold! px-5! uppercase! hover:brightness-110! transition-all! font-[family-name:var(--font-principal)]! text-xs! md:text-sm! whitespace-nowrap!"
+                        >
+                            {newsletterBoton}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 3 — Franja de pagos -->
+    <!-- Navy profundo `custom-color-01`: la franja de medios de pago
+         queda como banda propia, separada del bloque de texto de la sección 2
+         (navy `neutral-background-strong`), igual que en el remoto. -->
+    <section class="w-full! bg-(--custom-color-01)! py-8! text-center! px-4! text-white!">
+        <h2 class="font-[family-name:var(--font-principal)]! font-bold! text-lg! md:text-xl! mb-2!">{franjaTitulo}</h2>
+        <p class="text-white/90! text-xs! md:text-sm! mb-6! whitespace-pre-line! leading-snug!">{franjaTexto}</p>
+        {logosPagos.length > 0 && (
+            <div class="flex! flex-wrap! justify-center! items-center! gap-6! md:gap-10!">
+                {logosPagos.map((logoItem: any) => {
+                    const url = getStrapiUrl(logoItem);
+                    return url ? (
+                        <Image src={url} alt="Logo de pago" width={120} height={48} class="h-6! md:h-8! w-auto! object-contain!" />
+                    ) : null;
+                })}
+            </div>
+        )}
+    </section>
+
+    <!-- SECCIÓN 4 — Otros Parques -->
+    <!-- Cierra el ciclo de navys del footer: navy medio `neutral-background-strong`,
+         el mismo tono de la sección 2. -->
+    <section class="w-full! bg-(--neutral-background-strong)! pt-10! pb-4! md:pt-14! md:pb-5! text-center! text-white! px-6!">
+        <div class="container! mx-auto! px-6! md:px-12! max-w-[1280px]!">
+            <p class="text-sm! md:text-base! font-bold! mb-2!">{textoMarcas}</p>
+            <p class="text-sm! md:text-base! font-bold! mb-8! uppercase! tracking-wide! text-(--accent-highlight-primary)!">{tituloParques}</p>
+            {logosParques.length > 0 && (
+                <div class="flex! flex-wrap! justify-center! items-center! gap-8! md:gap-14! mb-2!">
+                    {logosParques.map((logoItem: any) => {
+                        const url = getStrapiUrl(logoItem.image_logo);
+                        return url ? (
+                            <a href={logoItem.url} target="_blank">
+                                <Image src={url} alt="Parque aliado" inferSize={true} class="h-auto! md:h-11! w-auto! object-contain!" />
+                            </a>
+                        ) : null;
+                    })}
+                </div>
+            )}
+        </div>
+    </section>
+
+    <!-- Separador decorativo (onda) entre sección 4 y 5 -->
+    {separadorInferior && (
+        <Separadores
+            tipo={separadorTipo}
+            color_inicio={separadorColorInicio}
+            color_final={separadorColorFinal}
+        />
+    )}
+
+    <!-- SECCIÓN 5 — Banda inferior con imagen decorativa -->
+    <!-- El fondo sigue viniendo del CMS (`seccion_5_color_fondo`); el respaldo
+         es el navy profundo de la paleta para no dejar una banda fuera de
+         esquema cuando el campo viene vacío. -->
+    <section
+        class="w-full! relative! overflow-hidden! py-12! md:py-16! min-h-[80px]! text-white!"
+        style={seccion5ColorFondo ? `background-color: ${seccion5ColorFondo};` : "background-color: var(--custom-color-01);"}
+    >
+        {imagenFondo && (
+            <div class="absolute! inset-0! z-0! pointer-events-none!">
+                <Image src={imagenFondo} alt="" width={1920} height={600} class="w-full! h-full! object-cover! opacity-60! mix-blend-multiply!" />
+            </div>
+        )}
+
+        <div class="relative! z-10! container! mx-auto! px-6! md:px-12! max-w-[1280px]! text-center!">
+            {social.length > 0 && (
+                <div class="flex! justify-center! items-center! gap-6! md:gap-10! mb-6!">
+                    {social.map((item: any) => (
+                        <a
+                            href={item.url || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-white! hover:opacity-70! transition-opacity! text-2xl!"
+                            aria-label={item.icono_clase || "social"}
+                        >
+                            <i class={item.icono_clase || "fa-solid fa-share-nodes"}></i>
+                        </a>
+                    ))}
+                </div>
+            )}
+
+            <p class="text-xs! md:text-sm! font-bold! mb-6!">{copyright}</p>
+
+            <div class="w-full! max-w-3xl! mx-auto! border-t! border-white/30! pt-5! pb-20!">
+                <ul class="flex! flex-wrap! justify-center! items-center! text-xs! md:text-sm! font-bold! gap-y-2! text-white!">
+                    {enlacesLegales.map((link: any, index: number) => (
+                        <li class="flex! items-center!">
+                            <a
+                                href={link.url ? getLocalizedUrl(link.url, locale) : "#"}
+                                class="hover:underline! transition-colors! px-3! text-white!"
+                            >
+                                {link.texto}
+                            </a>
+                            {index < enlacesLegales.length - 1 && (
+                                <span class="text-white!">|</span>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div id="wa-contact" class="rounded-full fixed right-[5%] bottom-[10%] w-12 h-12 bg-(--feedback-positive-base)! flex justify-center items-center text-white! text-3xl! z-50">
+        <a target="_blank" aria-label="WhatsApp Link" class="text-white!" href="https://api.whatsapp.com/send?phone=5215574908330">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+    </div>
+</footer>
+
+<script>
+    import { initMotion, revealStagger } from "../../scripts/motion";
+
+    const accordions = document.querySelectorAll('.footer-accordion-btn');
+    accordions.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (window.innerWidth >= 768) return;
+            const content = btn.nextElementSibling as HTMLElement | null;
+            const icon = btn.querySelector('i');
+            if (!content) return;
+            if (content.classList.contains('hidden!')) {
+                content.classList.remove('hidden!');
+                content.classList.add('flex!');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden!');
+                content.classList.remove('flex!');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        });
+    });
+
+    /* ================================================================
+     * Capa de movimiento del footer (T2).
+     *
+     * El footer está por debajo del pliegue, así que aquí sí cabe un reveal
+     * por scroll: las columnas entran en cascada cuando la sección entra en
+     * el viewport, y el trigger es `once: true` — se dispara una vez y no
+     * vuelve a escribir nada mientras el lector sigue abajo.
+     *
+     * QUÉ se anima: las columnas directas de la retícula (logos, menús,
+     * contacto y newsletter). `:scope > div` las toma sólo a ellas, sin
+     * bajar a los `<li>` de cada menú.
+     *
+     * Las columnas CONTIENEN enlaces, el input del newsletter y su botón, y
+     * por eso NO se pasan `skipFocusable`: la columna es el objetivo, nunca
+     * el control. Un enlace o un input nunca es objetivo de un `gsap.from()`
+     * (S13). El helper además tiene su red de seguridad: si algo recibe el
+     * foco antes de que dispare el trigger, limpia el `opacity: 0` de sus
+     * antecesores para que el control sea visible justo cuando hace falta.
+     * ================================================================ */
+    function setupSealandFooterMotion() {
+        document.querySelectorAll('.sealand-footer-columns').forEach((columns) => {
+            revealStagger(columns, {
+                selector: ':scope > div',
+                stagger: 0.09,
+                y: 26,
+                duration: 0.7,
+                ease: 'power3.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupSealandFooterMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupSealandFooterMotion();
+    });
+</script>

@@ -1,0 +1,258 @@
+---
+import { getStrapiUrl } from "../../lib/strapi.js";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+}
+
+export interface Card {
+    imagen?: StrapiMedia;
+    titulo?: string;
+    descripcion?: string;
+}
+
+export interface Props {
+    color_fondo?: string;
+    color_texto?: string;
+    color_titulo_card?: string;
+    titulo?: string;
+    subtitulo?: string;
+    cards?: Card[];
+}
+
+const {
+    color_fondo,
+    color_texto,
+    color_titulo_card,
+    titulo,
+    subtitulo,
+    cards = [],
+} = Astro.props;
+
+const finalBgColor = color_fondo || "var(--surface-brand-primary)";
+const finalTextColor = color_texto || "var(--surface-brand-primary)";
+const finalCardTitleColor = color_titulo_card || "var(--surface-brand-secondary)";
+const validCards = cards.filter((c) => c && c.imagen);
+---
+
+<section
+    class="w-full py-12 md:py-20 relative overflow-hidden"
+    style={{ backgroundColor: finalBgColor }}
+>
+    <div class="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
+        {(titulo || subtitulo) && (
+            <div class="text-center mb-10 md:mb-14">
+                {titulo && (
+                    <h2
+                        class="font-[family-name:var(--font-principal)] text-[28px] md:text-[36px] font-bold uppercase mb-3 leading-tight"
+                        style={`color: ${finalTextColor};`}
+                    >
+                        {titulo}
+                    </h2>
+                )}
+                {subtitulo && (
+                    <p
+                        class="font-[family-name:var(--font-secundaria)] text-[16px] md:text-[18px] leading-relaxed max-w-3xl mx-auto"
+                        style={`color: ${finalTextColor};`}
+                    >
+                        {subtitulo}
+                    </p>
+                )}
+            </div>
+        )}
+
+        {validCards.length > 0 && (
+            <div class="sealand-19-swiper relative">
+                <div class="swiper-wrapper items-stretch">
+                    {validCards.map((card) => {
+                        const imgUrl = getStrapiUrl(card.imagen);
+                        return (
+                            <div class="swiper-slide h-auto">
+                                <article class="flex flex-col h-full">
+                                    <div class="rounded-[24px] overflow-hidden shadow-xl aspect-[3/4] md:aspect-[4/5]">
+                                        <img
+                                            src={imgUrl}
+                                            alt={card.imagen?.alternativeText || card.titulo || "Card"}
+                                            class="w-full h-full object-cover"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    {card.titulo && (
+                                        <h3
+                                            class="font-[family-name:var(--font-principal)] text-[20px] md:text-[24px] font-bold uppercase text-center mt-5 mb-3"
+                                            style={`color: ${finalCardTitleColor};`}
+                                        >
+                                            {card.titulo}
+                                        </h3>
+                                    )}
+                                    {card.descripcion && (
+                                        <p
+                                            class="font-[family-name:var(--font-secundaria)] text-[15px] md:text-[16px] leading-relaxed text-center"
+                                            style={`color: ${finalTextColor};`}
+                                        >
+                                            {card.descripcion}
+                                        </p>
+                                    )}
+                                </article>
+                            </div>
+                        );
+                    })}
+                </div>
+                {validCards.length > 3 && (
+                    <div class="swiper-pagination mt-8"></div>
+                )}
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    :global(.sealand-19-swiper .swiper-pagination-bullet) {
+        background: var(--surface-brand-primary);
+        opacity: 0.4;
+        width: 10px;
+        height: 10px;
+        transition: all 0.3s ease;
+    }
+    :global(.sealand-19-swiper .swiper-pagination-bullet-active) {
+        background: var(--brand-interactive-base);
+        opacity: 1;
+        width: 24px;
+        border-radius: 5px;
+    }
+</style>
+
+<script>
+    import Swiper from 'swiper';
+    import { Pagination, Autoplay } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    import { initMotion, revealSection, splitReveal, hoverDepth } from "../../scripts/motion";
+
+    function initC19Swiper() {
+        const sliders = document.querySelectorAll('.sealand-19-swiper');
+        sliders.forEach((sliderElement) => {
+            const slideCount = sliderElement.querySelectorAll('.swiper-slide').length;
+            new Swiper(sliderElement as HTMLElement, {
+                modules: [Pagination, Autoplay],
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: slideCount > 3,
+                autoplay: { delay: 5000, disableOnInteraction: false },
+                pagination: { el: '.swiper-pagination', clickable: true },
+                breakpoints: {
+                    768: { slidesPerView: 2, spaceBetween: 24 },
+                    1024: { slidesPerView: 3, spaceBetween: 32 },
+                },
+            });
+        });
+    }
+
+    /*
+     * Movimiento del bloque (T6).
+     *
+     * Swiper.js es dueño del transform de sus slides: por eso NINGÚN trigger de
+     * este script toca `.swiper-slide`. La profundidad se aplica a la TARJETA de
+     * dentro del slide (`article`), nunca al slide, y tampoco hay un reveal por
+     * slide: un slide fuera de pantalla se quedaría en opacidad 0 hasta que el
+     * usuario lo desplace, y la posición de un ScrollTrigger no sigue el
+     * transform interno de Swiper.
+     */
+    function setupMotion() {
+        // Cada carrusel del bloque se resuelve por separado, así que dos
+        // instancias en la misma página no se pisan.
+        const swipers = Array.from(document.querySelectorAll('.sealand-19-swiper'));
+
+        for (const swiper of swipers) {
+            const section = swiper.closest('section');
+
+            if (!section) {
+                continue;
+            }
+
+            // Encabezado: el contenedor de texto es el primer bloque dentro de la
+            // columna, así que el `h2` y el subtítulo se resuelven por estructura.
+            // Si el bloque se configuró sin título ni subtítulo, ese primer bloque
+            // es el carrusel: en ese caso no hay encabezado que revelar.
+            const intro = section.firstElementChild?.firstElementChild ?? null;
+            const heading = intro?.querySelector('h2') ?? null;
+            const subtitle = intro && intro !== swiper ? intro.querySelector('p') : null;
+
+            // `splitReveal` nunca se aplica a un `h1`: escribe `opacity: 0` en las
+            // partes del texto al cargar, y un `h1` por encima del pliegue retrasaría
+            // el LCP (decisión 4 del helper).
+            if (heading && heading.tagName !== 'H1') {
+                splitReveal(heading, {
+                    type: 'words',
+                    y: 26,
+                    stagger: 0.045,
+                    duration: 0.75,
+                    ease: 'power3.out',
+                });
+            }
+
+            // El subtítulo entra después del título, como un bloque aparte.
+            if (subtitle) {
+                revealSection(subtitle, {
+                    y: 20,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                });
+            }
+
+            // El carrusel entra como un solo bloque. Aquí sí puede bajar la opacidad:
+            // dentro del carrusel no hay ningún control enfocable (las tarjetas no
+            // tienen enlaces y los bullets de paginación de Swiper 11 son `span`).
+            revealSection(swiper, {
+                y: 34,
+                duration: 0.85,
+                ease: 'power3.out',
+            });
+        }
+
+        // La tarjeta es lo que se inclina: la imagen vive dentro de una caja con
+        // `overflow: hidden` y sombra, así que la inclinación se ve limpia.
+        const tarjetas = Array.from(document.querySelectorAll('.sealand-19-swiper .swiper-slide > article'));
+
+        hoverDepth(tarjetas, {
+            maxTilt: 6,
+            lift: -6,
+            scale: 1.02,
+            duration: 0.4,
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de esta llamada no haría nada.
+    initMotion();
+
+    // Swiper primero: en modo `loop` clona los slides, y el movimiento tiene que
+    // alcanzarlos a todos. Por eso el setup del movimiento va después del
+    // arranque del carrusel.
+    document.addEventListener('DOMContentLoaded', () => {
+        initC19Swiper();
+        setupMotion();
+    });
+
+    // Decisión 7, replicada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el movimiento, así
+    // que los triggers tienen que registrarse otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara: existe para que el
+    // bloque no se quede quieto si algún día se activa el modo SPA. El guardia
+    // del primer evento es el mismo del helper: Astro también lanza
+    // `astro:page-load` en la carga inicial, y registrarse ahí pondría un
+    // segundo ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupMotion();
+    });
+</script>

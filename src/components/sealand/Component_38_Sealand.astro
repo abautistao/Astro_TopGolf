@@ -1,0 +1,298 @@
+---
+// Proceso de reservación para el tema Sealand (componente-38-sealand).
+// Replica `landing-sealand/visitas-escolares/index.html:243-256` (.process-section).
+//
+// La sección del origen invierte el tratamiento de la anterior: fondo blanco y
+// tarjetas en el tono ice. Ninguno de esos colores se copia; se mapean a las
+// dos superficies claras del tema (--neutral-text-inverted y
+// --neutral-background-subtle) para conservar ese contraste.
+//
+// A diferencia de componente-34 y componente-36, NINGÚN repeatable de este
+// bloque lleva media: `pasos` es un repeatable de texto puro y todos los campos
+// de primer nivel son escalares o blocks, que el `populate=*` de la consulta
+// base ya entrega. Por eso este bloque no necesita entrada en el
+// deep-populate de strapi.js — es el mismo caso que componente-35.
+import { stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    eyebrow?: string;
+    titulo?: string;
+    htmlTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+    descripcion?: any;
+    pasos?: any[];
+    color_eyebrow_override?: string;
+    color_titulo_override?: string;
+    color_texto_override?: string;
+}
+
+const {
+    color_fondo,
+    eyebrow,
+    titulo,
+    htmlTag = "h2",
+    descripcion,
+    pasos = [],
+    color_eyebrow_override,
+    color_titulo_override,
+    color_texto_override,
+} = Astro.props;
+
+const TitleTag = htmlTag as any;
+
+// Cascada: el override del editor (hex del color picker) gana; si no hay, la
+// variable de tema definida en setup-site. Sección clara: el texto se tiñe con
+// --surface-brand-primary, nunca con --neutral-text-inverted.
+const sectionBg = color_fondo || "var(--neutral-text-inverted)";
+const eyebrowColor = color_eyebrow_override || "var(--accent-highlight-primary)";
+const titleColor = color_titulo_override || "var(--surface-brand-primary)";
+const textColor = color_texto_override || "var(--surface-brand-primary)";
+
+// Los pasos comparten el sub-componente de campo de formación (numero + titulo +
+// descripcion). Se descartan los ítems vacíos para que un repeatable en blanco
+// no deje una rejilla de cajas huérfanas.
+const listaPasos = pasos.filter((p) => p?.numero || p?.titulo || p?.descripcion);
+
+// El número del paso es texto libre del editor (o el índice de la lista). Sólo
+// puede contar si el helper va a escribir EXACTAMENTE el mismo texto final: el
+// contador termina escribiendo `prefix + valor + suffix`, sin ceros a la
+// izquierda ni signo, así que "01" o "Paso 2" no son contables y se quedan
+// tal cual. El marcado trae siempre el valor final, de modo que sin motion (o
+// con movimiento reducido) el número se ve igual.
+const numeroContable = (valor: unknown): string | undefined => {
+    const texto = String(valor ?? '').trim();
+    return /^[1-9]\d*$/.test(texto) ? texto : undefined;
+};
+---
+
+<section class="w-full py-[68px] lg:py-[82px] xl:py-[104px]" style={`background-color: ${sectionBg};`}>
+    <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+        {/* Encabezado de dos columnas alineadas al borde inferior, igual que
+            .section-heading del origen. */}
+        {(eyebrow || titulo || descripcion) && (
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.72fr] gap-[18px] lg:gap-[70px] items-end mb-[36px] lg:mb-[56px]">
+                <div>
+                    {eyebrow && (
+                        <p class="font-[family-name:var(--font-secundaria)] text-[12px] font-bold uppercase tracking-[0.17em] mb-4" style={`color: ${eyebrowColor};`}>
+                            {eyebrow}
+                        </p>
+                    )}
+
+                    {titulo && (
+                        <TitleTag class="c38-title font-[family-name:var(--font-principal)] font-bold" style={`color: ${titleColor};`}>
+                            {titulo}
+                        </TitleTag>
+                    )}
+                </div>
+
+                {descripcion && (
+                    <div
+                        class="c38-muted font-[family-name:var(--font-secundaria)] font-normal text-[17px] mb-1 [&>p]:mb-0"
+                        style={`color: color-mix(in srgb, ${textColor} 78%, transparent);`}
+                        set:html={stringifyRichText(descripcion)}
+                    />
+                )}
+            </div>
+        )}
+
+        {/* Rejilla de pasos: 4 columnas en escritorio, 2 en tablet, 1 en móvil. */}
+        {listaPasos.length > 0 && (
+            <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0">
+                {listaPasos.map((p, i) => {
+                    // El número que se pinta es el del editor o, si no lo hay,
+                    // el índice del paso. Es el mismo valor que cuenta el
+                    // motion layer, así que el texto final nunca cambia.
+                    const valorPaso = p.numero || i + 1;
+
+                    return (
+                    <li class="c38-step p-[26px] rounded-[22px]">
+                        {valorPaso && (
+                            <span
+                                class="c38-step-numero grid place-items-center w-[38px] h-[38px] rounded-full font-[family-name:var(--font-principal)] font-bold"
+                                data-count-to={numeroContable(valorPaso)}
+                            >
+                                {valorPaso}
+                            </span>
+                        )}
+
+                        {p.titulo && (
+                            <h3 class="c38-step-titulo font-[family-name:var(--font-principal)] font-bold text-[19px] mt-[22px] mb-[10px]">
+                                {p.titulo}
+                            </h3>
+                        )}
+
+                        {p.descripcion && (
+                            <p class="c38-step-muted font-[family-name:var(--font-secundaria)] font-normal text-[14px] leading-relaxed mb-0">
+                                {p.descripcion}
+                            </p>
+                        )}
+                    </li>
+                    );
+                })}
+            </ol>
+        )}
+    </div>
+</section>
+
+<style>
+    /* Escala no-role del origen: h2 es `clamp(34px, 4.2vw, 58px)` y en móvil
+       baja a 36px. Se conserva el clamp; la familia sale de --font-principal. */
+    .c38-title {
+        font-size: clamp(34px, 4.2vw, 58px);
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+    }
+
+    .c38-muted,
+    .c38-step-muted {
+        color: color-mix(in srgb, var(--surface-brand-primary) 70%, transparent);
+    }
+
+    /* Tarjeta en tono ice sobre fondo blanco: el filete del origen se
+       expresa como marca de primario diluida. */
+    .c38-step {
+        background-color: var(--neutral-background-subtle);
+        border: 1px solid color-mix(in srgb, var(--surface-brand-primary) 10%, transparent);
+    }
+
+    .c38-step-titulo {
+        color: var(--surface-brand-primary);
+    }
+
+    /* Disco numerado: navy del origen con texto invertido. */
+    .c38-step-numero {
+        background-color: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+    }
+</style>
+
+<script>
+    import { initMotion, revealSection, revealStagger, splitReveal, countUp } from "../../scripts/motion";
+
+    /*
+     * Process steps motion (T3) — decision 5: fire-once, no `scrub`, so nothing
+     * keeps transforming the cards while the reader is scanning them.
+     *
+     * WHY the script adds no selector class and changes no markup: unlike the
+     * other blocks, this one already names every element motion needs with a
+     * `c38-` prefix (`c38-title`, `c38-muted`, `c38-step`), so the anchors
+     * cannot match anything outside this component even though they are looked
+     * up from the document. `closest('section')` then walks up to this block's
+     * own root and every later query is resolved from there.
+     *
+     * WHY there is no hidden-state CSS for the reveals: `revealSection` /
+     * `revealStagger` are built on `gsap.from()`, which reads the element's
+     * CURRENT value as the tween's END state when the tween is created. A
+     * stylesheet rule that pre-hid an element under `[data-motion="ready"]`
+     * would be read as the destination and the tween would animate
+     * `opacity: 0 → 0`, stranding the block invisible forever. The hidden state
+     * comes from the tween instead, which is also what makes decision 3 hold:
+     * no JS, no readiness attribute, no inline style, no hidden content.
+     */
+    function setupProcessMotion() {
+        // De-duplicated root discovery: a block configured with only one of the
+        // three anchors still gets its root exactly once, so no ScrollTrigger is
+        // ever registered twice over the same elements.
+        const sections = new Set<Element>();
+
+        document.querySelectorAll('.c38-title, .c38-muted, .c38-step').forEach((node) => {
+            const section = node.closest('section');
+            if (section) {
+                sections.add(section);
+            }
+        });
+
+        sections.forEach((section) => {
+            // The heading settles in three beats: the eyebrow rises, the title
+            // assembles word by word and the description rises after it.
+            //
+            // WHY the heading CONTAINER is not revealed as a block: the title
+            // lives inside it and `splitReveal` already leaves its parts at
+            // `opacity: 0` when it is registered, so a fade on the parent
+            // would mask the words that are still assembling.
+            const description = section.querySelector('.c38-muted');
+            const title = section.querySelector('.c38-title');
+
+            if (title && title.tagName !== 'H1') {
+                splitReveal(title, {
+                    type: 'words',
+                    y: 26,
+                    duration: 0.75,
+                    stagger: 0.045,
+                    // Sin máscara: el interlineado del título es 1.08 y una caja
+                    // de recorte de SplitText cortaría las ascendentes y las
+                    // descendentes.
+                    mask: false,
+                });
+            }
+
+            // The eyebrow is the first direct `<p>` of the title's column.
+            const eyebrow = title?.parentElement?.querySelector(':scope > p') ?? null;
+            if (eyebrow) {
+                revealSection(eyebrow, {
+                    y: 18,
+                    duration: 0.65,
+                    ease: 'power2.out',
+                });
+            }
+
+            if (description) {
+                revealSection(description, {
+                    y: 22,
+                    duration: 0.7,
+                    ease: 'power2.out',
+                    delay: 0.08,
+                });
+            }
+
+            // Four cards in a single row: the cleanest stagger on the page. Even
+            // per-item offset (`staggerFrom` left at GSAP's 'start', the same
+            // `stagger` for every neighbour) so the sequence reads as a deliberate
+            // left-to-right count rather than an arbitrary cascade, and the whole
+            // run lands inside roughly a second.
+            const firstStep = section.querySelector('.c38-step');
+            const stepsList = firstStep?.parentElement ?? null;
+
+            if (stepsList) {
+                revealStagger(stepsList, {
+                    selector: '.c38-step',
+                    stagger: 0.12,
+                    staggerFrom: 'start',
+                    y: 34,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                });
+            }
+
+            // The step numbers count up from zero. Only the elements that carry
+            // `data-count-to` are counted (the helper reads the attribute), and
+            // the markup already shows the final number, so a step labelled
+            // "01" keeps its text and the counter simply skips it.
+            countUp(section.querySelectorAll('.c38-step-numero'));
+        });
+    }
+
+    // Call order is load-bearing: `motionDisabled()` gates on `initialized`, so
+    // any trigger registered before this call would silently do nothing.
+    initMotion();
+    setupProcessMotion();
+
+    // Decision 7, mirrored from the helper: on a client-side navigation the
+    // helper tears its triggers down and re-arms motion, so the triggers have to
+    // be registered again. `Layout.astro` registers no ClientRouter today, so
+    // this never fires — it exists so the block cannot silently go static if SPA
+    // mode is ever enabled. The first-event guard mirrors the helper's own: Astro
+    // also dispatches `astro:page-load` on the initial load, and re-registering
+    // there would put a second ScrollTrigger on the same elements.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupProcessMotion();
+    });
+</script>

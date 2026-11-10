@@ -1,0 +1,489 @@
+---
+// src/components/sealand/Component_1_Sealand.astro
+import { getStrapiUrl } from "../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+    ext?: string;
+}
+
+export interface SlideSealand {
+    id: number;
+    fondo: StrapiMedia;
+    fondo_mobile?: StrapiMedia;
+    texto_principal?: string;
+    nivel_heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    subtitulo?: string;
+    boton?: any[];
+    /**
+     * "recortar" (default): la imagen llena el contenedor y se recorta (object-cover / h fija).
+     * "completa": la imagen se muestra entera, ancho viewport, alto según aspect-ratio natural.
+     */
+    ajuste_imagen?: "recortar" | "completa";
+    url_link: string
+}
+
+export interface Props {
+    slides?: SlideSealand[];
+    // Legacy properties fallback
+    imagen?: StrapiMedia;
+    imagen_mobile?: StrapiMedia;
+    titulo?: string;
+    subtitulo?: string;
+    descripcion?: any;
+    boton?: any[];
+    // Banner superior (overrides + tag semántico)
+    mostrar_banner_superior?: boolean;
+    banner_texto?: string;
+    banner_enlace?: string;
+    banner_color_fondo_override?: string;
+    banner_color_texto_override?: string;
+    banner_html_tag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
+}
+
+const {
+    slides = [],
+    imagen,
+    imagen_mobile,
+    titulo,
+    subtitulo,
+    boton,
+    mostrar_banner_superior = true,
+    banner_texto = "COMPRA TUS BOLETOS AL SEALAND SOLO EN EL SITIO OFICIAL",
+    banner_enlace,
+    banner_color_fondo_override,
+    banner_color_texto_override,
+    banner_html_tag,
+} = Astro.props;
+
+// Build final slides array with fallback for old data structure
+let finalSlides = slides && slides.length > 0 ? slides : [];
+
+// Banner: tag dinámico respetando la convención del proyecto (single text components).
+// Default: <p>. Si el editor quiere darle peso semántico para SEO, puede elegir h2/h3.
+const validBannerTags = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"];
+const BannerTag = validBannerTags.includes(banner_html_tag || "")
+    ? (banner_html_tag as "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p")
+    : "p";
+
+// Color resolution: override explícito gana; si no, usa los CSS variables del setup-site.
+// Esto mantiene la regla del AGENTS.md: nunca hardcodear hex en componentes.
+// La franja promocional usa --accent-highlight-secondary (el azul del banner del
+// sitio de Sealand), no el naranja de CTA.
+const bannerBg = banner_color_fondo_override || "var(--accent-highlight-secondary)";
+const bannerColor = banner_color_texto_override || "var(--neutral-background-strong)";
+
+if (finalSlides.length === 0 && (imagen || titulo)) {
+    finalSlides = [{
+        id: 9999,
+        fondo: imagen as StrapiMedia,
+        fondo_mobile: imagen_mobile as StrapiMedia,
+        texto_principal: titulo,
+        nivel_heading: "h1",
+        subtitulo: subtitulo,
+        boton: boton,
+        url_link: ""
+    }];
+}
+
+// Función auxiliar para determinar si un medio es video
+const isVideo = (url: string) => {
+    return url?.match(/\.(mp4|webm|ogg)$/i);
+};
+
+// Determinar nivel de heading para SEO (fallback a h1)
+const getHeadingTag = (nivel?: string) => {
+    const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+    return validTags.includes(nivel || "") ? nivel : "h1";
+};
+
+// Modo del banner: lo define el primer slide. Default "recortar" (comportamiento histórico).
+// "completa" -> imagen a ancho viewport, alto natural según aspect-ratio, sin recortes.
+const bannerMode: "recortar" | "completa" =
+    finalSlides[0]?.ajuste_imagen === "completa" ? "completa" : "recortar";
+const isCompleta = bannerMode === "completa";
+
+// Clases del contenedor según modo. En "completa" removemos aspect-ratio, h fija y overflow-hidden
+// para que la imagen dicte el alto del banner y nunca se recorte.
+const sectionClass = isCompleta
+    ? "relative! z-10! w-screen! left-1/2! -ml-[50vw]! bg-[var(--surface-brand-primary)]!"
+    : "relative! z-10! w-screen left-1/2! -ml-[50vw]! h-[450px] md:h-[680px]! flex! items-center! justify-center! overflow-hidden! bg-[var(--surface-brand-primary)]!";
+---
+
+{/* Banner superior — sobreescribible desde Strapi (texto, colores, enlace, htmlTag para SEO) */}
+{mostrar_banner_superior && banner_texto && (
+    <div
+        class="w-full! text-center! py-3! px-4! font-[family-name:var(--font-principal)]! font-extrabold! uppercase! tracking-wide! text-[16px]! md:text-[24px]!"
+        style={`background-color: ${bannerBg}; color: ${bannerColor};`}
+        role="region"
+        aria-label={banner_texto}
+    >
+        {banner_enlace ? (
+            <a
+                href={banner_enlace}
+                class="block! w-full! no-underline!"
+                style={`background-color: ${bannerBg}; color: ${bannerColor};`}
+            >
+                <BannerTag class="m-0">{banner_texto}</BannerTag>
+            </a>
+        ) : (
+            <BannerTag class="m-0">{banner_texto}</BannerTag>
+        )}
+    </div>
+)}
+
+<section class={sectionClass}>
+    {finalSlides && finalSlides.length > 0 ? (
+        <div
+            class:list={[
+                "swiper sealand-banner-swiper w-full! pb-0!",
+                isCompleta ? "relative!" : "h-full! absolute! inset-0!",
+            ]}
+            data-auto-height={isCompleta ? "true" : "false"}
+        >
+            <div class:list={["swiper-wrapper", isCompleta ? "" : "h-full!"]}>
+                {finalSlides.map((slide) => {
+                    const bgUrl = getStrapiUrl(slide.fondo);
+                    const bgMobileUrl = slide.fondo_mobile ? getStrapiUrl(slide.fondo_mobile) : bgUrl;
+                    const hasMobileImage = !!slide.fondo_mobile;
+                    const altText = slide.fondo?.alternativeText || "Sealand Inbursa";
+                    const isBgVideo = isVideo(bgUrl);
+
+                    const HeadingTag = getHeadingTag(slide.nivel_heading) as any;
+                    const link = slide.url_link || '#';
+
+                    return (
+                        <div class:list={["swiper-slide relative! w-full!", isCompleta ? "block!" : "h-full!"]}>
+                            {/* Background Media: dos modos.
+                                - "completa": la imagen manda. w-full, h-auto, object-contain. Sin aspect-ratio
+                                  fijo, sin overflow-hidden, sin altura fija en ningún ancestro.
+                                - "recortar" (legado): object-cover con h fija recorta si la imagen trae texto.
+                                  `c1-media` es el contenedor de la imagen: es el que recorta (overflow-hidden)
+                                  y por eso puede alojar el parallax y las burbujas sin que se salgan del bloque. */}
+                            {isCompleta ? (
+                                <div class="relative! w-full! z-0!">
+                                    {isBgVideo ? (
+                                        <a href={link}>
+                                            <video
+                                                src={bgUrl}
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
+                                                class="block! w-full! h-auto! max-w-full!"
+                                            />
+                                        </a>
+                                    ) : (
+                                        <a href={link}>
+                                            {hasMobileImage && (
+                                                <Image
+                                                    src={bgMobileUrl}
+                                                    alt={altText}
+                                                    class="w-full h-full object-cover object-center block! lg:hidden!"
+                                                    inferSize={true}
+                                                    loading="eager"
+                                                    fetchpriority="high"
+                                                />
+                                            )}
+
+                                            <Image
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="w-full h-full object-cover object-center hidden! lg:block!"
+                                                inferSize={true}
+                                                loading="eager"
+                                                fetchpriority="high"
+                                            />
+                                        </a>
+                                    )}
+                                    {(slide.texto_principal || slide.subtitulo) && (
+                                        <div class="absolute! inset-0! bg-black/40! z-10!"></div>
+                                    )}
+                                    {/* Anfitrión de las burbujas: el contenedor de la imagen
+                                        define su propia altura (el alto natural del banner),
+                                        así que aquí las burbujas quedan dentro de la foto
+                                        sin salirse del bloque. */}
+                                    <div class="c1-burbujas absolute! inset-0! z-20! overflow-hidden! pointer-events-none!" aria-hidden="true"></div>
+                                </div>
+                            ) : (
+                                <div class="c1-media absolute! inset-0! z-0! overflow-hidden! w-full! h-full!">
+                                    {isBgVideo ? (
+                                        <a href={link}>
+                                            <video
+                                                src={bgUrl}
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
+                                                class="c1-bg-media absolute! inset-0! w-full! h-full! object-cover!"
+                                            />
+                                        </a>
+                                    ) : (
+                                        <a href={link}>
+                                            
+                                            {hasMobileImage && (
+                                                <Image
+                                                    src={bgMobileUrl}
+                                                    alt={altText}
+                                                    class="absolute! inset-0! w-full! h-full! object-cover! block! lg:hidden!"
+                                                    inferSize={true}
+                                                    loading="eager"
+                                                    fetchpriority="high"
+                                                />
+                                            )}
+
+                                            <Image
+                                                src={bgUrl}
+                                                alt={altText}
+                                                class="absolute! inset-0! w-full! h-full! object-cover! hidden! lg:block!"
+                                                inferSize={true}
+                                                loading="eager"
+                                                fetchpriority="high"
+                                            />
+                                            
+                                        </a>
+                                    )}
+                                    {(slide.texto_principal || slide.subtitulo) && (
+                                        <div class="absolute! inset-0! bg-black/40! z-10!">
+                                            {/* Overlay oscuro para que el texto resalte */}
+                                        </div>
+                                    )}
+                                    {/* Anfitrión de las burbujas: dentro del contenedor que
+                                        recorta, por encima del velo oscuro y por debajo del
+                                        texto (que vive en otra rama, con z-20). */}
+                                    <div class="c1-burbujas absolute! inset-0! z-20! overflow-hidden! pointer-events-none!" aria-hidden="true"></div>
+                                </div>
+                            )}
+
+                            {/* Text Content (Optional) */}
+                            {slide.texto_principal && (
+                                <div class="absolute! inset-0! z-20! flex! flex-col! items-center! justify-center! pointer-events-none!">
+                                    <div class="w-full! max-w-[1440px]! mx-auto! px-6! md:px-12! flex! flex-col! items-center! justify-center! text-center! text-(--neutral-text-inverted) pointer-events-auto">
+                                        {slide.subtitulo && (
+                                            <span class="c1-subtitulo block! text-[18px]! md:text-[40px]! font-medium! tracking-wide! uppercase! font-[family-name:var(--font-principal)]! text-(--neutral-text-inverted)! mb-2!" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
+                                                {slide.subtitulo}
+                                            </span>
+                                        )}
+
+                                        <HeadingTag class="text-[32px]! md:text-[80px]! font-black! font-[family-name:var(--font-principal)]! leading-[36px]! md:leading-[50px]! mb-6! uppercase! text-center!" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);">
+                                            {slide.texto_principal}
+                                        </HeadingTag>
+
+                                        {slide.boton && slide.boton.length > 0 && (
+                                            <div class="mt-4 flex justify-center">
+                                                <a href={slide.boton[0].url} class="inline-block! bg-[var(--brand-interactive-base)]! text-[var(--neutral-background-strong)]! font-[family-name:var(--font-principal)]! font-bold! text-lg! py-4! px-10! rounded-md! uppercase! hover:brightness-110! transition-all! shadow-md!">
+                                                    {slide.boton[0].texto}
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Controles del carrusel si hay más de 1 slide */}
+            {finalSlides.length > 1 && (
+                <>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev hidden! md:flex!"></div>
+                    <div class="swiper-button-next hidden! md:flex!"></div>
+                </>
+            )}
+        </div>
+    ) : (
+        <div class:list={[
+            "text-white! z-10! text-center! relative! w-full! flex! flex-col! justify-center! items-center!",
+            isCompleta ? "min-h-[400px]! px-6!" : "h-full!"
+        ]}>
+            {/* Placeholder if no slides are added yet */}
+             <div class="absolute! inset-0! bg-black/40! z-0!"></div>
+            <div class="relative! z-10!">
+                <h1 class="text-[32px]! md:text-[60px]! font-bold! font-[family-name:var(--font-principal)]! leading-tight! mb-6! uppercase! drop-shadow-lg!">Banner Sealand</h1>
+                <p class="font-[family-name:var(--font-secundaria)]! text-[20px]!">Añade slides desde el panel de Strapi</p>
+            </div>
+        </div>
+    )}
+</section>
+
+<style>
+    .sealand-banner-swiper {
+        --swiper-theme-color: var(--brand-interactive-base);
+        --swiper-navigation-color: var(--neutral-text-inverted);
+        --swiper-pagination-color: var(--brand-interactive-base);
+        --swiper-pagination-bullet-inactive-color: var(--neutral-text-inverted);
+        --swiper-pagination-bullet-inactive-opacity: 0.5;
+    }
+    
+    .sealand-banner-swiper .swiper-button-next,
+    .sealand-banner-swiper .swiper-button-prev {
+        text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Capa de motion (T3) — cobertura del parallax.
+     *
+     * La imagen de fondo del hero se desplaza 8% de su alto con el scroll
+     * (`parallaxLayer`). Un viaje vertical dentro de un contenedor
+     * `overflow-hidden` destapa el borde si la capa no tiene holgura, así que
+     * la imagen se escala 1.16 = 1 + 2 * (8 / 100): exactamente la headroom
+     * que el viaje consume en cada extremo.
+     *
+     * WHY `:global()`: dentro de un `<style>` con scope de Astro, la forma
+     * `[data-motion="ready"] .c1-bg-media` compila a
+     * `[data-astro-cid-x][data-motion="ready"] .c1-bg-media[data-astro-cid-x]`
+     * y exige que UN mismo elemento tenga los dos atributos — pero
+     * `data-motion` vive en `<html>`, que no tiene scope id. La forma
+     * `:global()` deja el guard sin scope y la clase sigue siendo del
+     * componente.
+     *
+     * WHY `scale` y no `transform`: GSAP es dueño del `transform` de la capa
+     * (escribe el `yPercent` del parallax). La propiedad independiente `scale`
+     * es la que CSSPlugin folds dentro de la transform que GSAP ya posee, así
+     * que hay un solo dueño del transform y la cobertura no se pierde.
+     *
+     * WHY bajo el guard: sin JS, o con motion reducido, `data-motion` nunca
+     * se escribe, la escala se queda en 1 y el hero se dibuja exactamente
+     * como lo dibuja el marcado.
+     */
+    :global([data-motion="ready"]) .c1-bg-media {
+        scale: 1.16;
+    }
+</style>
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+    import "swiper/css";
+    import "swiper/css/navigation";
+    import "swiper/css/pagination";
+    import "swiper/css/effect-fade";
+    import { initMotion, parallaxLayer, ambientBubbles, revealSection } from "../../scripts/motion";
+
+    const initSwiper = () => {
+        const swiperContainer = document.querySelector(".sealand-banner-swiper");
+        if (!swiperContainer) return;
+
+        // Solo inicializar si hay más de 1 slide
+        const slides = swiperContainer.querySelectorAll(".swiper-slide");
+        if (slides.length <= 1) return;
+
+        // Modo "completa" -> autoHeight para que el alto del carrusel siga el aspect-ratio natural del slide activo.
+        const autoHeight = swiperContainer.getAttribute("data-auto-height") === "true";
+
+        try {
+            new Swiper(".sealand-banner-swiper", {
+                modules: [Navigation, Pagination, Autoplay, EffectFade],
+                effect: "fade",
+                fadeEffect: {
+                    crossFade: true
+                },
+                loop: true,
+                autoHeight,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+            });
+        } catch (e) {
+            console.error("Swiper init error:", e);
+        }
+    };
+
+    // Inicializar al cargar
+    document.addEventListener("DOMContentLoaded", initSwiper);
+    
+    // Astro View Transitions support
+    document.addEventListener("astro:page-load", initSwiper);
+
+    /*
+     * Motion del hero (T3) — este bloque es la superficie LCP de la página,
+     * así que la receta es deliberadamente pequeña: se mueve el fondo y se
+     * revela UNA línea de texto.
+     *
+     * Lo que NO se toca, y por qué:
+     *
+     * - El titular (`HeadingTag`, h1 por defecto) queda exactamente donde lo
+     *   dibuja la hoja de estilos: sin rampa de opacidad y sin transform. Un
+     *   `opacity: 0` inicial sobre el h1 retrasa Largest Contentful Paint, y
+     *   la copy que va sobre la foto no puede derivar (decisión 4 / S8).
+     * - El botón del hero no se revela: es un contenedor interactivo (dentro
+     *   vive el enlace enfocable) y S13 prohíbe revelarlo como un todo. El
+     *   helper además excluye siempre los elementos enfocables.
+     * - El contenedor de la imagen lo mueve GSAP, no Swiper: las slides ya
+     *   son transformadas por Swiper (efecto fade) y aquí sólo se toca el
+     *   `img`/`video` de dentro.
+     *
+     * NOTA — el modo "completa" (`ajuste_imagen: "completa"`) no lleva
+     * parallax a propósito: ese modo existe para que el banner se vea entero
+     * (sin `overflow-hidden` en ningún ancestro, por diseño), y un parallax
+     * con recorte ampliaría la foto un 16% y la recortaría un 8% por arriba y
+     * por abajo. Las burbujas sí van en los dos modos: son aditivas y no
+     * cambian lo que se ve del banner.
+     */
+    function setupHeroMotion() {
+        document.querySelectorAll('.c1-media').forEach((media) => {
+            // Parallax del fondo: 8% del alto de la imagen, dentro del
+            // contenedor que recorta. La hoja de estilos aporta el `scale`
+            // 1.16 para que el viaje nunca destape el borde.
+            const fondo = media.querySelector('.c1-bg-media');
+
+            if (fondo) {
+                parallaxLayer(fondo, { distance: 8, trigger: media });
+            }
+        });
+
+        // Atmósfera: burbujas discretas dentro de la imagen. El helper las
+        // crea con `pointer-events: none` y `aria-hidden`, así que nunca roban
+        // un clic ni llegan al lector de pantalla. Hay un anfitrión por modo
+        // de imagen: en "recortar" cuelga del contenedor que recorta y en
+        // "completa" del contenedor de la foto, que define su propio alto.
+        document.querySelectorAll('.c1-burbujas').forEach((anfitrion) => {
+            ambientBubbles(anfitrion, { count: 8, maxOnMobile: 4 });
+        });
+
+        // El subtítulo es la única línea de texto que entra: es pequeña al
+        // lado del titular (18/40 contra 32/80), así que nunca es el
+        // candidato a LCP — el LCP de este bloque es la foto o el titular.
+        document.querySelectorAll('.c1-subtitulo').forEach((subtitulo) => {
+            revealSection(subtitulo, { y: 14, duration: 0.5, ease: 'power2.out' });
+        });
+    }
+
+    // El orden importa: `motionDisabled()` depende de `initialized`, así que un
+    // trigger registrado antes de `initMotion()` no haría nada.
+    initMotion();
+    setupHeroMotion();
+
+    // Decisión 7, reflejada desde el helper: en una navegación del lado del
+    // cliente el helper desmonta sus triggers y vuelve a armar el motion, así
+    // que hay que registrar los triggers otra vez. `Layout.astro` no registra
+    // un ClientRouter hoy, así que esto nunca se dispara; existe para que el
+    // hero no se quede estático si algún día se activa el modo SPA. El
+    // guardia de primera carga es el mismo del helper: Astro también dispara
+    // `astro:page-load` en la carga inicial y volver a registrar ahí dejaría
+    // dos ScrollTrigger sobre los mismos elementos.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupHeroMotion();
+    });
+</script>

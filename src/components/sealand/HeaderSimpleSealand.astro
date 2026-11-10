@@ -1,0 +1,219 @@
+---
+// frontend/src/components/sealand/HeaderSimpleSealand.astro
+//
+// Simplified header variant for the Sealand/Sealands brand. Renders TWO
+// STACKED ROWS (flex-col) — no menu at all, no scripts, no hamburger.
+//
+//   FILA 1 — social icons band (desktop only, `hidden md:flex`).
+//     Full-width band with `bg-[var(--feedback-positive-dark)]` — the green
+//     that the remote uses for its top bar — matching the single
+//     green band of `Header.astro`. Hidden on mobile to preserve the
+//     desktop-only behaviour of the original top bar.
+//
+//   FILA 2 — centered logo (desktop + mobile).
+//     `bg-[var(--surface-brand-secondary)]` — the navy of the
+//     remote's navigation row — with the accent underline
+//     `border-b-4 border-[var(--brand-interactive-base)]` and
+//     `md:border-b-0` to mirror the original main nav row exactly. Logo is
+//     capped at `max-w-[80px]` and centered on both axes
+//     (`justify-center text-center mx-auto`).
+//
+// The previously-existing flex-row 2-column layout (col1 social + col2 logo)
+// has been replaced by this 2-row stacked layout per design. Mobile + desktop
+// menus, dropdowns, mobile overlay, hamburger button and any related
+// Client scripts were never part of this variant and remain absent: the only
+// script here is the motion layer (T2), which only reveals blocks.
+// CSS variables drive every color and font — no hex literals.
+//
+// Schema compatibility (`backend/src/components/header/header-simple-sealand.json`):
+//   - logo, logo_mobile : RENDERED in fila 2 (centered, both viewports).
+//   - social            : NOT present in the simplified schema. When missing,
+//                         the component falls back to the FULL
+//                         `header.header-sealand` variant (fetched via
+//                         `getHeaderData()`) so editors only maintain social
+//                         icons in ONE place. No Strapi migration required.
+//   - texto_horario     : not present in the simplified schema (fila 2 no longer
+//                         renders horario text — it renders the centered logo).
+//   - links             : present in schema but UNUSED (no menu in this variant).
+//   - Boton             : present in schema but UNUSED (no CTA in this variant).
+//
+// Decision: the `links` and `Boton` fields are left in the schema as-is and
+// are not rendered here. Editors can still configure them in Strapi without
+// breaking anything; future iterations can opt-in to render them again
+// without a migration.
+
+import {
+    getHeaderData,
+    getStrapiUrl,
+} from "../../lib/strapi";
+import { Image } from "astro:assets";
+
+interface Props {
+    data?: any;
+    locale?: string;
+}
+
+const { data, locale = "es" } = Astro.props;
+void locale; // unused in this variant, kept in Props to honour the SmartHeader contract
+const headerData = data || (await getHeaderData());
+
+const logoUrl = getStrapiUrl(headerData?.logo);
+const logoMobileUrl = getStrapiUrl(headerData?.logo_mobile) || logoUrl;
+
+// Social icons: the simplified schema does NOT include a `social` field, so
+// `data.social` will usually be undefined. Fall back to the FULL
+// `header.header-sealand` variant fetched via `getHeaderData()` so editors
+// maintain social icons in ONE place (the full header). The fallback only
+// fires when the passed data has no social list, keeping the hot path
+// zero-extra-fetch when the simplified variant is fully populated.
+let social = Array.isArray(headerData?.social) ? headerData.social : [];
+let textoHorario: string;
+if (social.length === 0) {
+    try {
+        const fullHeader = await getHeaderData(locale);
+        const sealandVariant = Array.isArray(fullHeader?.Variante)
+            ? fullHeader.Variante.find(
+                (v: any) =>
+                    v?.__component?.includes("sealand") &&
+                    !v?.__component?.includes("simple")
+            )
+            : null;
+        if (sealandVariant && Array.isArray(sealandVariant.social)) {
+            social = sealandVariant.social;
+        }
+
+        if(sealandVariant && sealandVariant.texto_horario) {
+            textoHorario = sealandVariant.texto_horario;
+        }
+    } catch {
+        // Fallback failed — keep social as []; fila 1 still renders its band
+        // so the layout matches the original header on desktop.
+    }
+}
+
+// `links` and `Boton` exist in the simplified schema but are intentionally not
+// rendered here — see the file header. We touch them so the destructuring is
+// visible and the documentation comment lives next to the variables it applies to.
+const _links = headerData?.links || [];
+const _ctaButtonRaw = headerData?.Boton;
+void _links;
+void _ctaButtonRaw;
+---
+
+<header class="sealand-header-simple w-full relative z-50 flex flex-col">
+    {/*
+        FILA 1 — social icons band (desktop only).
+        Single green band `bg-[var(--feedback-positive-dark)]`, the
+        same top-bar green the remote uses and the same one `Header.astro`
+        paints: it carries the phone, the schedule and the social icons.
+        Hidden on mobile (`hidden md:flex`) to match the original top bar's
+        desktop-only behaviour. ALWAYS rendered (no `social.length > 0`
+        guard) so the band keeps its min-height whether or not icons are
+        configured — same visual as `Header.astro` with no social configured.
+    */}
+    <div class="hidden! md:flex! bg-(--feedback-positive-dark)! items-center! justify-between! px-8! w-full! min-h-[60px]! font-bold!">
+        <div class="sealand-header-simple-block flex items-center justify-center gap-6">
+            <div class="text-white! text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
+                <i class="fas fa-phone-alt"></i> <span>+ (52) 55 4438 6978</span>
+            </div>
+            <div class="text-white! text-xs md:text-[14px] font-[family-name:var(--font-principal)] font-bold tracking-wide uppercase">
+                <i class="far fa-clock"></i> <span>Lun - Dom 10:00 -18:00</span>
+            </div>
+        </div>
+        <div class="sealand-header-simple-block flex! items-center! gap-5! text-white!">
+            {social.map((item: any) => (
+                <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hover:opacity-80 transition-opacity text-white!"
+                >
+                    <i class={`${item.icono_clase} text-[17px]!`}></i>
+                </a>
+            ))}
+        </div>
+    </div>
+
+    {/*
+        FILA 2 — centered logo (desktop + mobile).
+        Same background as the navigation row of `Header.astro`:
+        `bg-[var(--surface-brand-secondary)]` (navy) plus
+        `border-b-4 md:border-b-0 border-[var(--brand-interactive-base)]`
+        (border shows on mobile only — same as `Header.astro`). Logo is
+        centered on both axes (`justify-center text-center mx-auto`) and
+        capped at `max-w-[80px]` per design.
+    */}
+    <div class="bg-[var(--surface-brand-secondary)] border-b-4 md:border-b-0 border-[var(--brand-interactive-base)] flex items-center justify-center text-center w-full">
+        <a
+            href="/"
+            class="h-full py-2 inline-flex items-center justify-center mx-auto"
+            aria-label="Sealand — inicio"
+        >
+            {logoUrl && (
+                <Image
+                    src={logoUrl}
+                    alt="Sealand"
+                    width={250}
+                    height={100}
+                    class="sealand-header-simple-block hidden md:block h-full w-auto object-contain mx-auto max-w-[80px]"
+                />
+            )}
+            {logoMobileUrl && (
+                <Image
+                    src={logoMobileUrl}
+                    alt="Sealand"
+                    width={200}
+                    height={80}
+                    class="sealand-header-simple-block block md:hidden h-full w-auto object-contain py-1 mx-auto max-w-[80px]"
+                />
+            )}
+        </a>
+    </div>
+</header>
+
+<script>
+    import { initMotion, revealStagger } from "../../scripts/motion";
+
+    /* ================================================================
+     * Capa de movimiento del header simple (T2).
+     *
+     * Esta variante no tiene menú, ni CTA, ni hamburguesa: sólo la banda
+     * de redes/horario (escritorio) y el logo centrado. La entrada es una
+     * única animación de carga — el header está por encima del pliegue, así
+     * que un reveal por scroll no tendría sentido.
+     *
+     * QUÉ se anima: los dos bloques de la banda superior (información y
+     * redes) y los dos logos (imágenes, nunca el `<a>` del logo: es
+     * focusable y un `gsap.from()` sobre él lo dejaría invisible pero
+     * tabulable, S13).
+     * ================================================================ */
+    function setupSealandHeaderSimpleMotion() {
+        document.querySelectorAll('.sealand-header-simple').forEach((header) => {
+            revealStagger(header, {
+                selector: '.sealand-header-simple-block',
+                stagger: 0.07,
+                y: 12,
+                duration: 0.5,
+                ease: 'power2.out',
+            });
+        });
+    }
+
+    // `initMotion()` va primero: `motionDisabled()` depende de él.
+    initMotion();
+    setupSealandHeaderSimpleMotion();
+
+    // Decision 7 del helper: en una navegación del cliente los triggers se
+    // desmontan y se vuelven a armar, así que hay que registrarlos de nuevo.
+    let initialLoadSeen = false;
+    document.addEventListener('astro:page-load', () => {
+        const isInitialLoad = !initialLoadSeen && document.readyState !== 'complete';
+        initialLoadSeen = true;
+
+        if (isInitialLoad) {
+            return;
+        }
+
+        setupSealandHeaderSimpleMotion();
+    });
+</script>
