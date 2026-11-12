@@ -55,7 +55,7 @@ const esRosa = variante === "rosa";
     .tarifa-card {
         --tarifa-fondo: var(--brand-interactive-base);
         --tarifa-boton-fondo: var(--surface-brand-secondary);
-        --tarifa-boton-sombra: var(--surface-brand-primary);
+        --tarifa-boton-sombra: var(--brand-interactive-base);
 
         position: relative;
         display: flex;
@@ -69,12 +69,12 @@ const esRosa = variante === "rosa";
     .tarifa-card.tarifa-mint {
         --tarifa-fondo: var(--brand-interactive-base);
         --tarifa-boton-fondo: var(--surface-brand-secondary);
-        --tarifa-boton-sombra: var(--surface-brand-primary);
+        --tarifa-boton-sombra: var(--brand-interactive-base);
     }
 
     .tarifa-card.tarifa-rosa {
         --tarifa-fondo: var(--surface-brand-secondary);
-        --tarifa-boton-fondo: var(--surface-brand-primary);
+        --tarifa-boton-fondo: var(--surface-brand-secondary);
         --tarifa-boton-sombra: var(--brand-interactive-base);
     }
 
@@ -84,8 +84,8 @@ const esRosa = variante === "rosa";
         right: -0.5rem;
         z-index: 2;
         transform: rotate(-8deg);
-        background: var(--surface-brand-primary);
-        color: var(--neutral-text-inverted);
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
         font-family: var(--font-sharp-sans-bold);
         text-transform: uppercase;
         font-size: 0.8rem;
@@ -148,12 +148,12 @@ const esRosa = variante === "rosa";
         display: block;
         text-align: center;
         background: var(--tarifa-boton-fondo);
-        color: var(--neutral-text-inverted);
+        color: var(--surface-brand-primary);
         font-family: var(--font-titling-gothic-fb-extended-bold);
         text-transform: uppercase;
-        font-size: 1.05rem;
+        font-size: clamp(0.8rem, 1.1vw, 1rem);
         line-height: 1.1;
-        padding: 0.9rem 1rem;
+        padding: 0.85rem 0.6rem;
         margin-top: 1.5rem;
         box-shadow: 4px 4px 0 0 var(--tarifa-boton-sombra);
         transition: transform 0.2s ease;
