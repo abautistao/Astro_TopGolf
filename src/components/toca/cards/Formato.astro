@@ -1,0 +1,143 @@
+---
+interface Props {
+    titulo?: string;
+    precio?: string;
+    linea?: string;
+    descripcion?: string;
+    texto_boton?: string;
+    url_boton?: string;
+    variante?: "mint" | "rosa";
+}
+
+const {
+    titulo = "",
+    precio = "",
+    linea = "",
+    descripcion = "",
+    texto_boton = "",
+    url_boton = "",
+    variante = "mint"
+} = Astro.props;
+
+const esRosa = variante === "rosa";
+---
+
+<article class:list={["card-formato", esRosa ? "variante-rosa" : "variante-mint"]}>
+    <header class="cabecera">
+        <span class="titulo">{titulo}</span>
+        <span class="precio">{precio}</span>
+    </header>
+
+    {linea && <p class="linea">{linea}</p>}
+
+    {descripcion && <p class="descripcion">{descripcion}</p>}
+
+    <div class="cta">
+        {
+            texto_boton && (
+                <a href={url_boton || "#"} class="boton">
+                    {texto_boton}
+                </a>
+            )
+        }
+    </div>
+</article>
+
+<style>
+    /* Las clases propias del <style> scoped NO llevan el sufijo "!" (Astro
+       las compila como .clase[data-astro-cid-...] y el token "clase!" no
+       casaría). El sufijo "!" es sólo para las utilidades de Tailwind, que
+       deben ganar a Bootstrap. */
+    .card-formato {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--brand-interactive-base);
+        padding: 0.5rem;
+    }
+
+    .card-formato.variante-rosa {
+        border-color: var(--surface-brand-secondary);
+    }
+
+    .cabecera {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .titulo {
+        flex: 1 1 auto;
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0.75rem;
+        overflow-wrap: anywhere;
+    }
+
+    .variante-rosa .titulo {
+        background: var(--surface-brand-secondary);
+    }
+
+    .precio {
+        flex: 0 0 auto;
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        border-left: 2px solid var(--neutral-text-inverted);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: 1.25rem;
+        line-height: 1;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .linea {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        line-height: 1.25;
+        margin: 1rem 0 0;
+    }
+
+    .descripcion {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--neutral-text-inverted);
+        font-size: 0.95rem;
+        line-height: 1.4;
+        margin: 0.75rem 0 0;
+    }
+
+    .cta {
+        margin-top: auto;
+        padding-top: 1.5rem;
+    }
+
+    .boton {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1.1rem;
+        padding: 0.85rem 1rem;
+        box-shadow: 4px 4px 0 0 var(--brand-interactive-base);
+        transition: transform 0.2s ease;
+    }
+
+    .boton:hover {
+        transform: translate(-2px, -2px);
+    }
+</style>

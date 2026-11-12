@@ -1,0 +1,64 @@
+---
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardFormato from "./cards/Formato.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    cards?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    cards = []
+} = Astro.props;
+---
+
+<section class="formatos">
+    <div class="contenedor">
+        <TituloSeccion
+            titulo={titulo_seccion}
+            subtitulo={subtitulo}
+        />
+
+        <div class="grid">
+            {Array.isArray(cards) && cards.map((card) => <CardFormato {...card} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Las clases propias del <style> scoped NO llevan el sufijo "!" (Astro
+       las compila como .clase[data-astro-cid-...] y el token "clase!" no
+       casaría). El sufijo "!" es sólo para las utilidades de Tailwind, que
+       deben ganar a Bootstrap. */
+    .formatos {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+</style>
