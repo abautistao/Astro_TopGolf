@@ -125,20 +125,26 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
     .foto {
         position: relative;
         display: flex;
-        align-items: center;
+        align-items: stretch;
         justify-content: center;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 9;
         background: var(--custom-color-01);
         overflow: hidden;
+        padding: 1.25rem;
     }
 
-    .foto-placeholder {
-        font-family: var(--font-sharp-sans-medium);
-        color: var(--accent-highlight-primary);
-        font-size: 0.8rem;
+    .foto-placeholder {flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         text-align: center;
-        padding: 1rem;
-    }
+        border: 2px dashed var(--accent-highlight-primary);
+        color: var(--accent-highlight-primary);
+        font-family: var(--font-sharp-sans-medium);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        padding: 1rem;}
 
     .tags {
         list-style: none;
@@ -154,15 +160,15 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
         color: var(--color-variante);
         font-family: var(--font-sharp-sans-bold);
         text-transform: uppercase;
-        font-size: 0.75rem;
+        font-size: 0.95rem;
         line-height: 1;
-        padding: 0.4rem 0.6rem;
+        padding: 0.45rem 0.6rem;
     }
 
     .descripcion {
         font-family: var(--font-sharp-sans-medium);
         color: var(--accent-highlight-primary);
-        font-size: 0.9rem;
+        font-size: 1rem;
         line-height: 1.4;
         margin: 1rem 0 1.25rem;
     }
