@@ -1,0 +1,70 @@
+---
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardArticulo from "./cards/Articulo.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    cards?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    texto_enlace = "",
+    url_enlace = "",
+    cards = []
+} = Astro.props;
+---
+
+<section class="articulos">
+    <div class="articulos-contenedor">
+        <TituloSeccion
+            titulo={titulo_seccion}
+            subtitulo={subtitulo}
+            texto_enlace={texto_enlace}
+            url_enlace={url_enlace}
+        />
+
+        <div class="articulos-grid">
+            {Array.isArray(cards) && cards.map((card) => <CardArticulo {...card} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Las clases propias del <style> scoped NO llevan el sufijo "!" (Astro
+       las compila como .clase[data-astro-cid-...] y el token "clase!" no
+       casaría). El sufijo "!" es sólo para las utilidades de Tailwind, que
+       deben ganar a Bootstrap. */
+    .articulos {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .articulos-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .articulos-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        .articulos-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .articulos-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+</style>

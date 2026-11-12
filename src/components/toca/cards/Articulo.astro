@@ -1,0 +1,117 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    imagen?: any;
+    categoria?: string;
+    titulo?: string;
+    fecha?: string;
+    url?: string;
+}
+
+const {
+    imagen = null,
+    categoria = "",
+    titulo = "",
+    fecha = "",
+    url = ""
+} = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+---
+
+<a href={url || "#"} class="card-articulo">
+    <div class="foto">
+        {imgSrc ? (
+            <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full! h-full! object-cover!" />
+        ) : (
+            <span class="placeholder">FOTO DEL ARTÍCULO</span>
+        )}
+    </div>
+
+    <div class="cuerpo">
+        {categoria && <span class="categoria">{categoria}</span>}
+        {titulo && <h3 class="titulo">{titulo}</h3>}
+        {fecha && <p class="fecha">{fecha}</p>}
+    </div>
+</a>
+
+<style>
+    /* Las clases propias del <style> scoped NO llevan el sufijo "!" (Astro
+       las compila como .clase[data-astro-cid-...] y el token "clase!" no
+       casaría). El sufijo "!" es sólo para las utilidades de Tailwind, que
+       deben ganar a Bootstrap. */
+    .card-articulo {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--surface-brand-secondary);
+        padding: 0.5rem;
+        color: inherit;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+    }
+
+    .card-articulo:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .foto {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 16 / 9;
+        background: var(--custom-color-01);
+        overflow: hidden;
+    }
+
+    .placeholder {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .cuerpo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.9rem 0.75rem 1.1rem;
+    }
+
+    .categoria {
+        align-self: flex-start;
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 0.75rem;
+        line-height: 1;
+        padding: 0.35rem 0.6rem;
+    }
+
+    .titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        color: var(--neutral-text-inverted);
+        text-transform: uppercase;
+        font-size: 1.35rem;
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+    }
+
+    .fecha {
+        margin: 0;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+</style>
