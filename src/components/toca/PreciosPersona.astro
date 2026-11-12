@@ -1,0 +1,84 @@
+---
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardPromo from "./cards/Promo.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    cards?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    texto_enlace = "",
+    url_enlace = "",
+    cards = []
+} = Astro.props;
+---
+
+<section class="precios-persona">
+    <div class="precios-persona-contenedor">
+        <div class="precios-persona-cabecera flex! flex-col! gap-6! md:flex-row! md:items-end! md:justify-between!">
+            <TituloSeccion titulo={titulo_seccion} subtitulo={subtitulo} />
+
+            {
+                texto_enlace && (
+                    <a href={url_enlace || "#"} class="precios-persona-enlace">
+                        {texto_enlace}
+                    </a>
+                )
+            }
+        </div>
+
+        <div class="precios-persona-grid">
+            {Array.isArray(cards) && cards.map((card) => <CardPromo {...card} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    .precios-persona {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .precios-persona-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .precios-persona-cabecera {
+        align-items: flex-start;
+    }
+
+    .precios-persona-enlace {
+        display: inline-block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        color: var(--neutral-text-inverted);
+        text-decoration: underline;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+    }
+
+    .precios-persona-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        .precios-persona-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .precios-persona-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+</style>

@@ -1,0 +1,135 @@
+---
+interface Props {
+    titulo?: string;
+    precio?: string;
+    linea?: string;
+    descripcion?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    variante?: "mint" | "rosa";
+}
+
+const {
+    titulo = "",
+    precio = "",
+    linea = "",
+    descripcion = "",
+    texto_enlace = "",
+    url_enlace = "",
+    variante = "mint"
+} = Astro.props;
+
+const esRosa = variante === "rosa";
+---
+
+<article class:list={["promo-card", { "promo-card--rosa": esRosa }]}>
+    <header class="promo-cabecera">
+        <span class="promo-titulo">{titulo}</span>
+        <span class="promo-precio">{precio}</span>
+    </header>
+
+    {linea && <p class="promo-linea">{linea}</p>}
+
+    {descripcion && <p class="promo-descripcion">{descripcion}</p>}
+
+    {
+        texto_enlace && (
+            <a href={url_enlace || "#"} class="promo-enlace">
+                {texto_enlace}
+                <span class="promo-flecha" aria-hidden="true">→</span>
+            </a>
+        )
+    }
+</article>
+
+<style>
+    .promo-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--brand-interactive-base);
+        padding: 0.5rem;
+    }
+
+    .promo-card--rosa {
+        border-color: var(--surface-brand-secondary);
+    }
+
+    .promo-cabecera {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .promo-titulo {
+        flex: 1 1 auto;
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0.75rem;
+        overflow-wrap: anywhere;
+    }
+
+    .promo-card--rosa .promo-titulo {
+        background: var(--surface-brand-secondary);
+    }
+
+    .promo-precio {
+        flex: 0 0 auto;
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .promo-card--rosa .promo-precio {
+        background: var(--brand-interactive-base);
+    }
+
+    .promo-linea {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        line-height: 1.25;
+        margin-top: 1rem;
+    }
+
+    .promo-descripcion {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--neutral-text-inverted);
+        font-size: 0.95rem;
+        line-height: 1.4;
+        margin-top: 0.75rem;
+        flex: 1 1 auto;
+    }
+
+    .promo-enlace {
+        display: inline-block;
+        align-self: flex-start;
+        margin-top: 1.25rem;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--brand-interactive-base);
+        text-decoration: underline;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+
+    .promo-flecha {
+        margin-left: 0.25rem;
+    }
+</style>
