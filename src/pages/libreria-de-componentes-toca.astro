@@ -12,6 +12,9 @@
 // Vista autonomous: NO usa el Layout del sitio porque el chrome (header/footer)
 // depende del CMS y un preview de componentes debe funcionar sin el.
 import "../styles/global.css";
+// Foto de ejemplo para el contenido dummy del catalogo (los componentes la reciben
+// como cualquier imagen; en produccion llega del CMS).
+import fotoAmbassador from "../assets/ambassador-toca.jpg";
 
 import Planes from "../components/toca/Planes.astro";
 import Juegos from "../components/toca/Juegos.astro";
@@ -30,6 +33,7 @@ const planes = {
     url_enlace: "#",
     cards: [
         {
+            imagen: fotoAmbassador,
             titulo: "Simulador",
             precio: "$300",
             linea: "Desde · por simulador · según horario",
@@ -91,6 +95,7 @@ const juegos = {
     url_enlace: "#",
     cards: [
         {
+            imagen: fotoAmbassador,
             titulo: "Striker",
             descriptor: "Ideal para empezar",
             descripcion: "La mejor introducción: golpea la pantalla donde sea y empieza a sumar.",
@@ -157,6 +162,7 @@ const espacios = {
     subtitulo: "Espacios semiprivados, salón privado o renta de todo el lugar.",
     cards: [
         {
+            imagen: fotoAmbassador,
             titulo: "Mid-Field",
             capacidad: "266",
             texto_capacidad: "Personas",
@@ -268,6 +274,7 @@ const sedes = {
     subtitulo: "Londres · Dallas · París · Monterrey",
     cards: [
         {
+            imagen: fotoAmbassador,
             badge: "Donde todo empezó · 2021",
             titulo: "Londres",
             linea: "The O2 · Westfield White City · Birmingham",
@@ -341,7 +348,13 @@ const articulos = {
     texto_enlace: "Más noticias",
     url_enlace: "#",
     cards: [
-        { categoria: "Partidos", titulo: "Dónde ver la Liga MX en Monterrey", fecha: "12 mar 2026", url: "#" },
+        {
+            imagen: fotoAmbassador,
+            categoria: "Partidos",
+            titulo: "Dónde ver la Liga MX en Monterrey",
+            fecha: "12 mar 2026",
+            url: "#"
+        },
         { categoria: "Planes", titulo: "Planes en grupo en Monterrey", fecha: "5 mar 2026", url: "#" },
         { categoria: "Eventos", titulo: "Ideas para tu posada de empresa", fecha: "26 feb 2026", url: "#" }
     ]

@@ -29,6 +29,8 @@ const {
 } = Astro.props;
 
 const imgSrc = getStrapiUrl(imagen);
+// La foto puede venir de Strapi (URL remota) o ser un asset local (solo para el dummy).
+const esAssetLocal = Boolean(imagen?.src);
 ---
 
 <article class="plan-card">
@@ -40,15 +42,10 @@ const imgSrc = getStrapiUrl(imagen);
     {badge && <span class="plan-badge">{badge}</span>}
 
     <div class="plan-foto">
-        {
-            imgSrc ? (
-                <Image
-                    src={imgSrc}
-                    alt={titulo}
-                    width={800}
-                    height={520}
-                    class="w-full! h-full! object-cover!"
-                />
+        {esAssetLocal ? (
+                <Image src={imagen} alt={titulo} class="w-full! h-full! object-cover!" />
+            ) : imgSrc ? (
+                <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full! h-full! object-cover!" />
             ) : (
                 <span class="plan-placeholder">FOTO · {titulo}</span>
             )

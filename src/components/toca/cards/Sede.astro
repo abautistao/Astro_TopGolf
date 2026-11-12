@@ -21,15 +21,19 @@ const {
 } = Astro.props;
 
 const imgSrc = getStrapiUrl(imagen);
+// La foto puede venir de Strapi (URL remota) o ser un asset local (solo para el dummy).
+const esAssetLocal = Boolean(imagen?.src);
 const esRosa = variante === "rosa";
 const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-interactive-base)";
 ---
 
 <article class="card-sede" style={`--color-variante: ${colorVariante};`}>
     <div class="foto">
-        {imgSrc ? (
-            <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full h-full object-cover!" />
-        ) : (
+        {esAssetLocal ? (
+                <Image src={imagen} alt={titulo} class="w-full h-full object-cover!" />
+            ) : imgSrc ? (
+                <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full h-full object-cover!" />
+            ) : (
             <span class="placeholder">FOTO · {titulo}</span>
         )}
     </div>
