@@ -1,0 +1,60 @@
+---
+// Las clases propias del componente NO llevan el sufijo "!" de Tailwind: Astro
+// scopea `.grid` a `.grid:where(.astro-xxx)` y el token "grid!" no haría match.
+// El sufijo "!" se reserva para las utilidades de Tailwind del markup.
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardJuego from "./cards/Juego.astro";
+import CardVideoTutorial from "./cards/VideoTutorial.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    cards?: any[];
+    video_tutorial?: any;
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    texto_enlace = "",
+    url_enlace = "",
+    cards = [],
+    video_tutorial = null
+} = Astro.props;
+---
+
+<section class="juegos">
+    <div class="contenedor">
+        <TituloSeccion
+            titulo={titulo_seccion}
+            subtitulo={subtitulo}
+            texto_enlace={texto_enlace}
+            url_enlace={url_enlace}
+        />
+
+        <div class="grid grid-cols-1! md:grid-cols-2! xl:grid-cols-3!">
+            {Array.isArray(cards) && cards.map((card) => <CardJuego {...card} />)}
+            {video_tutorial && <CardVideoTutorial {...video_tutorial} />}
+        </div>
+    </div>
+</section>
+
+<style>
+    .juegos {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+</style>
