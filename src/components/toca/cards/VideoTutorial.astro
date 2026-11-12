@@ -34,10 +34,21 @@ const esVideo = mime.startsWith("video/") || ["mp4", "webm", "mov", "m4v", "ogv"
                 <Image src={mediaSrc} alt={titulo} width={800} height={450} class="w-full h-full object-cover!" />
             )
         }
-        <span class="capa" aria-hidden="true">
-            <i class="fa-solid fa-play play"></i>
-        </span>
-        <span class="etiqueta">VIDEO TUTORIAL</span>
+        {
+            !mediaSrc && (
+                <span class="vacio">
+                    <i class="fa-solid fa-play"></i>
+                    <span class="vacio-texto">VIDEO TUTORIAL</span>
+                </span>
+            )
+        }
+        {
+            mediaSrc && (
+                <span class="capa" aria-hidden="true">
+                    <i class="fa-solid fa-play"></i>
+                </span>
+            )
+        }
     </div>
 
     {texto && <p class="texto">{texto}</p>}
@@ -88,31 +99,31 @@ const esVideo = mime.startsWith("video/") || ["mp4", "webm", "mov", "m4v", "ogv"
         pointer-events: none;
     }
 
-    .play {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 3.5rem;
-        height: 3.5rem;
-        border-radius: 999px;
-        background: var(--brand-interactive-base);
-        color: var(--surface-brand-primary);
-        font-size: 1.35rem;
+    .capa i {
+        color: var(--surface-brand-secondary);
+        font-size: 1.6rem;
         line-height: 1;
     }
 
-    .etiqueta {
+    /* Sin video: icono play y etiqueta al centro, como en la ficha. */
+    .vacio {
         position: absolute;
-        left: 0.75rem;
-        bottom: 0.75rem;
-        background: var(--surface-brand-secondary);
-        color: var(--surface-brand-primary);
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.65rem;
+        color: var(--neutral-text-inverted);
         font-family: var(--font-sharp-sans-bold);
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        font-size: 0.85rem;
+    }
+
+    .vacio i {
+        color: var(--surface-brand-secondary);
+        font-size: 1.5rem;
         line-height: 1;
-        padding: 0.4rem 0.6rem;
     }
 
     .texto {

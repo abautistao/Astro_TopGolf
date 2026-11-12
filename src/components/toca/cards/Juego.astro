@@ -32,11 +32,19 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
     </header>
 
     <div class="foto">
-        {imgSrc ? (
-            <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full h-full object-cover!" />
-        ) : (
-            <span class="placeholder">FOTO · {titulo}</span>
-        )}
+        {
+            imgSrc ? (
+                <Image
+                    src={imgSrc}
+                    alt={titulo}
+                    width={800}
+                    height={520}
+                    class="w-full! h-full! object-cover!"
+                />
+            ) : (
+                <span class="placeholder">CAPTURA DEL JUEGO · {titulo}</span>
+            )
+        }
     </div>
 
     {descripcion && <p class="descripcion">{descripcion}</p>}
@@ -106,22 +114,32 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
     .foto {
         position: relative;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: stretch;
+        justify-content: stretch;
         aspect-ratio: 4 / 3;
         background: var(--custom-color-01);
         overflow: hidden;
+        padding: 1.25rem;
     }
 
+    /* El placeholder de la ficha es un recuadro punteado con el texto arriba. */
     .placeholder {
-        font-family: var(--font-sharp-sans-medium);
-        color: var(--accent-highlight-primary);
-        font-size: 0.8rem;
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         text-align: center;
+        border: 2px dashed var(--accent-highlight-primary);
+        color: var(--accent-highlight-primary);
+        font-family: var(--font-sharp-sans-medium);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
         padding: 1rem;
     }
 
     .descripcion {
+        text-transform: none;
         margin: 1rem 0 0;
         font-family: var(--font-sharp-sans-medium);
         color: var(--brand-interactive-base);
@@ -144,9 +162,9 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
         gap: 0.6rem;
         color: var(--neutral-text-inverted);
         font-family: var(--font-sharp-sans-medium);
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        line-height: 1.3;
+        text-transform: none;
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
 
     .vineta {
