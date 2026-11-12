@@ -1,0 +1,151 @@
+---
+import { stringifyRichText } from "../../lib/strapi";
+import type { Boton } from "./elements/Button.astro";
+import Button from "./elements/Button.astro";
+
+export interface Props {
+    color_fondo?: string;
+    title?: string;
+    title_color?: any;
+    subtitle?: string;
+    subtitle_color?: string;
+    description?: any[];
+    description_color?: any[];
+    Boton?: Boton[];
+    is_form: boolean;
+    form_button: Boton;
+    url_form: string;
+}
+
+const {
+    color_fondo,
+    title,
+    title_color,
+    subtitle,
+    subtitle_color,
+    description,
+    description_color,
+    Boton,
+    is_form,
+    form_button,
+    url_form
+} = Astro.props;
+---
+<section class="bannerCTA bg-(--surface-brand-secondary) py-8" style={color_fondo ? `background-color: ${color_fondo}`: ""}>
+    <div class="container mx-auto px-4 md:px-0">
+        <div class="w-full flex flex-col md:flex-row justify-between items-center">
+            <div class="bannerCTA-heading">
+                <div class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-end font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--surface-brand-primary) mb-4 md:mb-2">
+                    <h2 class="text-2xl md:text-2xl text-(--surface-brand-primary)" style={title_color ? `color: ${title_color}`: ""}>{title}</h2>
+                    {subtitle && (
+                        <h3 class="text-xs text-(--surface-brand-primary)" style={subtitle_color ? `color: ${subtitle_color}` : ""}>{subtitle}</h3>
+                    )}
+                </div>
+
+                {description && (
+                    <div set:html={stringifyRichText(description)} class="font-(family-name:--font-sharp-sans-medium) text-(--accent-feedback-strong) mb-4 md:mb-0" style={description_color ? `color: ${description_color}`: ""}></div>
+                )}
+            </div>
+
+            <div class="bannerCTA-btn">
+                {is_form ? (
+                    <form id="form-newsletter" action={url_form}>
+                        <div class="flex flex-col md:flex-row">
+                            <input class="text-sm w-full bg-(--accent-feedback-strong)  border-none text-black py-2 px-4 focus:outline-none focus:ring-2 focus:ring-(--surface-brand-primary) font-(family-name:--font-sharp-sans-medium)" type="email" placeholder="" name="email" />
+                            <button
+                            type="submit"
+                            class:list={[
+                                'font-(family-name:--font-sharp-sans-bold) inline-block border-2 border-(--surface-brand-primary) font-bold uppercase tracking-tight leading-tight',
+                                'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
+                                'text-sm',
+                                'px-4 py-2 md:px-4 md:py-2',
+                                {
+                                    "bg-(--surface-brand-secondary) text-(--surface-brand-primary) hover:bg-(--surface-brand-secondary)":
+                                        form_button.tipo === "version_1",
+                                    "bg-(--surface-brand-primary) text-(--accent-feedback-strong) hover:bg-(--surface-brand-primary) hover:text-(--surface-brand-secondary)":
+                                        form_button.tipo === "version_2",
+                                    "bg-(--brand-interactive-base) text-(--surface-brand-primary) hover:bg-(--brand-interactive-base)":
+                                        form_button.tipo === "version_3",
+                                    "bg-(--accent-feedback-strong) text-(--surface-brand-primary) hover:bg-(--accent-feedback-strong) hover:text-(--surface-brand-primary)":
+                                        form_button.tipo === "version_4",
+                                },
+                            ]}
+                        >
+                            {form_button.texto}
+                        </button>
+                        </div>
+
+                        <div
+                            id="form-feedback"
+                            class="col-span-1 md:col-span-2 text-center text-xs hidden font-bold p-4 rounded-sm font-(family-name:--font-sharp-sans-bold)"
+                        >
+                        </div>
+                    </form>
+                ) : 
+                    Boton && (
+                        <div class="relative animate-fade-in-up delay-300">
+                            <Button botones={Boton} clase="flex flex-col md:flex-row gap-4"/>
+                        </div>
+                    )
+                }
+                
+            </div>
+        </div>
+    </div>
+</section>
+<script define:vars={{ url_form }}>
+    
+        const form = document.getElementById("form-newsletter");
+        const feedback = document.getElementById("form-feedback");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Enviando...";
+            }
+
+            feedback.classList.add("hidden");
+            feedback.className =
+                "col-span-1 md:col-span-2 text-center text-xs hidden font-bold p-4 rounded-sm font-(family-name:--font-sharp-sans-bold)";
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(url_form, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json()
+                if (response.ok) {
+                    
+                    feedback.textContent = data.message;
+                    feedback.classList.remove("hidden");
+                    feedback.classList.add("bg-green-100", "text-green-800");
+                    form.reset();
+                } else {
+                    const error = await response.json();
+                    throw new Error(
+                        error.message ||
+                            "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
+                    );
+                }
+            } catch (err) {
+                feedback.textContent = err.message.toUpperCase();
+                feedback.classList.remove("hidden");
+                feedback.classList.add("bg-red-100", "text-red-800");
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "SUSCRÍBETE";
+                }
+            }
+        });
+    
+</script>
