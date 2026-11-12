@@ -1,0 +1,121 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    imagen?: any;
+    badge?: string;
+    titulo?: string;
+    linea?: string;
+    descripcion?: string;
+    variante?: "mint" | "rosa";
+}
+
+const {
+    imagen = null,
+    badge = "",
+    titulo = "",
+    linea = "",
+    descripcion = "",
+    variante = "mint"
+} = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+const esRosa = variante === "rosa";
+const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-interactive-base)";
+---
+
+<article class="card-sede" style={`--color-variante: ${colorVariante};`}>
+    <div class="foto">
+        {imgSrc ? (
+            <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full h-full object-cover!" />
+        ) : (
+            <span class="placeholder">FOTO · {titulo}</span>
+        )}
+    </div>
+
+    <div class="cuerpo">
+        {badge && <span class="sede-badge">{badge}</span>}
+        {titulo && <h3 class="titulo">{titulo}</h3>}
+        {linea && <p class="linea">{linea}</p>}
+        {descripcion && <p class="descripcion">{descripcion}</p>}
+    </div>
+</article>
+
+<style>
+    .card-sede {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--color-variante, var(--brand-interactive-base));
+        padding: 0.5rem;
+    }
+
+    .foto {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 4 / 3;
+        background: var(--custom-color-01);
+        overflow: hidden;
+    }
+
+    .placeholder {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .cuerpo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.9rem 0.75rem 1.1rem;
+    }
+
+    .sede-badge {
+        align-self: flex-start;
+        background: var(--color-variante, var(--brand-interactive-base));
+        color: var(--surface-brand-primary);
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 0.75rem;
+        line-height: 1;
+        padding: 0.35rem 0.6rem;
+        border-radius: 0;
+    }
+
+    .titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        color: var(--neutral-text-inverted);
+        text-transform: uppercase;
+        font-size: 2rem;
+        line-height: 1;
+        overflow-wrap: anywhere;
+    }
+
+    .linea {
+        margin: 0;
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 0.85rem;
+        line-height: 1.25;
+    }
+
+    .descripcion {
+        margin: 0;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+</style>
