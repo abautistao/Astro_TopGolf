@@ -1,0 +1,50 @@
+---
+// Las clases propias del componente NO llevan el sufijo "!" de Tailwind: Astro
+// scopea `.grid` a `.grid:where(.astro-xxx)` y el token "grid!" no haría match.
+// El sufijo "!" se reserva para las utilidades de Tailwind del markup.
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardTarifa from "./cards/Tarifa.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    cards?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    cards = []
+} = Astro.props;
+---
+
+<section class="tarifas">
+    <div class="contenedor">
+        <TituloSeccion
+            titulo={titulo_seccion}
+            subtitulo={subtitulo}
+        />
+
+        <div class="grid grid-cols-1! md:grid-cols-2! xl:grid-cols-3!">
+            {Array.isArray(cards) && cards.map((card) => <CardTarifa {...card} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    .tarifas {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+</style>

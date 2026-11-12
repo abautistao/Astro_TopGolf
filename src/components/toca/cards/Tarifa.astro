@@ -1,0 +1,165 @@
+---
+// Los estilos van en el <style> scoped con tokens var(--...); las clases propias
+// no llevan el sufijo "!" de Tailwind (Astro scopea `.tarifa-card` a
+// `.tarifa-card:where(.astro-xxx)` y el token "tarifa-card!" no haría match).
+interface Props {
+    titulo?: string;
+    badge?: string;
+    etiqueta_precio?: string;
+    precio?: string;
+    unidad_precio?: string;
+    horario?: string;
+    texto_boton?: string;
+    url_boton?: string;
+    variante?: "mint" | "rosa";
+}
+
+const {
+    titulo = "",
+    badge = "",
+    etiqueta_precio = "",
+    precio = "",
+    unidad_precio = "",
+    horario = "",
+    texto_boton = "",
+    url_boton = "",
+    variante = "mint"
+} = Astro.props;
+
+const esRosa = variante === "rosa";
+---
+
+<article class:list={["tarifa-card", esRosa ? "tarifa-rosa" : "tarifa-mint"]}>
+    {badge && <span class="tarifa-badge">{badge}</span>}
+
+    <h3 class="tarifa-titulo">{titulo}</h3>
+
+    <div class="tarifa-datos">
+        {etiqueta_precio && <span class="tarifa-etiqueta">{etiqueta_precio}</span>}
+        {precio && <span class="tarifa-valor">{precio}</span>}
+        {unidad_precio && <span class="tarifa-unidad">{unidad_precio}</span>}
+    </div>
+
+    {horario && <p class="tarifa-horario">{horario}</p>}
+
+    {
+        texto_boton && (
+            <a href={url_boton || "#"} class="tarifa-boton">
+                {texto_boton}
+            </a>
+        )
+    }
+</article>
+
+<style>
+    .tarifa-card {
+        --tarifa-fondo: var(--brand-interactive-base);
+        --tarifa-boton-fondo: var(--surface-brand-secondary);
+        --tarifa-boton-sombra: var(--surface-brand-primary);
+
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--tarifa-fondo);
+        border: 2px solid var(--tarifa-fondo);
+        color: var(--surface-brand-primary);
+        padding: 1.75rem 1.5rem 1.5rem;
+    }
+
+    .tarifa-card.tarifa-mint {
+        --tarifa-fondo: var(--brand-interactive-base);
+        --tarifa-boton-fondo: var(--surface-brand-secondary);
+        --tarifa-boton-sombra: var(--surface-brand-primary);
+    }
+
+    .tarifa-card.tarifa-rosa {
+        --tarifa-fondo: var(--surface-brand-secondary);
+        --tarifa-boton-fondo: var(--surface-brand-primary);
+        --tarifa-boton-sombra: var(--brand-interactive-base);
+    }
+
+    .tarifa-badge {
+        position: absolute;
+        top: -1rem;
+        right: -0.5rem;
+        z-index: 2;
+        transform: rotate(-8deg);
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .tarifa-titulo {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.75rem;
+        line-height: 1;
+        color: var(--surface-brand-primary);
+        overflow-wrap: anywhere;
+    }
+
+    .tarifa-datos {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1.25rem;
+    }
+
+    .tarifa-etiqueta {
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        color: var(--surface-brand-primary);
+    }
+
+    .tarifa-valor {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 3.25rem;
+        line-height: 0.95;
+        color: var(--surface-brand-primary);
+        overflow-wrap: anywhere;
+    }
+
+    .tarifa-unidad {
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        color: var(--surface-brand-primary);
+        margin-top: 0.25rem;
+    }
+
+    .tarifa-horario {
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.95rem;
+        line-height: 1.35;
+        color: var(--surface-brand-primary);
+        margin-top: 1rem;
+    }
+
+    .tarifa-boton {
+        display: block;
+        text-align: center;
+        background: var(--tarifa-boton-fondo);
+        color: var(--neutral-text-inverted);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1.05rem;
+        line-height: 1.1;
+        padding: 0.9rem 1rem;
+        margin-top: 1.5rem;
+        box-shadow: 4px 4px 0 0 var(--tarifa-boton-sombra);
+        transition: transform 0.2s ease;
+    }
+
+    .tarifa-boton:hover {
+        transform: translate(-2px, -2px);
+    }
+</style>
