@@ -130,10 +130,12 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
         aspect-ratio: 16 / 9;
         background: var(--custom-color-01);
         overflow: hidden;
-        padding: 1.25rem;
+        
     }
 
     .foto-placeholder {flex: 1 1 auto;
+        /* El recuadro punteado va inset; la foto real ocupa todo el area. */
+        margin: 1.25rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -157,7 +159,7 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
 
     .tag {
         border: 2px solid var(--color-variante);
-        color: var(--color-variante);
+        color: var(--neutral-text-inverted);
         font-family: var(--font-sharp-sans-bold);
         text-transform: uppercase;
         font-size: 0.95rem;
