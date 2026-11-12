@@ -13,7 +13,6 @@ interface Props {
     url_boton?: string;
     texto_enlace?: string;
     url_enlace?: string;
-    variante?: "mint" | "rosa";
 }
 
 const {
@@ -26,15 +25,13 @@ const {
     texto_boton = "",
     url_boton = "",
     texto_enlace = "",
-    url_enlace = "",
-    variante = "mint"
+    url_enlace = ""
 } = Astro.props;
 
 const imgSrc = getStrapiUrl(imagen);
-const esRosa = variante === "rosa";
 ---
 
-<article class:list={["plan-card", { "plan-card--rosa": esRosa }]}>
+<article class="plan-card">
     <header class="plan-cabecera">
         <span class="plan-titulo">{titulo}</span>
         <span class="plan-precio">{precio}</span>
@@ -94,10 +91,6 @@ const esRosa = variante === "rosa";
         container-type: inline-size;
     }
 
-    .plan-card--rosa {
-        border-color: var(--surface-brand-secondary);
-    }
-
     .plan-cabecera {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -121,10 +114,6 @@ const esRosa = variante === "rosa";
         overflow-wrap: break-word;
     }
 
-    .plan-card--rosa .plan-titulo {
-        background: var(--surface-brand-secondary);
-    }
-
     .plan-precio {
         background: var(--surface-brand-secondary);
         color: var(--surface-brand-primary);
@@ -137,10 +126,6 @@ const esRosa = variante === "rosa";
         display: flex;
         align-items: center;
         white-space: nowrap;
-    }
-
-    .plan-card--rosa .plan-precio {
-        background: var(--brand-interactive-base);
     }
 
     .plan-badge {
@@ -234,8 +219,11 @@ const esRosa = variante === "rosa";
         color: var(--surface-brand-primary);
         font-family: var(--font-titling-gothic-fb-extended-bold);
         text-transform: uppercase;
-        font-size: 1.1rem;
-        padding: 0.85rem 1rem;
+        /* Fluido con el ancho de la card: 'COTIZA CON UN ASESOR' no debe partirse.
+           El factor esta calibrado para la fuente de respaldo (1.2em por caracter);
+           con la condensada del diseno se puede subir hasta el tope de 1.5rem. */
+        font-size: clamp(0.72rem, 3.6cqw, 1.5rem);
+        padding: 0.85rem 0.5rem;
         box-shadow: 4px 4px 0 0 var(--brand-interactive-base);
         transition: transform 0.2s ease;
     }
