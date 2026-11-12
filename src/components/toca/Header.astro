@@ -1,10 +1,10 @@
 ---
 // src/components/toca/Header.astro
 import { getHeaderData, getStrapiUrl, getLocalizedUrl, stringifyRichText } from "../../lib/strapi";
-import ButtonGroup from "./elements/Button.astro";
+import Button from "./elements/Button.astro";
 import type { Boton } from "./elements/Button.astro";
 import defaultLogoImg from "../../assets/TOCA_Social_One_Color.png";
-import { getLottiePath } from "../../utils/iconMapper";
+import { Image } from "astro:assets";
 
 interface Promo {
     id: number
@@ -17,613 +17,256 @@ const headerData = data || (await getHeaderData());
 
 const strapiLogo = getStrapiUrl(headerData?.logo);
 const logoUrl = strapiLogo || defaultLogoImg.src;
-const headerTitle = headerData?.Titulo;
-
+const logoMobileUrl = getStrapiUrl(headerData?.logo_mobile) || logoUrl;
+const textoHorario = headerData?.texto_horario || "";
+const textoTel = headerData?.texto_telefono || "";
 // --- Usamos links_multiples ---
-const multipleLinks = headerData?.links_multiples || [];
 
 // --- Menú Derecho (Links normales) ---
-const links =
-    headerData?.links?.length > 0
-        ? headerData.links.map((link: any) => {
-            const hasDropdown = link.tiene_dropdown;
-            let formattedSubmenu = null;
+const links = headerData?.links || [];
 
-            if (
-                hasDropdown &&
-                link.dropdown_items &&
-                link.dropdown_items.length > 0
-            ) {
-                formattedSubmenu = link.dropdown_items.map((item: any) => {
-                    const imgUrl = item.imagen
-                        ? getStrapiUrl(item.imagen)
-                        : null;
-                    const finalLottie = getLottiePath(item.icono);
-
-                    return {
-                        label: item.titulo,
-                        subLabel: item.subtitulo,
-                        url: item.url || "#",
-                        imageUrl: imgUrl,
-                        lottie: finalLottie,
-                    };
-                });
-            }
-
-            return {
-                texto: link.texto,
-                url: getLocalizedUrl(link.url, locale),
-                submenu: formattedSubmenu,
-            };
-        })
-        : [];
+const social = headerData?.social || [];
 
 // --- Botones (Book Now) desde Strapi ---
-const rawButton = headerData?.boton;
+const ctaButtonRaw = headerData?.boton;
+let buttons: Boton[] = [];
 
-const ctaButtons: Boton[] = [
-    {
-        id: rawButton?.id || 1,
-        texto: rawButton?.texto || "BOOK NOW",
-        url: rawButton?.url || "#",
-        tipo: rawButton?.tipo || "version_1",
-    },
-];
+if (ctaButtonRaw) {
+    const ctaButtonLocalized = {
+        ...ctaButtonRaw,
+        url: getLocalizedUrl(ctaButtonRaw.url, locale)
+    };
+    buttons = [ctaButtonLocalized];
+}
 
-const promos: Promo[] = headerData?.Slider_promos || [];
+const currentPath = (Astro.url.pathname || "/").replace(/\/$/, "") || "/";
+const normalizeUrl = (u: string) => (u || "").replace(/\/$/, "") || "/";
+const isLinkActive = (url?: string) => {
+    if (!url) return false;
+    return normalizeUrl(getLocalizedUrl(url, locale)) === currentPath;
+};
+const isLinkActiveOrChild = (link: any) => {
+    if (isLinkActive(link.url)) return true;
+    if (Array.isArray(link.dropdown_items) && link.dropdown_items.length > 0) {
+        return link.dropdown_items.some((sub: any) => isLinkActive(sub.url));
+    }
+    return false;
+};
 ---
-{promos.length > 0 && (
-    <section id="slider-promos" class="splide bg-[var(--surface-brand-primary)] min-h-[34px] text-sm md:text-base" aria-label="Splide Basic HTML Example">
-        <div class="splide__arrows splide__arrows--ltr">
-            <button
-                class="splide__arrow splide__arrow--prev"
-                type="button"
-                aria-label="Previous slide"
-                aria-controls="splide01-track"
-            >
-                
-                <i class="fa-solid fa-chevron-left fa-md font-bold"></i>
-            </button>
-            <button
-                class="splide__arrow splide__arrow--next"
-                type="button"
-                aria-label="Next slide"
-                aria-controls="splide01-track"
-            >
-                <i class="fa-solid fa-chevron-right fa-md font-bold"></i>
-            </button>
-        </div>
-      <div class="splide__track">
-            <div class="splide__list">
-                {promos.map(promo => (
-                    <div class="splide__slide text-center prose" set:html={stringifyRichText(promo.descripcion)}></div>
-                ))}
-    
+<header class="w-full relative z-50 bg-(--surface-brand-primary) font-(family-name:--font-titling-gothic-fb-extended-bold)">
+    <div class="header-top py-4 hidden md:flex">
+        <div class="container mx-auto px-4 md:px-0">
+            <div class="flex justify-between w-full font-bold ">
+                <!-- Horario / Text -->
+                 <div class="header-time flex gap-6">
+                     <div class="flex-grow flex items-center justify-center">
+                         <div set:html={stringifyRichText(textoTel)} class="text-white text-xs md:text-[9px] font-bold tracking-wide uppercase"></div>
+                     </div>
+                     <div class="flex-grow flex items-center justify-center">
+                         <div set:html={stringifyRichText(textoHorario)} class="text-white text-xs md:text-[9px] font-bold tracking-wide uppercase"></div>
+                     </div>
+                 </div>
+
+                <div class="flex items-center gap-5 text-white!">
+                        {social.map((item: any) => (
+                            <a href={item.url} target="_blank" rel="noopener noreferrer" class="text-white! hover:opacity-80! transition-opacity">
+                                    <i class={`${item.icono_clase} text-[17px]`}></i>
+                            </a>
+                        ))}
                 </div>
-      </div>
-    </section>
-)}
-
-<header
-    class="w-full relative z-50 font-(family-name:--font-titling-gothic-fb-extended-bold)"
-    id="main-header"
->
-    <div
-        class="relative z-50 bg-[var(--brand-interactive-base)] transition-colors duration-300 shadow-sm border-b border-[var(--surface-brand-primary)] md:border-none"
-    >
-        <div
-            class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[65px]"
-        >
-            <div class="flex items-center gap-4 md:gap-8 h-full">
-                <a href="/" class="flex-shrink-0 no-underline">
-                    {
-                        headerTitle ? (
-                            <h1 class="text-2xl md:text-4xl font-bold uppercase text-[var(--surface-brand-primary)] tracking-tighter m-0 leading-none">
-                                {headerTitle}
-                            </h1>
-                        ) : (
-                            <img
-                                src={logoUrl}
-                                alt="Toca Social"
-                                class="h-6 md:h-10 w-auto object-contain brightness-0 md:brightness-100 transition-[filter]"
-                            />
-                        )
-                    }
-                </a>
-
-                {/* --- LINKS MULTIPLES (Izquierda - Desktop) --- */}
-                {
-                    multipleLinks.map((section: any, idx: number) => (
-                        <div class="hidden md:flex items-center h-full static">
-                            <button
-                                type="button"
-                                class="menu-trigger flex items-center gap-1 font-bold uppercase text-(--surface-brand-primary) text-xs tracking-tighter h-full px-2 focus:outline-none"
-                                data-target={`multi-dropdown-${idx}`}
-                            >
-                                {section.titulo_seccion}{" "}
-                                <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
-                            </button>
-
-                            <div
-                                id={`multi-dropdown-${idx}`}
-                                class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--brand-interactive-base)] border-b-4 border-[var(--brand-interactive-base)] shadow-lg z-40 py-10"
-                            >
-                                <div class="max-w-[1920px] mx-auto px-6 ">
-                                    <div class="flex flex-col md:flex-row gap-12 lg:gap-32 w-full">
-                                        {section.links_dos &&
-                                            section.links_dos.map(
-                                                (group: any, index: number) => (
-                                                    <div
-                                                        class={`${index === 0 ? "flex-[2]" : "flex-1"} flex flex-col`}
-                                                    >
-                                                        <h3 class="font-bold text-[var(--surface-brand-primary)] text-base uppercase tracking-tighter mb-4">
-                                                            {group.texto}
-                                                        </h3>
-
-                                                        <ul
-                                                            class={`grid gap-x-16 gap-y-2 w-full ${index === 0 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
-                                                        >
-                                                            {group.dropdown_items &&
-                                                                group.dropdown_items.map(
-                                                                    (
-                                                                        item: any,
-                                                                    ) => (
-                                                                        <li class="w-full">
-                                                                            <a
-                                                                                href={getLocalizedUrl(
-                                                                                    item.url,
-                                                                                    locale,
-                                                                                )}
-                                                                                class="group block w-full no-underline"
-                                                                            >
-                                                                                <div class="flex items-center justify-between border-b-1 border-[var(--surface-brand-primary)] pb-1 mb-2 transition-all duration-150 group-hover:border-b-3">
-                                                                                    <div class="flex items-center gap-3">
-                                                                                        <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center">
-                                                                                            {item.imagen && (
-                                                                                                <img
-                                                                                                    src={getStrapiUrl(
-                                                                                                        item.imagen,
-                                                                                                    )}
-                                                                                                    alt="Badge"
-                                                                                                    class="w-full h-full object-contain"
-                                                                                                />
-                                                                                            )}
-                                                                                        </div>
-
-                                                                                        <span class="font-(family-name:--font-sharp-sans-medium) text-[var(--surface-brand-primary)] font-medium text-base uppercase tracking-tight">
-                                                                                            {item.titulo ||
-                                                                                                item.texto}
-                                                                                        </span>
-                                                                                    </div>
-
-                                                                                    <i class="fa-solid fa-play text-[var(--surface-brand-primary)] text-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-150 transition-all duration-150" />
-                                                                                </div>
-                                                                            </a>
-                                                                        </li>
-                                                                    ),
-                                                                )}
-                                                        </ul>
-                                                    </div>
-                                                ),
-                                            )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                }
-            </div>
-
-            {/* DERECHA: Nav Principal + Botones */}
-            <div class="flex items-center gap-3 md:gap-8 h-full">
-                <nav class="hidden! lg:flex! h-full items-center">
-                    <ul class="flex items-center gap-8 h-full mb-0!">
-                        {
-                            links.map((link: any, index: number) => (
-                                <li class="h-full flex items-center static">
-                                    {link.submenu ? (
-                                        <>
-                                            <button
-                                                type="button"
-                                                class="menu-trigger h-full flex items-center gap-1 font-bold uppercase! text-(--surface-brand-primary) text-xs! tracking-tighter focus:outline-none"
-                                                data-target={`menu-${index}`}
-                                            >
-                                                {link.texto}{" "}
-                                                <i class="chevron fa-solid fa-caret-down text-xl mt-[-2px] transition-transform duration-300" />
-                                            </button>
-                                            <div
-                                                id={`menu-${index}`}
-                                                class="mega-menu hidden absolute left-0 top-[65px] w-full bg-[var(--surface-brand-primary)]  border-b-4 border-[var(--brand-interactive-base)] shadow-xl z-40 py-5"
-                                            >
-                                                <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-                                                    <div class="flex justify-center items-start gap-8 xl:gap-20">
-                                                        {link.submenu.map(
-                                                            (subItem: any) => (
-                                                                <a
-                                                                    href={getLocalizedUrl(
-                                                                        subItem.url,
-                                                                        locale,
-                                                                    )}
-                                                                    class="group flex flex-col items-center gap-4 text-center w-32 hover:no-underline!"
-                                                                >
-                                                                    <div class="h-24 flex items-center justify-center relative">
-                                                                        {subItem.imageUrl ? (
-                                                                            <img
-                                                                                src={
-                                                                                    subItem.imageUrl
-                                                                                }
-                                                                                alt={
-                                                                                    subItem.label
-                                                                                }
-                                                                                class="max-h-20 w-auto object-contain drop-shadow-[0_0_8px_rgba(74,255,194,0.3)]"
-                                                                            />
-                                                                        ) : subItem.lottie ? (
-                                                                            <div
-                                                                                class="js-lottie-anim w-24 h-24"
-                                                                                data-path={
-                                                                                    subItem.lottie
-                                                                                }
-                                                                                data-loop="true"
-                                                                            />
-                                                                        ) : (
-                                                                            <i
-                                                                                class={`${subItem.icon} text-6xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_8px_rgba(74,255,194,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(74,255,194,0.8)] transition-all`}
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                    <div class="flex flex-col">
-                                                                        <span class="font-bold uppercase text-(--brand-interactive-base)! text-xs tracking-wide hover:no-underline!">
-                                                                            {
-                                                                                subItem.label
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                </a>
-                                                            ),
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <a
-                                            href={getLocalizedUrl(
-                                                link.url,
-                                                locale,
-                                            )}
-                                            class="font-bold uppercase text-(--surface-brand-primary)! text-xs tracking-tighter hover:no-underline!"
-                                        >
-                                            {link.texto}
-                                        </a>
-                                    )}
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </nav>
-
-                <div class="hidden md:block">
-                    <ButtonGroup botones={ctaButtons} tamanoTexto="text-sm md:text-base">
-                </div>
-
-                <div class="md:hidden mr-1">
-                    <ButtonGroup botones={ctaButtons} />
-                </div>
-
-                <button
-                    id="mobile-menu-btn"
-                    class="lg:hidden text-[var(--surface-brand-primary)] focus:outline-none p-1 z-50 transition-colors w-8 h-8 flex items-center justify-center"
-                >
-                    <i
-                        id="icon-menu"
-                        class="fa-solid fa-bars text-[28px] cursor-pointer"></i>
-                    <i
-                        id="icon-close"
-                        class="fa-solid fa-xmark text-[32px] hidden! cursor-pointer"
-                    ></i>
-                </button>
             </div>
         </div>
     </div>
 
-    {/* MENU MOBILE (Contenido desplegable) */}
-    <div
-        id="mobile-menu"
-        class="hidden fixed top-[130px] left-0 w-full h-[calc(100vh-65px)] bg-(--surface-brand-primary) z-40 overflow-y-auto transition-all"
-    >
-        <div class="flex flex-col w-full pb-20">
-            {/* Iteración dinámica sobre links_multiples (Mobile) */}
-            {
-                multipleLinks.map((section: any) => (
-                    <div class="w-full">
-                        <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)]">
-                            <span class="text-xs font-bold uppercase tracking-wide">
-                                {section.titulo_seccion}
-                            </span>
-                            <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180" />
-                        </button>
-                        <div class="accordion-content hidden bg-[var(--surface-brand-primary)]  pb-8 text-center space-y-8 animate-fade-in-down px-4">
-                            {section.links_dos &&
-                                section.links_dos.map((group: any) => (
-                                    <div>
-                                        <h4 class="text-[var(--brand-interactive-base)] text-xs font-bold uppercase tracking-widest border-b border-[var(--brand-interactive-base)] inline-block mb-4 pb-1">
-                                            {group.texto}
-                                        </h4>
-                                        <ul class="space-y-3 pt-2">
-                                            {group.dropdown_items &&
-                                                group.dropdown_items.map(
-                                                    (item: any) => (
-                                                        <li class="flex items-center justify-center gap-2">
-                                                            {item.imagen && (
-                                                                <img
-                                                                    src={getStrapiUrl(
-                                                                        item.imagen,
-                                                                    )}
-                                                                    class="h-5 w-5 object-contain brightness-0 invert"
-                                                                />
-                                                            )}
-                                                            <a
-                                                                href={getLocalizedUrl(
-                                                                    item.url,
-                                                                    locale,
-                                                                )}
-                                                                class="text-(--brand-interactive-base)! text-sm! lg:text-sm! font-medium!"
-                                                            >
-                                                                {item.titulo ||
-                                                                    item.texto}
-                                                            </a>
-                                                        </li>
-                                                    ),
-                                                )}
-                                        </ul>
-                                    </div>
-                                ))}
-                        </div>
-                    </div>
-                ))
-            }
-
-            {/* RESTO DE LINKS MOBILE */}
-            {
-                links.map((link: any) => (
-                    <div class="w-full">
-                        {link.submenu ? (
-                            <>
-                                <button class="mobile-accordion-trigger w-full py-6 flex items-center justify-center gap-2 text-[var(--brand-interactive-base)] ">
-                                    <span class="text-xs font-bold uppercase tracking-wide">
-                                        {link.texto}
-                                    </span>
-                                    <i class="accordion-chevron fa-solid fa-caret-up text-sm transition-transform duration-300 rotate-180" />
-                                </button>
-                                <div class="accordion-content hidden pb-8 px-6">
-                                    <div class="grid grid-cols-2 gap-y-10 gap-x-4">
-                                        {link.submenu.map((sub: any) => (
-                                            <a
-                                                href={getLocalizedUrl(
-                                                    sub.url,
-                                                    locale,
-                                                )}
-                                                class="flex flex-col items-center justify-start text-center group"
-                                            >
-                                                <div class="h-16 mb-2 flex items-center justify-center">
-                                                    {sub.imageUrl ? (
-                                                        <img
-                                                            src={sub.imageUrl}
-                                                            alt={sub.label}
-                                                            class="max-h-14 w-auto object-contain"
-                                                        />
-                                                    ) : sub.lottie ? (
-                                                        <div
-                                                            class="js-lottie-anim w-16 h-16"
-                                                            data-path={
-                                                                sub.lottie
-                                                            }
-                                                            data-loop="true"
-                                                        />
-                                                    ) : (
-                                                        <i
-                                                            class={`${sub.icon} text-5xl text-[var(--brand-interactive-base)] drop-shadow-[0_0_5px_rgba(74,255,194,0.5)]`}
-                                                        />
-                                                    )}
-                                                </div>
-                                                <span class="text-[var(--brand-interactive-base)] font-bold uppercase text-xs tracking-wider">
-                                                    {sub.label}
-                                                </span>
-                                            </a>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <a
-                                href={getLocalizedUrl(link.url, locale)}
-                                class="w-full py-6 flex items-center justify-center gap-2 text-(--brand-interactive-base)! "
-                            >
-                                <span class="text-xs! font-bold! uppercase! tracking-wide">
-                                    {link.texto}
-                                </span>
-                            </a>
+    <!-- Main Navigation Bar -->
+    <div class="header-main">
+        <div class="container mx-auto px-4 md:px-0">
+            <div class="flex! items-center! justify-between">
+                <div class="py-4">
+                    <!-- Logo -->
+                    <a href="/">
+                        <!-- Desktop Logo -->
+                        {logoUrl && (
+                            <Image
+                                src={logoUrl}
+                                alt="Acuario"
+                                width="120"
+                                height="80"
+                                class="hidden! md:block! h-15! object-contain"
+                            />
                         )}
+                        <!-- Mobile Logo -->
+                        {logoMobileUrl && (
+                            <Image
+                                src={logoMobileUrl}
+                                alt="Acuario Mobile"
+                                width="120"
+                                height="80"
+                                class="block! md:hidden! h-15 object-contain py-1"
+                            />
+                        )}
+                    </a>
+                </div>
+
+                <!-- Desktop Links -->
+                <nav class="hidden! md:flex! items-center! justify-center! gap-6! h-full! grow!">
+                    {links.map((link: any) => (
+                        <div class="relative group h-full py-4 flex items-center">
+                            <a
+                                href={link.url ? getLocalizedUrl(link.url, locale) : '#'}
+                                class={`flex! items-center! gap-1.5! font-(family-name:--font-titling-gothic-fb-extended-bold) text-[11px]! font-medium! tracking-wide! uppercase! transition-colors! hover:no-underline!  ${
+                                    isLinkActiveOrChild(link)
+                                        ? "text-(--brand-interactive-base)!"
+                                        : "text-white!"
+                                }`}
+                                aria-current={isLinkActive(link.url) ? "page" : undefined}
+                            >
+                                {link.texto}
+                                {link.dropdown_items && link.dropdown_items.length > 0 && (
+                                    <i class={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 group-hover:rotate-180 -mt-0.5 ${isLinkActiveOrChild(link) ? "text-[var(--color-white)]" : ""}`}></i>
+                                )}
+                            </a>
+                            
+                            <!-- Dropdown -->
+                            {link.dropdown_items && link.dropdown_items.length > 0 && (
+                                <div class="absolute! top-full! left-0! opacity-0! invisible! group-hover:opacity-100! group-hover:visible! transition-all duration-300 w-max min-w-[240px] bg-(--surface-brand-primary)! border-t-2! border-(--brand-interactive-base) shadow-2xl z-50!">
+                                    <ul class="flex! flex-col!">
+                                        {link.dropdown_items.map((sublink: any) => (
+                                            <li>
+                                                <a
+                                                    href={getLocalizedUrl(sublink.url, locale)}
+                                                    class={`block! px-8! py-4! font-[family-name:var(--font-principal)]! font-bold! text-[11px]! transition-colors hover:no-underline! ${
+                                                        isLinkActive(sublink.url)
+                                                            ? "bg-(--neutral-background-strong)! text-(--brand-interactive-base)!"
+                                                            : "text-(--surface-brand-secondary)! hover:bg-(--neutral-background-strong)! hover:text-(--brand-interactive-base)!"
+                                                    }`}
+                                                    aria-current={isLinkActive(sublink.url) ? "page" : undefined}
+                                                >
+                                                    {sublink.titulo}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </nav>
+                
+                {ctaButtonRaw && (
+                    <div class="relative animate-fade-in-up delay-300 hidden md:block">
+                        <Button botones={buttons} />
                     </div>
-                ))
-            }
+                )}
+                <!-- Mobile Info & Hamburger -->
+                <div class="flex! md:hidden! items-center! gap-15!">
+                    <span class="text-white! text-[10px]! sm:text-xs! font-[family-name:var(--font-principal)] font-bold! tracking-wide uppercase! text-right! max-w-[150px]! leading-tight">
+                        
+                    </span>
+                    <button aria-label="Abrir menú de navegación" id="mobile-menu-toggle" class="text-white! text-3xl! focus:outline-none ml-1! w-8! h-8! flex! items-center! justify-center!">
+                        <span id="menu-icon"><i aria-hidden="true" class="fa-solid fa-bars"></i></span>
+                        <span id="close-icon" class="hidden!"><i aria-hidden="true" class="fa-solid fa-xmark"></i></span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </header>
-<style>
-    #slider-promos .splide__arrow {
-        background-color: transparent !important;
-        height: 16px !important;
-    }
 
-    #slider-promos {
-        font-family: var(--font-sharp-sans-medium) !important;
-        color: var(--accent-feedback-strong) !important;
-        width: 100%;
-        padding: 6px 12px !important;
-        display: flex;
-        justify-content: center;
-        gap: 4px;
-        flex-wrap: wrap;
-        margin: 0 auto !important;
-        text-align: center !important; 
-    }
-
-    #slider-promos .prose :global(p > a)  {
-        text-decoration: underline !important;
-        text-decoration-color: var(--surface-brand-secondary) !important;
-        color: var(--surface-brand-secondary) !important;
-        text-decoration-thickness: 3px !important;
-        font-family: var(--font-sharp-sans-bold) !important;
-    }
-   
-    #slider-promos .prose :global(p)  {
-        margin-bottom: 0 !important;
-    }
-</style>
+<!-- Mobile Overlay Menu -->
+<div id="mobile-menu" class="hidden! md:hidden! fixed! inset-0! top-[95px]! bg-(--surface-brand-primary)! font-(family-name:--font-titling-gothic-fb-extended-bold)! z-40! overflow-y-auto! flex-col! pb-20! border-t-4! border-[var(--brand-interactive-base)]!">
+    <nav class="flex flex-col">
+        {links.map((link: any, index: number) => (
+            <div class="mobile-menu-group border-b! border-gray-200!">
+                <div class="mobile-menu-header flex! items-center! justify-between! px-6! py-4!  text-white!">
+                    <a href={link.url ? getLocalizedUrl(link.url, locale) : '#'} class={`font-[family-name:var(--font-principal)] text-[15px]! uppercase! font-bold! grow! ${isLinkActiveOrChild(link) ? "text-[var(--brand-interactive-base)]!" : "text-(--accent-feedback-strong)!"}`} aria-current={isLinkActive(link.url) ? "page" : undefined}>
+                        {link.texto}
+                    </a>
+                    {link.dropdown_items && link.dropdown_items.length > 0 && (
+                        <button class="p-2! mobile-submenu-toggle focus:outline-none! text-inherit!" data-target={`submenu-${index}`}>
+                            <i class="fa-solid fa-chevron-down transition-transform duration-300"></i>
+                        </button>
+                    )}
+                </div>
+                {link.dropdown_items && link.dropdown_items.length > 0 && (
+                    <div id={`submenu-${index}`} class="hidden! flex-col! bg-(--surface-brand-primary)!">
+                        {link.dropdown_items.map((sublink: any) => (
+                            <a href={getLocalizedUrl(sublink.url, locale)} class={`block! px-8! py-3.5! font-[family-name:var(--font-principal)]! font-bold! text-[12px]! transition-colors border-t! border-(--accent-feedback-strong)! ${isLinkActive(sublink.url) ? " text-[var(--brand-interactive-base)]" : "text-[var(--surface-brand-secondary)] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)]"}`} aria-current={isLinkActive(sublink.url) ? "page" : undefined}>
+                                {sublink.titulo}
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+        ))}
+        {buttons.length > 0 && (
+            <div class="p-6! mt-4!">
+                <a href={buttons[0].url} class="block! w-full! text-center! bg-(--brand-interactive-base) text-(--surface-brand-primary) font-[family-name:var(--font-principal)]! font-bold! text-lg! py-4! rounded-md! uppercase! shadow-sm">
+                    {buttons[0].texto}
+                </a>
+            </div>
+        )}
+    </nav>
+</div>
 
 <script>
-    /**
-     * OPTIMIZACIÓN DE LOTTIE:
-     * Cargamos la librería y los JSON solo cuando el navegador está libre (Idle).
-     */
-    import '@splidejs/splide/css';
-    import Splide from '@splidejs/splide';
-    const initLotties = async () => {
-        const lottieContainers = document.querySelectorAll(".js-lottie-anim");
-        if (lottieContainers.length === 0) return;
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    const menuIcon = document.getElementById("menu-icon");
+    const closeIcon = document.getElementById("close-icon");
 
-        try {
-            // Importación dinámica para reducir el peso del bundle inicial
-            const lottie = (await import("lottie-web")).default;
-
-            lottieContainers.forEach((container) => {
-                const el = container as HTMLElement;
-                const path = el.dataset.path;
-                if (!path) return;
-
-                const isFestive = path.toLowerCase().includes("festive");
-
-                // Cargamos la animación
-                const anim = lottie.loadAnimation({
-                    container: el,
-                    renderer: "svg",
-                    loop: true,
-                    autoplay: isFestive,
-                    path: path,
-                });
-
-                // Si no es "festivo", la dejamos estática en el frame 0 hasta el hover
-                if (!isFestive) {
-                    anim.addEventListener('DOMLoaded', () => {
-                        anim.goToAndStop(0, true);
-                    });
-
-                    const trigger = el.closest("a") || el;
-                    trigger.addEventListener("mouseenter", () => anim.play());
-                    trigger.addEventListener("mouseleave", () => anim.stop());
-                }
-            });
-        } catch (error) {
-            console.error("Error cargando Lottie:", error);
+    toggle?.addEventListener("click", () => {
+        const isHidden = menu?.classList.contains("hidden!");
+        if (isHidden) {
+            menu?.classList.remove("hidden!");
+            menu?.classList.add("flex!");
+            menuIcon?.classList.add("hidden!");
+            closeIcon?.classList.remove("hidden!");
+            document.body.style.overflow = "hidden!";
+        } else {
+            menu?.classList.add("hidden!");
+            menu?.classList.remove("flex!");
+            menuIcon?.classList.remove("hidden!");
+            closeIcon?.classList.add("hidden!");
+            document.body.style.overflow = "";
         }
-    };
+    });
 
-    /**
-     * LÓGICA DE MENÚS:
-     * Interactividad para desktop (Mega Menus) y Mobile.
-     */
-    const initMenus = () => {
-        const triggers = document.querySelectorAll(".menu-trigger");
-        const allMenus = document.querySelectorAll(".mega-menu");
-        const menuBtn = document.getElementById("mobile-menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
-        const iconMenu = document.getElementById("icon-menu");
-        const iconClose = document.getElementById("icon-close");
-        const accordionTriggers = document.querySelectorAll(".mobile-accordion-trigger");
-
-        // --- Mega Menús Desktop ---
-        const closeAllDesktopMenus = () => {
-            allMenus.forEach((menu) => menu.classList.add("hidden"));
-            triggers.forEach((trigger) => {
-                const chevron = trigger.querySelector(".chevron");
-                if (chevron) chevron.classList.remove("rotate-180");
-            });
-        };
-
-        triggers.forEach((trigger) => {
-            trigger.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const targetId = (trigger as HTMLElement).dataset.target;
-                const targetMenu = document.getElementById(targetId || "");
-                const chevron = trigger.querySelector(".chevron");
-
-                if (targetMenu && !targetMenu.classList.contains("hidden")) {
-                    closeAllDesktopMenus();
-                    return;
+    // Mobile submenu toggles
+    const submenuToggles = document.querySelectorAll('.mobile-submenu-toggle');
+    submenuToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            const btn = e.currentTarget as HTMLButtonElement;
+            const targetId = btn.getAttribute('data-target');
+            if (targetId) {
+                const submenu = document.getElementById(targetId);
+                const icon = btn.querySelector('i');
+                const header = btn.closest('.mobile-menu-header');
+                
+                if (submenu?.classList.contains('hidden!')) {
+                    submenu.classList.remove('hidden!');
+                    submenu.classList.add('flex!');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                    
+                    // Apply expanded styles to header wrapper
+                    header?.classList.remove('bg-white!', 'text-[var(--surface-brand-primary)]!');
+                    header?.classList.add('bg-[var(--surface-brand-primary)]!', 'text-[var(--brand-interactive-base)]!');
+                } else {
+                    submenu?.classList.add('hidden!');
+                    submenu?.classList.remove('flex!');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                    
+                    // Revert styles on header wrapper
+                    
+                    header?.classList.remove('bg-[var(--surface-brand-primary)]!', 'text-[var(--brand-interactive-base)]!');
                 }
-
-                closeAllDesktopMenus();
-
-                if (targetMenu) {
-                    targetMenu.classList.remove("hidden");
-                    if (chevron) chevron.classList.add("rotate-180");
-                }
-            });
-        });
-
-        // Cerrar al hacer clic fuera
-        document.addEventListener("click", (e) => {
-            const target = e.target as HTMLElement;
-            if (!target.closest(".mega-menu") && !target.closest(".menu-trigger")) {
-                closeAllDesktopMenus();
             }
         });
-
-        // --- Menú Mobile ---
-        if (menuBtn && mobileMenu && iconMenu && iconClose) {
-            menuBtn.addEventListener("click", () => {
-                mobileMenu.classList.toggle("hidden");
-                document.body.classList.toggle("overflow-hidden");
-                iconMenu.classList.toggle("hidden");
-                iconClose.classList.toggle("hidden");
-            });
-        }
-
-        // --- Acordeones Mobile ---
-        accordionTriggers.forEach((trigger) => {
-            trigger.addEventListener("click", () => {
-                const content = trigger.nextElementSibling;
-                const chevron = trigger.querySelector(".accordion-chevron");
-                if (content) {
-                    content.classList.toggle("hidden");
-                    chevron?.classList.toggle("rotate-180");
-                }
-            });
-        });
-    };
-
-    /**
-     * EJECUCIÓN ORQUESTADA:
-     * Priorizamos la interactividad de los menús sobre las animaciones.
-     */
-    const runAll = () => {
-        initMenus();
-        new Splide( '.splide', {
-        pagination: false,
-        autoplay: true, 
-        rewind: true
-    } ).mount();
-        // Cargamos Lotties cuando el navegador termine de pintar (Idle)
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => initLotties());
-        } else {
-            // Fallback para Safari o navegadores antiguos
-            setTimeout(initLotties, 1500);
-        }
-    };
-
-    // Soporte para transiciones de página de Astro (View Transitions)
-    document.addEventListener("DOMContentLoaded", runAll);
-    document.addEventListener("astro:page-load", runAll);
+    });
 </script>
+
+<style>
+    .header-time :global(p > strong) {
+        color: var(--brand-interactive-base) !important;
+    }
+</style>
