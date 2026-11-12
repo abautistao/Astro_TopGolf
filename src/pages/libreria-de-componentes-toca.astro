@@ -1,0 +1,469 @@
+---
+// src/pages/libreria-de-componentes-toca.astro
+// Catálogo de los 8 grupos de cards del rediseño TOCA, con datos dummy.
+// Ruta: /libreria-de-componentes-toca
+// Vista autonomous: NO usa el Layout del sitio porque el chrome (header/footer)
+// depende del CMS y un preview de componentes debe funcionar sin el.
+import "../styles/global.css";
+
+import Planes from "../components/toca/Planes.astro";
+import Juegos from "../components/toca/Juegos.astro";
+import Espacios from "../components/toca/Espacios.astro";
+import Formatos from "../components/toca/Formatos.astro";
+import PreciosPersona from "../components/toca/PreciosPersona.astro";
+import Sedes from "../components/toca/Sedes.astro";
+import Tarifas from "../components/toca/Tarifas.astro";
+import Articulos from "../components/toca/Articulos.astro";
+
+// Datos dummy tomados del diseño "TOCA Social — Rediseño web".
+const planes = {
+    titulo_seccion: "Elige tu jugada",
+    subtitulo: "Encuentra la experiencia perfecta para ti",
+    texto_enlace: "Ver todos los precios →",
+    url_enlace: "#",
+    cards: [
+        {
+            titulo: "Simulador",
+            precio: "$300",
+            linea: "Desde · por simulador · según horario",
+            features: [
+                { texto: "Hasta 12 personas" },
+                { texto: "Mar–jue y dom desde $300" },
+                { texto: "Vie y sáb desde $450" }
+            ],
+            texto_boton: "Reserva aquí",
+            url_boton: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "Ilimitado",
+            precio: "$299",
+            badge: "PROMO",
+            linea: "Por persona · de 4 a 12 personas",
+            features: [
+                { texto: "Juega todo lo que quieras" },
+                { texto: "Desde las 7 pm" },
+                { texto: "Elige tu nivel" }
+            ],
+            texto_boton: "Reserva aquí",
+            url_boton: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Triplete",
+            precio: "$450",
+            linea: "Por persona · grupos de 2, 3, 4 o 6",
+            features: [{ texto: "Juego" }, { texto: "Comida" }, { texto: "Bebida" }],
+            texto_boton: "Reserva aquí",
+            url_boton: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "Eventos",
+            precio: "Cotiza",
+            linea: "Con un asesor · de 12 a 300 personas",
+            features: [
+                { texto: "Corporativos y team building" },
+                { texto: "Cumpleaños" },
+                { texto: "Reuniones y conferencias" }
+            ],
+            texto_boton: "Cotiza con un asesor",
+            url_boton: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#",
+            variante: "rosa"
+        }
+    ]
+};
+
+const juegos = {
+    titulo_seccion: "Nuestros juegos",
+    texto_enlace: "¿Cómo jugar?",
+    url_enlace: "#",
+    cards: [
+        {
+            titulo: "Striker",
+            descriptor: "Ideal para empezar",
+            descripcion: "La mejor introducción: golpea la pantalla donde sea y empieza a sumar.",
+            bullets: [
+                { texto: "Da en los objetivos para ganar puntos." },
+                { texto: "Cada golpe aumenta el valor de esa zona." },
+                { texto: "Evita los objetivos que restan puntos." }
+            ],
+            variante: "mint"
+        },
+        {
+            titulo: "Atom Splitter",
+            descriptor: "Reacción en cadena",
+            descripcion: "Dividir el átomo nunca fue tan fácil: entre más chicos, más valen.",
+            bullets: [
+                { texto: "Golpea los átomos para dividirlos." },
+                { texto: "Los átomos más pequeños valen más puntos." },
+                { texto: "Los supercargados provocan una reacción en cadena." }
+            ],
+            variante: "rosa"
+        },
+        {
+            titulo: "Zombie Attack",
+            descriptor: "Supervivencia",
+            descripcion: "Derrota zombis para ganar tiempo. Cuien más derribe, gana.",
+            bullets: [
+                { texto: "Cada zombi derribado suma segundos." },
+                { texto: "La bomba amarilla elimina a los zombis de alrededor." },
+                { texto: "El balón puede pasar entre zombis y pegar a los de atrás." }
+            ],
+            variante: "mint"
+        },
+        {
+            titulo: "Eliminator",
+            descriptor: "Cara a cara",
+            descripcion: "Derriba las defensas de tus rivales o refuerza las tuyas.",
+            bullets: [
+                { texto: "Golpea a tus oponentes para quitarles secciones." },
+                { texto: "Golpea tu objetivo para reconstruirlo." },
+                { texto: "Si tardas, la trituradora quita una sección al final de la ronda." }
+            ],
+            variante: "rosa"
+        },
+        {
+            titulo: "Toca Challenge",
+            descriptor: "15 niveles",
+            descripcion: "Alcanza el objetivo de cada nivel y evita la zona de peligro.",
+            bullets: [
+                { texto: "¿Podrás completar los 15 niveles?" },
+                { texto: "Un balón por nivel." },
+                { texto: "Si fallas el objetivo, se acabó el juego." }
+            ],
+            variante: "mint"
+        }
+    ],
+    video_tutorial: {
+        titulo: "¿Cómo jugar?",
+        texto: "Dos minutos y ya estás listo para pedir la revancha."
+    }
+};
+
+const espacios = {
+    titulo_seccion: "Nuestros espacios",
+    subtitulo: "Espacios semiprivados, salón privado o renta de todo el lugar.",
+    cards: [
+        {
+            titulo: "Mid-Field",
+            capacidad: "266",
+            texto_capacidad: "Personas",
+            tags: [{ texto: "136 asientos" }, { texto: "13 simuladores" }],
+            descripcion: "La zona principal, con bar, pantalla gigante y varias mesas. Se puede reservar completa.",
+            variante: "mint"
+        },
+        {
+            titulo: "Corner",
+            capacidad: "84",
+            texto_capacidad: "Personas",
+            tags: [{ texto: "54 asientos" }, { texto: "3 simuladores" }],
+            descripcion: "Al fondo, con futbolito y air hockey sin costo, según disponibilidad.",
+            variante: "rosa"
+        },
+        {
+            titulo: "VIP",
+            capacidad: "28",
+            texto_capacidad: "Personas",
+            tags: [{ texto: "8 asientos" }, { texto: "2 simuladores" }],
+            descripcion: "Área semiprivada frente al Hall of Fame, para sesiones competitivas.",
+            variante: "mint"
+        },
+        {
+            titulo: "Hall of Fame",
+            capacidad: "50",
+            texto_capacidad: "Personas",
+            tags: [{ texto: "Salón privado" }, { texto: "Proyector y pantalla" }],
+            descripcion:
+                "Salón a prueba de sonido con mobiliario, ideal para juntas, conferencias o la presentación antes del juego.",
+            variante: "rosa"
+        }
+    ]
+};
+
+const formatos = {
+    titulo_seccion: "Elige tu formato",
+    cards: [
+        {
+            titulo: "Fiesta en simulador",
+            precio: "$300",
+            linea: "Desde · por simulador · hasta 12 personas",
+            descripcion:
+                "Tu simulador privado: caben 10 cómodamente y hasta 12; con más de seis, juegan en parejas.",
+            texto_boton: "Cotiza con un asesor",
+            url_boton: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "13 personas o más",
+            precio: "Cotiza",
+            linea: "Paquete a la medida",
+            descripcion: "Tu asesor arma el paquete con varios simuladores, comida y bebida.",
+            texto_boton: "Cotiza con un asesor",
+            url_boton: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Fiesta privada",
+            precio: "Cotiza",
+            linea: "Corner · Hall of Fame",
+            descripcion:
+                "El Corner, para 84 personas, con futbolito y air hockey; o el Hall of Fame, salón privado para 50.",
+            texto_boton: "Cotiza con un asesor",
+            url_boton: "#",
+            variante: "mint"
+        }
+    ]
+};
+
+const promos = {
+    titulo_seccion: "Promociones",
+    subtitulo: "Precios por persona",
+    texto_enlace: "Ver todas las promos",
+    url_enlace: "#",
+    cards: [
+        {
+            titulo: "Triplete",
+            precio: "$450",
+            linea: "Por persona · grupos de 2, 3, 4 o 6",
+            descripcion: "Juego, comida y bebida en un solo paquete.",
+            texto_enlace: "Ver condiciones →",
+            url_enlace: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "Half Time Lunch",
+            precio: "[$000]",
+            linea: "[Días y horario]",
+            descripcion: "[Qué incluye la promoción].",
+            texto_enlace: "Ver condiciones →",
+            url_enlace: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Ilimitado",
+            precio: "$299",
+            linea: "Por persona · de 4 a 12 · desde 7 pm",
+            descripcion: "Juega todo lo que quieras. No aplica en eventos ni días festivos.",
+            texto_enlace: "Ver condiciones →",
+            url_enlace: "#",
+            variante: "mint"
+        }
+    ]
+};
+
+const sedes = {
+    titulo_seccion: "Nuestras sedes",
+    subtitulo: "Londres · Dallas · París · Monterrey",
+    cards: [
+        {
+            badge: "Donde todo empezó · 2021",
+            titulo: "Londres",
+            linea: "The O2 · Westfield White City · Birmingham",
+            descripcion: "El primer TOCA Social abrió en The O2 en 2021. Hoy Reino Unido suma tres sedes.",
+            variante: "mint"
+        },
+        {
+            badge: "Primero en EE.UU. · 2026",
+            titulo: "Dallas",
+            linea: "Grandscape, The Colony",
+            descripcion: "El debut en Estados Unidos, con un mini estadio para vivir los partidos en vivo.",
+            variante: "mint"
+        },
+        {
+            badge: "Desde junio 2026",
+            titulo: "París",
+            linea: "Westfield CNIT · La Défense",
+            descripcion: "Abrió durante el Mundial 2026, con partidos en pantalla gigante.",
+            variante: "mint"
+        },
+        {
+            badge: "Ahora en México",
+            titulo: "Monterrey",
+            linea: "Galerías Valle Oriente",
+            descripcion: "La primera sede en México, operada por Ventura Entertainment.",
+            variante: "rosa"
+        }
+    ]
+};
+
+const tarifas = {
+    titulo_seccion: "Tarifas por día",
+    cards: [
+        {
+            titulo: "Martes a jueves",
+            etiqueta_precio: "Desde",
+            precio: "$300",
+            unidad_precio: "MXN por simulador",
+            horario: "Horario: 1 pm a 9 pm.",
+            texto_boton: "Reserva tu simulador",
+            url_boton: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "Viernes y sábado",
+            badge: "Fin de semana",
+            etiqueta_precio: "Desde",
+            precio: "$450",
+            unidad_precio: "MXN por simulador",
+            horario: "Horario: viernes 1 pm a 10 pm · sábado 12 pm a 10 pm. Te recomendamos reservar.",
+            texto_boton: "Reserva tu simulador",
+            url_boton: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Domingo",
+            etiqueta_precio: "Desde",
+            precio: "$300",
+            unidad_precio: "MXN por simulador",
+            horario: "Horario: 12 pm a 8 pm.",
+            texto_boton: "Reserva tu simulador",
+            url_boton: "#",
+            variante: "mint"
+        }
+    ]
+};
+
+const articulos = {
+    titulo_seccion: "Lo nuevo en TOCA",
+    subtitulo: "Qué hay",
+    texto_enlace: "Más noticias",
+    url_enlace: "#",
+    cards: [
+        { categoria: "Partidos", titulo: "Dónde ver la Liga MX en Monterrey", fecha: "12 mar 2026", url: "#" },
+        { categoria: "Planes", titulo: "Planes en grupo en Monterrey", fecha: "5 mar 2026", url: "#" },
+        { categoria: "Eventos", titulo: "Ideas para tu posada de empresa", fecha: "26 feb 2026", url: "#" }
+    ]
+};
+
+const grupos = [
+    { id: "planes", label: "Elige tu jugada" },
+    { id: "juegos", label: "Nuestros juegos" },
+    { id: "espacios", label: "Nuestros espacios" },
+    { id: "formatos", label: "Elige tu formato" },
+    { id: "promociones", label: "Precios por persona" },
+    { id: "sedes", label: "Sedes" },
+    { id: "tarifas", label: "Tarifas por día" },
+    { id: "articulos", label: "Lo nuevo en TOCA" }
+];
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Catálogo de cards TOCA</title>
+        <meta name="description" content="Catálogo de los componentes de cards del rediseño TOCA con datos dummy" />
+        <!-- Evita la peticion a /favicon.ico: cae en el catch-all [...slug] y su Layout
+             revienta con el footer del CMS, lo que paints el overlay de error de Vite. -->
+        <link rel="icon" href="data:," />
+    </head>
+    <body>
+    <div
+        class="catalogo-toca"
+        style="
+            --surface-brand-primary: #0A0037;
+            --surface-brand-secondary: #FA8CFF;
+            --brand-interactive-base: #59FFC6;
+            --neutral-background-strong: #000000;
+            --neutral-text-inverted: #FFFFFF;
+            --custom-color-01: #1A1052;
+            --accent-highlight-primary: #B9B2DE;
+            --accent-highlight-secondary: #6EC1E4;
+        "
+    >
+        <nav class="barra">
+            <span class="barra-titulo">Cards TOCA · catálogo</span>
+            <select id="saltar" class="barra-select">
+                {grupos.map((g) => <option value={'#' + g.id}>{g.label}</option>)}
+            </select>
+            <span class="barra-links">
+                {grupos.map((g) => <a href={'#' + g.id}>{g.label}</a>)}
+            </span>
+        </nav>
+
+        <div id="planes" class="bloque"><Planes {...planes} /></div>
+        <div id="juegos" class="bloque"><Juegos {...juegos} /></div>
+        <div id="espacios" class="bloque"><Espacios {...espacios} /></div>
+        <div id="formatos" class="bloque"><Formatos {...formatos} /></div>
+        <div id="promociones" class="bloque"><PreciosPersona {...promos} /></div>
+        <div id="sedes" class="bloque"><Sedes {...sedes} /></div>
+        <div id="tarifas" class="bloque"><Tarifas {...tarifas} /></div>
+        <div id="articulos" class="bloque"><Articulos {...articulos} /></div>
+    </div>
+
+    <script is:inline>
+        const sel = document.getElementById("saltar");
+        if (sel) {
+            sel.addEventListener("change", () => {
+                document.querySelector(sel.value)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+    </script>
+</body>
+</html>
+
+<style>
+    .catalogo-toca {
+        background: var(--surface-brand-primary);
+    }
+
+    .barra {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 1rem;
+        background: var(--neutral-text-inverted);
+        color: var(--surface-brand-primary);
+        font-size: 0.85rem;
+    }
+
+    .barra-titulo {
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .barra-select {
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--surface-brand-primary);
+        background: var(--neutral-text-inverted);
+        color: var(--surface-brand-primary);
+        font-size: 0.8rem;
+    }
+
+    .barra-links {
+        display: none;
+    }
+
+    @media (min-width: 900px) {
+        .barra-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-left: auto;
+        }
+
+        .barra-links a {
+            color: var(--surface-brand-primary);
+            text-decoration: underline;
+        }
+    }
+
+    .bloque {
+        scroll-margin-top: 60px;
+    }
+</style>
