@@ -1,0 +1,164 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    titulo?: string;
+    capacidad?: string;
+    texto_capacidad?: string;
+    imagen?: any;
+    tags?: { id?: number; texto?: string }[];
+    descripcion?: string;
+    variante?: "mint" | "rosa";
+}
+
+const {
+    titulo = "",
+    capacidad = "",
+    texto_capacidad = "",
+    imagen = null,
+    tags = [],
+    descripcion = "",
+    variante = "mint"
+} = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+const esRosa = variante === "rosa";
+const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-interactive-base)";
+---
+
+<article class="card-espacio" style={`--color-variante: ${colorVariante};`}>
+    <header class="cabecera">
+        <span class="titulo">{titulo}</span>
+        <span class="capacidad">
+            <span class="capacidad-numero">{capacidad}</span>
+            <span class="capacidad-texto">{texto_capacidad}</span>
+        </span>
+    </header>
+
+    <div class="foto">
+        {imgSrc ? (
+            <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full h-full object-cover!" />
+        ) : (
+            <span class="foto-placeholder">FOTO · {titulo}</span>
+        )}
+    </div>
+
+    {
+        Array.isArray(tags) && tags.length > 0 && (
+            <ul class="tags">
+                {tags.map((tag) => (
+                    <li class="tag">{tag.texto}</li>
+                ))}
+            </ul>
+        )
+    }
+
+    {descripcion && <p class="descripcion">{descripcion}</p>}
+</article>
+
+<style>
+    .card-espacio {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--color-variante);
+        padding: 0.5rem;
+    }
+
+    .cabecera {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .titulo {
+        flex: 1 1 auto;
+        background: var(--color-variante);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0.75rem 0.75rem;
+        overflow-wrap: anywhere;
+    }
+
+    .capacidad {
+        flex: 0 0 auto;
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        text-align: right;
+        padding: 0.75rem 0.85rem;
+        min-width: 6.5rem;
+    }
+
+    .capacidad-numero {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        color: var(--neutral-text-inverted);
+        font-size: 2rem;
+        line-height: 1;
+    }
+
+    .capacidad-texto {
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        margin-top: 0.35rem;
+    }
+
+    .foto {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 4 / 3;
+        background: var(--custom-color-01);
+        overflow: hidden;
+    }
+
+    .foto-placeholder {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .tags {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .tag {
+        border: 2px solid var(--color-variante);
+        color: var(--color-variante);
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        line-height: 1;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .descripcion {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin: 1rem 0 1.25rem;
+    }
+</style>

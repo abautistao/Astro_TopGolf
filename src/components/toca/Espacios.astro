@@ -1,0 +1,57 @@
+---
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardEspacio from "./cards/Espacio.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    cards?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    cards = []
+} = Astro.props;
+---
+
+<section class="espacios">
+    <div class="contenedor">
+        <TituloSeccion titulo={titulo_seccion} subtitulo={subtitulo} />
+
+        <div class="grid">
+            {Array.isArray(cards) && cards.map((card) => <CardEspacio {...card} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    .espacios {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+</style>
