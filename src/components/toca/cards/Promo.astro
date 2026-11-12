@@ -84,8 +84,9 @@ const esRosa = variante === "rosa";
 
     .promo-precio {
         flex: 0 0 auto;
-        background: var(--surface-brand-secondary);
-        color: var(--surface-brand-primary);
+        /* La ficha: celda de precio en navy con el texto en blanco. */
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
         font-family: var(--font-titling-gothic-fb-extended-bold);
         font-weight: 700;
         text-transform: uppercase;
@@ -95,10 +96,6 @@ const esRosa = variante === "rosa";
         display: flex;
         align-items: center;
         white-space: nowrap;
-    }
-
-    .promo-card--rosa .promo-precio {
-        background: var(--brand-interactive-base);
     }
 
     .promo-linea {
@@ -120,14 +117,27 @@ const esRosa = variante === "rosa";
     }
 
     .promo-enlace {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
         align-self: flex-start;
         margin-top: 1.25rem;
-        font-family: var(--font-sharp-sans-medium);
-        color: var(--brand-interactive-base);
-        text-decoration: underline;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+        font-size: clamp(0.85rem, 2.6cqw, 1.15rem);
+        color: var(--brand-interactive-base);
+        text-decoration: none;
+    }
+
+    .promo-enlace-texto {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .promo-enlace-flecha {
+        line-height: 1;
     }
 
     .promo-flecha {
