@@ -91,14 +91,16 @@ const colorVariante = esRosa ? "var(--surface-brand-secondary)" : "var(--brand-i
     }
 
     .titulo {
+        min-width: 0;
         margin: 0;
         font-family: var(--font-titling-gothic-fb-extended-bold);
         font-weight: 700;
         color: var(--neutral-text-inverted);
         text-transform: uppercase;
-        font-size: 2rem;
+        font-size: clamp(1.15rem, 1.5vw, 1.75rem);
+        width: 100%;
         line-height: 1;
-        overflow-wrap: anywhere;
+        overflow-wrap: break-word;
     }
 
     .linea {

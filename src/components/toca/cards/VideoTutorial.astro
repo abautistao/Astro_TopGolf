@@ -34,8 +34,6 @@ const esVideo = mime.startsWith("video/") || ["mp4", "webm", "mov", "m4v", "ogv"
                 <Image src={mediaSrc} alt={titulo} width={800} height={450} class="w-full h-full object-cover!" />
             )
         }
-        {!mediaSrc && <span class="placeholder">VIDEO TUTORIAL</span>}
-
         <span class="capa" aria-hidden="true">
             <i class="fa-solid fa-play play"></i>
         </span>
@@ -79,15 +77,6 @@ const esVideo = mime.startsWith("video/") || ["mp4", "webm", "mov", "m4v", "ogv"
         width: 100%;
         height: 100%;
         object-fit: cover;
-    }
-
-    .placeholder {
-        font-family: var(--font-sharp-sans-medium);
-        color: var(--accent-highlight-primary);
-        font-size: 0.8rem;
-        text-align: center;
-        padding: 1rem;
-        letter-spacing: 0.08em;
     }
 
     .capa {

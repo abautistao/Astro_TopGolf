@@ -85,24 +85,24 @@ const esRosa = variante === "rosa";
     }
 
     .plan-cabecera {
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: stretch;
-        justify-content: space-between;
-        gap: 0.5rem;
+                gap: 0.5rem;
         margin-bottom: 0.75rem;
     }
 
-    .plan-titulo {
+    .plan-titulo {min-width: 0;
         flex: 1 1 auto;
         background: var(--brand-interactive-base);
         color: var(--surface-brand-primary);
         font-family: var(--font-titling-gothic-fb-extended-bold);
         font-weight: 700;
         text-transform: uppercase;
-        font-size: 1.5rem;
+        font-size: clamp(0.95rem, 1.15vw, 1.25rem);
         line-height: 1;
-        padding: 0.75rem;
-        overflow-wrap: anywhere;
+        padding: 0.55rem 0.4rem;
+        overflow-wrap: break-word;
     }
 
     .plan-card--rosa .plan-titulo {
@@ -116,7 +116,7 @@ const esRosa = variante === "rosa";
         font-family: var(--font-titling-gothic-fb-extended-bold);
         font-weight: 700;
         text-transform: uppercase;
-        font-size: 1.25rem;
+        font-size: clamp(0.9rem, 1.1vw, 1.15rem);
         line-height: 1;
         padding: 0.75rem;
         display: flex;
