@@ -1,7 +1,4 @@
 ---
-// Los estilos van en el <style> scoped con tokens var(--...); las clases propias
-// no llevan el sufijo "!" de Tailwind (Astro scopea `.tarifa-card` a
-// `.tarifa-card:where(.astro-xxx)` y el token "tarifa-card!" no haría match).
 interface Props {
     titulo?: string;
     badge?: string;
@@ -32,50 +29,54 @@ const esRosa = variante === "rosa";
 <article class:list={["tarifa-card", esRosa ? "tarifa-rosa" : "tarifa-mint"]}>
     {badge && <span class="tarifa-badge">{badge}</span>}
 
-    <h3 class="tarifa-titulo">{titulo}</h3>
+    <header class="tarifa-banda">
+        <h3 class="tarifa-titulo">{titulo}</h3>
+    </header>
 
-    <div class="tarifa-datos">
-        {etiqueta_precio && <span class="tarifa-etiqueta">{etiqueta_precio}</span>}
-        {precio && <span class="tarifa-valor">{precio}</span>}
-        {unidad_precio && <span class="tarifa-unidad">{unidad_precio}</span>}
+    <div class="tarifa-cuerpo">
+        <div class="tarifa-datos">
+            {etiqueta_precio && <span class="tarifa-etiqueta">{etiqueta_precio}</span>}
+            {precio && <span class="tarifa-valor">{precio}</span>}
+            {unidad_precio && <span class="tarifa-unidad">{unidad_precio}</span>}
+        </div>
+
+        {horario && <p class="tarifa-horario">{horario}</p>}
+
+        {
+            texto_boton && (
+                <a href={url_boton || "#"} class="tarifa-boton">
+                    {texto_boton}
+                </a>
+            )
+        }
     </div>
-
-    {horario && <p class="tarifa-horario">{horario}</p>}
-
-    {
-        texto_boton && (
-            <a href={url_boton || "#"} class="tarifa-boton">
-                {texto_boton}
-            </a>
-        )
-    }
 </article>
 
 <style>
     .tarifa-card {
-        --tarifa-fondo: var(--brand-interactive-base);
+        /* El color de la variante: borde de la card, banda del titulo,
+           "DESDE" y el precio. El fondo de la card es navy, como en la ficha. */
+        --tarifa-variante: var(--brand-interactive-base);
         --tarifa-boton-fondo: var(--surface-brand-secondary);
         --tarifa-boton-sombra: var(--brand-interactive-base);
 
         position: relative;
+        /* Permite que el boton se ajuste al ancho de la card (container query). */
+        container-type: inline-size;
         display: flex;
         flex-direction: column;
-        background: var(--tarifa-fondo);
-        border: 2px solid var(--tarifa-fondo);
-        color: var(--surface-brand-primary);
-        padding: 1.75rem 1.5rem 1.5rem;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--tarifa-variante);
+        color: var(--neutral-text-inverted);
+        padding: 0;
     }
 
     .tarifa-card.tarifa-mint {
-        --tarifa-fondo: var(--brand-interactive-base);
-        --tarifa-boton-fondo: var(--surface-brand-secondary);
-        --tarifa-boton-sombra: var(--brand-interactive-base);
+        --tarifa-variante: var(--brand-interactive-base);
     }
 
     .tarifa-card.tarifa-rosa {
-        --tarifa-fondo: var(--surface-brand-secondary);
-        --tarifa-boton-fondo: var(--surface-brand-secondary);
-        --tarifa-boton-sombra: var(--brand-interactive-base);
+        --tarifa-variante: var(--surface-brand-secondary);
     }
 
     .tarifa-badge {
@@ -93,7 +94,15 @@ const esRosa = variante === "rosa";
         padding: 0.35rem 0.7rem;
     }
 
-    .tarifa-titulo {min-width: 0;
+    /* La banda del titulo va a sangre con el color de la variante. */
+    .tarifa-banda {
+        background: var(--tarifa-variante);
+        padding: 1.25rem 1.5rem 1rem;
+    }
+
+    .tarifa-titulo {
+        min-width: 0;
+        margin: 0;
         font-family: var(--font-titling-gothic-fb-extended-bold);
         font-weight: 700;
         text-transform: uppercase;
@@ -103,10 +112,16 @@ const esRosa = variante === "rosa";
         overflow-wrap: break-word;
     }
 
+    .tarifa-cuerpo {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem 1.5rem 1.5rem;
+    }
+
     .tarifa-datos {
         display: flex;
         flex-direction: column;
-        margin-top: 1.25rem;
     }
 
     .tarifa-etiqueta {
@@ -114,7 +129,7 @@ const esRosa = variante === "rosa";
         text-transform: uppercase;
         font-size: 0.8rem;
         letter-spacing: 0.12em;
-        color: var(--surface-brand-primary);
+        color: var(--tarifa-variante);
     }
 
     .tarifa-valor {
@@ -123,8 +138,7 @@ const esRosa = variante === "rosa";
         text-transform: uppercase;
         font-size: 3.25rem;
         line-height: 0.95;
-        color: var(--surface-brand-primary);
-        overflow-wrap: break-word;
+        color: var(--tarifa-variante);
     }
 
     .tarifa-unidad {
@@ -132,7 +146,7 @@ const esRosa = variante === "rosa";
         text-transform: uppercase;
         font-size: 0.85rem;
         letter-spacing: 0.04em;
-        color: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
         margin-top: 0.25rem;
     }
 
@@ -140,8 +154,8 @@ const esRosa = variante === "rosa";
         font-family: var(--font-sharp-sans-medium);
         font-size: 0.95rem;
         line-height: 1.35;
-        color: var(--surface-brand-primary);
-        margin-top: 1rem;
+        color: var(--neutral-text-inverted);
+        margin: 1rem 0 1.25rem;
     }
 
     .tarifa-boton {
@@ -151,10 +165,13 @@ const esRosa = variante === "rosa";
         color: var(--surface-brand-primary);
         font-family: var(--font-titling-gothic-fb-extended-bold);
         text-transform: uppercase;
-        font-size: clamp(0.8rem, 1.1vw, 1rem);
+        /* Fluido con el ancho de la card: el texto del boton no debe partirse.
+           El factor esta calibrado para la fuente de respaldo (1.2em por caracter);
+           con la condensada del diseno se puede subir hasta el tope de 1.5rem. */
+        font-size: clamp(0.72rem, 3.6cqw, 1.5rem);
         line-height: 1.1;
-        padding: 0.85rem 0.6rem;
-        margin-top: 1.5rem;
+        padding: 0.85rem 0.5rem;
+        margin-top: auto;
         box-shadow: 4px 4px 0 0 var(--tarifa-boton-sombra);
         transition: transform 0.2s ease;
     }
