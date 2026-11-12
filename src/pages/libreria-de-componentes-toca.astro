@@ -1,7 +1,14 @@
 ---
 // src/pages/libreria-de-componentes-toca.astro
 // Catálogo de los 8 grupos de cards del rediseño TOCA, con datos dummy.
+//
 // Ruta: /libreria-de-componentes-toca
+// Para verlo:
+//   cd frontend && PUBLIC_MULTILANGUAGE=false npm run dev
+// Con PUBLIC_MULTILANGUAGE=true (el valor del .env) las páginas fuera de
+// [lang]/ responden 404: el catch-all [...slug] las intercepta. Es una
+// peculiaridad de la rama, no de este catálogo (afecta igual a
+// libreria-de-componentes.astro).
 // Vista autonomous: NO usa el Layout del sitio porque el chrome (header/footer)
 // depende del CMS y un preview de componentes debe funcionar sin el.
 import "../styles/global.css";
