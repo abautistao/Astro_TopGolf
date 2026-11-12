@@ -1,0 +1,225 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    titulo?: string;
+    precio?: string;
+    badge?: string;
+    imagen?: any;
+    linea?: string;
+    features?: { id?: number; texto?: string }[];
+    texto_boton?: string;
+    url_boton?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    variante?: "mint" | "rosa";
+}
+
+const {
+    titulo = "",
+    precio = "",
+    badge = "",
+    imagen = null,
+    linea = "",
+    features = [],
+    texto_boton = "",
+    url_boton = "",
+    texto_enlace = "",
+    url_enlace = "",
+    variante = "mint"
+} = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+const esRosa = variante === "rosa";
+---
+
+<article class:list={["plan-card", { "plan-card--rosa": esRosa }]}>
+    <header class="plan-cabecera">
+        <span class="plan-titulo">{titulo}</span>
+        <span class="plan-precio">{precio}</span>
+    </header>
+
+    {badge && <span class="plan-badge">{badge}</span>}
+
+    <div class="plan-foto">
+        {imgSrc ? (
+            <Image src={imgSrc} alt={titulo} width={800} height={520} class="w-full! h-full! object-cover!" />
+        ) : (
+            <span class="plan-placeholder">FOTO · {titulo}</span>
+        )}
+    </div>
+
+    {linea && <p class="plan-linea">{linea}</p>}
+
+    {
+        Array.isArray(features) && features.length > 0 && (
+            <ul class="plan-lista">
+                {features.map((item) => (
+                    <li class="plan-item">
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        <span>{item.texto}</span>
+                    </li>
+                ))}
+            </ul>
+        )
+    }
+
+    {texto_boton && <a href={url_boton || "#"} class="plan-boton">{texto_boton}</a>}
+
+    {texto_enlace && <a href={url_enlace || "#"} class="plan-enlace">{texto_enlace}</a>}
+</article>
+
+<style>
+    .plan-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-brand-primary);
+        border: 2px solid var(--brand-interactive-base);
+        padding: 0.5rem;
+    }
+
+    .plan-card--rosa {
+        border-color: var(--surface-brand-secondary);
+    }
+
+    .plan-cabecera {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .plan-titulo {
+        flex: 1 1 auto;
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0.75rem;
+        overflow-wrap: anywhere;
+    }
+
+    .plan-card--rosa .plan-titulo {
+        background: var(--surface-brand-secondary);
+    }
+
+    .plan-precio {
+        flex: 0 0 auto;
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.25rem;
+        line-height: 1;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .plan-card--rosa .plan-precio {
+        background: var(--brand-interactive-base);
+    }
+
+    .plan-badge {
+        position: absolute;
+        top: -0.85rem;
+        right: 2.5rem;
+        z-index: 2;
+        transform: rotate(-8deg);
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .plan-foto {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 4 / 3;
+        background: var(--custom-color-01);
+        overflow: hidden;
+    }
+
+    .plan-placeholder {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .plan-linea {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        line-height: 1.25;
+        margin-top: 1rem;
+    }
+
+    .plan-lista {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        flex: 1 1 auto;
+    }
+
+    .plan-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        color: var(--neutral-text-inverted);
+        font-family: var(--font-sharp-sans-medium);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+
+    .plan-item i {
+        color: var(--brand-interactive-base);
+        font-size: 1rem;
+        line-height: 1.1;
+    }
+
+    .plan-boton {
+        display: block;
+        text-align: center;
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1.1rem;
+        padding: 0.85rem 1rem;
+        box-shadow: 4px 4px 0 0 var(--brand-interactive-base);
+        transition: transform 0.2s ease;
+    }
+
+    .plan-boton:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .plan-enlace {
+        display: inline-block;
+        align-self: center;
+        margin-top: 1rem;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+        text-decoration: underline;
+        font-size: 0.8rem;
+    }
+</style>

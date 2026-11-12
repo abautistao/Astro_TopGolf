@@ -1,0 +1,80 @@
+---
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+}
+
+const {
+    titulo = "",
+    subtitulo = "",
+    texto_enlace = "",
+    url_enlace = ""
+} = Astro.props;
+---
+
+<div class="titulo-sesion">
+    {
+        titulo && (
+            <h2 class="titulo-sesion-titulo">
+                <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>
+                <span class="titulo-sesion-linea titulo-sesion-linea--solida">{titulo}</span>
+                <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>
+            </h2>
+        )
+    }
+    {subtitulo && <p class="titulo-sesion-subtitulo">{subtitulo}</p>}
+    {
+        texto_enlace && (
+            <a href={url_enlace || "#"} class="titulo-sesion-enlace">
+                {texto_enlace}
+            </a>
+        )
+    }
+</div>
+
+<style>
+    .titulo-sesion {
+        text-align: center;
+    }
+
+    .titulo-sesion-titulo {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        line-height: 0.95;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+    }
+
+    .titulo-sesion-linea {
+        display: block;
+    }
+
+    .titulo-sesion-linea--contorno {
+        color: transparent;
+        -webkit-text-stroke: 2px var(--surface-brand-secondary);
+    }
+
+    .titulo-sesion-linea--solida {
+        color: var(--neutral-text-inverted);
+    }
+
+    .titulo-sesion-subtitulo {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        text-transform: uppercase;
+        font-size: 1rem;
+        margin-top: 1rem;
+    }
+
+    .titulo-sesion-enlace {
+        display: inline-block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        color: var(--neutral-text-inverted);
+        text-decoration: underline;
+        text-transform: uppercase;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+    }
+</style>
