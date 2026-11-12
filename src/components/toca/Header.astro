@@ -138,7 +138,7 @@ const isLinkActiveOrChild = (link: any) => {
                                                     class={`block! px-8! py-4! font-[family-name:var(--font-principal)]! font-bold! text-[11px]! transition-colors hover:no-underline! ${
                                                         isLinkActive(sublink.url)
                                                             ? "bg-(--neutral-background-strong)! text-(--brand-interactive-base)!"
-                                                            : "text-(--surface-brand-secondary)! hover:bg-(--neutral-background-strong)! hover:text-(--brand-interactive-base)!"
+                                                            : "text-(--accent-feedback-strong)! hover:bg-(--neutral-background-strong)! hover:text-(--brand-interactive-base)!"
                                                     }`}
                                                     aria-current={isLinkActive(sublink.url) ? "page" : undefined}
                                                 >
@@ -191,7 +191,7 @@ const isLinkActiveOrChild = (link: any) => {
                 {link.dropdown_items && link.dropdown_items.length > 0 && (
                     <div id={`submenu-${index}`} class="hidden! flex-col! bg-(--surface-brand-primary)!">
                         {link.dropdown_items.map((sublink: any) => (
-                            <a href={getLocalizedUrl(sublink.url, locale)} class={`block! px-8! py-3.5! font-[family-name:var(--font-principal)]! font-bold! text-[12px]! transition-colors border-t! border-(--accent-feedback-strong)! ${isLinkActive(sublink.url) ? " text-[var(--brand-interactive-base)]" : "text-[var(--surface-brand-secondary)] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)]"}`} aria-current={isLinkActive(sublink.url) ? "page" : undefined}>
+                            <a href={getLocalizedUrl(sublink.url, locale)} class={`block! px-8! py-3.5! font-[family-name:var(--font-principal)]! font-bold! text-[12px]! transition-colors border-t! border-(--accent-feedback-strong)! ${isLinkActive(sublink.url) ? " text-[var(--brand-interactive-base)]" : "text-[var(--accent-feedback-strong)] hover:bg-[var(--neutral-background-strong)] hover:text-[var(--brand-interactive-base)]"}`} aria-current={isLinkActive(sublink.url) ? "page" : undefined}>
                                 {sublink.titulo}
                             </a>
                         ))}
