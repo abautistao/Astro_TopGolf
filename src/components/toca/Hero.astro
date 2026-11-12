@@ -1,0 +1,196 @@
+---
+import { getStrapiUrl, stringifyRichText } from "../../lib/strapi.js";
+import type { Boton } from "./elements/Button.astro";
+import Button from "./elements/Button.astro";
+import { Image } from "astro:assets";
+
+export interface StrapiMedia {
+    id: number;
+    url: string;
+    alternativeText: string | null;
+    ext?: string;
+}
+
+export interface HeroCard {
+    card_color: string
+    hero_card_title: string
+    hero_card_description: string
+}
+
+export interface Props {
+    color_fondo?: string;
+    subtitle?: string;
+    subtitle_color?: string;
+    outline_title?: string;
+    outline_title_color?: string;
+    title?: string;
+    title_color?: any;
+    description?: any[];
+    Boton?: Boton[];
+    descripcion_final?: string;
+    has_card?: boolean;
+    title_card?: boolean;
+    title_card_color?: string;
+    card_description?: any[];
+    card_description_color?: string;
+    card_border_color?: string;
+    has_cards?: boolean;
+    hero_card: HeroCard[]
+    video_thumbnail: StrapiMedia
+    imagen: StrapiMedia
+    badge_title?: string
+    badge_texto?: string
+    badge_subtitle?: string
+    badge_text_color?: string
+    badge_color_background?: string
+}
+
+const {
+    color_fondo,
+    subtitle,
+    subtitle_color = "h2",
+    outline_title,
+    outline_title_color,
+    title,
+    title_color,
+    description,
+    Boton,
+    descripcion_final,
+    has_card,
+    title_card,
+    title_card_color,
+    card_description,
+    card_description_color,
+    card_border_color,
+    has_cards,
+    hero_card,
+    video_thumbnail,
+    imagen,
+    badge_title,
+    badge_texto,
+    badge_subtitle,
+    badge_text_color,
+    badge_color_background,
+} = Astro.props;
+
+const isVideo = (url: string) => {
+    return url?.match(/\.(mp4|webm|ogg)$/i);
+};
+
+---
+
+<section 
+    class="hero bg-(--surface-brand-primary) py-12 md:py-12 overflow-hidden"
+    style={color_fondo ? `background-color: ${color_fondo}` : ""}
+>
+    <div class="container mx-auto px-4 md:px-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+            
+            <!-- Left Column: Content -->
+            <div class="order-1 md:order-0 flex flex-col gap-6 items-center md:items-start text-center md:text-left z-10">
+                
+                {subtitle && (
+                    <span class="w-full font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--accent-highlight-primary)] text-[12px] md:text-[14px] font-medium md:font-bold tracking-[0.05em] uppercase"
+                        style={subtitle_color ? `color: ${subtitle_color}` : 'color: var(--surface-brand-secondary)'}
+                    >
+                        {subtitle}
+                    </span>
+                )}
+    
+                {title && (
+                    <h1 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--neutral-text-inverted)] text-[32px] md:text-[40px] font-bold md:font-black uppercase leading-tight md:leading-[1.2]"
+                        style={title_color ? `color: ${title_color}`: 'color: #F7F8FC'}
+                        >
+                        {outline_title && (
+                            <span class="title-outline text-transparent" style={outline_title_color ? `-webkit-text-stroke: 2px ${outline_title_color}` : '--webkit-text-stroke: 2px var(--brand-interactive-base)'}>{outline_title}</span>
+                        )}
+                        {title}
+                    </h1>
+                )}
+    
+                {description && (
+                    <div
+                        class="main-description font-(family-name:--font-sharp-sans-medium) text-(--accent-feedback-strong) text-[16px] font-normal leading-[1.4]"
+                        set:html={stringifyRichText(description)}
+                    />
+                )}
+    
+                {Boton && (
+                    <div class="relative animate-fade-in-up delay-300">
+                        <Button botones={Boton} clase="flex flex-col md:flex-row gap-4"/>
+                    </div>
+                )}
+
+                {has_card && (
+                    <div class="border-2 border-(--brand-interactive-base) p-4 max-w-lg" style={card_border_color ? `border-color: ${card_border_color}` : ""}>
+                        <h3 class="font-(family-name:--font-sharp-sans-bold) text-(--accent-feedback-strong) mb-2" style={title_card_color ? `color: ${title_card_color}` : ""}>{title_card}</h3>
+                        <div class="font-(family-name:--font-sharp-sans-medium) text-(--accent-feedback-strong)" style={card_description_color ? `color: ${card_description_color}` : ""} set:html={stringifyRichText(card_description)}></div>
+                    </div>
+                )}
+
+                {has_cards && (
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                        {hero_card.map(card => (
+                            <div class="border-2 border-(--brand-interactive-base) p-4 max-w-lg" style={card.card_color ? `border-color: ${card.card_color}` : ""}>
+                                <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--accent-feedback-strong) text-[20px] mb-2" style={card.card_color ? `color: ${card.card_color}` : ""}>{card.hero_card_title}</h3>
+                                <div class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--accent-feedback-strong) text-[8px]" set:html={stringifyRichText(card.hero_card_description)}></div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {descripcion_final && (
+                    <div
+                        class="final-description font-(family-name:--font-sharp-sans-medium) text-(--accent-feedback-strong) text-[16px] font-normal leading-[1.4]"
+                        set:html={stringifyRichText(descripcion_final)}
+                    />
+                )}
+            </div>
+
+            <div class="order-0 md:order-1 flex items-center">
+                <div class="relative">
+                    {isVideo(getStrapiUrl(imagen)) ? (
+                        <video
+                            src={getStrapiUrl(imagen)}
+                            class="w-full"
+                            autoplay
+                            muted
+                            loop
+                            playsinline
+                        ></video>
+                    ) : (
+                        <Image
+                            src={getStrapiUrl(imagen)}
+                            alt={title || ""}
+                            class="w-full"
+                            inferSize={true}
+                            loading="eager"
+                        />
+                    )}
+
+                    {badge_title && (
+                        <div class="absolute -bottom-1 -left-1 md:-bottom-8 md:-left-8 rotate-4 hero-badge min-w-35 text-center p-2 font-(family-name:--font-sharp-sans-bold) bg-(--surface-brand-primary)" style={badge_color_background ? `background-color: ${badge_color_background}` : ""}>
+                            <p class="text-xs" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_title}</p>
+                            <p class="text-lg" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_texto}</p>
+                            <p class="text-xs" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_subtitle}</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Pagination styles for swiper to match the theme */
+    :global(.acuario-componente-3-swiper .swiper-pagination-bullet) {
+        background-color: var(--neutral-text-inverted);
+        opacity: 0.6;
+        width: 10px;
+        height: 10px;
+    }
+
+    .final-description :global(p > strong) {
+        font-family: var(--font-sharp-sans-bold);
+    }
+</style>
