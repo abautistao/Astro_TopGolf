@@ -1,0 +1,36 @@
+---
+import { stringifyRichText } from "../../lib/strapi.js";
+
+export interface Props {
+    color_fondo?: string;
+    description?: any[];
+    description_color?: any[];
+}
+
+const {
+    color_fondo,
+    description,
+    description_color
+} = Astro.props;
+---
+
+<section 
+    class="cta bg-(--brand-interactivr-base) py-4 overflow-hidden"
+    style={color_fondo ? `background-color: ${color_fondo}` : ""}
+>
+    <div class="container mx-auto px-4 md:px-0">
+        {description && (
+            <div
+                class="main-description text-center font-(family-name:--font-sharp-sans-bold) text-(--surface-brand-primary) text-[16px] font-normal leading-[1.4]"
+                style={description_color ? `color: ${description_color}`: ""}
+                set:html={stringifyRichText(description)}
+            />
+        )}
+    </div>
+</section>
+
+<style>
+    .final-description :global(p > strong) {
+        font-family: var(--font-sharp-sans-bold);
+    }
+</style>
