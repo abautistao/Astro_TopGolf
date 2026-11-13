@@ -6,12 +6,14 @@ interface Props {
   subtitulo: string;
   titulo: string;
   categorias_faq: any[];
+  is_two_column: boolean;
 }
 
 const {
   subtitulo = "TOCA SOCIAL FAQS",
   titulo = "THE IMPORTANT THINGS",
   categorias_faq = [],
+  is_two_column
 } = Astro.props;
 
 const fallbackData = [
@@ -68,65 +70,79 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
             )}
         </div>
 
-        <div class:list={[
-            subtitulo ? "flex! flex-wrap border! border-(--brand-interactive-base)! mb-12!" : "none"
+        <div class="grid gap-6" class:list={[
+            {
+                'grid-cols-1 md:grid-cols-[320px_1fr]': is_two_column
+            }
         ]}>
-            {categories.map((cat: any, index: number) => {
-                if(cat.label)
-                    return (
-                        <button
-                            class="flex-1! py-3! px-6! text-center! text-base! lg:text-xl! font-bold! uppercase! transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border border-(--brand-interactive-base) last:border-r-0 hover:bg-(--brand-interactive-base) hover:text-(--surface-brand-primary)!"
-                            :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-[var(--accent-feedback-strong)] bg-transparent'`}
-                            @click={`activeTab = ${index}`}
-                        >
-                            {cat.label}
-                        </button>
-                    )
-            })}
-        </div>
+            <div class:list={[
+                subtitulo ? "flex! flex-wrap mb-12!" : "none",
+                {
+                    'flex-col' : is_two_column
+                }
+            ]}>
+                {categories.map((cat: any, index: number) => {
+                    if(cat.label)
+                        return (
+                            <button
+                                class="py-3! px-6! text-center! text-base! lg:text-xl! font-bold! uppercase! transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border border-(--brand-interactive-base) hover:bg-(--brand-interactive-base) hover:text-(--surface-brand-primary)!"
+                                :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-[var(--accent-feedback-strong)] bg-transparent'`}
+                                @click={`activeTab = ${index}`}
+                                class:list={[
+                                    {
+                                        'flex-1' : !is_two_column
+                                    }
+                                ]}
+                            >
+                                {cat.label}
+                            </button>
+                        )
+                })}
+            </div>
 
-        <div>
-            {categories.map((cat: any, index: number) => (
-                <div x-show={`activeTab === ${index}`} style="display: none;">
+            <div>
+                {categories.map((cat: any, index: number) => (
+                    <div x-show={`activeTab === ${index}`} style="display: none;">
 
-                    <div class="flex! flex-col! border-t! border-(--neutral-stroke-weak) max-w-4xl! mx-auto! w-full">
-                        {cat.faqs.map((faq: any) => (
-                            <div x-data="{ expanded: false }" class="border-b! border-[(--neutral-stroke-weak)!">
-                                <button
-                                    @click="expanded = !expanded"
-                                    class="w-full py-6! flex! items-center! justify-between text-left! group"
-                                >
-                                    <span
-                                        class="text-(--brand-interactive-base)1 font-bold! text-lg! lg:text-xl! font-(family-name:--font-sharp-sans-bold) transition-colors group-hover:text-[var(--accent-feedback-strong)]"
-                                        :class="expanded ? 'text-(--accent-feedback-strong)' : 'text-(--brand-interactive-base)'"
+                        <div class="flex! flex-col! border-t! border-(--neutral-stroke-weak) max-w-4xl! mx-auto! w-full">
+                            {cat.faqs.map((faq: any) => (
+                                <div x-data="{ expanded: false }" class="border-b! border-[(--neutral-stroke-weak)!">
+                                    <button
+                                        @click="expanded = !expanded"
+                                        class="w-full py-6! flex! items-center! justify-between text-left! group"
                                     >
-                                        {faq.pregunta}
-                                    </span>
-                                    <span
-                                        class="text-(--brand-interactive-base) transition-transform duration-300 transform"
-                                        :class="expanded ? 'rotate-180 text-(--accent-feedback-strong)' : ''"
-                                    >
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </span>
-                                </button>
+                                        <span
+                                            class="text-(--brand-interactive-base)1 font-bold! text-lg! lg:text-xl! font-(family-name:--font-sharp-sans-bold) transition-colors group-hover:text-[var(--accent-feedback-strong)]"
+                                            :class="expanded ? 'text-(--accent-feedback-strong)' : 'text-(--brand-interactive-base)'"
+                                        >
+                                            {faq.pregunta}
+                                        </span>
+                                        <span
+                                            class="text-(--brand-interactive-base) transition-transform duration-300 transform"
+                                            :class="expanded ? 'rotate-180 text-(--accent-feedback-strong)' : ''"
+                                        >
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                    </button>
 
-                                <div
-                                    x-show="expanded"
-                                    x-collapse
-                                    class="pb-6! text-(--accent-feedback-strong) text-base! lg:text-lg! opacity-90! font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
-                                >
-                                    {faq.respuesta ? <Fragment set:html={stringifyRichText(faq.respuesta)} /> : <p>{faq.respuesta}</p>}
+                                    <div
+                                        x-show="expanded"
+                                        x-collapse
+                                        class="pb-6! text-(--accent-feedback-strong) text-base! lg:text-lg! opacity-90! font-(family-name:--font-sharp-sans-medium) leading-relaxed strapi-rich-text"
+                                    >
+                                        {faq.respuesta ? <Fragment set:html={stringifyRichText(faq.respuesta)} /> : <p>{faq.respuesta}</p>}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+
                     </div>
-
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
-
+        
     </div>
 </section>
 
