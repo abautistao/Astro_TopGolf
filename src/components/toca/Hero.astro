@@ -148,34 +148,37 @@ const isVideo = (url: string) => {
             </div>
 
             <div class="order-0 md:order-1 flex items-center">
-                <div class="relative">
-                    {isVideo(getStrapiUrl(imagen)) ? (
-                        <video
-                            src={getStrapiUrl(imagen)}
-                            class="w-full"
-                            autoplay
-                            muted
-                            loop
-                            playsinline
-                        ></video>
-                    ) : (
-                        <Image
-                            src={getStrapiUrl(imagen)}
-                            alt={title || ""}
-                            class="w-full"
-                            inferSize={true}
-                            loading="eager"
-                        />
-                    )}
+                {imagen && (
 
-                    {badge_title && (
-                        <div class="absolute -bottom-1 -left-1 md:-bottom-8 md:-left-8 rotate-4 hero-badge min-w-35 text-center p-2 font-(family-name:--font-sharp-sans-bold) bg-(--surface-brand-primary)" style={badge_color_background ? `background-color: ${badge_color_background}` : ""}>
-                            <p class="text-xs" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_title}</p>
-                            <p class="text-lg" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_texto}</p>
-                            <p class="text-xs" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_subtitle}</p>
-                        </div>
-                    )}
-                </div>
+                    <div class="relative">
+                        {isVideo(getStrapiUrl(imagen)) ? (
+                            <video
+                                src={getStrapiUrl(imagen)}
+                                class="w-full"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                            ></video>
+                        ) : (
+                            <Image
+                                src={getStrapiUrl(imagen)}
+                                alt={title || ""}
+                                class="w-full"
+                                inferSize={true}
+                                loading="eager"
+                            />
+                        )}
+    
+                        {badge_title && (
+                            <div class="absolute -bottom-1 -left-1 md:-bottom-8 md:-left-8 rotate-4 hero-badge min-w-35 text-center p-2 font-(family-name:--font-sharp-sans-bold) bg-(--surface-brand-primary)" style={badge_color_background ? `background-color: ${badge_color_background}` : ""}>
+                                <p class="text-xs" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_title}</p>
+                                <p class="text-lg" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_texto}</p>
+                                <p class="text-xs" style={badge_text_color ? `color: ${badge_text_color}` : "color: var(--surface-brand-primary)"}>{badge_subtitle}</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     </div>
