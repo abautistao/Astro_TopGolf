@@ -8,21 +8,29 @@ import CardTarifa from "./cards/Tarifa.astro";
 interface Props {
     titulo_seccion?: string;
     subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
     cards?: any[];
 }
 
 const {
     titulo_seccion = "",
     subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
     cards = []
 } = Astro.props;
 ---
 
-<section class="tarifas">
+<section class="tarifas" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
     <div class="contenedor">
         <TituloSeccion
             titulo={titulo_seccion}
             subtitulo={subtitulo}
+            tituloTag={tituloHtmlTag}
+            subtituloTag={subtituloHtmlTag}
         />
 
         <div class="grid grid-cols-1! md:grid-cols-2! xl:grid-cols-3!">

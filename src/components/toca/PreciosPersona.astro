@@ -7,6 +7,9 @@ interface Props {
     subtitulo?: string;
     texto_enlace?: string;
     url_enlace?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
     cards?: any[];
 }
 
@@ -15,14 +18,22 @@ const {
     subtitulo = "",
     texto_enlace = "",
     url_enlace = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
     cards = []
 } = Astro.props;
 ---
 
-<section class="precios-persona">
+<section class="precios-persona" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
     <div class="precios-persona-contenedor">
         <div class="precios-persona-cabecera flex! flex-col! gap-6! md:flex-row! md:items-end! md:justify-between!">
-            <TituloSeccion titulo={titulo_seccion} subtitulo={subtitulo} />
+            <TituloSeccion
+                titulo={titulo_seccion}
+                subtitulo={subtitulo}
+                tituloTag={tituloHtmlTag}
+                subtituloTag={subtituloHtmlTag}
+            />
 
             {
                 texto_enlace && (

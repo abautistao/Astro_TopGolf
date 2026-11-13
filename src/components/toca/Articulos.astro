@@ -7,6 +7,9 @@ interface Props {
     subtitulo?: string;
     texto_enlace?: string;
     url_enlace?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
     cards?: any[];
 }
 
@@ -15,15 +18,20 @@ const {
     subtitulo = "",
     texto_enlace = "",
     url_enlace = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
     cards = []
 } = Astro.props;
 ---
 
-<section class="articulos">
+<section class="articulos" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
     <div class="articulos-contenedor">
         <TituloSeccion
             titulo={titulo_seccion}
             subtitulo={subtitulo}
+            tituloTag={tituloHtmlTag}
+            subtituloTag={subtituloHtmlTag}
             texto_enlace={texto_enlace}
             url_enlace={url_enlace}
         />

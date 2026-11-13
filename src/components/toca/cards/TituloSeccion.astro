@@ -4,27 +4,50 @@ interface Props {
     subtitulo?: string;
     texto_enlace?: string;
     url_enlace?: string;
+    tituloTag?: string | null;
+    subtituloTag?: string | null;
 }
 
 const {
     titulo = "",
     subtitulo = "",
     texto_enlace = "",
-    url_enlace = ""
+    url_enlace = "",
+    tituloTag = null,
+    subtituloTag = null
 } = Astro.props;
+
+// El editor elige en el CMS la etiqueta HTML del titulo y del subtitulo. Los
+// registros ya publicados mandan `null` en los campos nuevos (no `undefined`),
+// asi que el default del destructuring no se aplica: normalizamos contra una
+// lista blanca y caemos en las etiquetas por defecto (h2 y p) cuando el valor
+// no llega o no es valido.
+const TAGS_HTML = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"] as const;
+
+type TagHtml = (typeof TAGS_HTML)[number];
+
+const resolverTag = (valor: string | null | undefined, porDefecto: TagHtml): TagHtml => {
+    const normalizado = (valor ?? "").trim().toLowerCase();
+    return (TAGS_HTML as readonly string[]).includes(normalizado)
+        ? (normalizado as TagHtml)
+        : porDefecto;
+};
+
+const TituloTag = resolverTag(tituloTag, "h2");
+const SubtituloTag = resolverTag(subtituloTag, "p");
 ---
 
 <div class="titulo-sesion">
     {
         titulo && (
-            <h2 class="titulo-sesion-titulo">
+            <TituloTag class="titulo-sesion-titulo">
                 <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>
                 <span class="titulo-sesion-linea titulo-sesion-linea--solida">{titulo}</span>
                 <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>
-            </h2>
+            </TituloTag>
         )
     }
-    {subtitulo && <p class="titulo-sesion-subtitulo">{subtitulo}</p>}
+    {subtitulo && <SubtituloTag class="titulo-sesion-subtitulo">{subtitulo}</SubtituloTag>}
     {
         texto_enlace && (
             <a href={url_enlace || "#"} class="titulo-sesion-enlace">
@@ -53,6 +76,10 @@ const {
            sin ella (fallback ancha) el clamp evita que el titulo desborde. */
         font-size: clamp(1.5rem, 7.5vw, 3.125rem);
         overflow-wrap: break-word;
+        /* La etiqueta la elige el editor (h1..h6, span o p): display y margenes
+           quedan fijados aqui para que el titulo se vea igual con cualquiera. */
+        display: block;
+        margin: 0;
     }
 
     .titulo-sesion-linea {
@@ -74,7 +101,12 @@ const {
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 0.03em;
-        margin-top: 14px;
+        /* display, margenes, peso e interlineado quedan fijados aqui para que
+           el subtitulo se vea igual con cualquiera de las etiquetas. */
+        display: block;
+        margin: 14px 0 0;
+        font-weight: inherit;
+        line-height: inherit;
     }
 
     .titulo-sesion-enlace {
@@ -97,7 +129,7 @@ const {
         .titulo-sesion-subtitulo {
             font-size: 16px;
             letter-spacing: 0.04em;
-            margin-top: 22px;
+            margin: 22px 0 0;
         }
     }
 </style>
