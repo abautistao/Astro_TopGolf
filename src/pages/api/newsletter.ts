@@ -40,6 +40,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 body: JSON.stringify(sheetData),
                 headers: { "Content-Type": "application/json" }
             });
+
+            return new Response(
+                JSON.stringify({
+                    message: "Datos recibidos exitosamente",
+                }),
+                { status: 200 }
+            );
         } catch (e) {
             console.error("Error guardando en Sheets:", e);
             sheetError = "Error al registrar en la base de datos";
