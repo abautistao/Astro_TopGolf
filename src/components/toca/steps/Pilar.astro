@@ -1,0 +1,58 @@
+---
+// Celda de la tira de pilares (steps-toca.pilares-toca / step.pilar).
+// Los divisores internos de la tira se dibujan aqui: la seccion pone el
+// borde exterior y esconde con overflow el borde de la ultima celda.
+interface Props {
+    numero?: string;
+    titulo?: string;
+    descripcion?: string;
+}
+
+const { numero = "", titulo = "", descripcion = "" } = Astro.props;
+---
+
+<div class="pilar">
+    {numero && <span class="pilar-numero">{numero}</span>}
+    {titulo && <h3 class="pilar-titulo">{titulo}</h3>}
+    {descripcion && <p class="pilar-descripcion">{descripcion}</p>}
+</div>
+
+<style>
+    .pilar {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.75rem 1.5rem;
+        /* Divisores de la tira: una linea mint por celda. */
+        border-right: 1px solid var(--brand-interactive-base);
+        border-bottom: 1px solid var(--brand-interactive-base);
+    }
+
+    .pilar-numero {
+        display: block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+        line-height: 1;
+        color: var(--surface-brand-secondary);
+    }
+
+    .pilar-titulo {
+        display: block;
+        margin: 0.85rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+        font-size: 1.15rem;
+        line-height: 1.15;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+
+    .pilar-descripcion {
+        margin: 0.75rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.92rem;
+        line-height: 1.45;
+        color: var(--brand-interactive-base);
+    }
+</style>

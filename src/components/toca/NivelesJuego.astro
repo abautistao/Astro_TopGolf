@@ -1,0 +1,115 @@
+---
+import Nivel from "./steps/Nivel.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    steps?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
+    steps = []
+} = Astro.props;
+
+// El editor elige en el CMS la etiqueta HTML del titulo y del subtitulo. Los
+// registros ya publicados mandan `null` en los campos nuevos (no `undefined`),
+// asi que el default del destructuring no se aplica: normalizamos contra una
+// lista blanca y caemos en las etiquetas por defecto (h2 y p) cuando el valor
+// no llega o no es valido.
+const TAGS_HTML = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"] as const;
+
+type TagHtml = (typeof TAGS_HTML)[number];
+
+const resolverTag = (valor: string | null | undefined, porDefecto: TagHtml): TagHtml => {
+    const normalizado = (valor ?? "").trim().toLowerCase();
+    return (TAGS_HTML as readonly string[]).includes(normalizado)
+        ? (normalizado as TagHtml)
+        : porDefecto;
+};
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+---
+
+<section
+    class="niveles-juego"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+>
+    <div class="niveles-juego-contenedor">
+        <div class="niveles-juego-layout">
+            <div class="niveles-juego-texto">
+                {titulo_seccion && <TituloTag class="niveles-titulo">{titulo_seccion}</TituloTag>}
+                {subtitulo && <SubtituloTag class="niveles-subtitulo">{subtitulo}</SubtituloTag>}
+            </div>
+
+            <div class="niveles-juego-grid">
+                {Array.isArray(steps) && steps.map((step) => <Nivel {...step} />)}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .niveles-juego {
+        background: var(--surface-brand-primary);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .niveles-juego-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .niveles-juego-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: center;
+        gap: 2.5rem;
+    }
+
+    .niveles-titulo {
+        display: block;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+
+    .niveles-subtitulo {
+        display: block;
+        margin: 1rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+
+    .niveles-juego-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .niveles-juego-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .niveles-juego-layout {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr);
+        }
+    }
+</style>

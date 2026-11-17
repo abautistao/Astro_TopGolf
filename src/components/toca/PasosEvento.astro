@@ -1,0 +1,99 @@
+---
+import PasoNumerado from "./steps/PasoNumerado.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    steps?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
+    steps = []
+} = Astro.props;
+
+// El editor elige en el CMS la etiqueta HTML del titulo y del subtitulo. Los
+// registros ya publicados mandan `null` en los campos nuevos (no `undefined`),
+// asi que el default del destructuring no se aplica: normalizamos contra una
+// lista blanca y caemos en las etiquetas por defecto (h2 y p) cuando el valor
+// no llega o no es valido.
+const TAGS_HTML = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"] as const;
+
+type TagHtml = (typeof TAGS_HTML)[number];
+
+const resolverTag = (valor: string | null | undefined, porDefecto: TagHtml): TagHtml => {
+    const normalizado = (valor ?? "").trim().toLowerCase();
+    return (TAGS_HTML as readonly string[]).includes(normalizado)
+        ? (normalizado as TagHtml)
+        : porDefecto;
+};
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+---
+
+<section
+    class="pasos-evento"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+>
+    <div class="pasos-evento-contenedor">
+        {titulo_seccion && <TituloTag class="evento-titulo">{titulo_seccion}</TituloTag>}
+        {subtitulo && <SubtituloTag class="evento-subtitulo">{subtitulo}</SubtituloTag>}
+
+        <div class="evento-grid">
+            {Array.isArray(steps) && steps.map((step) => <PasoNumerado {...step} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    .pasos-evento {
+        background: var(--surface-brand-primary);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .pasos-evento-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .evento-titulo {
+        display: block;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2rem, 4.2vw, 3.35rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+
+    .evento-subtitulo {
+        display: block;
+        margin: 0.85rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+
+    .evento-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    @media (min-width: 768px) {
+        .evento-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+</style>

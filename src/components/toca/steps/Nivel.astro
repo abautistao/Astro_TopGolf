@@ -1,0 +1,47 @@
+---
+// Caja de nivel de juego (steps-toca.niveles-juego-toca / step.nivel).
+// El color de la variante (mint | rosa) se inyecta como variable CSS para
+// que el borde y el numero usen el mismo tono sin duplicar reglas.
+interface Props {
+    numero?: string;
+    titulo?: string;
+    variante?: string;
+}
+
+const { numero = "", titulo = "", variante = "mint" } = Astro.props;
+
+const colorVariante = variante === "rosa" ? "var(--surface-brand-secondary)" : "var(--brand-interactive-base)";
+---
+
+<div class="nivel" style={`--color-variante: ${colorVariante};`}>
+    {numero && <span class="nivel-numero">{numero}</span>}
+    {titulo && <h3 class="nivel-titulo">{titulo}</h3>}
+</div>
+
+<style>
+    .nivel {
+        border: 2px solid var(--color-variante, var(--brand-interactive-base));
+        padding: 1.5rem 1.25rem;
+    }
+
+    .nivel-numero {
+        display: block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2rem, 3vw, 2.75rem);
+        line-height: 1;
+        color: var(--color-variante, var(--brand-interactive-base));
+    }
+
+    .nivel-titulo {
+        display: block;
+        margin: 0.5rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+        font-size: 0.9rem;
+        line-height: 1.25;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+</style>

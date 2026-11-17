@@ -1,0 +1,170 @@
+---
+import PasoNumerado from "./steps/PasoNumerado.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    steps?: any[];
+    titulo_nota?: string;
+    tituloNotaHtmlTag?: string | null;
+    notas?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
+    steps = [],
+    titulo_nota = "",
+    tituloNotaHtmlTag = null,
+    notas = []
+} = Astro.props;
+
+// El editor elige en el CMS la etiqueta HTML del titulo, del subtitulo y del
+// titulo de la nota. Los registros ya publicados mandan `null` en los campos
+// nuevos (no `undefined`), asi que el default del destructuring no se aplica:
+// normalizamos contra una lista blanca y caemos en las etiquetas por defecto
+// (h2, p y h3) cuando el valor no llega o no es valido.
+const TAGS_HTML = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"] as const;
+
+type TagHtml = (typeof TAGS_HTML)[number];
+
+const resolverTag = (valor: string | null | undefined, porDefecto: TagHtml): TagHtml => {
+    const normalizado = (valor ?? "").trim().toLowerCase();
+    return (TAGS_HTML as readonly string[]).includes(normalizado)
+        ? (normalizado as TagHtml)
+        : porDefecto;
+};
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+const NotaTag = resolverTag(tituloNotaHtmlTag, "h3");
+---
+
+<section
+    class="pasos-cumpleanos"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+>
+    <div class="pasos-cumpleanos-contenedor">
+        <div class="pasos-cumpleanos-layout">
+            <div class="pasos-cumpleanos-pasos">
+                {titulo_seccion && <TituloTag class="cumple-titulo">{titulo_seccion}</TituloTag>}
+                {subtitulo && <SubtituloTag class="cumple-subtitulo">{subtitulo}</SubtituloTag>}
+
+                <div class="cumple-grid">
+                    {Array.isArray(steps) && steps.map((step) => <PasoNumerado {...step} />)}
+                </div>
+            </div>
+
+            {
+                (titulo_nota || (Array.isArray(notas) && notas.length > 0)) && (
+                    <aside class="cumple-nota">
+                        {titulo_nota && <NotaTag class="cumple-nota-titulo">{titulo_nota}</NotaTag>}
+                        {Array.isArray(notas) &&
+                            notas.map((nota) => (
+                                <p class="cumple-nota-item">
+                                    <strong>{nota.titulo}</strong> {nota.texto}
+                                </p>
+                            ))}
+                    </aside>
+                )
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .pasos-cumpleanos {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .pasos-cumpleanos-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .pasos-cumpleanos-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+        gap: 2rem;
+    }
+
+    .cumple-titulo {
+        display: block;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+
+    .cumple-subtitulo {
+        display: block;
+        margin: 0.85rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+
+    .cumple-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.25rem;
+        margin-top: 1.75rem;
+    }
+
+    @media (min-width: 768px) {
+        .cumple-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .pasos-cumpleanos-layout {
+            grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+        }
+    }
+
+    .cumple-nota {
+        border: 2px solid var(--surface-brand-secondary);
+        padding: 1.75rem 1.5rem;
+    }
+
+    .cumple-nota-titulo {
+        display: block;
+        margin: 0 0 1rem;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+        line-height: 1;
+        text-transform: uppercase;
+        color: var(--surface-brand-secondary);
+    }
+
+    .cumple-nota-item {
+        margin: 0 0 0.85rem;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.9rem;
+        line-height: 1.45;
+        color: var(--neutral-text-inverted);
+    }
+
+    .cumple-nota-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .cumple-nota-item strong {
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+    }
+</style>

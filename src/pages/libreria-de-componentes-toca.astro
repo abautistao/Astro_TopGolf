@@ -29,6 +29,15 @@ import Sedes from "../components/toca/Sedes.astro";
 import Tarifas from "../components/toca/Tarifas.astro";
 import Articulos from "../components/toca/Articulos.astro";
 import Experiencias from "../components/toca/Experiencias.astro";
+import Pilares from "../components/toca/Pilares.astro";
+import PasosExperiencia from "../components/toca/PasosExperiencia.astro";
+import NivelesJuego from "../components/toca/NivelesJuego.astro";
+import PasosPromo from "../components/toca/PasosPromo.astro";
+import Ocasiones from "../components/toca/Ocasiones.astro";
+import PasosCumpleanos from "../components/toca/PasosCumpleanos.astro";
+import PasosEvento from "../components/toca/PasosEvento.astro";
+import InfoVisita from "../components/toca/InfoVisita.astro";
+import Tecnologia from "../components/toca/Tecnologia.astro";
 
 // Datos dummy tomados del diseño "TOCA Social — Rediseño web".
 const planes = {
@@ -408,6 +417,245 @@ const experiencias = {
     ]
 };
 
+const pilares = {
+    steps: [
+        {
+            numero: "01",
+            titulo: "COOL SIN ESFUERZO",
+            descripcion: "Sabemos quiénes somos: un lugar con estilo, sin poses y siempre en la conversación."
+        },
+        {
+            numero: "02",
+            titulo: "UN DESTINO PARA COMPARTIR",
+            descripcion: "Un lugar al que quieres volver con amigos, familia o compañeros de trabajo."
+        },
+        {
+            numero: "03",
+            titulo: "TECNOLOGÍA QUE INNOVA",
+            descripcion: "Cada experiencia está hecha con tecnología que no deja de mejorar."
+        },
+        {
+            numero: "04",
+            titulo: "DIVERSIÓN PARA TODOS",
+            descripcion: "Para todas las edades y niveles, te guste el fútbol o no."
+        }
+    ]
+};
+
+const pasosExperiencia = {
+    steps: [
+        {
+            numero: "01",
+            titulo: "RESERVA TU SIMULADOR",
+            descripcion: "Reserva tu espacio privado para hasta 12 personas, o llega directo. En fin de semana, mejor reserva."
+        },
+        {
+            numero: "02",
+            titulo: "LLEGA Y HAZ CHECK-IN",
+            descripcion: "Te registramos y te llevamos a tu simulador."
+        },
+        {
+            numero: "03",
+            titulo: "ELIGE JUEGO Y NIVEL",
+            descripcion: "Principiante, intermedio o avanzado. Tú decides."
+        },
+        {
+            numero: "04",
+            titulo: "PATEA Y ANOTA",
+            descripcion: "La máquina te pasa el balón; el marcador lleva la cuenta."
+        },
+        {
+            numero: "05",
+            titulo: "COME Y CELEBRA",
+            descripcion: "Comida y drinks en tu simulador mientras van las retas."
+        }
+    ]
+};
+
+const nivelesJuego = {
+    titulo_seccion: "AQUÍ TODOS JUEGAN",
+    subtitulo: "Elige el nivel que mejor te quede. Si son más de seis, pueden formar parejas en la cancha.",
+    steps: [
+        { numero: "01", titulo: "PRINCIPIANTE", variante: "mint" },
+        { numero: "02", titulo: "INTERMEDIO", variante: "rosa" },
+        { numero: "03", titulo: "AVANZADO", variante: "mint" }
+    ]
+};
+
+const pasosPromo = {
+    steps: [
+        {
+            numero: "01",
+            titulo: "ELIGE TU PROMO",
+            descripcion: "La que mejor le quede a tu grupo y a tu plan."
+        },
+        {
+            numero: "02",
+            titulo: "RESERVA O LLEGA DIRECTO",
+            descripcion: "Aparta tu simulador en el sitio oficial o llega a Galerías Valle Oriente. En fin de semana, te recomendamos reservar."
+        },
+        {
+            numero: "03",
+            titulo: "LLEGA Y JUEGA",
+            descripcion: "Calienta el pie. Del resto nos encargamos nosotros."
+        }
+    ]
+};
+
+const ocasiones = {
+    steps: [
+        {
+            titulo: "TEAM BUILDING",
+            descripcion: "Juegos interactivos que se adaptan a dinámicas de equipo y rompen el hielo.",
+            badge: "INTEGRACIÓN",
+            imagen: fotoJuegos,
+            texto_foto: "EQUIPO COMPITIENDO"
+        },
+        {
+            titulo: "FIN DE AÑO",
+            descripcion: "Posadas, celebraciones de verano o el cierre de un gran trimestre.",
+            badge: "CELEBRACIONES",
+            imagen: fotoRestaurante,
+            texto_foto: "FIESTA CORPORATIVA"
+        },
+        {
+            titulo: "NETWORKING",
+            descripcion: "Espacio para toda tu invitación, con juegos, bebidas y platillos; formal o casual.",
+            badge: "CLIENTES Y SOCIOS",
+            imagen: fotoArcades,
+            texto_foto: "NETWORKING EN BARRA"
+        },
+        {
+            titulo: "JUNTAS Y CONFERENCIAS",
+            descripcion: "Hall of Fame: salón privado con proyector y pantalla, y juego al terminar.",
+            badge: "HALL OF FAME",
+            imagen: fotoPartidos,
+            texto_foto: "HALL OF FAME"
+        }
+    ]
+};
+
+const pasosCumpleanos = {
+    titulo_seccion: "ORGANIZARLO ES ASÍ DE FÁCIL",
+    steps: [
+        {
+            numero: "01",
+            titulo: "CONTACTA A UN ASESOR",
+            descripcion: "Por formulario, WhatsApp o teléfono. Cuéntanos fecha, invitados y edad del festejado.",
+            variante: "mint"
+        },
+        {
+            numero: "02",
+            titulo: "ARMA TU PAQUETE",
+            descripcion: "Tu asesor te propone simuladores, comida, bebida y los detalles especiales, y confirma tu reservación.",
+            variante: "rosa"
+        },
+        {
+            numero: "03",
+            titulo: "¡A CELEBRAR!",
+            descripcion: "Llega, juega, canta las mañanitas y pide la revancha.",
+            variante: "mint"
+        }
+    ],
+    titulo_nota: "QUÉ LLEVAR",
+    notas: [
+        {
+            titulo: "Ropa cómoda y tenis,",
+            texto: "o tachones de taco corto. El pasto sintético puede manchar el calzado claro."
+        },
+        {
+            titulo: "Renta de tachones:",
+            texto: "$79 en la entrada."
+        },
+        {
+            titulo: "Pastel y globos:",
+            texto: "puedes traerlos. No se permite otra comida del exterior."
+        }
+    ]
+};
+
+const pasosEvento = {
+    titulo_seccion: "DE LA IDEA AL SILBATAZO INICIAL",
+    steps: [
+        {
+            numero: "01",
+            titulo: "CUÉNTANOS TU EVENTO",
+            descripcion: "Llena el formulario con fecha, número de personas y objetivo.",
+            variante: "mint"
+        },
+        {
+            numero: "02",
+            titulo: "TE ASESORA UN EJECUTIVO",
+            descripcion: "Armamos espacio, juegos, comida y bebida a la medida.",
+            variante: "rosa"
+        },
+        {
+            numero: "03",
+            titulo: "LLEGA Y JUEGA",
+            descripcion: "Tu equipo se divierte; nosotros nos encargamos del resto.",
+            variante: "mint"
+        }
+    ]
+};
+
+const infoVisita = {
+    titulo_seccion: "ANTES DE VENIR, TOMA NOTA",
+    steps: [
+        {
+            etiqueta: "PLAYER PASS",
+            valor: "$49",
+            descripcion: "Membresía por jugador, en sitio. Solo en tu primera visita.",
+            variante: "mint"
+        },
+        {
+            etiqueta: "RENTA DE TACHONES",
+            valor: "$79",
+            descripcion: "En la entrada. También puedes jugar con tenis deportivos.",
+            variante: "rosa"
+        },
+        {
+            etiqueta: "FORMAS DE PAGO",
+            valor: "VISA - MASTERCARD - AMEX",
+            descripcion: "En línea y en sitio.",
+            variante: "mint"
+        },
+        {
+            etiqueta: "ESTACIONAMIENTO",
+            valor: "GALERÍAS VALLE ORIENTE",
+            descripcion: "En los estacionamientos de la plaza, con costo aparte.",
+            variante: "rosa"
+        }
+    ],
+    nota_pie: "Precios en pesos mexicanos, sujetos a cambio sin previo aviso. Promociones no acumulables.",
+    texto_enlace: "Ver preguntas frecuentes",
+    url_enlace: "#"
+};
+
+const tecnologia = {
+    steps: [
+        {
+            titulo: "MÁQUINA DE PASES TOCA",
+            descripcion: "Entrega balones reales y adapta la velocidad del pase al nivel de cada jugador.",
+            variante: "mint"
+        },
+        {
+            titulo: "PANTALLA Y MARCADOR EN VIVO",
+            descripcion: "Disparas a objetivos en una pantalla gigante; el sistema registra cada tiro y lleva el marcador.",
+            variante: "rosa"
+        },
+        {
+            titulo: "NIVELES Y HÁNDICAP DIGITAL",
+            descripcion: "Tres niveles de dificultad y un hándicap digital para que todos compitan parejo.",
+            variante: "mint"
+        },
+        {
+            titulo: "RESTAURANTE EN TU SIMULADOR",
+            descripcion: "Comida para compartir y drinks servidos sin que tengas que dejar la reta.",
+            variante: "rosa"
+        }
+    ]
+};
+
 const grupos = [
     { id: "planes", label: "Elige tu jugada" },
     { id: "juegos", label: "Nuestros juegos" },
@@ -417,7 +665,16 @@ const grupos = [
     { id: "sedes", label: "Sedes" },
     { id: "tarifas", label: "Tarifas por día" },
     { id: "articulos", label: "Lo nuevo en TOCA" },
-    { id: "experiencias", label: "Vive la experiencia" }
+    { id: "experiencias", label: "Vive la experiencia" },
+    { id: "pilares", label: "Steps · Pilares" },
+    { id: "pasos-experiencia", label: "Steps · Experiencia" },
+    { id: "niveles-juego", label: "Steps · Niveles" },
+    { id: "pasos-promo", label: "Steps · Promo" },
+    { id: "ocasiones", label: "Steps · Ocasiones" },
+    { id: "pasos-cumpleanos", label: "Steps · Cumpleaños" },
+    { id: "pasos-evento", label: "Steps · Evento" },
+    { id: "info-visita", label: "Steps · Info visita" },
+    { id: "tecnologia", label: "Steps · Tecnología" }
 ];
 ---
 
@@ -465,6 +722,15 @@ const grupos = [
         <div id="tarifas" class="bloque"><Tarifas {...tarifas} /></div>
         <div id="articulos" class="bloque"><Articulos {...articulos} /></div>
         <div id="experiencias" class="bloque"><Experiencias {...experiencias} /></div>
+        <div id="pilares" class="bloque"><Pilares {...pilares} /></div>
+        <div id="pasos-experiencia" class="bloque"><PasosExperiencia {...pasosExperiencia} /></div>
+        <div id="niveles-juego" class="bloque"><NivelesJuego {...nivelesJuego} /></div>
+        <div id="pasos-promo" class="bloque"><PasosPromo {...pasosPromo} /></div>
+        <div id="ocasiones" class="bloque"><Ocasiones {...ocasiones} /></div>
+        <div id="pasos-cumpleanos" class="bloque"><PasosCumpleanos {...pasosCumpleanos} /></div>
+        <div id="pasos-evento" class="bloque"><PasosEvento {...pasosEvento} /></div>
+        <div id="info-visita" class="bloque"><InfoVisita {...infoVisita} /></div>
+        <div id="tecnologia" class="bloque"><Tecnologia {...tecnologia} /></div>
     </div>
 
     <script is:inline>

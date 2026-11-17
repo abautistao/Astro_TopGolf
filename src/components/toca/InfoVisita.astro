@@ -1,0 +1,138 @@
+---
+import DatoVisita from "./steps/DatoVisita.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    steps?: any[];
+    nota_pie?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
+    steps = [],
+    nota_pie = "",
+    texto_enlace = "",
+    url_enlace = ""
+} = Astro.props;
+
+// El editor elige en el CMS la etiqueta HTML del titulo y del subtitulo. Los
+// registros ya publicados mandan `null` en los campos nuevos (no `undefined`),
+// asi que el default del destructuring no se aplica: normalizamos contra una
+// lista blanca y caemos en las etiquetas por defecto (h2 y p) cuando el valor
+// no llega o no es valido.
+const TAGS_HTML = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"] as const;
+
+type TagHtml = (typeof TAGS_HTML)[number];
+
+const resolverTag = (valor: string | null | undefined, porDefecto: TagHtml): TagHtml => {
+    const normalizado = (valor ?? "").trim().toLowerCase();
+    return (TAGS_HTML as readonly string[]).includes(normalizado)
+        ? (normalizado as TagHtml)
+        : porDefecto;
+};
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+---
+
+<section
+    class="info-visita"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+>
+    <div class="info-visita-contenedor">
+        {titulo_seccion && <TituloTag class="visita-titulo">{titulo_seccion}</TituloTag>}
+        {subtitulo && <SubtituloTag class="visita-subtitulo">{subtitulo}</SubtituloTag>}
+
+        <div class="visita-grid">
+            {Array.isArray(steps) && steps.map((step) => <DatoVisita {...step} />)}
+        </div>
+
+        {
+            (nota_pie || texto_enlace) && (
+                <p class="visita-pie">
+                    {nota_pie}
+                    {texto_enlace && (
+                        <a href={url_enlace || "#"} class="visita-enlace">
+                            {texto_enlace}
+                        </a>
+                    )}
+                </p>
+            )
+        }
+    </div>
+</section>
+
+<style>
+    .info-visita {
+        background: var(--neutral-background-strong);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .info-visita-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .visita-titulo {
+        display: block;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2rem, 4.2vw, 3.35rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+
+    .visita-subtitulo {
+        display: block;
+        margin: 0.85rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+
+    .visita-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.25rem;
+        margin-top: 2rem;
+    }
+
+    @media (min-width: 768px) {
+        .visita-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .visita-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    .visita-pie {
+        margin-top: 1.5rem;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.82rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+
+    .visita-enlace {
+        color: var(--brand-interactive-base);
+        text-decoration: underline;
+        margin-left: 0.35rem;
+    }
+</style>

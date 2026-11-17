@@ -1,0 +1,60 @@
+---
+// Caja de paso numerado (steps-toca.pasos-cumpleanos-toca /
+// steps-toca.pasos-evento-toca / step.paso-numerado).
+// El color de la variante (mint | rosa) se inyecta como variable CSS para
+// que el borde y el numero usen el mismo tono sin duplicar reglas.
+interface Props {
+    numero?: string;
+    titulo?: string;
+    descripcion?: string;
+    variante?: string;
+}
+
+const { numero = "", titulo = "", descripcion = "", variante = "mint" } = Astro.props;
+
+const colorVariante =
+    variante === "rosa" ? "var(--surface-brand-secondary)" : "var(--brand-interactive-base)";
+---
+
+<div class="paso-numerado" style={`--color-variante: ${colorVariante};`}>
+    {numero && <span class="paso-numerado-numero">{numero}</span>}
+    {titulo && <h3 class="paso-numerado-titulo">{titulo}</h3>}
+    {descripcion && <p class="paso-numerado-descripcion">{descripcion}</p>}
+</div>
+
+<style>
+    .paso-numerado {
+        display: flex;
+        flex-direction: column;
+        border: 2px solid var(--color-variante, var(--brand-interactive-base));
+        padding: 1.5rem 1.25rem;
+    }
+
+    .paso-numerado-numero {
+        display: block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2rem, 3vw, 2.85rem);
+        line-height: 1;
+        color: var(--color-variante, var(--brand-interactive-base));
+    }
+
+    .paso-numerado-titulo {
+        display: block;
+        margin: 0.75rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+        font-size: 0.95rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+    }
+
+    .paso-numerado-descripcion {
+        margin: 0.5rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.88rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+</style>

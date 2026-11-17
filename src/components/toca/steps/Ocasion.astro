@@ -1,0 +1,137 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+// Card de ocasion (steps-toca.ocasiones-toca / step.ocasion).
+// La foto puede venir de Strapi (URL remota) o ser un asset local (solo para el dummy).
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+    badge?: string;
+    imagen?: any;
+    texto_foto?: string;
+}
+
+const {
+    titulo = "",
+    descripcion = "",
+    badge = "",
+    imagen = null,
+    texto_foto = ""
+} = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+const esAssetLocal = Boolean(imagen?.src);
+---
+
+<article class="ocasion">
+    <div class="ocasion-foto">
+        {
+            esAssetLocal ? (
+                <Image src={imagen} alt={titulo} class="ocasion-imagen" />
+            ) : imgSrc ? (
+                <Image
+                    src={imgSrc}
+                    alt={titulo}
+                    width={800}
+                    height={600}
+                    class="ocasion-imagen"
+                />
+            ) : (
+                <span class="ocasion-placeholder">FOTO · {texto_foto || titulo}</span>
+            )
+        }
+    </div>
+
+    <div class="ocasion-cuerpo">
+        {titulo && <h3 class="ocasion-titulo">{titulo}</h3>}
+        {descripcion && <p class="ocasion-descripcion">{descripcion}</p>}
+        {badge && <span class="ocasion-badge">{badge}</span>}
+    </div>
+</article>
+
+<style>
+    .ocasion {
+        min-width: 0;
+        container-type: inline-size;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 2px solid var(--surface-brand-primary);
+        background: var(--brand-interactive-base);
+    }
+
+    .ocasion-foto {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        aspect-ratio: 4 / 3;
+        background: var(--surface-brand-primary);
+        overflow: hidden;
+    }
+
+    .ocasion-imagen {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Sin foto: el texto de la foto ocupa el area, en el color de acento. */
+    .ocasion-placeholder {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--accent-highlight-primary);
+        font-family: var(--font-sharp-sans-medium);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        padding: 1rem;
+    }
+
+    .ocasion-cuerpo {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem 1.25rem 1.5rem;
+    }
+
+    .ocasion-titulo {
+        min-width: 0;
+        display: block;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--surface-brand-primary);
+        font-size: clamp(0.95rem, 5.2cqw, 1.85rem);
+        line-height: 1.02;
+        overflow-wrap: break-word;
+    }
+
+    .ocasion-descripcion {
+        margin: 0.75rem 0 1.1rem;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--surface-brand-primary);
+        font-size: 0.9rem;
+        line-height: 1.45;
+    }
+
+    /* La pastilla se pega al pie de la card (margin-top: auto). */
+    .ocasion-badge {
+        margin-top: auto;
+        align-self: flex-start;
+        background: var(--surface-brand-primary);
+        color: var(--surface-brand-secondary);
+        text-transform: uppercase;
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+        padding: 0.35rem 0.65rem;
+    }
+</style>

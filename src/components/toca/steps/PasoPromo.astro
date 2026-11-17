@@ -1,0 +1,51 @@
+---
+// Caja de paso de promo (steps-toca.pasos-promo-toca / step.paso-promo).
+interface Props {
+    numero?: string;
+    titulo?: string;
+    descripcion?: string;
+}
+
+const { numero = "", titulo = "", descripcion = "" } = Astro.props;
+---
+
+<div class="paso-promo">
+    {numero && <span class="paso-promo-numero">{numero}</span>}
+    {titulo && <h3 class="paso-promo-titulo">{titulo}</h3>}
+    {descripcion && <p class="paso-promo-descripcion">{descripcion}</p>}
+</div>
+
+<style>
+    .paso-promo {
+        border: 2px solid var(--surface-brand-primary);
+        padding: 1.75rem 1.5rem;
+    }
+
+    .paso-promo-numero {
+        display: block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+        line-height: 1;
+        color: var(--surface-brand-primary);
+    }
+
+    .paso-promo-titulo {
+        display: block;
+        margin: 0.75rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+        font-size: 1rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        color: var(--surface-brand-primary);
+    }
+
+    .paso-promo-descripcion {
+        margin: 0.5rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.9rem;
+        line-height: 1.45;
+        color: var(--surface-brand-primary);
+    }
+</style>

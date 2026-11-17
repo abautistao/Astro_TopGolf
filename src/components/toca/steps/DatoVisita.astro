@@ -1,0 +1,65 @@
+---
+// Caja de dato de visita (steps-toca.info-visita-toca / step.dato-visita).
+// El color de la variante (mint | rosa) se inyecta como variable CSS para
+// que el borde y la etiqueta usen el mismo tono sin duplicar reglas.
+interface Props {
+    etiqueta?: string;
+    valor?: string;
+    descripcion?: string;
+    variante?: string;
+}
+
+const { etiqueta = "", valor = "", descripcion = "", variante = "mint" } = Astro.props;
+
+const colorVariante =
+    variante === "rosa" ? "var(--surface-brand-secondary)" : "var(--brand-interactive-base)";
+---
+
+<div class="dato-visita" style={`--color-variante: ${colorVariante};`}>
+    {etiqueta && <span class="dato-visita-etiqueta">{etiqueta}</span>}
+    {valor && <h3 class="dato-visita-valor">{valor}</h3>}
+    {descripcion && <p class="dato-visita-descripcion">{descripcion}</p>}
+</div>
+
+<style>
+    .dato-visita {
+        min-width: 0;
+        container-type: inline-size;
+        display: flex;
+        flex-direction: column;
+        border: 2px solid var(--color-variante, var(--brand-interactive-base));
+        padding: 1.5rem 1.25rem;
+    }
+
+    .dato-visita-etiqueta {
+        display: block;
+        font-family: var(--font-sharp-sans-bold);
+        font-weight: 700;
+        font-size: 0.78rem;
+        line-height: 1.2;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--color-variante, var(--brand-interactive-base));
+    }
+
+    .dato-visita-valor {
+        min-width: 0;
+        display: block;
+        margin: 0.45rem 0 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(0.95rem, 5.5cqw, 2.25rem);
+        line-height: 1.05;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+        overflow-wrap: break-word;
+    }
+
+    .dato-visita-descripcion {
+        margin: 0.65rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.88rem;
+        line-height: 1.45;
+        color: var(--accent-highlight-primary);
+    }
+</style>

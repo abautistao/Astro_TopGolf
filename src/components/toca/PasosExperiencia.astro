@@ -1,0 +1,120 @@
+---
+import PasoIcono from "./steps/PasoIcono.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    steps?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
+    steps = []
+} = Astro.props;
+
+// El editor elige en el CMS la etiqueta HTML del titulo y del subtitulo. Los
+// registros ya publicados mandan `null` en los campos nuevos (no `undefined`),
+// asi que el default del destructuring no se aplica: normalizamos contra una
+// lista blanca y caemos en las etiquetas por defecto (h2 y p) cuando el valor
+// no llega o no es valido.
+const TAGS_HTML = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"] as const;
+
+type TagHtml = (typeof TAGS_HTML)[number];
+
+const resolverTag = (valor: string | null | undefined, porDefecto: TagHtml): TagHtml => {
+    const normalizado = (valor ?? "").trim().toLowerCase();
+    return (TAGS_HTML as readonly string[]).includes(normalizado)
+        ? (normalizado as TagHtml)
+        : porDefecto;
+};
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+---
+
+<section
+    class="pasos-experiencia"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+>
+    <div class="pasos-experiencia-contenedor">
+        {
+            (titulo_seccion || subtitulo) && (
+                <header class="pasos-experiencia-encabezado">
+                    {titulo_seccion && <TituloTag class="pasos-experiencia-titulo">{titulo_seccion}</TituloTag>}
+                    {subtitulo && <SubtituloTag class="pasos-experiencia-subtitulo">{subtitulo}</SubtituloTag>}
+                </header>
+            )
+        }
+
+        <div class="pasos-experiencia-grid">
+            {Array.isArray(steps) && steps.map((step) => <PasoIcono {...step} />)}
+        </div>
+    </div>
+</section>
+
+<style>
+    .pasos-experiencia {
+        background: var(--brand-interactive-base);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .pasos-experiencia-contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .pasos-experiencia-encabezado {
+        margin-bottom: 2rem;
+    }
+
+    .pasos-experiencia-titulo {
+        display: block;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        font-size: clamp(1.75rem, 4vw, 2.75rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+        color: var(--surface-brand-primary);
+    }
+
+    .pasos-experiencia-subtitulo {
+        display: block;
+        margin: 0.75rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--surface-brand-primary);
+    }
+
+    .pasos-experiencia-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .pasos-experiencia-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .pasos-experiencia-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .pasos-experiencia-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+</style>
