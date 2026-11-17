@@ -1,6 +1,6 @@
 ---
 // src/pages/libreria-de-componentes-toca.astro
-// Catálogo de los 8 grupos de cards del rediseño TOCA, con datos dummy.
+// Catálogo de los 9 grupos de cards del rediseño TOCA, con datos dummy.
 //
 // Ruta: /libreria-de-componentes-toca
 // Para verlo:
@@ -15,6 +15,10 @@ import "../styles/global.css";
 // Foto de ejemplo para el contenido dummy del catalogo (los componentes la reciben
 // como cualquier imagen; en produccion llega del CMS).
 import fotoAmbassador from "../assets/ambassador-toca.jpg";
+import fotoJuegos from "../assets/ambassador-toca.jpg";
+import fotoPartidos from "../assets/mask_group_3.png";
+import fotoRestaurante from "../assets/2c8481df4c822d9c15e21537c3ededbbc9a6e81f.png";
+import fotoArcades from "../assets/mask_group_4.png";
 
 import Planes from "../components/toca/Planes.astro";
 import Juegos from "../components/toca/Juegos.astro";
@@ -24,6 +28,7 @@ import PreciosPersona from "../components/toca/PreciosPersona.astro";
 import Sedes from "../components/toca/Sedes.astro";
 import Tarifas from "../components/toca/Tarifas.astro";
 import Articulos from "../components/toca/Articulos.astro";
+import Experiencias from "../components/toca/Experiencias.astro";
 
 // Datos dummy tomados del diseño "TOCA Social — Rediseño web".
 const planes = {
@@ -360,6 +365,49 @@ const articulos = {
     ]
 };
 
+const experiencias = {
+    titulo_seccion: "Vive la experiencia",
+    subtitulo: "Juegos, partidos, comida y mucho más",
+    cards: [
+        {
+            titulo: "Juegos interactivos",
+            descripcion: "Atom Splitter, Striker, Zombie Attack, Eliminator y TOCA Challenge.",
+            imagen: fotoJuegos,
+            texto_foto: "Pantalla de juego",
+            texto_boton: "Leer más",
+            url_boton: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "Vive los partidos",
+            descripcion: "Liga MX, Champions League y los grandes partidos en pantallas gigantes.",
+            imagen: fotoPartidos,
+            texto_foto: "Partido en pantalla",
+            texto_boton: "Leer más",
+            url_boton: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Restaurante",
+            descripcion: "Un menú inspirado en las selecciones del mundo, para compartir.",
+            imagen: fotoRestaurante,
+            texto_foto: "Platillos y drinks",
+            texto_boton: "Leer más",
+            url_boton: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Futbolito y arcades",
+            descripcion: "Entre reta y reta, más formas de pedir la revancha.",
+            imagen: fotoArcades,
+            texto_foto: "Futbolito y arcades",
+            texto_boton: "Leer más",
+            url_boton: "#",
+            variante: "mint"
+        }
+    ]
+};
+
 const grupos = [
     { id: "planes", label: "Elige tu jugada" },
     { id: "juegos", label: "Nuestros juegos" },
@@ -368,7 +416,8 @@ const grupos = [
     { id: "promociones", label: "Precios por persona" },
     { id: "sedes", label: "Sedes" },
     { id: "tarifas", label: "Tarifas por día" },
-    { id: "articulos", label: "Lo nuevo en TOCA" }
+    { id: "articulos", label: "Lo nuevo en TOCA" },
+    { id: "experiencias", label: "Vive la experiencia" }
 ];
 ---
 
@@ -415,6 +464,7 @@ const grupos = [
         <div id="sedes" class="bloque"><Sedes {...sedes} /></div>
         <div id="tarifas" class="bloque"><Tarifas {...tarifas} /></div>
         <div id="articulos" class="bloque"><Articulos {...articulos} /></div>
+        <div id="experiencias" class="bloque"><Experiencias {...experiencias} /></div>
     </div>
 
     <script is:inline>

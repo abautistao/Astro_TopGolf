@@ -6,6 +6,7 @@ interface Props {
     url_enlace?: string;
     tituloTag?: string | null;
     subtituloTag?: string | null;
+    contorno?: boolean;
 }
 
 const {
@@ -14,7 +15,8 @@ const {
     texto_enlace = "",
     url_enlace = "",
     tituloTag = null,
-    subtituloTag = null
+    subtituloTag = null,
+    contorno = true
 } = Astro.props;
 
 // El editor elige en el CMS la etiqueta HTML del titulo y del subtitulo. Los
@@ -41,9 +43,9 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
     {
         titulo && (
             <TituloTag class="titulo-sesion-titulo">
-                <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>
+                {contorno && <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>}
                 <span class="titulo-sesion-linea titulo-sesion-linea--solida">{titulo}</span>
-                <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>
+                {contorno && <span class="titulo-sesion-linea titulo-sesion-linea--contorno">{titulo}</span>}
             </TituloTag>
         )
     }
@@ -86,18 +88,21 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
         display: block;
     }
 
+    /* Los colores se pueden sobreescribir desde la seccion que usa el titulo
+       (variables --titulo-color, --titulo-color-contorno, --subtitulo-color y
+       --enlace-color). Los valores por defecto son los de las secciones oscuras. */
     .titulo-sesion-linea--contorno {
         color: transparent;
-        -webkit-text-stroke: 1px var(--surface-brand-secondary);
+        -webkit-text-stroke: 1px var(--titulo-color-contorno, var(--surface-brand-secondary));
     }
 
     .titulo-sesion-linea--solida {
-        color: var(--neutral-text-inverted);
+        color: var(--titulo-color, var(--neutral-text-inverted));
     }
 
     .titulo-sesion-subtitulo {
         font-family: var(--font-sharp-sans-bold);
-        color: var(--brand-interactive-base);
+        color: var(--subtitulo-color, var(--brand-interactive-base));
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 0.03em;
@@ -112,7 +117,7 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
     .titulo-sesion-enlace {
         display: inline-block;
         font-family: var(--font-titling-gothic-fb-extended-bold);
-        color: var(--neutral-text-inverted);
+        color: var(--enlace-color, var(--neutral-text-inverted));
         text-decoration: underline;
         text-transform: uppercase;
         margin-top: 1rem;

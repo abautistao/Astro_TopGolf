@@ -1,0 +1,80 @@
+---
+import TituloSeccion from "./cards/TituloSeccion.astro";
+import CardExperiencia from "./cards/Experiencia.astro";
+
+interface Props {
+    titulo_seccion?: string;
+    subtitulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    cards?: any[];
+}
+
+const {
+    titulo_seccion = "",
+    subtitulo = "",
+    tituloHtmlTag = null,
+    subtituloHtmlTag = null,
+    color_fondo_override = null,
+    cards = []
+} = Astro.props;
+---
+
+<section class="experiencias" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="contenedor">
+        <TituloSeccion
+            titulo={titulo_seccion}
+            subtitulo={subtitulo}
+            tituloTag={tituloHtmlTag}
+            subtituloTag={subtituloHtmlTag}
+            contorno={false}
+        />
+
+        <div class="grid">
+            {
+                Array.isArray(cards) &&
+                    cards.map((card: any, i: number) => <CardExperiencia {...card} indice={i + 1} />)
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .experiencias {
+        /* Fondo mint por defecto (la ficha de esta seccion va en navy sobre mint). */
+        background: var(--brand-interactive-base);
+        /* Esta seccion es clara: el titulo compartido necesita texto navy.
+           Los valores por defecto viven en TituloSeccion.astro; aqui se
+           sobreescriben solo para esta seccion. */
+        --titulo-color: var(--surface-brand-primary);
+        --titulo-color-contorno: transparent;
+        --subtitulo-color: var(--surface-brand-primary);
+        --enlace-color: var(--surface-brand-primary);
+        padding: 3rem 1rem 4rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+</style>

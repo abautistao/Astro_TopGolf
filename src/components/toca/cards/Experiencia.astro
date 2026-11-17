@@ -1,0 +1,148 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    titulo?: string;
+    descripcion?: string;
+    imagen?: any;
+    texto_foto?: string;
+    texto_boton?: string;
+    url_boton?: string;
+    variante?: "mint" | "rosa";
+    indice?: number;
+}
+
+const {
+    titulo = "",
+    descripcion = "",
+    imagen = null,
+    texto_foto = "",
+    texto_boton = "",
+    url_boton = "",
+    variante = "mint",
+    indice = 1
+} = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+// La foto puede venir de Strapi (URL remota) o ser un asset local (solo para el dummy).
+const esAssetLocal = Boolean(imagen?.src);
+const esRosa = variante === "rosa";
+// El diseno inclina las fotos alternando: impares a un lado, pares al otro.
+// El indice (1-based) lo pasa la seccion; la inclinacion vive en una variable
+// CSS para que el texto de la ficha no gire con la foto.
+const rotacion = indice % 2 === 1 ? "-2deg" : "2deg";
+---
+
+<article class="card-experiencia" style={`--rotacion-foto: ${rotacion};`}>
+    <div class={`foto${esRosa ? " foto--rosa" : ""}`}>
+        {esAssetLocal ? (
+                <Image src={imagen} alt={titulo} class="w-full! h-full! object-cover!" />
+            ) : imgSrc ? (
+                <Image src={imgSrc} alt={titulo} width={800} height={600} class="w-full! h-full! object-cover!" />
+            ) : (
+                <span class="placeholder">FOTO · {texto_foto || titulo}</span>
+            )
+        }
+    </div>
+
+    {titulo && <h3 class="titulo">{titulo}</h3>}
+
+    {descripcion && <p class="descripcion">{descripcion}</p>}
+
+    {texto_boton && <a href={url_boton || "#"} class="boton">{texto_boton}</a>}
+</article>
+
+<style>
+    .card-experiencia {
+        /* Sin fondo ni borde: la ficha se apoya directamente sobre el fondo de la
+           seccion (mint) y solo la foto lleva marco. */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.85rem;
+        background: transparent;
+        border: 0;
+        /* Permite que el tamano del titulo siga al ancho de la ficha. */
+        container-type: inline-size;
+    }
+
+    .foto {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: var(--custom-color-01);
+        overflow: hidden;
+        /* Solo la foto gira; el texto de la ficha se queda recto. */
+        transform: rotate(var(--rotacion-foto, 0deg));
+        transform-origin: center;
+    }
+
+    /* El borde va en el elemento que gira para que la foto y su marco roten
+       juntos (variante rosa). */
+    .foto--rosa {
+        border: 2px solid var(--surface-brand-secondary);
+    }
+
+    /* El placeholder de la ficha es un recuadro punteado con el texto dentro. */
+    .placeholder {
+        flex: 1 1 auto;
+        /* El recuadro punteado va inset; la foto real ocupa todo el area. */
+        margin: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 2px dashed var(--accent-highlight-primary);
+        color: var(--accent-highlight-primary);
+        font-family: var(--font-sharp-sans-medium);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        padding: 1rem;
+    }
+
+    .titulo {
+        min-width: 0;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        color: var(--surface-brand-primary);
+        text-transform: uppercase;
+        font-size: clamp(1.25rem, 4.5cqw, 1.75rem);
+        line-height: 1.05;
+        overflow-wrap: break-word;
+    }
+
+    .descripcion {
+        margin: 0;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--surface-brand-primary);
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+
+    .boton {
+        display: inline-block;
+        background: transparent;
+        border: 2px solid var(--surface-brand-primary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 0.85rem;
+        line-height: 1.2;
+        padding: 0.55rem 0.9rem;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .boton:hover,
+    .boton:focus-visible {
+        background: var(--surface-brand-primary);
+        color: var(--brand-interactive-base);
+    }
+</style>
