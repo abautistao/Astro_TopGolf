@@ -1,0 +1,275 @@
+---
+import { resolverTag } from "../../utils/html-tag";
+
+interface Props {
+    titulo?: string;
+    tituloHtmlTag?: string | null;
+    subtitulo?: string;
+    subtituloHtmlTag?: string | null;
+    aviso_titulo?: string;
+    aviso_texto?: string;
+    horarios?: { id?: number; dia?: string; horario?: string }[];
+    texto_boton?: string;
+    url_boton?: string;
+    telefono?: string;
+    direccion_mapa?: string;
+    url_mapa?: string | null;
+    titulo_mapa?: string;
+    color_fondo_override?: string | null;
+}
+
+const {
+    titulo = "",
+    tituloHtmlTag = null,
+    subtitulo = "",
+    subtituloHtmlTag = null,
+    aviso_titulo = "",
+    aviso_texto = "",
+    horarios = [],
+    texto_boton = "",
+    url_boton = "",
+    telefono = "",
+    direccion_mapa = "",
+    url_mapa = null,
+    titulo_mapa = "",
+    color_fondo_override = null
+} = Astro.props;
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+
+// El mapa sale de `url_mapa` (la URL de "Compartir > Incrustar un mapa" de Google Maps,
+// o el codigo <iframe> completo: se extrae su src). Sin URL, se genera con la
+// direccion, que no requiere API key. Solo se admite https.
+const extraerSrc = (valor?: string | null) => {
+    const texto = (valor ?? "").trim();
+    const desdeIframe = texto.match(/src=["']([^"']+)["']/i)?.[1];
+    const url = (desdeIframe ?? texto).replace(/&amp;/g, "&");
+    return url.startsWith("https://") ? url : "";
+};
+const consulta = (direccion_mapa || subtitulo || titulo).trim();
+const srcMapa =
+    extraerSrc(url_mapa) ||
+    (consulta ? `https://maps.google.com/maps?q=${encodeURIComponent(consulta)}&output=embed` : "");
+
+const telefonoHref = telefono ? `tel:${telefono.replace(/[^\d+]/g, "")}` : "";
+const lista = Array.isArray(horarios) ? horarios : [];
+---
+
+<section class="ubicacion" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="contenedor">
+        <div class="info">
+            {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
+            {subtitulo && <SubtituloTag class="subtitulo">{subtitulo}</SubtituloTag>}
+
+            {
+                (aviso_titulo || aviso_texto) && (
+                    <div class="aviso">
+                        {aviso_titulo && <p class="aviso-titulo">{aviso_titulo}</p>}
+                        {aviso_texto && <p class="aviso-texto">{aviso_texto}</p>}
+                    </div>
+                )
+            }
+
+            {
+                lista.length > 0 && (
+                    <ul class="horarios">
+                        {lista.map((h) => (
+                            <li class="horario">
+                                <span class="horario-dia">{h.dia}</span>
+                                <span class="horario-horas">{h.horario}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+
+            {
+                (texto_boton || telefono) && (
+                    <div class="acciones">
+                        {texto_boton && (
+                            <a href={url_boton || "#"} class="boton">
+                                {texto_boton}
+                            </a>
+                        )}
+                        {telefono && (
+                            <a href={telefonoHref} class="telefono">
+                                {telefono}
+                            </a>
+                        )}
+                    </div>
+                )
+            }
+        </div>
+
+        {
+            srcMapa && (
+                <div class="mapa">
+                    <iframe
+                        src={srcMapa}
+                        title={titulo_mapa || `Mapa · ${consulta}`}
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen
+                    />
+                </div>
+            )
+        }
+    </div>
+</section>
+
+<style>
+    .ubicacion {
+        background: var(--neutral-background-strong);
+        padding: 3.5rem 1rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 0;
+    }
+
+    .titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+        font-size: clamp(1.75rem, 5vw, 2.75rem);
+        line-height: 0.95;
+        overflow-wrap: break-word;
+    }
+
+    .subtitulo {
+        margin: 1.5rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        font-size: 1.1rem;
+        line-height: 1.5;
+        font-weight: inherit;
+    }
+
+    .aviso {
+        width: 100%;
+        margin-top: 1.75rem;
+        border: 2px solid var(--brand-interactive-base);
+        padding: 1.1rem 1.4rem;
+    }
+
+    .aviso-titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+        font-size: 1.15rem;
+    }
+
+    .aviso-texto {
+        margin: 0.5rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--neutral-text-inverted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .horarios {
+        list-style: none;
+        margin: 1.5rem 0 0;
+        padding: 0;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem;
+    }
+
+    .horario {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        border: 2px solid var(--surface-brand-secondary);
+        padding: 0.9rem 1.1rem;
+    }
+
+    .horario-dia {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--surface-brand-secondary);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+    }
+
+    .horario-horas {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        color: var(--neutral-text-inverted);
+        font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+        line-height: 1.1;
+    }
+
+    .acciones {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.75rem;
+        margin-top: 1.75rem;
+    }
+
+    .boton {
+        display: inline-block;
+        background: var(--neutral-background-strong);
+        color: var(--neutral-text-inverted);
+        border: 2px solid var(--brand-interactive-base);
+        box-shadow: 5px 5px 0 0 var(--brand-interactive-base);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1rem;
+        line-height: 1.1;
+        padding: 0.85rem 1.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    .boton:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .telefono {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        color: var(--brand-interactive-base);
+        font-size: 1.25rem;
+    }
+
+    .mapa {
+        min-width: 0;
+        border: 2px solid var(--brand-interactive-base);
+        background: var(--surface-brand-primary);
+        aspect-ratio: 4 / 3;
+    }
+
+    .mapa iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    @media (min-width: 1024px) {
+        .contenedor {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4rem;
+        }
+
+        .mapa {
+            aspect-ratio: 3 / 2;
+        }
+    }
+</style>
