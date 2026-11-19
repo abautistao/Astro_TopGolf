@@ -1,0 +1,144 @@
+---
+import { resolverTag } from "../../utils/html-tag";
+
+interface Props {
+    titulo_contorno?: string;
+    titulo?: string;
+    tituloHtmlTag?: string | null;
+    subtitulo?: string;
+    subtituloHtmlTag?: string | null;
+    parrafos?: { id?: number; texto?: string; estilo?: string | null }[];
+    color_fondo_override?: string | null;
+}
+
+const {
+    titulo_contorno = "",
+    titulo = "",
+    tituloHtmlTag = null,
+    subtitulo = "",
+    subtituloHtmlTag = null,
+    parrafos = [],
+    color_fondo_override = null
+} = Astro.props;
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+const ESTILOS = ["normal", "destacado", "acento"];
+const claseEstilo = (estilo?: string | null) => (ESTILOS.includes(estilo ?? "") ? estilo : "normal");
+---
+
+<section class="mensaje-caja" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="contenedor">
+        <div class="encabezado">
+            {
+                (titulo || titulo_contorno) && (
+                    <TituloTag class="titulo">
+                        {titulo_contorno && (
+                            <span class="titulo-contorno" aria-hidden={titulo ? "true" : undefined}>
+                                {titulo_contorno}
+                            </span>
+                        )}
+                        {titulo && <span class="titulo-solido">{titulo}</span>}
+                    </TituloTag>
+                )
+            }
+            {subtitulo && <SubtituloTag class="subtitulo">{subtitulo}</SubtituloTag>}
+        </div>
+
+        <div class="caja">
+            {
+                Array.isArray(parrafos) &&
+                    parrafos.map((p) => (
+                        <p class:list={["caja-parrafo", `caja-parrafo--${claseEstilo(p.estilo)}`]}>{p.texto}</p>
+                    ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .mensaje-caja {
+        background: var(--neutral-background-strong);
+        padding: 3.5rem 1rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    .titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1.75rem, 7vw, 3.5rem);
+        line-height: 0.95;
+        overflow-wrap: break-word;
+        display: block;
+    }
+
+    .titulo-contorno {
+        display: block;
+        color: transparent;
+        -webkit-text-stroke: 1px var(--surface-brand-secondary);
+    }
+
+    .titulo-solido {
+        display: block;
+        color: var(--neutral-text-inverted);
+    }
+
+    .subtitulo {
+        margin: 1.25rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        font-size: 1.1rem;
+        line-height: 1.4;
+        font-weight: inherit;
+    }
+
+    .caja {
+        border: 2px solid var(--brand-interactive-base);
+        padding: 1.75rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .caja-parrafo {
+        margin: 0;
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .caja-parrafo--normal {
+        font-family: var(--font-sharp-sans-medium);
+        color: var(--accent-highlight-primary);
+    }
+
+    .caja-parrafo--destacado {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--neutral-text-inverted);
+    }
+
+    .caja-parrafo--acento {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+    }
+
+    @media (min-width: 1024px) {
+        .contenedor {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4rem;
+        }
+
+        .caja {
+            padding: 2.25rem 2.5rem;
+        }
+    }
+</style>

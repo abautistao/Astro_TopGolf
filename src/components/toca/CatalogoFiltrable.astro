@@ -1,0 +1,179 @@
+---
+import { resolverTag } from "../../utils/html-tag";
+import ItemCatalogo from "./cards/ItemCatalogo.astro";
+
+interface Props {
+    titulo?: string;
+    tituloHtmlTag?: string | null;
+    subtitulo?: string;
+    subtituloHtmlTag?: string | null;
+    etiqueta_filtros?: string;
+    texto_filtro_todas?: string;
+    items?: any[];
+    color_fondo_override?: string | null;
+}
+
+const {
+    titulo = "",
+    tituloHtmlTag = null,
+    subtitulo = "",
+    subtituloHtmlTag = null,
+    etiqueta_filtros = "",
+    texto_filtro_todas = "",
+    items = [],
+    color_fondo_override = null
+} = Astro.props;
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
+
+// Cada item declara sus categorias separadas por coma; los filtros salen de la
+// union de todas (sin duplicados, en el orden en que aparecen).
+const separar = (texto?: string | null) =>
+    (texto ?? "")
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+
+const lista = Array.isArray(items) ? items : [];
+const categoriasPorItem = lista.map((item) => separar(item.categorias));
+const filtros = [...new Set(categoriasPorItem.flat())];
+const rotaciones = ["-3deg", "2.5deg"];
+---
+
+<section
+    class="catalogo"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+    x-data="{ filtro: '' }"
+>
+    <div class="contenedor">
+        {
+            (titulo || subtitulo) && (
+                <div class="encabezado">
+                    {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
+                    {subtitulo && <SubtituloTag class="subtitulo">{subtitulo}</SubtituloTag>}
+                </div>
+            )
+        }
+
+        {
+            filtros.length > 0 && (
+                <div class="filtros">
+                    {etiqueta_filtros && <span class="filtros-etiqueta">{etiqueta_filtros}</span>}
+                    <button
+                        type="button"
+                        class="filtro filtro--activo"
+                        x-bind:class="{ 'filtro--activo': filtro === '' }"
+                        x-on:click="filtro = ''"
+                    >
+                        {texto_filtro_todas || "Todas"}
+                    </button>
+                    {filtros.map((categoria) => (
+                        <button
+                            type="button"
+                            class="filtro"
+                            x-bind:class={`{ 'filtro--activo': filtro === ${JSON.stringify(categoria)} }`}
+                            x-on:click={`filtro = ${JSON.stringify(categoria)}`}
+                        >
+                            {categoria}
+                        </button>
+                    ))}
+                </div>
+            )
+        }
+
+        <div class="items">
+            {
+                lista.map((item, i) => (
+                    <div
+                        class="items-fila"
+                        x-show={`filtro === '' || ${JSON.stringify(categoriasPorItem[i])}.includes(filtro)`}
+                    >
+                        <ItemCatalogo {...item} invertido={i % 2 === 1} rotacion={rotaciones[i % 2]} />
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .catalogo {
+        background: var(--surface-brand-primary);
+        padding: 2rem 1rem 4rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .encabezado {
+        margin-bottom: 2rem;
+    }
+
+    .titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+        font-size: clamp(1.75rem, 7vw, 3.125rem);
+        line-height: 0.95;
+    }
+
+    .subtitulo {
+        margin: 1rem 0 0;
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        font-size: 1rem;
+        font-weight: inherit;
+    }
+
+    .filtros {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--custom-color-01);
+    }
+
+    .filtros-etiqueta {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--accent-highlight-primary);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        margin-right: 0.5rem;
+    }
+
+    .filtro {
+        cursor: pointer;
+        background: transparent;
+        color: var(--neutral-text-inverted);
+        border: 2px solid var(--brand-interactive-base);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        line-height: 1;
+        padding: 0.6rem 0.9rem;
+        transition:
+            background 0.2s ease,
+            color 0.2s ease;
+    }
+
+    .filtro--activo {
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        border-color: var(--surface-brand-secondary);
+        box-shadow: 3px 3px 0 0 var(--brand-interactive-base);
+    }
+
+    .items {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+        margin-top: 3rem;
+    }
+</style>

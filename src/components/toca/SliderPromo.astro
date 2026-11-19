@@ -1,0 +1,159 @@
+---
+// Las clases propias del componente NO llevan el sufijo "!" de Tailwind (Astro las scopea).
+import SlidePromo from "./cards/SlidePromo.astro";
+
+interface Props {
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    color_fondo_override?: string | null;
+    slides?: any[];
+}
+
+const { tituloHtmlTag = null, subtituloHtmlTag = null, color_fondo_override = null, slides = [] } = Astro.props;
+
+const lista = Array.isArray(slides) ? slides : [];
+---
+
+<section
+    class="slider-promo"
+    style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
+    x-data={`{ actual: 0, total: ${lista.length} }`}
+>
+    <div class="contenedor">
+        <div class="pista">
+            {
+                lista.map((slide, i) => (
+                    <div
+                        x-bind:class={`{ 'pista-slide--activo': actual === ${i} }`}
+                        x-bind:aria-hidden={`actual !== ${i}`}
+                        class:list={["pista-slide", i === 0 && "pista-slide--activo"]}
+                    >
+                        <SlidePromo {...slide} tituloTag={tituloHtmlTag} subtituloTag={subtituloHtmlTag} />
+                    </div>
+                ))
+            }
+        </div>
+
+        {
+            lista.length > 1 && (
+                <div class="controles">
+                    <div class="puntos">
+                        {lista.map((_, i) => (
+                            <button
+                                type="button"
+                                x-bind:class={`{ 'punto--activo': actual === ${i} }`}
+                                class:list={["punto", i === 0 && "punto--activo"]}
+                                x-on:click={`actual = ${i}`}
+                                aria-label={`Ir a la diapositiva ${i + 1}`}
+                            />
+                        ))}
+                    </div>
+                    <div class="flechas">
+                        <button
+                            type="button"
+                            class="flecha"
+                            x-on:click="actual = (actual - 1 + total) % total"
+                            aria-label="Anterior"
+                        >
+                            <i class="fa-solid fa-chevron-left" aria-hidden="true" />
+                        </button>
+                        <button
+                            type="button"
+                            class="flecha"
+                            x-on:click="actual = (actual + 1) % total"
+                            aria-label="Siguiente"
+                        >
+                            <i class="fa-solid fa-chevron-right" aria-hidden="true" />
+                        </button>
+                    </div>
+                </div>
+            )
+        }
+    </div>
+</section>
+
+<style>
+    .slider-promo {
+        background: var(--surface-brand-primary);
+        padding: 3rem 1rem 2.5rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    /* Todas las diapositivas ocupan la misma celda: la pista toma la altura de la
+       mas alta y el slider no salta al cambiar de una a otra. */
+    .pista {
+        display: grid;
+    }
+
+    .pista-slide {
+        grid-area: 1 / 1;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease;
+    }
+
+    .pista-slide--activo {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .controles {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 2.5rem;
+    }
+
+    .puntos {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .punto {
+        width: 0.75rem;
+        height: 0.75rem;
+        padding: 0;
+        border: 0;
+        cursor: pointer;
+        background: var(--accent-highlight-primary);
+        opacity: 0.45;
+        transition:
+            width 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    .punto--activo {
+        width: 2.25rem;
+        opacity: 1;
+        background: var(--surface-brand-secondary);
+    }
+
+    .flechas {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .flecha {
+        width: 2.75rem;
+        height: 2.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background: transparent;
+        color: var(--brand-interactive-base);
+        border: 2px solid var(--brand-interactive-base);
+        transition:
+            background 0.2s ease,
+            color 0.2s ease;
+    }
+
+    .flecha:hover {
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+    }
+</style>

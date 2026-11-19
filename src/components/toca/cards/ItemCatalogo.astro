@@ -1,0 +1,261 @@
+---
+import FotoInclinada from "./FotoInclinada.astro";
+
+interface Props {
+    titulo?: string;
+    etiqueta?: string;
+    descripcion?: string;
+    precio?: string;
+    badge?: string;
+    imagen?: any;
+    texto_foto?: string;
+    lista?: { id?: number; texto?: string }[];
+    texto_boton?: string;
+    url_boton?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    variante?: "mint" | "rosa";
+    invertido?: boolean;
+    rotacion?: string;
+}
+
+const {
+    titulo = "",
+    etiqueta = "",
+    descripcion = "",
+    precio = "",
+    badge = "",
+    imagen = null,
+    texto_foto = "",
+    lista = [],
+    texto_boton = "",
+    url_boton = "",
+    texto_enlace = "",
+    url_enlace = "",
+    variante = "mint",
+    invertido = false,
+    rotacion = "-3deg"
+} = Astro.props;
+
+const esRosa = variante === "rosa";
+// El borde de la foto va en el color contrario al de la card, como en la ficha.
+const bordeFoto = esRosa ? "mint" : "rosa";
+---
+
+<article class:list={["item", invertido && "item--invertido", esRosa ? "item--rosa" : "item--mint"]}>
+    <div class="item-foto">
+        <FotoInclinada imagen={imagen} alt={titulo} texto_foto={texto_foto} rotacion={rotacion} borde={bordeFoto}>
+            {badge && <span class="item-badge">{badge}</span>}
+        </FotoInclinada>
+    </div>
+
+    <div class="item-card">
+        <header class="item-banda">
+            <h3 class="item-titulo">{titulo}</h3>
+            {precio && <span class="item-precio">{precio}</span>}
+        </header>
+
+        <div class="item-cuerpo">
+            {etiqueta && <p class="item-etiqueta">{etiqueta}</p>}
+            {descripcion && <p class="item-descripcion">{descripcion}</p>}
+
+            {
+                Array.isArray(lista) && lista.length > 0 && (
+                    <ul class="item-lista">
+                        {lista.map((el) => (
+                            <li class="item-lista-fila">
+                                <i class="fa-solid fa-circle-check" aria-hidden="true" />
+                                <span>{el.texto}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+
+            {
+                (texto_boton || texto_enlace) && (
+                    <div class="item-acciones">
+                        {texto_boton && (
+                            <a href={url_boton || "#"} class="item-boton">
+                                {texto_boton}
+                            </a>
+                        )}
+                        {texto_enlace && (
+                            <a href={url_enlace || "#"} class="item-enlace">
+                                {texto_enlace}
+                            </a>
+                        )}
+                    </div>
+                )
+            }
+        </div>
+    </div>
+</article>
+
+<style>
+    .item {
+        --item-color: var(--brand-interactive-base);
+        --item-boton-sombra: var(--brand-interactive-base);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .item--rosa {
+        --item-color: var(--surface-brand-secondary);
+    }
+
+    .item-foto {
+        min-width: 0;
+        padding: 0.75rem;
+    }
+
+    .item-badge {
+        position: absolute;
+        top: -0.9rem;
+        left: 0.75rem;
+        z-index: 2;
+        transform: rotate(-4deg);
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        padding: 0.3rem 0.7rem;
+    }
+
+    .item-card {
+        min-width: 0;
+        container-type: inline-size;
+        display: flex;
+        flex-direction: column;
+        border: 2px solid var(--item-color);
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+    }
+
+    .item-banda {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 1rem;
+        background: var(--item-color);
+        color: var(--surface-brand-primary);
+        padding: 0.9rem 1.25rem;
+    }
+
+    .item-titulo {
+        margin: 0;
+        min-width: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1.1rem, 6cqw, 1.9rem);
+        line-height: 1;
+        align-self: center;
+        overflow-wrap: break-word;
+    }
+
+    .item-precio {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1.1rem, 6cqw, 1.9rem);
+        line-height: 1;
+        align-self: center;
+        white-space: nowrap;
+    }
+
+    .item-cuerpo {
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .item-etiqueta {
+        margin: 0;
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--item-color);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+    }
+
+    .item-descripcion {
+        margin: 0.9rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .item-lista {
+        list-style: none;
+        margin: 1rem 0 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .item-lista-fila {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .item-lista-fila i {
+        color: var(--item-color);
+    }
+
+    .item-acciones {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+    }
+
+    .item-boton {
+        display: inline-block;
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1rem;
+        line-height: 1.1;
+        padding: 0.8rem 1.25rem;
+        box-shadow: 4px 4px 0 0 var(--item-boton-sombra);
+        transition: transform 0.2s ease;
+    }
+
+    .item--rosa .item-boton {
+        background: var(--surface-brand-secondary);
+        box-shadow: 4px 4px 0 0 var(--brand-interactive-base);
+    }
+
+    .item-boton:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .item-enlace {
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.8rem;
+        color: var(--accent-highlight-primary);
+        text-decoration: underline;
+    }
+
+    @media (min-width: 900px) {
+        .item {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 3rem;
+        }
+
+        .item--invertido .item-foto {
+            order: 2;
+        }
+    }
+</style>

@@ -1,0 +1,71 @@
+---
+import { getStrapiUrl } from "../../../lib/strapi.js";
+import { Image } from "astro:assets";
+
+interface Props {
+    imagen?: any;
+    alt?: string;
+    texto_foto?: string;
+    rotacion?: string;
+    borde?: "rosa" | "mint";
+}
+
+const { imagen = null, alt = "", texto_foto = "", rotacion = "-3deg", borde = "rosa" } = Astro.props;
+
+const imgSrc = getStrapiUrl(imagen);
+// La foto puede venir de Strapi (URL remota) o ser un asset local (solo para el dummy).
+const esAssetLocal = Boolean(imagen?.src);
+---
+
+<div class="foto-inclinada" style={`--rotacion: ${rotacion}`}>
+    <div class:list={["foto-marco", borde === "mint" ? "foto-marco--mint" : "foto-marco--rosa"]}>
+        {
+            esAssetLocal ? (
+                <Image src={imagen} alt={alt} class="w-full! h-full! object-cover!" />
+            ) : imgSrc ? (
+                <Image src={imgSrc} alt={alt} width={900} height={700} class="w-full! h-full! object-cover!" />
+            ) : (
+                <span class="foto-placeholder">{texto_foto ? `FOTO · ${texto_foto}` : "FOTO"}</span>
+            )
+        }
+    </div>
+    <slot />
+</div>
+
+<style>
+    .foto-inclinada {
+        position: relative;
+        width: 100%;
+    }
+
+    /* Solo el marco gira; lo que va en el slot (badge) queda recto y encima. */
+    .foto-marco {
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        aspect-ratio: 4 / 3;
+        background: var(--custom-color-01);
+        overflow: hidden;
+        transform: rotate(var(--rotacion));
+        transform-origin: center;
+        border: 2px solid var(--surface-brand-secondary);
+    }
+
+    .foto-marco--mint {
+        border-color: var(--brand-interactive-base);
+    }
+
+    .foto-placeholder {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--accent-highlight-primary);
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        padding: 1rem;
+    }
+</style>

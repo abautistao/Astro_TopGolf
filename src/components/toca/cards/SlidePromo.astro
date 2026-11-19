@@ -1,0 +1,223 @@
+---
+import { resolverTag } from "../../../utils/html-tag";
+import FotoInclinada from "./FotoInclinada.astro";
+
+interface Props {
+    etiqueta?: string;
+    titulo?: string;
+    subtitulo?: string;
+    imagen?: any;
+    texto_foto?: string;
+    etiqueta_precio?: string;
+    precio?: string;
+    unidad_precio?: string;
+    texto_boton?: string;
+    url_boton?: string;
+    texto_boton_secundario?: string;
+    url_boton_secundario?: string;
+    texto_enlace?: string;
+    url_enlace?: string;
+    tituloTag?: string | null;
+    subtituloTag?: string | null;
+}
+
+const {
+    etiqueta = "",
+    titulo = "",
+    subtitulo = "",
+    imagen = null,
+    texto_foto = "",
+    etiqueta_precio = "",
+    precio = "",
+    unidad_precio = "",
+    texto_boton = "",
+    url_boton = "",
+    texto_boton_secundario = "",
+    url_boton_secundario = "",
+    texto_enlace = "",
+    url_enlace = "",
+    tituloTag = null,
+    subtituloTag = null
+} = Astro.props;
+
+const TituloTag = resolverTag(tituloTag, "h2");
+const SubtituloTag = resolverTag(subtituloTag, "p");
+---
+
+<div class="slide">
+    <div class="slide-texto">
+        {etiqueta && <span class="slide-etiqueta">{etiqueta}</span>}
+        {titulo && <TituloTag class="slide-titulo">{titulo}</TituloTag>}
+        {subtitulo && <SubtituloTag class="slide-subtitulo">{subtitulo}</SubtituloTag>}
+
+        {
+            precio && (
+                <div class="slide-precio">
+                    {etiqueta_precio && <span class="slide-precio-etiqueta">{etiqueta_precio}</span>}
+                    <span class="slide-precio-valor">{precio}</span>
+                    {unidad_precio && <span class="slide-precio-unidad">{unidad_precio}</span>}
+                </div>
+            )
+        }
+
+        {
+            (texto_boton || texto_boton_secundario) && (
+                <div class="slide-botones">
+                    {texto_boton && (
+                        <a href={url_boton || "#"} class="slide-boton slide-boton--principal">
+                            {texto_boton}
+                        </a>
+                    )}
+                    {texto_boton_secundario && (
+                        <a href={url_boton_secundario || "#"} class="slide-boton slide-boton--secundario">
+                            {texto_boton_secundario}
+                        </a>
+                    )}
+                </div>
+            )
+        }
+
+        {
+            texto_enlace && (
+                <a href={url_enlace || "#"} class="slide-enlace">
+                    {texto_enlace}
+                </a>
+            )
+        }
+    </div>
+
+    <div class="slide-foto">
+        <FotoInclinada imagen={imagen} alt={titulo} texto_foto={texto_foto} rotacion="3deg" />
+    </div>
+</div>
+
+<style>
+    .slide {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    .slide-texto {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 0;
+    }
+
+    .slide-etiqueta {
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+    }
+
+    .slide-titulo {
+        margin: 0.5rem 0 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--neutral-text-inverted);
+        font-size: clamp(1.75rem, 7vw, 3.5rem);
+        line-height: 0.95;
+        overflow-wrap: break-word;
+    }
+
+    .slide-subtitulo {
+        margin: 1.25rem 0 0;
+        max-width: 28rem;
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--brand-interactive-base);
+        font-size: 1.15rem;
+        line-height: 1.35;
+        font-weight: inherit;
+    }
+
+    /* Pastilla de precio: etiqueta mint, valor rosa y unidad oscura con borde mint. */
+    .slide-precio {
+        display: flex;
+        align-items: stretch;
+        margin-top: 1.5rem;
+        border: 2px solid var(--brand-interactive-base);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        color: var(--surface-brand-primary);
+    }
+
+    .slide-precio-etiqueta {
+        background: var(--brand-interactive-base);
+        padding: 0.6rem 0.9rem;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide-precio-valor {
+        background: var(--surface-brand-secondary);
+        padding: 0.6rem 0.9rem;
+        font-size: 1.75rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide-precio-unidad {
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        padding: 0.6rem 0.9rem;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide-botones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .slide-boton {
+        display: inline-block;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 1rem;
+        line-height: 1.1;
+        padding: 0.9rem 1.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    .slide-boton:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .slide-boton--principal {
+        background: var(--surface-brand-secondary);
+        color: var(--surface-brand-primary);
+        box-shadow: 5px 5px 0 0 var(--brand-interactive-base);
+    }
+
+    .slide-boton--secundario {
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        border: 2px solid var(--brand-interactive-base);
+        box-shadow: 5px 5px 0 0 var(--brand-interactive-base);
+    }
+
+    .slide-enlace {
+        margin-top: 1rem;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.8rem;
+        color: var(--accent-highlight-primary);
+        text-decoration: underline;
+    }
+
+    @media (min-width: 1024px) {
+        .slide {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 4rem;
+        }
+    }
+</style>
