@@ -38,6 +38,11 @@ import PasosCumpleanos from "../components/toca/PasosCumpleanos.astro";
 import PasosEvento from "../components/toca/PasosEvento.astro";
 import InfoVisita from "../components/toca/InfoVisita.astro";
 import Tecnologia from "../components/toca/Tecnologia.astro";
+import SliderPromo from "../components/toca/SliderPromo.astro";
+import ImagenTexto from "../components/toca/ImagenTexto.astro";
+import MensajeCaja from "../components/toca/MensajeCaja.astro";
+import CatalogoFiltrable from "../components/toca/CatalogoFiltrable.astro";
+import UbicacionMapa from "../components/toca/UbicacionMapa.astro";
 
 // Datos dummy tomados del diseño "TOCA Social — Rediseño web".
 const planes = {
@@ -656,6 +661,184 @@ const tecnologia = {
     ]
 };
 
+// Grupo "toca-contenido" del selector del admin: secciones de contenido libre.
+const sliderPromo = {
+    tituloHtmlTag: "h2",
+    subtituloHtmlTag: "p",
+    slides: [
+        {
+            etiqueta: "Juego + comida + bebida · Grupos de 2, 3, 4 o 6",
+            titulo: "El Triplete",
+            subtitulo: "El combo que gana por goleada: juego, comida y bebida en un solo paquete.",
+            imagen: fotoAmbassador,
+            texto_foto: "Grupo en simulador con comida y drinks",
+            etiqueta_precio: "Por persona",
+            precio: "$450",
+            unidad_precio: "MXN",
+            texto_boton: "Reserva aquí",
+            url_boton: "#",
+            texto_boton_secundario: "Ver promociones",
+            url_boton_secundario: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#"
+        },
+        {
+            etiqueta: "De 4 a 12 personas · Desde las 7 pm",
+            titulo: "Juega ilimitado",
+            subtitulo: "Juega todo lo que quieras y que nadie se quede sin su revancha.",
+            imagen: fotoPartidos,
+            texto_foto: "Grupo celebrando un gol",
+            etiqueta_precio: "Por persona",
+            precio: "$299",
+            unidad_precio: "MXN",
+            texto_boton: "Reserva ilimitado",
+            url_boton: "#",
+            texto_boton_secundario: "Ver promociones",
+            url_boton_secundario: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#"
+        },
+        {
+            etiqueta: "Lunes a viernes",
+            titulo: "Half time lunch",
+            subtitulo: "Haz de tu hora de comida el mejor medio tiempo.",
+            imagen: fotoRestaurante,
+            texto_foto: "Lunch con juego en el simulador",
+            etiqueta_precio: "Por persona",
+            precio: "$000",
+            unidad_precio: "MXN",
+            texto_boton: "Reserva tu half time",
+            url_boton: "#",
+            texto_enlace: "Consulta términos y condiciones",
+            url_enlace: "#"
+        }
+    ]
+};
+
+const imagenTextoEquipo = {
+    etiqueta: "Team building",
+    titulo: "Un equipo que juega junto, trabaja junto",
+    tituloHtmlTag: "h2",
+    descripcion:
+        "Los juegos de TOCA se adaptan fácilmente a dinámicas de equipo: rompen el hielo, ponen a todos a competir parejo y se acompañan con comida y bebida en la cancha. Con niveles y hándicap digital, gana el equipo, no el que más sabe de fútbol.",
+    lista: [
+        { texto: "Torneos entre áreas con marcador en vivo" },
+        { texto: "5 juegos para todos los niveles" },
+        { texto: "Comida y drinks servidos en tu simulador" },
+        { texto: "Sala privada para la junta antes del juego" }
+    ],
+    imagen: fotoJuegos,
+    texto_foto: "Dinámica de team building con marcador en pantalla",
+    imagen_posicion: "izquierda"
+};
+
+const imagenTextoSimuladores = {
+    etiqueta: "El corazón de TOCA",
+    titulo: "Los simuladores de fútbol",
+    tituloHtmlTag: "h2",
+    subtitulo: "Balones reales, pantalla gigante y marcador en tiempo real, en tu propio espacio privado para hasta 12 personas.",
+    subtituloHtmlTag: "p",
+    descripcion:
+        "Cada simulador tiene la máquina de pases de TOCA, que te entrega el balón y ajusta la velocidad al nivel de cada jugador. Tú controlas, disparas a los objetivos en la pantalla y el sistema registra cada tiro y lleva el marcador. Y entre ronda y ronda, la comida y los drinks llegan a tu simulador.\n\nEs tecnología que nació en el entrenamiento profesional: TOCA es socio oficial de entrenamiento de la MLS.",
+    texto_boton: "Conoce los 5 juegos",
+    url_boton: "#",
+    imagen: fotoAmbassador,
+    texto_foto: "Interior del simulador: máquina de pases y pantalla de objetivos",
+    imagen_posicion: "derecha",
+    badge_pre: "Hasta",
+    badge_valor: "12",
+    badge_post: "Personas"
+};
+
+const mensajeCaja = {
+    titulo_contorno: "Aquí no hay",
+    titulo: "Aquí no hay favoritos",
+    tituloHtmlTag: "h2",
+    parrafos: [
+        { texto: "En nuestra cancha no existen los pronósticos.", estilo: "normal" },
+        { texto: "El que más presume a veces se queda callado ante el que nadie esperaba, y que la mete al ángulo.", estilo: "destacado" },
+        { texto: "No somos estrellas millonarias: somos amigos, familias y compañeros de trabajo metiendo golazos.", estilo: "normal" },
+        { texto: "Somos buena comida, mejores drinks y retos que se presumen en el grupo de WhatsApp.", estilo: "destacado" },
+        { texto: "Gane, pierda o empate, aquí siempre se celebra.", estilo: "acento" }
+    ]
+};
+
+const catalogoFiltrable = {
+    etiqueta_filtros: "Filtrar:",
+    texto_filtro_todas: "Todas",
+    items: [
+        {
+            titulo: "El Triplete",
+            precio: "$450",
+            etiqueta: "Por persona · Grupos de 2, 3, 4 o 6",
+            descripcion: "Juego + comida + bebida en un solo paquete, para vivir la experiencia completa y hacer rendir tu dinero.",
+            badge: "Paquete",
+            categorias: "Para grupos, Paquetes",
+            imagen: fotoAmbassador,
+            texto_foto: "Combo triplete en simulador",
+            lista: [{ texto: "Juego en simulador" }, { texto: "Comida" }, { texto: "Bebida" }],
+            texto_boton: "Reserva el triplete",
+            url_boton: "#",
+            texto_enlace: "Ver términos y condiciones",
+            url_enlace: "#",
+            variante: "mint"
+        },
+        {
+            titulo: "Half time lunch",
+            precio: "[$000]",
+            etiqueta: "[Días y horario por confirmar]",
+            descripcion: "Haz de tu hora de comida el mejor medio tiempo: [qué incluye la promoción — juego, comida y bebida].",
+            badge: "Lunch",
+            categorias: "Paquetes",
+            imagen: fotoRestaurante,
+            texto_foto: "Lunch con juego en el simulador",
+            lista: [{ texto: "[Qué incluye]" }, { texto: "[Días y horario]" }, { texto: "[Precio por persona]" }],
+            texto_boton: "Reserva tu half time",
+            url_boton: "#",
+            texto_enlace: "Ver términos y condiciones",
+            url_enlace: "#",
+            variante: "rosa"
+        },
+        {
+            titulo: "Juega ilimitado",
+            precio: "$299",
+            etiqueta: "Por persona · De 4 a 12 personas · Desde las 7 pm",
+            descripcion: "Juega todo lo que quieras. Reúne a por lo menos cuatro y que nadie se quede sin su revancha.",
+            badge: "Promo",
+            categorias: "Para grupos, Eventos y cumpleaños",
+            imagen: fotoPartidos,
+            texto_foto: "Grupo celebrando un gol",
+            lista: [{ texto: "Juego ilimitado" }, { texto: "De 4 a 12 personas" }, { texto: "A partir de las 7 pm" }],
+            texto_boton: "Reserva ilimitado",
+            url_boton: "#",
+            texto_enlace: "Ver términos y condiciones",
+            url_enlace: "#",
+            variante: "mint"
+        }
+    ]
+};
+
+// Grupo "toca-mapa": sin url_mapa, el mapa se genera con la direccion.
+const ubicacionMapa = {
+    titulo: "Encuéntranos en Galerías Valle Oriente",
+    tituloHtmlTag: "h2",
+    subtitulo: "Sobre Av. Fundadores, junto al Hilton. Av. Fundadores 1000, Col. Valle del Mirador, Monterrey, N.L.",
+    subtituloHtmlTag: "p",
+    aviso_titulo: "No es necesario reservar",
+    aviso_texto: "Llega directo, aquí te esperamos. Si vienes en fin de semana, te recomendamos reservar para asegurar tu simulador.",
+    horarios: [
+        { dia: "Martes a jueves", horario: "1 pm - 9 pm" },
+        { dia: "Viernes", horario: "1 pm - 10 pm" },
+        { dia: "Sábado", horario: "12 pm - 10 pm" },
+        { dia: "Domingo", horario: "12 pm - 8 pm" }
+    ],
+    texto_boton: "Cómo llegar",
+    url_boton: "https://maps.google.com/?q=Galerias+Valle+Oriente+Monterrey",
+    telefono: "81 4445 3100",
+    direccion_mapa: "Galerías Valle Oriente, Av. Fundadores 1000, Valle del Mirador, Monterrey, N.L.",
+    titulo_mapa: "Mapa · Galerías Valle Oriente"
+};
+
 const grupos = [
     { id: "planes", label: "Elige tu jugada" },
     { id: "juegos", label: "Nuestros juegos" },
@@ -674,7 +857,12 @@ const grupos = [
     { id: "pasos-cumpleanos", label: "Steps · Cumpleaños" },
     { id: "pasos-evento", label: "Steps · Evento" },
     { id: "info-visita", label: "Steps · Info visita" },
-    { id: "tecnologia", label: "Steps · Tecnología" }
+    { id: "tecnologia", label: "Steps · Tecnología" },
+    { id: "slider-promo", label: "Contenido · Slider promo" },
+    { id: "imagen-texto", label: "Contenido · Imagen + texto" },
+    { id: "mensaje-caja", label: "Contenido · Mensaje en caja" },
+    { id: "catalogo-filtrable", label: "Contenido · Catálogo filtrable" },
+    { id: "ubicacion-mapa", label: "Mapa · Ubicación" }
 ];
 ---
 
@@ -731,6 +919,14 @@ const grupos = [
         <div id="pasos-evento" class="bloque"><PasosEvento {...pasosEvento} /></div>
         <div id="info-visita" class="bloque"><InfoVisita {...infoVisita} /></div>
         <div id="tecnologia" class="bloque"><Tecnologia {...tecnologia} /></div>
+        <div id="slider-promo" class="bloque"><SliderPromo {...sliderPromo} /></div>
+        <div id="imagen-texto" class="bloque">
+            <ImagenTexto {...imagenTextoEquipo} />
+            <ImagenTexto {...imagenTextoSimuladores} />
+        </div>
+        <div id="mensaje-caja" class="bloque"><MensajeCaja {...mensajeCaja} /></div>
+        <div id="catalogo-filtrable" class="bloque"><CatalogoFiltrable {...catalogoFiltrable} /></div>
+        <div id="ubicacion-mapa" class="bloque"><UbicacionMapa {...ubicacionMapa} /></div>
     </div>
 
     <script is:inline>
