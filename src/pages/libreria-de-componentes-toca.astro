@@ -43,6 +43,8 @@ import ImagenTexto from "../components/toca/ImagenTexto.astro";
 import MensajeCaja from "../components/toca/MensajeCaja.astro";
 import CatalogoFiltrable from "../components/toca/CatalogoFiltrable.astro";
 import UbicacionMapa from "../components/toca/UbicacionMapa.astro";
+import BannerContenido from "../components/toca/BannerContenido.astro";
+import BannerTabs from "../components/toca/BannerTabs.astro";
 
 // Datos dummy tomados del diseño "TOCA Social — Rediseño web".
 const planes = {
@@ -839,6 +841,51 @@ const ubicacionMapa = {
     titulo_mapa: "Mapa · Galerías Valle Oriente"
 };
 
+// Grupo "banner-toca": banners sobre el color de marca (mint por defecto).
+const bannerContenido = {
+    etiqueta: "Respaldo de liga profesional",
+    titulo: "Aliados de la MLS",
+    tituloHtmlTag: "h2",
+    descripcion:
+        "En 2022, TOCA y la Major League Soccer firmaron una alianza de 10 años para hacer crecer la pasión por el fútbol en Norteamérica. La MLS se volvió accionista de TOCA, y juntos desarrollan juegos de marca MLS para TOCA Social.",
+    nota: "[Validar con TOCA el uso de la marca y el logotipo MLS antes de publicar.]",
+    datos: [
+        { valor: "10", texto: "Años de alianza con la MLS", variante: "mint" },
+        { valor: "MLS", texto: "Accionista de TOCA", variante: "rosa" },
+        { valor: "Socio oficial", texto: "De entrenamiento de la MLS", variante: "mint" },
+        { valor: "Juegos MLS", texto: "Desarrollados para TOCA Social", variante: "rosa" }
+    ]
+};
+
+const bannerTabs = {
+    titulo: "¿Para quién es la fiesta?",
+    tituloHtmlTag: "h2",
+    subtituloHtmlTag: "h3",
+    tabs: [
+        {
+            etiqueta: "Infantil",
+            titulo: "Fiestas infantiles",
+            descripcion: "Si puede patear un balón, puede jugar. Ajustamos el nivel para que todos los invitados anoten.",
+            lista: [
+                { texto: "Para todas las edades" },
+                { texto: "Balones más pequeños y niveles ajustables" },
+                { texto: "Menores siempre acompañados por un adulto" },
+                { texto: "Trae tu pastel y tus globos" }
+            ],
+            imagen: fotoAmbassador,
+            texto_foto: "Niños celebrando un gol en el simulador"
+        },
+        {
+            etiqueta: "Adultos",
+            titulo: "Fiestas para adultos",
+            descripcion: "Reta a tus amigos, pide algo de comer y celebra con marcador en vivo.",
+            lista: [{ texto: "Comida y drinks en tu simulador" }, { texto: "Hasta 12 personas por simulador" }, { texto: "Niveles y hándicap digital" }],
+            imagen: fotoPartidos,
+            texto_foto: "Adultos celebrando en el simulador"
+        }
+    ]
+};
+
 const grupos = [
     { id: "planes", label: "Elige tu jugada" },
     { id: "juegos", label: "Nuestros juegos" },
@@ -862,7 +909,9 @@ const grupos = [
     { id: "imagen-texto", label: "Contenido · Imagen + texto" },
     { id: "mensaje-caja", label: "Contenido · Mensaje en caja" },
     { id: "catalogo-filtrable", label: "Contenido · Catálogo filtrable" },
-    { id: "ubicacion-mapa", label: "Mapa · Ubicación" }
+    { id: "ubicacion-mapa", label: "Mapa · Ubicación" },
+    { id: "banner-contenido", label: "Banner · Contenido" },
+    { id: "banner-tabs", label: "Banner · Tabs" }
 ];
 ---
 
@@ -927,6 +976,8 @@ const grupos = [
         <div id="mensaje-caja" class="bloque"><MensajeCaja {...mensajeCaja} /></div>
         <div id="catalogo-filtrable" class="bloque"><CatalogoFiltrable {...catalogoFiltrable} /></div>
         <div id="ubicacion-mapa" class="bloque"><UbicacionMapa {...ubicacionMapa} /></div>
+        <div id="banner-contenido" class="bloque"><BannerContenido {...bannerContenido} /></div>
+        <div id="banner-tabs" class="bloque"><BannerTabs {...bannerTabs} /></div>
     </div>
 
     <script is:inline>

@@ -1,0 +1,204 @@
+---
+import { resolverTag } from "../../utils/html-tag";
+import FotoInclinada from "./cards/FotoInclinada.astro";
+
+interface Props {
+    titulo?: string;
+    tituloHtmlTag?: string | null;
+    subtituloHtmlTag?: string | null;
+    tabs?: {
+        id?: number;
+        etiqueta?: string;
+        titulo?: string;
+        descripcion?: string;
+        lista?: { id?: number; texto?: string }[];
+        imagen?: any;
+        texto_foto?: string;
+    }[];
+    color_fondo_override?: string | null;
+}
+
+const { titulo = "", tituloHtmlTag = null, subtituloHtmlTag = null, tabs = [], color_fondo_override = null } = Astro.props;
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+// El titulo de cada tab es un subtitulo de la seccion: h3 por defecto.
+const TabTituloTag = resolverTag(subtituloHtmlTag, "h3");
+const lista = Array.isArray(tabs) ? tabs : [];
+---
+
+<section class="banner" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined} x-data="{ activo: 0 }">
+    <div class="contenedor">
+        <div class="cabecera">
+            {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
+            {
+                lista.length > 1 && (
+                    <div class="tabs" role="tablist">
+                        {lista.map((tab, i) => (
+                            <button
+                                type="button"
+                                role="tab"
+                                class:list={["tab", i === 0 && "tab--activo"]}
+                                x-bind:class={`{ 'tab--activo': activo === ${i} }`}
+                                x-bind:aria-selected={`activo === ${i}`}
+                                x-on:click={`activo = ${i}`}
+                            >
+                                {tab.etiqueta}
+                            </button>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+
+        <div class="paneles">
+            {
+                lista.map((tab, i) => (
+                    <div
+                        class="panel"
+                        role="tabpanel"
+                        x-show={`activo === ${i}`}
+                        style={i === 0 ? undefined : "display: none"}
+                    >
+                        <div class="panel-foto">
+                            <FotoInclinada imagen={tab.imagen} alt={tab.titulo || tab.etiqueta} texto_foto={tab.texto_foto} rotacion="-3deg" borde="mint" />
+                        </div>
+                        <div class="panel-texto">
+                            {tab.titulo && <TabTituloTag class="panel-titulo">{tab.titulo}</TabTituloTag>}
+                            {tab.descripcion && <p class="panel-descripcion">{tab.descripcion}</p>}
+                            {Array.isArray(tab.lista) && tab.lista.length > 0 && (
+                                <ul class="panel-lista">
+                                    {tab.lista.map((el) => (
+                                        <li class="panel-fila">
+                                            <i class="fa-regular fa-circle-check" aria-hidden="true" />
+                                            <span>{el.texto}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .banner {
+        background: var(--brand-interactive-base);
+        color: var(--surface-brand-primary);
+        padding: 3.5rem 1rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .cabecera {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+    }
+
+    .titulo {
+        flex: 1 1 0;
+        min-width: 0;
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1.75rem, 6vw, 3.25rem);
+        line-height: 0.95;
+    }
+
+    .tabs {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.9rem;
+    }
+
+    .tab {
+        cursor: pointer;
+        background: transparent;
+        color: var(--surface-brand-primary);
+        border: 2px solid var(--surface-brand-primary);
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        line-height: 1;
+        padding: 0.8rem 1.4rem;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .tab--activo {
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        box-shadow: 4px 4px 0 0 var(--surface-brand-secondary);
+    }
+
+    .paneles {
+        margin-top: 2.5rem;
+    }
+
+    .panel {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    .panel-foto {
+        min-width: 0;
+        padding: 0.75rem;
+    }
+
+    .panel-titulo {
+        margin: 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        line-height: 1;
+    }
+
+    .panel-descripcion {
+        margin: 1.1rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 1.05rem;
+        line-height: 1.55;
+    }
+
+    .panel-lista {
+        list-style: none;
+        margin: 1.25rem 0 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+
+    .panel-fila {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    @media (min-width: 1024px) {
+        /* Titulo a la izquierda y tabs a la derecha, siempre en la misma fila. */
+        .cabecera {
+            flex-wrap: nowrap;
+            gap: 2rem;
+        }
+
+        .panel {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4rem;
+        }
+    }
+</style>

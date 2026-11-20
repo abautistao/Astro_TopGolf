@@ -1,0 +1,159 @@
+---
+import { resolverTag } from "../../utils/html-tag";
+
+interface Props {
+    etiqueta?: string;
+    titulo?: string;
+    tituloHtmlTag?: string | null;
+    descripcion?: string;
+    subtituloHtmlTag?: string | null;
+    nota?: string;
+    datos?: { id?: number; valor?: string; texto?: string; variante?: string | null }[];
+    color_fondo_override?: string | null;
+}
+
+const {
+    etiqueta = "",
+    titulo = "",
+    tituloHtmlTag = null,
+    descripcion = "",
+    subtituloHtmlTag = null,
+    nota = "",
+    datos = [],
+    color_fondo_override = null
+} = Astro.props;
+
+const TituloTag = resolverTag(tituloHtmlTag, "h2");
+const DescripcionTag = resolverTag(subtituloHtmlTag, "p");
+const lista = Array.isArray(datos) ? datos : [];
+---
+
+<section class="banner" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="contenedor">
+        <div class="texto">
+            {etiqueta && <span class="etiqueta">{etiqueta}</span>}
+            {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
+            {descripcion && <DescripcionTag class="descripcion">{descripcion}</DescripcionTag>}
+            {nota && <p class="nota">{nota}</p>}
+        </div>
+
+        {
+            lista.length > 0 && (
+                <ul class="datos">
+                    {lista.map((d) => (
+                        <li class:list={["dato", d.variante === "mint" ? "dato--mint" : "dato--rosa"]}>
+                            <span class="dato-valor">{d.valor}</span>
+                            <span class="dato-texto">{d.texto}</span>
+                        </li>
+                    ))}
+                </ul>
+            )
+        }
+    </div>
+</section>
+
+<style>
+    .banner {
+        background: var(--brand-interactive-base);
+        padding: 3.5rem 1rem;
+    }
+
+    .contenedor {
+        max-width: 1440px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    .texto {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 0;
+        color: var(--surface-brand-primary);
+    }
+
+    .etiqueta {
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+    }
+
+    .titulo {
+        margin: 0.6rem 0 0;
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1.75rem, 6vw, 3.25rem);
+        line-height: 0.95;
+        overflow-wrap: break-word;
+    }
+
+    .descripcion {
+        margin: 1.5rem 0 0;
+        max-width: 38rem;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 1.05rem;
+        line-height: 1.6;
+        font-weight: inherit;
+    }
+
+    .nota {
+        margin: 1.25rem 0 0;
+        font-family: var(--font-sharp-sans-medium);
+        font-size: 0.8rem;
+    }
+
+    .datos {
+        list-style: none;
+        margin: 0;
+        padding: 0 0.5rem 0.5rem 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+    }
+
+    .dato {
+        --dato-color: var(--surface-brand-secondary);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        min-height: 9rem;
+        padding: 1.25rem 1.5rem;
+        background: var(--surface-brand-primary);
+        color: var(--neutral-text-inverted);
+        box-shadow: 6px 6px 0 0 var(--surface-brand-secondary);
+    }
+
+    .dato--mint {
+        --dato-color: var(--brand-interactive-base);
+    }
+
+    .dato-valor {
+        font-family: var(--font-titling-gothic-fb-extended-bold);
+        font-weight: 700;
+        color: var(--dato-color);
+        font-size: clamp(1.4rem, 3.6vw, 2.5rem);
+        line-height: 1;
+        overflow-wrap: break-word;
+    }
+
+    .dato-texto {
+        font-family: var(--font-sharp-sans-bold);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        line-height: 1.2;
+    }
+
+    @media (min-width: 1024px) {
+        .contenedor {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4rem;
+        }
+    }
+</style>
