@@ -1,14 +1,13 @@
 ---
 // src/components/toca/Footer.astro
-import { getStrapiUrl, getLocalizedUrl } from "../../lib/strapi";
-import ButtonGroup from "./elements/Button.astro";
+import { getStrapiUrl, getLocalizedUrl, stringifyRichText } from "../../lib/strapi";
 import type { Boton } from "./elements/Button.astro";
+import { Image } from "astro:assets";
 
 const { data, locale = "en" } = Astro.props;
 
 // --- 1. DATOS Y UTILIDADES ---
 const strapiData = data || {};
-
 const formatIconHtml = (input: string) => {
     if (!input) return "";
     if (input.trim().startsWith("<")) {
@@ -79,108 +78,125 @@ const linksRight = rawBottomLinks.filter((l: any) => {
 });
 
 const allLinksMobile = [...linksLeft, ...linksRight];
+
+const logoPrincipal = strapiData.logo || "";
+
+const form_button = {
+    tipo: 'version_1',
+    texto: 'Newsletter'
+
+};
+
+
+const {
+    titulo_columna_1,
+    texto_columna_1,
+    titulo_columna_2,
+    texto_columna_2,
+    mapa,
+    link_columna_2,
+    titulo_columna_3,
+    texto_columna_3,
+    titulo_contacto,
+    texto_contacto,
+    titulo_pci,
+    logos_pci,
+    titulo_otros_parques
+} = strapiData;
 ---
 
-<footer class="trigger-anim-footer w-full text-[var(--surface-brand-primary)] mt-auto flex flex-col">
-    <div class="font-(family-name:--font-titling-gothic-fb-extended-bold) footer-part-1 bg-[var(--surface-brand-secondary)] py-6 lg:py-8 px-4 sm:px-6 lg:px-12 h-auto lg:min-h-[268px] flex flex-col justify-center">
-        <div class="max-w-[1920px] mx-auto w-full flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-12 items-start lg:items-center">
+<footer class="trigger-anim-footer w-full bg-black text-[var(--accent-feedback-strong)]">
+    <div class="container mx-auto px-4 md:px-0">
+        <div class="footer-menu grid grid-cols-1 md:grid-cols-[220px_270px_1fr_1fr] justify-center gap-6 py-8">
+            <div class="footer-logo">
+                {logoPrincipal && (
+                    <Image src={getStrapiUrl(logoPrincipal)} alt="Logo principal" width={220} height={130} class="h-14! md:h-16! w-auto! object-contain!" />
+                )}
+            </div>
 
-            <div class="hidden lg:flex flex-col justify-between h-full w-full lg:order-1 self-stretch">
-                <div class="flex-grow flex items-center">
-                    {title && (
-                        <h2 class="font-bold uppercase text-4xl md:text-4xl  break-words">
-                            {title}
-                        </h2>
+            <div class="menu-horarios-1 footer-accordion-group border-b! border-(--accent-feedback-strong)! md:border-0! pb-3! md:pb-0! order-2 md:order-1">
+                <button class="footer-accordion-btn w-full! md:w-auto! flex! justify-between! items-center! text-left! md:cursor-default! focus:outline-none! md:mb-6">
+                    <h4 class="font-(family-name:--font-sharp-sans-bold) text-(--surface-brand-secondary)">{titulo_columna_1}</h4>
+                    <i class="fa-solid fa-chevron-down text-(--accent-highlight-primary)! md:hidden! transition-transform! duration-300! text-sm! ml-2!"></i>
+                </button>
+
+                <div class="schedule footer-accordion-content font-(family-name:--font-sharp-sans-medium) text-(--accent-feedback-strong) hidden! md:flex! flex-col! gap-1.5! mt-3! md:mt-4!">
+                    <div set:html={stringifyRichText(texto_columna_1)}></div>
+                </div>
+            </div>
+
+            <div class="menu-locacion order-1 md:order-2">
+                <h4 class="font-(family-name:--font-sharp-sans-bold) text-(--surface-brand-secondary) mb-6">{titulo_columna_2}</h4>
+                <div class="map-aboutus font-(family-name:--font-sharp-sans-medium)">
+                    <div class="mb-4" set:html={stringifyRichText(texto_columna_2)}></div>
+                    {mapa && (
+                        <Image
+                            src={getStrapiUrl(mapa)}
+                            alt={texto_columna_2 || ""}
+                            class="w-full mb-4"
+                            inferSize={true}
+                            loading="eager"
+                        />
                     )}
-                </div>
-
-                <div class="flex items-center gap-3 mt-4">
-                    {socials.map((social: any) => (
-                        <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-(--surface-brand-primary)! hover:scale-110 transition-transform hover:no-underline! block">
-                            {social.iconImage?.data ? (
-                                <img src={getStrapiUrl(social.iconImage.data.attributes.url)} alt={social.name} class="w-6 h-6 md:w-8 md:h-8 object-contain fill-current" />
-                            ) : (
-                                <span class="text-2xl md:text-2xl flex items-center justify-center" set:html={social.iconHtml} />
-                            )}
-                        </a>
-                    ))}
+                    <div set:html={stringifyRichText(link_columna_2)}></div>
                 </div>
             </div>
 
-            <div class="flex flex-col w-full order-1 lg:order-2 self-start lg:self-center">
-                {locationsTitle && (
-                    <h3 class="font-bold uppercase text-4xl md:text-2xl  mb-4 text-center lg:text-left w-full">
-                        {locationsTitle}
-                    </h3>
-                )}
+            <div class="menu-aboutus md:pl-12 footer-accordion-group border-b! border-(--accent-feedback-strong)! md:border-0! pb-3! md:pb-0! order-3">
+                <button class="footer-accordion-btn w-full! md:w-auto! flex! justify-between! items-center! text-left! md:cursor-default! focus:outline-none! md:mb-6">
+                    <h4 class="font-(family-name:--font-sharp-sans-bold) text-(--surface-brand-secondary)">{titulo_columna_3}</h4>
+                    <i class="fa-solid fa-chevron-down text-(--accent-highlight-primary)! md:hidden! transition-transform! duration-300! text-sm! ml-2!"></i>
+                </button>
 
-                <ul class="flex flex-col w-full space-y-3">
-                    {middleColumnItems.map((item: any) => (
-                        <li>
-                            <a href={item.url} class="text-(--surface-brand-primary)! group flex items-end justify-between pb-1 border-b border-black hover:border-b-[3px] transition-all duration-200 hover:no-underline!" >
-                                <div class="flex flex-col text-left">
-                                    <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base ">
-                                        {item.name}
-                                    </span>
-                                    {item.status && (
-                                        <span class="font-(family-name:--font-sharp-sans-medium) text-base font-bold">
-                                            {item.status}
-                                        </span>
-                                    )}
-                                    <span class="mt-5 font-(family-name:--font-sharp-sans-medium) font-bold text-base">Nuestros horarios:</span>
-                                    <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base">Martes de Jueves 1pm a 9pm</span>
-                                    <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base">Viernes de 1pm a 10pm</span>
-                                    <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base">Sábado de 12pm a 10pm</span>
-                                    <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base">Domingo de 12pm a 8pm</span>
-                                </div>
-                                <i class="fa-solid fa-play text-2xl mb-1 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out" />
-                            </a>
-                        </li>
-                    ))}
-
-                    <li>
-                        <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base">Correo: contacto@tocasocial.com.mx</span>
-                    </li>
-                    <li>
-                        <span class="font-(family-name:--font-sharp-sans-medium) font-bold text-base">Teléfono: 81 4445 3100</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="flex flex-col w-full order-2 lg:order-3 text-center lg:text-left self-start lg:self-center h-full justify-between">
-                {newsletterTitle && (
-                    <h3 class="font-black uppercase text-base md:text-base  mb-4 mt-4 lg:mt-0">
-                        {newsletterTitle}
-                    </h3>
-                )}
-
-
-                {newsletterDescription && (
-                    <p class="font-(family-name:--font-sharp-sans-medium) text-sm md:text-sm font-medium mb-6  opacity-90 mx-auto lg:mx-0 max-w-sm lg:max-w-none">
-                        {newsletterDescription}
-                    </p>
-                )}
-
-                <div class="font-(family-name:--font-sharp-sans-bold) flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-auto">
-                    {extraIconLinks.map((link: any) => (
-                        <a href={link.url} class="text-(--surface-brand-primary)! text-base flex items-center gap-2 group hover:no-underline!">
-                            <span class="text-base text-[var(--surface-brand-primary)] flex items-center" set:html={link.iconHtml}></span>
-                            <span class="font-bold text-base  underline decoration-solid decoration-black">
-                                {link.text}
-                            </span>
-                        </a>
-                    ))}
-                </div>
+                <div set:html={stringifyRichText(texto_columna_3)} class="map-aboutus footer-accordion-content font-(family-name:--font-sharp-sans-medium) hidden! md:flex! flex-col! gap-1.5! mt-3! md:mt-4!"></div>
             </div>
         </div>
-    </div>
 
-    <div class="font-(family-name:--font-sharp-sans-bold) footer-part-2 bg-[var(--brand-interactive-base)] py-4 lg:py-1 px-4 sm:px-6 lg:px-12 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px] flex items-center">
-        <div class="max-w-[1920px] mx-auto w-full flex flex-col justify-center items-center gap-4 text-sm font-bold">
+        {newsletterTitle && (
+            <div class="footer-newsletter mb-6">
+                <h4 class="font-(family-name:--font-sharp-sans-bold) text-(--surface-brand-secondary) mb-4">{newsletterTitle}</h4>
+                <p class="font-(family-name:--font-sharp-sans-medium) mb-2">{newsletterDescription}</p>
+                <form id="form-newsletter-home" action="/">
+                    <div class="flex flex-col md:flex-row">
+                        <input class="text-sm w-full bg-(--accent-feedback-strong)  border-none text-black py-2 px-4 focus:outline-none focus:ring-2 focus:ring-(--surface-brand-primary) font-(family-name:--font-sharp-sans-medium)" type="email" placeholder="" name="email" />
+                        <button
+                        type="submit"
+                        class:list={[
+                            'font-(family-name:--font-sharp-sans-bold) inline-block font-bold uppercase tracking-tight leading-tight',
+                            'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
+                            'text-sm',
+                            'px-4 py-2',
+                            {
+                                "bg-(--surface-brand-secondary) text-(--surface-brand-primary) hover:bg-(--surface-brand-secondary)":
+                                    form_button.tipo === "version_1",
+                                "bg-(--surface-brand-primary) text-(--accent-feedback-strong) hover:bg-(--surface-brand-primary) hover:text-(--surface-brand-secondary)":
+                                    form_button.tipo === "version_2",
+                                "bg-(--brand-interactive-base) text-(--surface-brand-primary) hover:bg-(--brand-interactive-base)":
+                                    form_button.tipo === "version_3",
+                                "bg-(--accent-feedback-strong) text-(--surface-brand-primary) hover:bg-(--accent-feedback-strong) hover:text-(--surface-brand-primary)":
+                                    form_button.tipo === "version_4",
+                            },
+                        ]}
+                    >
+                        {form_button.texto}
+                    </button>
+                    </div>
+    
+                    <div
+                        id="form-feedback-newsletter"
+                        class="col-span-1 md:col-span-2 text-center text-xs hidden font-bold p-4 rounded-sm font-(family-name:--font-sharp-sans-bold)"
+                    >
+                    </div>
+                </form>
+            </div>
+        )}
 
-            <div class="flex lg:hidden items-center gap-6">
+        <div class="footer-contacto font-(family-name:--font-sharp-sans-medium) mb-4">
+            <h4 class="font-(family-name:--font-sharp-sans-bold) text-(--surface-brand-secondary) mb-2">{titulo_contacto}</h4>
+            <div class="mb-3" set:html={stringifyRichText(texto_contacto)}></div>
+            <div class="flex gap-6">
                 {socials.map((social: any) => (
-                    <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-(--surface-brand-primary)! hover:scale-110 transition-transform block">
+                    <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-(--accent-feedback-strong)! hover:scale-110 transition-transform block">
                         {social.iconImage?.data ? (
                             <img src={getStrapiUrl(social.iconImage.data.attributes.url)} alt={social.name} class="w-6 h-6 object-contain fill-current" />
                         ) : (
@@ -189,29 +205,64 @@ const allLinksMobile = [...linksLeft, ...linksRight];
                     </a>
                 ))}
             </div>
+        </div>
 
-            <div class="hidden lg:flex w-full flex-row justify-between items-center h-full">
-                <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-start gap-6 underline decoration-2 underline-offset-3">
-                    {linksLeft.map((link: any) => (
-                        <a class="text-(--surface-brand-primary)!" href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
-                    ))}
-                </div>
-                <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-end gap-6 underline decoration-1 underline-offset-3">
-                    {linksRight.map((link: any) => (
-                        <a class="text-(--surface-brand-primary)!" href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
-                    ))}
+        <hr class="my-10">
+
+        {logos_pci && (
+            <div class="footer-pci font-(family-name:--font-sharp-sans-medium) mb-10">
+                <h4 class="font-(family-name:--font-sharp-sans-bold) text-2xl text-(--accent-feedback-strong) mb-3">{titulo_pci}</h4>
+                <div class="flex! flex-wrap! justify-start! items-center! gap-6! md:gap-10!"> 
+                    {logos_pci.map((logoItem: any) => {
+                        const url = getStrapiUrl(logoItem);
+                        return url ? (
+                            <Image src={url} alt="Logo de pago" width={120} height={48} class="h-6! md:h-8! w-auto! object-contain!" />
+                        ) : null;
+                    })}
                 </div>
             </div>
+        )}
 
-            <div class="flex lg:hidden flex-wrap justify-center text-center gap-x-6 gap-y-2 underline decoration-2 underline-offset-3 px-2">
-                {allLinksMobile.map((link: any) => (
-                    <a href={getLocalizedUrl(link.URL, locale)} class="text-(--surface-brand-primary)! whitespace-nowrap text-xs">
-                        {link.Texto}
-                    </a>
-                ))}
+        <div class="footer-parques font-(family-name:--font-sharp-sans-medium) mb-4 flex justify-center md:justify-start flex-col md:flex-row items-center gap-10">
+            <h4 class="font-(family-name:--font-sharp-sans-bold) text-lg text-(--surface-brand-secondary)">{titulo_otros_parques}</h4>
+            <div class="flex! flex-wrap! justify-center! md:justify-start! items-center! gap-6!"> 
+                <span class="px-2 py-1 text-sm border-2 border-(--brand-interactive-base)">
+                    <a href="https://topgolf.com.mx" target="_blank">TOPGOLF</a>
+                </span>
+                <span class="px-2 py-1 text-sm border-2 border-(--brand-interactive-base)">
+                    <a href="https://www.sealand.com.mx" target="_blank">SEALAND</a>
+                </span>
+                <span class="px-2 py-1 text-sm border-2 border-(--brand-interactive-base)">
+                    <a href="https://www.acuarioinbursa.com.mx" target="_blank">ACUARIO INBURSA</a>
+                </span>
+                <span class="px-2 py-1 text-sm border-2 border-(--brand-interactive-base)">
+                    <a href="https://www.dolphinaris.com" target="_blank">DOLPHINARIS</a>
+                </span>
+                <span class="px-2 py-1 text-sm border-2 border-(--brand-interactive-base)">
+                    <a href="https://bluoceanclub.com" target="_blank">BLU OCEAN CLUB</a></span> 
+            </div>
+        </div>
+
+        
+    </div>
+
+    <div class="footer-bottom bg-[var(--brand-interactive-base)] py-4 lg:py-2 border-4 border-black h-auto min-h-[115px] lg:min-h-[47px]">
+        <div class="container mx-auto px-4 md:px-0">
+            <div class="flex flex-col md:flex-row justify-center md:justify-between items-center">
+                <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-start gap-6 order-2 md:order-1">
+                    {linksLeft.map((link: any) => (
+                        <a class="text-md md:text-sm text-(--surface-brand-primary)!" href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
+                    ))}
+                </div>
+                <div class="font-(family-name:--font-sharp-sans-medium) font-medium flex flex-wrap justify-center md:justify-end gap-3 md:gap-6 underline decoration-1 underline-offset-3 order-1 md:order-2 mb-6 md:mb-0">
+                    {linksRight.map((link: any) => (
+                        <a class="text-md md:text-sm text-(--surface-brand-primary)!" href={getLocalizedUrl(link.URL, locale)}>{link.Texto}</a>
+                    ))}
+                </div>
             </div>
         </div>
     </div>
+    
 
     <div id="wa-contact" class="rounded-full fixed right-[5%] bottom-[8%] w-14 h-14 bg-green-500 flex justify-center items-center text-white! text-3xl! z-50">
         <a target="_blank" class="text-white!" href="https://api.whatsapp.com/send?phone=5218118209536">
@@ -221,6 +272,61 @@ const allLinksMobile = [...linksLeft, ...linksRight];
 </footer>
 
 <script>
+    const form = document.getElementById("form-newsletter-home");
+    const feedback = document.getElementById("form-feedback-newsletter");
+
+    if(form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+    
+            const submitBtn = form.querySelector('button[type="submit"]');
+    
+            // Loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Enviando...";
+            }
+    
+            feedback.classList.add("hidden");
+            feedback.className =
+                "col-span-1 md:col-span-2 text-center text-xs hidden font-bold p-4 rounded-sm font-(family-name:--font-sharp-sans-bold)";
+    
+            const formData = new FormData(form);
+    
+            try {
+                const response = await fetch('/api/newsletter', {
+                    method: "POST",
+                    body: formData,
+                });
+    
+                const data = await response.json()
+                if (response.ok) {
+                    
+                    feedback.textContent = data.message;
+                    feedback.classList.remove("hidden");
+                    feedback.classList.add("bg-green-100", "text-green-800", 'mt-3');
+                    form.reset();
+                } else {
+                    const error = await response.json();
+                    throw new Error(
+                        error.message ||
+                            "HUBO UN PROBLEMA AL ENVIAR EL FORMULARIO. INTENTA DE NUEVO.",
+                    );
+                }
+            } catch (err) {
+                feedback.textContent = err.message.toUpperCase();
+                feedback.classList.remove("hidden");
+                feedback.classList.add("bg-red-100", "text-red-800");
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "SUSCRÍBETE";
+                }
+            }
+        });
+    }
+
+
     document.addEventListener("DOMContentLoaded", () => {
         const observerOptions = { root: null, rootMargin: "0px", threshold: 0.1 };
         const observer = new IntersectionObserver((entries, observer) => {
@@ -233,6 +339,27 @@ const allLinksMobile = [...linksLeft, ...linksRight];
         }, observerOptions);
         const targets = document.querySelectorAll(".trigger-anim-footer");
         targets.forEach((target) => observer.observe(target));
+
+        const accordions = document.querySelectorAll('.footer-accordion-btn');
+        accordions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth >= 768) return;
+                const content = btn.nextElementSibling as HTMLElement | null;
+                const icon = btn.querySelector('i');
+                if (!content) return;
+                if (content.classList.contains('hidden!')) {
+                    content.classList.remove('hidden!');
+                    content.classList.add('flex!');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                } else {
+                    content.classList.add('hidden!');
+                    content.classList.remove('flex!');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+        
     });
 </script>
 
@@ -244,4 +371,15 @@ const allLinksMobile = [...linksLeft, ...linksRight];
     .footer-part-1, .footer-part-2 { opacity: 0; }
     :global(.trigger-anim-footer.is-visible) .footer-part-1 { animation: fadeInUp 0.8s ease-out forwards; }
     :global(.trigger-anim-footer.is-visible) .footer-part-2 { animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.2s; }
+
+    .schedule :global(p > strong) {
+        display: block;
+        font-family: var(--font-sharp-sans-bold);
+        margin-bottom: 1rem;
+    }
+
+    .menu-locacion :global(p > a){
+        font-family: var(--font-sharp-sans-bold);
+        color: var(--surface-brand-secondary);
+    }
 </style>
