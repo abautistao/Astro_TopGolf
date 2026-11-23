@@ -40,6 +40,7 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
 ---
 
 <div class="titulo-sesion">
+    {subtitulo && <SubtituloTag class="titulo-sesion-subtitulo block">{subtitulo}</SubtituloTag>}
     {
         titulo && (
             <TituloTag class="titulo-sesion-titulo">
@@ -49,7 +50,7 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
             </TituloTag>
         )
     }
-    {subtitulo && <SubtituloTag class="titulo-sesion-subtitulo">{subtitulo}</SubtituloTag>}
+    
     {
         texto_enlace && (
             <a href={url_enlace || "#"} class="titulo-sesion-enlace">
@@ -109,7 +110,7 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
         /* display, margenes, peso e interlineado quedan fijados aqui para que
            el subtitulo se vea igual con cualquiera de las etiquetas. */
         display: block;
-        margin: 14px 0 0;
+        margin-bottom: 1.5rem;
         font-weight: inherit;
         line-height: inherit;
     }
@@ -134,7 +135,7 @@ const SubtituloTag = resolverTag(subtituloTag, "p");
         .titulo-sesion-subtitulo {
             font-size: 16px;
             letter-spacing: 0.04em;
-            margin: 22px 0 0;
+            margin-bottom: 1.5rem;
         }
     }
 </style>

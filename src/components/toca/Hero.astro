@@ -43,6 +43,7 @@ export interface Props {
     badge_subtitle?: string
     badge_text_color?: string
     badge_color_background?: string
+    hero_card_columns?: string
 }
 
 const {
@@ -71,6 +72,7 @@ const {
     badge_subtitle,
     badge_text_color,
     badge_color_background,
+    hero_card_columns
 } = Astro.props;
 
 const isVideo = (url: string) => {
@@ -84,7 +86,9 @@ const isVideo = (url: string) => {
     style={color_fondo ? `background-color: ${color_fondo}` : ""}
 >
     <div class="container mx-auto px-4 md:px-0">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+        <div 
+            class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16"
+            >
             
             <!-- Left Column: Content -->
             <div class="order-1 md:order-0 flex flex-col gap-6 items-center md:items-start text-center md:text-left z-10">
@@ -98,7 +102,7 @@ const isVideo = (url: string) => {
                 )}
     
                 {title && (
-                    <h1 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--neutral-text-inverted)] text-[32px] md:text-[40px] font-bold md:font-black uppercase leading-tight md:leading-[1.2]"
+                    <h1 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--neutral-text-inverted)] text-[26px] md:text-[40px] font-bold md:font-black uppercase leading-tight md:leading-[1.2]"
                         style={title_color ? `color: ${title_color}`: 'color: #F7F8FC'}
                         >
                         {outline_title && (
@@ -122,14 +126,19 @@ const isVideo = (url: string) => {
                 )}
 
                 {has_card && (
-                    <div class="border-2 border-(--brand-interactive-base) p-4 max-w-lg" style={card_border_color ? `border-color: ${card_border_color}` : ""}>
+                    <div class="border-2 border-(--brand-interactive-base) p-4" style={card_border_color ? `border-color: ${card_border_color}` : ""}>
                         <h3 class="font-(family-name:--font-sharp-sans-bold) text-(--accent-feedback-strong) mb-2" style={title_card_color ? `color: ${title_card_color}` : ""}>{title_card}</h3>
                         <div class="font-(family-name:--font-sharp-sans-medium) text-(--accent-feedback-strong)" style={card_description_color ? `color: ${card_description_color}` : ""} set:html={stringifyRichText(card_description)}></div>
                     </div>
                 )}
 
                 {has_cards && (
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                    <div 
+                        class="grid grid-cols-1 gap-4 w-full"
+                        class:list={
+                            hero_card_columns ? `md:grid-cols-${hero_card_columns}` : 'md:grid-cols-3'
+                        }
+                    >
                         {hero_card.map(card => (
                             <div class="border-2 border-(--brand-interactive-base) p-4 max-w-lg" style={card.card_color ? `border-color: ${card.card_color}` : ""}>
                                 <h3 class="font-(family-name:--font-titling-gothic-fb-extended-bold)! text-(--accent-feedback-strong) text-[20px] mb-2" style={card.card_color ? `color: ${card.card_color}` : ""}>{card.hero_card_title}</h3>

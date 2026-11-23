@@ -39,8 +39,8 @@ const TituloTag = resolverTag(tituloHtmlTag, "h2");
 const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
 ---
 
-<section class="pilares" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
-    <div class="pilares-contenedor">
+<section class="pilares py-12" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="container mx-auto px-4 md:px-0">
         {
             (titulo_seccion || subtitulo) && (
                 <header class="pilares-encabezado">
