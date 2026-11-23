@@ -25,8 +25,8 @@ const {
 } = Astro.props;
 ---
 
-<section class="articulos" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
-    <div class="articulos-contenedor">
+<section class="articulos py-12" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="container mx-auto px-0 md:px-0">
         <TituloSeccion
             titulo={titulo_seccion}
             subtitulo={subtitulo}

@@ -15,11 +15,11 @@ const lista = Array.isArray(slides) ? slides : [];
 ---
 
 <section
-    class="slider-promo"
+    class="slider-promo py-12"
     style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
     x-data={`{ actual: 0, total: ${lista.length} }`}
 >
-    <div class="contenedor">
+    <div class="container mx-auto px-0 md:px-0">
         <div class="pista">
             {
                 lista.map((slide, i) => (
