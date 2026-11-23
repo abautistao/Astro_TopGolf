@@ -51,48 +51,51 @@ const parrafos = (descripcion ?? "")
 const hayBadge = Boolean(badge_pre || badge_valor || badge_post);
 ---
 
-<section class="imagen-texto" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
-    <div class:list={["contenedor", imagenIzquierda && "contenedor--invertido"]}>
-        <div class="texto">
-            {etiqueta && <span class="etiqueta">{etiqueta}</span>}
-            {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
-            {subtitulo && <SubtituloTag class="subtitulo">{subtitulo}</SubtituloTag>}
-            {parrafos.map((p) => <p class="parrafo">{p}</p>)}
+<section class="imagen-texto py-12" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
+    <div class="container mx-auto px-4 md:px-0">
+        <div class:list={["contenedor", imagenIzquierda && "contenedor--invertido"]}>
 
-            {
-                Array.isArray(lista) && lista.length > 0 && (
-                    <ul class="lista">
-                        {lista.map((el) => (
-                            <li class="lista-fila">
-                                <i class="fa-solid fa-circle-check" aria-hidden="true" />
-                                <span>{el.texto}</span>
-                            </li>
-                        ))}
-                    </ul>
-                )
-            }
-
-            {
-                texto_boton && (
-                    <a href={url_boton || "#"} class="boton">
-                        {texto_boton}
-                    </a>
-                )
-            }
-        </div>
-
-        <div class="foto">
-            <FotoInclinada imagen={imagen} alt={titulo} texto_foto={texto_foto} rotacion={imagenIzquierda ? "-3deg" : "3deg"} borde="mint">
+            <div class="texto">
+                {etiqueta && <span class="etiqueta">{etiqueta}</span>}
+                {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
+                {subtitulo && <SubtituloTag class="subtitulo">{subtitulo}</SubtituloTag>}
+                {parrafos.map((p) => <p class="parrafo">{p}</p>)}
+    
                 {
-                    hayBadge && (
-                        <div class="badge">
-                            {badge_pre && <span class="badge-pre">{badge_pre}</span>}
-                            {badge_valor && <span class="badge-valor">{badge_valor}</span>}
-                            {badge_post && <span class="badge-post">{badge_post}</span>}
-                        </div>
+                    Array.isArray(lista) && lista.length > 0 && (
+                        <ul class="lista">
+                            {lista.map((el) => (
+                                <li class="lista-fila">
+                                    <i class="fa-solid fa-circle-check" aria-hidden="true" />
+                                    <span>{el.texto}</span>
+                                </li>
+                            ))}
+                        </ul>
                     )
                 }
-            </FotoInclinada>
+    
+                {
+                    texto_boton && (
+                        <a href={url_boton || "#"} class="boton">
+                            {texto_boton}
+                        </a>
+                    )
+                }
+            </div>
+    
+            <div class="foto">
+                <FotoInclinada imagen={imagen} alt={titulo} texto_foto={texto_foto} rotacion={imagenIzquierda ? "-3deg" : "3deg"} borde="mint">
+                    {
+                        hayBadge && (
+                            <div class="badge">
+                                {badge_pre && <span class="badge-pre">{badge_pre}</span>}
+                                {badge_valor && <span class="badge-valor">{badge_valor}</span>}
+                                {badge_post && <span class="badge-post">{badge_post}</span>}
+                            </div>
+                        )
+                    }
+                </FotoInclinada>
+            </div>
         </div>
     </div>
 </section>

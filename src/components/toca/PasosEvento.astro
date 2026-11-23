@@ -40,10 +40,10 @@ const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
 ---
 
 <section
-    class="pasos-evento"
+    class="pasos-evento py-12"
     style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
 >
-    <div class="pasos-evento-contenedor">
+    <div class="container mx-auto px-4 md:px-0">
         {titulo_seccion && <TituloTag class="evento-titulo">{titulo_seccion}</TituloTag>}
         {subtitulo && <SubtituloTag class="evento-subtitulo">{subtitulo}</SubtituloTag>}
 

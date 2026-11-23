@@ -40,15 +40,15 @@ const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
 ---
 
 <section
-    class="ocasiones"
+    class="ocasiones py-12"
     style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
 >
-    <div class="ocasiones-contenedor">
+    <div class="container mx-auto px-4 md:px-0">
         {
             (titulo_seccion || subtitulo) && (
                 <header class="ocasiones-encabezado">
-                    {titulo_seccion && <TituloTag class="ocasiones-titulo">{titulo_seccion}</TituloTag>}
                     {subtitulo && <SubtituloTag class="ocasiones-subtitulo">{subtitulo}</SubtituloTag>}
+                    {titulo_seccion && <TituloTag class="ocasiones-titulo">{titulo_seccion}</TituloTag>}
                 </header>
             )
         }
@@ -88,10 +88,11 @@ const SubtituloTag = resolverTag(subtituloHtmlTag, "p");
     .ocasiones-subtitulo {
         display: block;
         margin: 0.75rem 0 0;
-        font-family: var(--font-sharp-sans-medium);
+        font-family: var(--font-sharp-sans-bold);
         font-size: 0.95rem;
         line-height: 1.45;
         color: var(--surface-brand-primary);
+        margin-bottom: 1rem;
     }
 
     .ocasiones-grid {
