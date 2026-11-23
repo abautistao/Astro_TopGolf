@@ -26,8 +26,8 @@ const TabTituloTag = resolverTag(subtituloHtmlTag, "h3");
 const lista = Array.isArray(tabs) ? tabs : [];
 ---
 
-<section class="banner" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined} x-data="{ activo: 0 }">
-    <div class="contenedor">
+<section class="banner py-12" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined} x-data="{ activo: 0 }">
+    <div class="container mx-auto px-4 md:px-0">
         <div class="cabecera">
             {titulo && <TituloTag class="titulo">{titulo}</TituloTag>}
             {

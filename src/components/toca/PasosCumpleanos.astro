@@ -47,10 +47,10 @@ const NotaTag = resolverTag(tituloNotaHtmlTag, "h3");
 ---
 
 <section
-    class="pasos-cumpleanos"
+    class="pasos-cumpleanos py-12"
     style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}
 >
-    <div class="pasos-cumpleanos-contenedor">
+    <div class="container mx-auto px-4 md:px-0">
         <div class="pasos-cumpleanos-layout">
             <div class="pasos-cumpleanos-pasos">
                 {titulo_seccion && <TituloTag class="cumple-titulo">{titulo_seccion}</TituloTag>}
