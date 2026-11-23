@@ -78,14 +78,14 @@ const categories = categorias_faq?.length > 0 ? categorias_faq : fallbackData;
             <div class:list={[
                 subtitulo ? "flex! flex-wrap mb-12!" : "none",
                 {
-                    'flex-col' : is_two_column
+                    'flex flex-col' : is_two_column
                 }
             ]}>
                 {categories.map((cat: any, index: number) => {
                     if(cat.label)
                         return (
                             <button
-                                class="py-3! px-6! text-center! text-base! lg:text-xl! font-bold! uppercase! transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border border-(--brand-interactive-base) hover:bg-(--brand-interactive-base) hover:text-(--surface-brand-primary)!"
+                                class="py-3! px-6! text-left! text-base! lg:text-md! font-bold! uppercase! transition-colors duration-300 font-(family-name:--font-titling-gothic-fb-extended-bold) border border-(--brand-interactive-base) hover:bg-(--brand-interactive-base) hover:text-(--surface-brand-primary)!"
                                 :class={`activeTab === ${index} ? 'bg-[var(--brand-interactive-base)] text-[var(--surface-brand-primary)]' : 'text-[var(--accent-feedback-strong)] bg-transparent'`}
                                 @click={`activeTab = ${index}`}
                                 class:list={[
