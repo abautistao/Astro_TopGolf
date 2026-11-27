@@ -1,6 +1,6 @@
 ---
-import TituloSeccion from "./cards/TituloSeccion.astro";
 import CardSede from "./cards/Sede.astro";
+import { stringifyRichText } from "../../lib/strapi";
 
 interface Props {
     titulo_seccion?: string;
@@ -9,6 +9,8 @@ interface Props {
     subtituloHtmlTag?: string | null;
     color_fondo_override?: string | null;
     cards?: any[];
+    titulo_outline: string,
+    description: any[]
 }
 
 const {
@@ -17,18 +19,30 @@ const {
     tituloHtmlTag = null,
     subtituloHtmlTag = null,
     color_fondo_override = null,
-    cards = []
+    cards = [],
+    titulo_outline,
+    description
 } = Astro.props;
 ---
 
 <section class="sedes py-12" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
     <div class="container mx-auto ´x-4 md:px-0">
-        <TituloSeccion
-            titulo={titulo_seccion}
-            subtitulo={subtitulo}
-            tituloTag={tituloHtmlTag}
-            subtituloTag={subtituloHtmlTag}
-        />
+        <div class="max-w-9/12">
+            {subtitulo && <subtituloHtmlTag class="font-(family-name:--font-sharp-sans-bold) block text-lg text-(--brand-interactive-base)">{subtitulo}</subtituloHtmlTag>}
+            {
+                titulo_seccion && (
+                    <tituloHtmlTag class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[26px] md:text-[40px] text-(--accent-feedback-strong)">
+                        {titulo_outline && <span class="title-outline text-transparent block">{titulo_outline}</span>}
+                        <span class="titulo-sesion-linea titulo-sesion-linea--solida">{titulo_seccion}</span>
+                    </tituloHtmlTag>
+                )
+            }
+
+            {description && (
+                <div set:html={stringifyRichText(description)} class="font-(family-name:--font-sharp-sans-bold) col-span-1 text-(--accent-feedback-strong) mt-8"></div>
+            )}
+        </div>
+        
 
         <div class="grid">
             {Array.isArray(cards) && cards.map((card) => <CardSede {...card} />)}
@@ -52,6 +66,10 @@ const {
         grid-template-columns: minmax(0, 1fr);
         gap: 1.5rem;
         margin-top: 3rem;
+    }
+
+    .title-outline {
+        -webkit-text-stroke: 2px #FF85FF;
     }
 
     @media (min-width: 768px) {

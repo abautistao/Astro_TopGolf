@@ -1,5 +1,4 @@
 ---
-import TituloSeccion from "./cards/TituloSeccion.astro";
 import CardExperiencia from "./cards/Experiencia.astro";
 import { stringifyRichText } from "../../lib/strapi";
 
@@ -31,7 +30,7 @@ const {
                 {subtitulo && <subtituloHtmlTag class="font-(family-name:--font-sharp-sans-bold) block text-md">{subtitulo}</subtituloHtmlTag>}
                 {
                     titulo_seccion && (
-                        <tituloHtmlTag class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-4xl">
+                        <tituloHtmlTag class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-[26px] md:text-[40px]">
                             
                             <span class="titulo-sesion-linea titulo-sesion-linea--solida">{titulo_seccion}</span>
                             
