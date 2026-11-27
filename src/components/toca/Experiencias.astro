@@ -1,6 +1,7 @@
 ---
 import TituloSeccion from "./cards/TituloSeccion.astro";
 import CardExperiencia from "./cards/Experiencia.astro";
+import { stringifyRichText } from "../../lib/strapi";
 
 interface Props {
     titulo_seccion?: string;
@@ -9,6 +10,7 @@ interface Props {
     subtituloHtmlTag?: string | null;
     color_fondo_override?: string | null;
     cards?: any[];
+    description: any[]
 }
 
 const {
@@ -17,21 +19,34 @@ const {
     tituloHtmlTag = null,
     subtituloHtmlTag = null,
     color_fondo_override = null,
-    cards = []
+    cards = [],
+    description
 } = Astro.props;
 ---
 
 <section class="experiencias py-12" style={color_fondo_override ? `background: ${color_fondo_override}` : undefined}>
     <div class="container mx-auto px-4 md:px-0">
-        <TituloSeccion
-            titulo={titulo_seccion}
-            subtitulo={subtitulo}
-            tituloTag={tituloHtmlTag}
-            subtituloTag={subtituloHtmlTag}
-            contorno={false}
-        />
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end w-full">
+            <div class="titulo-sesion col-span-3 text-(--surface-brand-primary)">
+                {subtitulo && <subtituloHtmlTag class="font-(family-name:--font-sharp-sans-bold) block text-md">{subtitulo}</subtituloHtmlTag>}
+                {
+                    titulo_seccion && (
+                        <tituloHtmlTag class="font-(family-name:--font-titling-gothic-fb-extended-bold) text-4xl">
+                            
+                            <span class="titulo-sesion-linea titulo-sesion-linea--solida">{titulo_seccion}</span>
+                            
+                        </tituloHtmlTag>
+                    )
+                }
+            </div>
 
-        <div class="grid">
+            {description && (
+                <div set:html={stringifyRichText(description)} class="font-(family-name:--font-sharp-sans-bold) col-span-1 text-(--surface-brand-primary)"></div>
+            )}
+        </div>
+        
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-10">
             {
                 Array.isArray(cards) &&
                     cards.map((card: any, i: number) => <CardExperiencia {...card} indice={i + 1} />)
@@ -59,22 +74,4 @@ const {
         margin: 0 auto;
     }
 
-    .grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 1.5rem;
-        margin-top: 3rem;
-    }
-
-    @media (min-width: 768px) {
-        .grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-    }
 </style>
