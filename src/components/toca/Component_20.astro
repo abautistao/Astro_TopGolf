@@ -227,14 +227,14 @@ const getOptions = (optionsStr?: string) => {
                     { description && (
                         <div
                             set:html={stringifyRichText(description)}
-                            class="prose text-(--accent-feedback-strong) text-sm lg:text-lg font-bold tracking-[0.2em] font-(family-name:--font-sharp-sans-bold) mb-4 uppercase"
+                            class="prose text-(--accent-feedback-strong) text-sm lg:text-lg font-bold font-(family-name:--font-sharp-sans-bold) mb-4"
                         >
                         </div>
                     ) }
 
                     {link_btn && (
-                        <button
-                            type="submit"
+                        <a
+                            href={link_btn.url}
                             class:list={[
                                 'font-(family-name:--font-sharp-sans-bold) inline-block border-2 border-(--surface-brand-primary) font-bold uppercase tracking-tight leading-tight',
                                 'transition-all duration-200 whitespace-normal text-center max-w-full break-words',
@@ -251,7 +251,7 @@ const getOptions = (optionsStr?: string) => {
                                         link_btn.tipo === "version_4",
                                 },
                             ]}
-                        >{link_btn.texto}</button>
+                        >{link_btn.texto}</a>
                     )}
                     
                 </div>
